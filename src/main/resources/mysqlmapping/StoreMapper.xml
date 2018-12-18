@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mapper.mysql.StoreMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.domain.mysql.Store">
+    <id column="store_id" jdbcType="TINYINT" property="storeId" />
+    <result column="manager_staff_id" jdbcType="TINYINT" property="managerStaffId" />
+    <result column="address_id" jdbcType="SMALLINT" property="addressId" />
+    <result column="last_update" jdbcType="TIMESTAMP" property="lastUpdate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    store_id, manager_staff_id, address_id, last_update
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Byte" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from store
+    where store_id = #{storeId,jdbcType=TINYINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Byte">
+    delete from store
+    where store_id = #{storeId,jdbcType=TINYINT}
+    
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.domain.mysql.Store">
+    insert into store (store_id, manager_staff_id, address_id, 
+      last_update)
+    values (#{storeId,jdbcType=TINYINT}, #{managerStaffId,jdbcType=TINYINT}, #{addressId,jdbcType=SMALLINT}, 
+      #{lastUpdate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.domain.mysql.Store">
+    insert into store
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="storeId != null">
+        store_id,
+      </if>
+      <if test="managerStaffId != null">
+        manager_staff_id,
+      </if>
+      <if test="addressId != null">
+        address_id,
+      </if>
+      <if test="lastUpdate != null">
+        last_update,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="storeId != null">
+        #{storeId,jdbcType=TINYINT},
+      </if>
+      <if test="managerStaffId != null">
+        #{managerStaffId,jdbcType=TINYINT},
+      </if>
+      <if test="addressId != null">
+        #{addressId,jdbcType=SMALLINT},
+      </if>
+      <if test="lastUpdate != null">
+        #{lastUpdate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.domain.mysql.Store">
+    update store
+    <set>
+      <if test="managerStaffId != null">
+        manager_staff_id = #{managerStaffId,jdbcType=TINYINT},
+      </if>
+      <if test="addressId != null">
+        address_id = #{addressId,jdbcType=SMALLINT},
+      </if>
+      <if test="lastUpdate != null">
+        last_update = #{lastUpdate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where store_id = #{storeId,jdbcType=TINYINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.domain.mysql.Store">
+    update store
+    set manager_staff_id = #{managerStaffId,jdbcType=TINYINT},
+      address_id = #{addressId,jdbcType=SMALLINT},
+      last_update = #{lastUpdate,jdbcType=TIMESTAMP}
+    where store_id = #{storeId,jdbcType=TINYINT}
+  </update>
+</mapper>
