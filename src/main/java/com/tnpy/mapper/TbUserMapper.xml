@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.dao.TbUserMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.pojo.TbUser">
+    <id column="userID" jdbcType="VARCHAR" property="userid" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="roleID" jdbcType="VARCHAR" property="roleid" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="birthday" jdbcType="DATE" property="birthday" />
+    <result column="dutyID" jdbcType="VARCHAR" property="dutyid" />
+    <result column="workplace" jdbcType="VARCHAR" property="workplace" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    userID, name, password, roleID, sex, birthday, dutyID, workplace
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_user
+    where userID = #{userid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_user
+    where userID = #{userid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.pojo.TbUser">
+    insert into tb_user (userID, name, password, 
+      roleID, sex, birthday, 
+      dutyID, workplace)
+    values (#{userid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{roleid,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, 
+      #{dutyid,jdbcType=VARCHAR}, #{workplace,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.pojo.TbUser">
+    insert into tb_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        userID,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="roleid != null">
+        roleID,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="birthday != null">
+        birthday,
+      </if>
+      <if test="dutyid != null">
+        dutyID,
+      </if>
+      <if test="workplace != null">
+        workplace,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="roleid != null">
+        #{roleid,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        #{birthday,jdbcType=DATE},
+      </if>
+      <if test="dutyid != null">
+        #{dutyid,jdbcType=VARCHAR},
+      </if>
+      <if test="workplace != null">
+        #{workplace,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.pojo.TbUser">
+    update tb_user
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="roleid != null">
+        roleID = #{roleid,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        birthday = #{birthday,jdbcType=DATE},
+      </if>
+      <if test="dutyid != null">
+        dutyID = #{dutyid,jdbcType=VARCHAR},
+      </if>
+      <if test="workplace != null">
+        workplace = #{workplace,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where userID = #{userid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.pojo.TbUser">
+    update tb_user
+    set name = #{name,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      roleID = #{roleid,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      birthday = #{birthday,jdbcType=DATE},
+      dutyID = #{dutyid,jdbcType=VARCHAR},
+      workplace = #{workplace,jdbcType=VARCHAR}
+    where userID = #{userid,jdbcType=VARCHAR}
+  </update>
+</mapper>
