@@ -1,7 +1,10 @@
 package com.tnpy.dao;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.tnpy.pojo.TbUser;
 
+@Mapper
 public interface TbUserMapper {
     int deleteByPrimaryKey(String userid);
 
