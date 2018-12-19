@@ -22,9 +22,9 @@ public class LoginController {
 			@RequestParam(value = "password") String password) {
 		TbUser tbUser = tbUserService.getUserInfo(username);
 		if (tbUser != null && tbUser.getPassword().equals(password)) {
-			return "true";
+			return "right";
 		} else {
-			return "false";
+			return "wrong";
 		}
 	}
 }
