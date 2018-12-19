@@ -17,7 +17,7 @@
             <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
         <!--生成Model类的包名及存放位置-->
-        <javaModelGenerator targetPackage="com.tnpy.domain.sqlserver" targetProject="tnpy/src/main/java">
+        <javaModelGenerator targetPackage="com.tnpy.mes.model.sqlserver" targetProject="tnpy/src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
@@ -26,7 +26,7 @@
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
         <!--生成Dao类的包名及存放位置-->
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.tnpy.mapper.sqlserver" targetProject="tnpy/src/main/java">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.tnpy.mes.mapper.sqlserver" targetProject="tnpy/src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
         <!--生成对应表及类名,domainObjectName是设置实体类的名字的-->

@@ -1,8 +1,8 @@
-package com.tnpy.dao;
+package com.tnpy.mes.mapper.mysql;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.tnpy.pojo.TbUser;
+import com.tnpy.mes.model.mysql.TbUser;
 
 @Mapper
 public interface TbUserMapper {

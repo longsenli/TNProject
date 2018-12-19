@@ -4,8 +4,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.tnpy.dao.TbUserMapper;
-import com.tnpy.pojo.TbUser;
+import com.tnpy.mes.mapper.mysql.TbUserMapper;
+import com.tnpy.mes.model.mysql.TbUser;
 import com.tnpy.service.ITbUserService;
 
 @Service

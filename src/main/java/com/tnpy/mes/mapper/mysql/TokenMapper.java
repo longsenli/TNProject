@@ -1,10 +1,11 @@
-package com.tnpy.dao;
+package com.tnpy.mes.mapper.mysql;
 
-import com.tnpy.pojo.Token;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
+
+import com.tnpy.mes.model.mysql.Token;
 
 @Mapper
 @Component

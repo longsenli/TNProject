@@ -1,4 +1,4 @@
-package com.tnpy.pojo;
+package com.tnpy.mes.model.mysql;
 
 public class Token {
     private String tokenid;

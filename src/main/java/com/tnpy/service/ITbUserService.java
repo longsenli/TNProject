@@ -1,6 +1,6 @@
 package com.tnpy.service;
 
-import com.tnpy.pojo.TbUser;
+import com.tnpy.mes.model.mysql.TbUser;
 
 public interface ITbUserService {
 

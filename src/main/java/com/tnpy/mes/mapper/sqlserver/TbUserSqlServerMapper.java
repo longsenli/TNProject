@@ -1,6 +1,6 @@
-package com.tnpy.mapper.sqlserver;
+package com.tnpy.mes.mapper.sqlserver;
 
-import com.tnpy.domain.sqlserver.TbUserSqlServer;
+import com.tnpy.mes.model.sqlserver.TbUserSqlServer;
 
 public interface TbUserSqlServerMapper {
     int deleteByPrimaryKey(String id);

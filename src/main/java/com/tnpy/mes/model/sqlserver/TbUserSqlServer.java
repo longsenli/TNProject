@@ -1,4 +1,4 @@
-package com.tnpy.domain.sqlserver;
+package com.tnpy.mes.model.sqlserver;
 
 public class TbUserSqlServer {
     private String id;

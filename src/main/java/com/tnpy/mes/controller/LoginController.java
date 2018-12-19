@@ -1,4 +1,4 @@
-package com.tnpy.controller;
+package com.tnpy.mes.controller;
 
 import javax.annotation.Resource;
 
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tnpy.pojo.TbUser;
+import com.tnpy.mes.model.mysql.TbUser;
 import com.tnpy.service.ITbUserService;
 
 @RestController

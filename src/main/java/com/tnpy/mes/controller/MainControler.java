@@ -1,10 +1,10 @@
-package com.tnpy.controller;
+package com.tnpy.mes.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.tnpy.dao.TokenMapper;
-import com.tnpy.dao.UserMapper;
-import com.tnpy.pojo.Token;
-import com.tnpy.pojo.User;
+import com.tnpy.mes.mapper.mysql.TokenMapper;
+import com.tnpy.mes.mapper.mysql.UserMapper;
+import com.tnpy.mes.model.mysql.Token;
+import com.tnpy.mes.model.mysql.User;
 import com.tnpy.token.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,7 +1,8 @@
 package com.tnpy.token;
 
 import com.alibaba.fastjson.JSONObject;
-import com.tnpy.pojo.Token;
+import com.tnpy.mes.model.mysql.Token;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -11,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class TokenInterceptor implements HandlerInterceptor {
     @Autowired
-    private com.tnpy.dao.TokenMapper TokenMapper;
+    private com.tnpy.mes.mapper.mysql.TokenMapper TokenMapper;
     //提供查询
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse arg1, Object arg2, Exception arg3)

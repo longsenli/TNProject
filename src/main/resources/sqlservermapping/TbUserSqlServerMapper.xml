@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.tnpy.mapper.sqlserver.TbUserSqlServerMapper">
-  <resultMap id="BaseResultMap" type="com.tnpy.domain.sqlserver.TbUserSqlServer">
+<mapper namespace="com.tnpy.mes.mapper.sqlserver.TbUserSqlServerMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.sqlserver.TbUserSqlServer">
     <id column="Id" jdbcType="NCHAR" property="id" />
     <result column="UserName" jdbcType="VARCHAR" property="username" />
     <result column="Pwd" jdbcType="VARCHAR" property="pwd" />
@@ -21,13 +21,13 @@
     delete from tb_User
     where Id = #{id,jdbcType=NCHAR}
   </delete>
-  <insert id="insert" parameterType="com.tnpy.domain.sqlserver.TbUserSqlServer">
+  <insert id="insert" parameterType="com.tnpy.mes.model.sqlserver.TbUserSqlServer">
     insert into tb_User (Id, UserName, Pwd, 
       Jurisdiction_id, Remark)
     values (#{id,jdbcType=NCHAR}, #{username,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, 
       #{jurisdictionId,jdbcType=NCHAR}, #{remark,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.tnpy.domain.sqlserver.TbUserSqlServer">
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.sqlserver.TbUserSqlServer">
     insert into tb_User
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -64,7 +64,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.domain.sqlserver.TbUserSqlServer">
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.sqlserver.TbUserSqlServer">
     update tb_User
     <set>
       <if test="username != null">
@@ -82,7 +82,7 @@
     </set>
     where Id = #{id,jdbcType=NCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.tnpy.domain.sqlserver.TbUserSqlServer">
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.sqlserver.TbUserSqlServer">
     update tb_User
     set UserName = #{username,jdbcType=VARCHAR},
       Pwd = #{pwd,jdbcType=VARCHAR},
