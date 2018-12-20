@@ -1,4 +1,4 @@
-package com.tnpy.token;
+package com.tnpy.common.utils.token;
 
 public class Result {
     private boolean flag=false;

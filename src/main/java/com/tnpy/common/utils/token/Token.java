@@ -1,9 +1,9 @@
-package com.tnpy.mes.model.mysql;
+package com.tnpy.common.utils.token;
 
 public class Token {
     private String tokenid;
 
-    private Integer userid;
+    private String userid;
 
     private String token;
 
@@ -17,11 +17,11 @@ public class Token {
         this.tokenid = tokenid == null ? null : tokenid.trim();
     }
 
-    public Integer getUserid() {
+    public String getUserid() {
         return userid;
     }
 
-    public void setUserid(Integer userid) {
+    public void setUserid(String userid) {
         this.userid = userid;
     }
 

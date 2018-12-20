@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tnpy.mes.mapper.mysql.TokenMapper">
-  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.Token">
+  <resultMap id="BaseResultMap" type="com.tnpy.common.utils.token.Token">
     <id column="tokenid" jdbcType="VARCHAR" property="tokenid" />
     <result column="userid" jdbcType="INTEGER" property="userid" />
     <result column="token" jdbcType="VARCHAR" property="token" />
@@ -20,11 +20,11 @@
     delete from tb_token
     where tokenid = #{tokenid,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.Token">
+  <insert id="insert" parameterType="com.tnpy.common.utils.token.Token">
     insert into tb_token (tokenid, userid, token, buildtime)
     values (#{tokenid}, #{userid}, #{token}, #{buildtime})
   </insert>
-  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.Token">
+  <insert id="insertSelective" parameterType="com.tnpy.common.utils.token.Token">
     insert into tb_token
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="tokenid != null">
@@ -55,7 +55,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.Token">
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.common.utils.token.Token">
     update tb_token
     <set>
       <if test="userid != null">
@@ -70,7 +70,7 @@
     </set>
     where tokenid = #{tokenid,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.Token">
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.common.utils.token.Token">
     update tb_token
     set userid = #{userid,jdbcType=INTEGER},
       token = #{token,jdbcType=VARCHAR},

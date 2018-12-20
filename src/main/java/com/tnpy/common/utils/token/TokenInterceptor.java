@@ -1,7 +1,6 @@
-package com.tnpy.token;
+package com.tnpy.common.utils.token;
 
 import com.alibaba.fastjson.JSONObject;
-import com.tnpy.mes.model.mysql.Token;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -23,14 +22,13 @@ public class TokenInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse arg1, Object arg2) throws Exception {
 
-        final String headerToken = request.getHeader("token");
         //普通路径放行
         if ("/api/login".equals(request.getRequestURI()) || "/tokentest/login".equals(request.getRequestURI())) {
             return true;}
 
 
         //权限路径拦截
-
+        final String headerToken = request.getHeader("token");
         //判断请求信息
         if(null==headerToken||headerToken.trim().equals("")){
 //            resultWriter.write("你没有token,需要登录");
@@ -45,7 +43,6 @@ public class TokenInterceptor implements HandlerInterceptor {
             Token token=(Token) JSONObject.toJavaObject(JSONObject.parseObject(tokenStr), Token.class);
             //根据客户Token查找数据库Token
             Token myToken=TokenMapper.findByUserId(token.getUserid() );
-            System.out.println("通过最后： " + myToken.getUserid() );
             //数据库没有Token记录
             if(null==myToken) {
 //               resultWriter.write("我没有你的token？,需要登录");

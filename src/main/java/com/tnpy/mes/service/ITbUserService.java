@@ -1,4 +1,4 @@
-package com.tnpy.service;
+package com.tnpy.mes.service;
 
 import com.tnpy.mes.model.mysql.TbUser;
 

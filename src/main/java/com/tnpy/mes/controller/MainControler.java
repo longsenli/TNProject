@@ -1,17 +1,17 @@
 package com.tnpy.mes.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.tnpy.common.utils.token.TokenUtil;
 import com.tnpy.mes.mapper.mysql.TokenMapper;
 import com.tnpy.mes.mapper.mysql.UserMapper;
-import com.tnpy.mes.model.mysql.Token;
+import com.tnpy.common.utils.token.Token;
 import com.tnpy.mes.model.mysql.User;
-import com.tnpy.token.Result;
+import com.tnpy.common.utils.token.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
 import java.util.logging.Logger;
 
 @RestController
@@ -75,7 +75,7 @@ public class MainControler {
         }
 
         //根据数据库的用户信息查询Token
-        Token token = tokenmapper.findByUserId(myUser.getUserid());
+        Token token = tokenmapper.findByUserId("1");
 
         long nowtime = System.currentTimeMillis();
         //生成Token
@@ -83,9 +83,9 @@ public class MainControler {
         if (null == token) {
             System.out.println("第一次登陆");
             //第一次登陆
-            token = creatToken(myUser);
+            token =( new TokenUtil()).creatToken("1") ;
             System.out.println("第一次登陆");
-            tokenmapper.insert2(token);
+            tokenmapper.insertToken(token);
         }else{
             //登陆就更新Token信息
 //            System.out.println("更新登陆");
@@ -99,14 +99,5 @@ public class MainControler {
         result.setToken( JSONObject.toJSON(token).toString());
         return result;
     }
-    //生成Token信息方法（根据有效的用户信息）
-    private Token creatToken(User user) {
-        Token token = new Token();
-        token = new Token();
-        token.setTokenid(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-        token.setToken(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-        token.setBuildtime(System.currentTimeMillis());
-        token.setUserid(user.getUserid());
-        return  token;
-    }
+
 }

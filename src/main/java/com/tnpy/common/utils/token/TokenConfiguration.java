@@ -1,4 +1,4 @@
-package com.tnpy.token;
+package com.tnpy.common.utils.token;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +29,7 @@ System.out.println("初始化拦截器");
     //添加拦截器
     //registry.addInterceptor(new JwtInterceptor()).excludePathPatterns("/login","/user/hello");//放掉某些特定不需要校验token的路由
      registry.addInterceptor(tokenInterceptor()).addPathPatterns("/tokentest/**");
+     registry.addInterceptor(tokenInterceptor()).addPathPatterns("/api/**");
     }
 
 }
