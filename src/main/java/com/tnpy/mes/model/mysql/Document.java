@@ -1,5 +1,7 @@
 package com.tnpy.mes.model.mysql;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.Date;
 
 public class Document {
@@ -14,7 +16,7 @@ public class Document {
     private String location;
 
     private String creator;
-
+    @JSONField(format ="yyyy-MM-dd HH:mm:ss")
     private Date createtime;
 
     public String getId() {
