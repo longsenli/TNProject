@@ -78,7 +78,7 @@ public class LoginController {
 		//返回Token信息给客户端
 
 		response.setStatus(1);
-		response.setMessage("登录成功");
+		response.setMessage(myUser.getName());
 		response.setToken(JSONObject.toJSON(token).toString());
 		return response;
 	}
