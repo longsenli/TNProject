@@ -2,13 +2,12 @@ package com.tnpy.mes.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.utils.web.TNPYResponse;
+import com.tnpy.mes.mapper.mysql.DocTypeMapper;
 import com.tnpy.mes.mapper.mysql.DocumentMapper;
+import com.tnpy.mes.model.mysql.DocType;
 import com.tnpy.mes.model.mysql.Document;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
@@ -30,6 +29,18 @@ import java.util.UUID;
 public class DocumentController {
     @Autowired
     private DocumentMapper documentMapper;
+    @Autowired
+    private DocTypeMapper docTypeMapper;
+
+    @ResponseBody
+    @RequestMapping(value = "/getdoctypetype")
+    public TNPYResponse getDocType() {
+        List<DocType> docTypeList = docTypeMapper.selectAllDict();
+        TNPYResponse result = new TNPYResponse();
+        result.setStatus(1);
+        result.setData(JSONObject.toJSON(docTypeList).toString());
+        return  result;
+    }
     @PostMapping("/documentupload")
     public TNPYResponse upload(MultipartFile fileUpload,int type,String summary,String creator){
         System.out.println(fileUpload.toString());
@@ -110,90 +121,6 @@ public class DocumentController {
         }
         return null;
     }
-    /*
-    private void downloadResultFile(HttpServletResponse res, HttpServletResponse request, String filePath, String downloadName) {
-
-        try {
-            if (request.getHeader("User-Agent") != null && request.getHeader("User-Agent").toUpperCase().indexOf("MSIE") > 0) {
-                downloadName = URLEncoder.encode(downloadName, "UTF-8");
-            } else {
-                downloadName = new String(downloadName.getBytes("UTF-8"), "UTF-8");
-            }
-        }
-        catch (UnsupportedEncodingException ue) {
-            System.out.println("download filename convert encoding exception ");
-        }
-
-        res.setContentType("application/octet-stream");
-        res.addHeader("Content-Disposition", "attachment; filename=" + downloadName);
-        BufferedInputStream bis = null;
-        BufferedOutputStream out = null;
-        File file = new File(filePath);
-        try {
-            bis = new BufferedInputStream(new FileInputStream(file));
-            out = new BufferedOutputStream(res.getOutputStream());
-            byte[] buff = new byte[2048];
-            while (true) {
-                int bytesRead;
-                if (-1 == (bytesRead = bis.read(buff, 0, buff.length))) {
-                    break;
-                }
-                out.write(buff, 0, bytesRead);
-            }
-            out.flush();
-        } catch (IOException e) {
-            System.out.println("download filename convert encoding exception ");
-        } finally {
-            IOUtils.closeQuietly(bis);
-            IOUtils.closeQuietly(out);
-        }
-    }*/
-
-/*
-    private String downloadFile(HttpServletResponse response){
-        String downloadFilePath = "D:/upload/";//被下载的文件在服务器中的路径,
-        String fileName = "createSQL.sql";//被下载文件的名称
-
-        File file = new File(downloadFilePath+fileName);
-        if (file.exists()) {
-            response.setContentType("application/force-download");// 设置强制下载不打开
-            response.addHeader("Content-Disposition", "attachment;fileName=" + fileName);
-            byte[] buffer = new byte[1024];
-            FileInputStream fis = null;
-            BufferedInputStream bis = null;
-            try {
-                fis = new FileInputStream(file);
-                bis = new BufferedInputStream(fis);
-                OutputStream outputStream = response.getOutputStream();
-                int i = bis.read(buffer);
-                while (i != -1) {
-                    outputStream.write(buffer, 0, i);
-                    i = bis.read(buffer);
-                }
-
-                return "下载成功";
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (bis != null) {
-                    try {
-                        bis.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (fis != null) {
-                    try {
-                        fis.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        return "下载失败";
-    }
-*/
 
     @PostMapping("/documentSelect")
     public TNPYResponse documentSelect(int type,String summary,String creator,String startTime,String endTime){
