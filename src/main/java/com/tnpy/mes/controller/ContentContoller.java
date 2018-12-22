@@ -112,28 +112,5 @@ public class ContentContoller {
         return  result;
     }
 
-    @RequestMapping(value = "/insertcomment")
-    public TNPYResponse insertComment(@RequestBody String jsonStr) {
 
-        Content content=(Content) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), Content.class);
-        content.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-        content.setCreatetime(new Date());
-
-        TNPYResponse result = new TNPYResponse();
-        try
-        {
-            if(contentMapper.insertSelective(content)> 0)
-            {
-                result.setStatus(1);
-                result.setMessage("插入成功！");
-            }
-            else
-                result.setMessage("插入失败！");
-        }
-        catch (Exception ex)
-        {
-            result.setMessage("插入失败！" + ex.getMessage());
-        }
-        return  result;
-    }
 }
