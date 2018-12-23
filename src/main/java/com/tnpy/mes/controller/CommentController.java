@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -40,6 +41,23 @@ public class CommentController {
             }
             else
                 result.setMessage("插入失败！");
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("插入失败！" + ex.getMessage());
+        }
+        return  result;
+    }
+
+    @RequestMapping(value = "/selectbycontentid")
+    public TNPYResponse selectByContentID( String contentID) {
+
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<Comment> comments = commentMapper.selectByContentID(contentID);
+            result.setStatus(1);
+            result.setData(JSONObject.toJSON(comments).toString());
         }
         catch (Exception ex)
         {
