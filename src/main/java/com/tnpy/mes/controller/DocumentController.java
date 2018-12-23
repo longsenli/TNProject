@@ -37,8 +37,9 @@ public class DocumentController {
     public TNPYResponse getDocType() {
         List<DocType> docTypeList = docTypeMapper.selectAllDict();
         TNPYResponse result = new TNPYResponse();
-        result.setStatus(1);
+
         result.setData(JSONObject.toJSON(docTypeList).toString());
+        result.setStatus(1);
         return  result;
     }
     @PostMapping("/documentupload")

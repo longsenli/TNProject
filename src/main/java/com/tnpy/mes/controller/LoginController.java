@@ -60,18 +60,21 @@ public class LoginController {
 
 				//第一次登陆
 				token =tokenUtil.creatToken(username) ;
-				tokenUtil.InsertToken(token);
+				tokenmapper.insertToken(token);
+
 			}else{
 				//登陆就更新Token信息
 
-				token = tokenUtil.creatToken(username) ;
 
-				tokenUtil.UpdateToken(token);
+				token = tokenUtil.creatToken(username) ;
+				//tokenUtil.InsertToken(token);
+				System.out.println(JSONObject.toJSON(token).toString());
+				tokenmapper.updateToken(token);
 			}
 		}
 		catch (Exception ex)
 		{
-
+			System.out.println( ex.getMessage());
 			response.setMessage("登录失败" + ex.getMessage());
 			return  response;
 		}
