@@ -36,8 +36,9 @@ public class CommentController {
         {
             if(commentMapper.insertSelective(comment)> 0)
             {
-                result.setStatus(1);
                 result.setMessage("插入成功！");
+                result.setStatus(1);
+
             }
             else
                 result.setMessage("插入失败！");

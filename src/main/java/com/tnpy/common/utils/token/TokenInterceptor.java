@@ -23,8 +23,7 @@ public class TokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse arg1, Object arg2) throws Exception {
         System.out.println(request.getRequestURI());
         //普通路径放行
-        if ("/api/login".equals(request.getRequestURI()) || "/api/documentupload".equals(request.getRequestURI())
-                || "/api/documentSelect".equals(request.getRequestURI())|| true) {
+        if ("/api/login".equals(request.getRequestURI()) || "/api/downloadFile".equals(request.getRequestURI())) {
             return true;}
 
 
