@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.EquipmentParaRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.EquipmentParaRecord">
+    <id column="equipmentID" jdbcType="VARCHAR" property="equipmentid" />
+    <id column="paramID" jdbcType="VARCHAR" property="paramid" />
+    <id column="recordTime" jdbcType="TIMESTAMP" property="recordtime" />
+    <result column="value" jdbcType="VARCHAR" property="value" />
+    <result column="recorder" jdbcType="VARCHAR" property="recorder" />
+    <result column="equipmentTypeID" jdbcType="VARCHAR" property="equipmenttypeid" />
+    <result column="pictureFile" jdbcType="VARCHAR" property="picturefile" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    equipmentID, paramID, recordTime, value, recorder, equipmentTypeID, pictureFile
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.EquipmentParaRecordKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_equipmentparamrecord
+    where equipmentID = #{equipmentid,jdbcType=VARCHAR}
+      and paramID = #{paramid,jdbcType=VARCHAR}
+      and recordTime = #{recordtime,jdbcType=TIMESTAMP}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.EquipmentParaRecordKey">
+    delete from tb_equipmentparamrecord
+    where equipmentID = #{equipmentid,jdbcType=VARCHAR}
+      and paramID = #{paramid,jdbcType=VARCHAR}
+      and recordTime = #{recordtime,jdbcType=TIMESTAMP}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.EquipmentParaRecord">
+    insert into tb_equipmentparamrecord (equipmentID, paramID, recordTime, 
+      value, recorder, equipmentTypeID, 
+      pictureFile)
+    values (#{equipmentid,jdbcType=VARCHAR}, #{paramid,jdbcType=VARCHAR}, #{recordtime,jdbcType=TIMESTAMP}, 
+      #{value,jdbcType=VARCHAR}, #{recorder,jdbcType=VARCHAR}, #{equipmenttypeid,jdbcType=VARCHAR}, 
+      #{picturefile,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.EquipmentParaRecord">
+    insert into tb_equipmentparamrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="equipmentid != null">
+        equipmentID,
+      </if>
+      <if test="paramid != null">
+        paramID,
+      </if>
+      <if test="recordtime != null">
+        recordTime,
+      </if>
+      <if test="value != null">
+        value,
+      </if>
+      <if test="recorder != null">
+        recorder,
+      </if>
+      <if test="equipmenttypeid != null">
+        equipmentTypeID,
+      </if>
+      <if test="picturefile != null">
+        pictureFile,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="equipmentid != null">
+        #{equipmentid,jdbcType=VARCHAR},
+      </if>
+      <if test="paramid != null">
+        #{paramid,jdbcType=VARCHAR},
+      </if>
+      <if test="recordtime != null">
+        #{recordtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="value != null">
+        #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="recorder != null">
+        #{recorder,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmenttypeid != null">
+        #{equipmenttypeid,jdbcType=VARCHAR},
+      </if>
+      <if test="picturefile != null">
+        #{picturefile,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.EquipmentParaRecord">
+    update tb_equipmentparamrecord
+    <set>
+      <if test="value != null">
+        value = #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="recorder != null">
+        recorder = #{recorder,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmenttypeid != null">
+        equipmentTypeID = #{equipmenttypeid,jdbcType=VARCHAR},
+      </if>
+      <if test="picturefile != null">
+        pictureFile = #{picturefile,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where equipmentID = #{equipmentid,jdbcType=VARCHAR}
+      and paramID = #{paramid,jdbcType=VARCHAR}
+      and recordTime = #{recordtime,jdbcType=TIMESTAMP}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.EquipmentParaRecord">
+    update tb_equipmentparamrecord
+    set value = #{value,jdbcType=VARCHAR},
+      recorder = #{recorder,jdbcType=VARCHAR},
+      equipmentTypeID = #{equipmenttypeid,jdbcType=VARCHAR},
+      pictureFile = #{picturefile,jdbcType=VARCHAR}
+    where equipmentID = #{equipmentid,jdbcType=VARCHAR}
+      and paramID = #{paramid,jdbcType=VARCHAR}
+      and recordTime = #{recordtime,jdbcType=TIMESTAMP}
+  </update>
+</mapper>

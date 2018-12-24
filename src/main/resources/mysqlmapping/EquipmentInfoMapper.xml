@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.EquipmentInfoMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.EquipmentInfo">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="typeID" jdbcType="VARCHAR" property="typeid" />
+    <result column="manufacturers" jdbcType="VARCHAR" property="manufacturers" />
+    <result column="buyTime" jdbcType="TIMESTAMP" property="buytime" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, typeID, manufacturers, buyTime, location
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_equipmentinfo
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_equipmentinfo
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.EquipmentInfo">
+    insert into tb_equipmentinfo (id, name, typeID, 
+      manufacturers, buyTime, location
+      )
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{typeid,jdbcType=VARCHAR}, 
+      #{manufacturers,jdbcType=VARCHAR}, #{buytime,jdbcType=TIMESTAMP}, #{location,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.EquipmentInfo">
+    insert into tb_equipmentinfo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="typeid != null">
+        typeID,
+      </if>
+      <if test="manufacturers != null">
+        manufacturers,
+      </if>
+      <if test="buytime != null">
+        buyTime,
+      </if>
+      <if test="location != null">
+        location,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="typeid != null">
+        #{typeid,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturers != null">
+        #{manufacturers,jdbcType=VARCHAR},
+      </if>
+      <if test="buytime != null">
+        #{buytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="location != null">
+        #{location,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.EquipmentInfo">
+    update tb_equipmentinfo
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="typeid != null">
+        typeID = #{typeid,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturers != null">
+        manufacturers = #{manufacturers,jdbcType=VARCHAR},
+      </if>
+      <if test="buytime != null">
+        buyTime = #{buytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="location != null">
+        location = #{location,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.EquipmentInfo">
+    update tb_equipmentinfo
+    set name = #{name,jdbcType=VARCHAR},
+      typeID = #{typeid,jdbcType=VARCHAR},
+      manufacturers = #{manufacturers,jdbcType=VARCHAR},
+      buyTime = #{buytime,jdbcType=TIMESTAMP},
+      location = #{location,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

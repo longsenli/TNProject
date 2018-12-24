@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.EquipmentParaMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.EquipmentPara">
+    <id column="equipmentTypeID" jdbcType="VARCHAR" property="equipmenttypeid" />
+    <id column="paramID" jdbcType="VARCHAR" property="paramid" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    equipmentTypeID, paramID, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.EquipmentParaKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_equipmentparam
+    where equipmentTypeID = #{equipmenttypeid,jdbcType=VARCHAR}
+      and paramID = #{paramid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.EquipmentParaKey">
+    delete from tb_equipmentparam
+    where equipmentTypeID = #{equipmenttypeid,jdbcType=VARCHAR}
+      and paramID = #{paramid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.EquipmentPara">
+    insert into tb_equipmentparam (equipmentTypeID, paramID, status
+      )
+    values (#{equipmenttypeid,jdbcType=VARCHAR}, #{paramid,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.EquipmentPara">
+    insert into tb_equipmentparam
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="equipmenttypeid != null">
+        equipmentTypeID,
+      </if>
+      <if test="paramid != null">
+        paramID,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="equipmenttypeid != null">
+        #{equipmenttypeid,jdbcType=VARCHAR},
+      </if>
+      <if test="paramid != null">
+        #{paramid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.EquipmentPara">
+    update tb_equipmentparam
+    <set>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where equipmentTypeID = #{equipmenttypeid,jdbcType=VARCHAR}
+      and paramID = #{paramid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.EquipmentPara">
+    update tb_equipmentparam
+    set status = #{status,jdbcType=VARCHAR}
+    where equipmentTypeID = #{equipmenttypeid,jdbcType=VARCHAR}
+      and paramID = #{paramid,jdbcType=VARCHAR}
+  </update>
+</mapper>

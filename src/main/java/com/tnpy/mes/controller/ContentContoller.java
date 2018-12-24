@@ -79,12 +79,21 @@ public class ContentContoller {
 
     @RequestMapping(value = "/getcontenttype")
     public TNPYResponse getContentType() {
-        List<ContentType> contentType = contentTypeMapper.selectAllDict();
+
         TNPYResponse result = new TNPYResponse();
-        //返回Token信息给客户端
-        result.setStatus(1);
-        result.setData(JSONObject.toJSON(contentType).toString());
-        return  result;
+        try
+        {
+            List<ContentType> contentType = contentTypeMapper.selectAllDict();
+            result.setStatus(1);
+            result.setData(JSONObject.toJSON(contentType).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+
     }
 
     @RequestMapping(value = "/insertcontent")

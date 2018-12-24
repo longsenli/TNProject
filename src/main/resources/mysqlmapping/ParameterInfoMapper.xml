@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.ParameterInfoMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.ParameterInfo">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="abbreviation" jdbcType="VARCHAR" property="abbreviation" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="units" jdbcType="VARCHAR" property="units" />
+    <result column="max" jdbcType="DOUBLE" property="max" />
+    <result column="min" jdbcType="DOUBLE" property="min" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, abbreviation, type, units, max, min, description
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_parameterinfo
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_parameterinfo
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.ParameterInfo">
+    insert into tb_parameterinfo (id, name, abbreviation, 
+      type, units, max, min, 
+      description)
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{abbreviation,jdbcType=VARCHAR}, 
+      #{type,jdbcType=VARCHAR}, #{units,jdbcType=VARCHAR}, #{max,jdbcType=DOUBLE}, #{min,jdbcType=DOUBLE}, 
+      #{description,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.ParameterInfo">
+    insert into tb_parameterinfo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="abbreviation != null">
+        abbreviation,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="units != null">
+        units,
+      </if>
+      <if test="max != null">
+        max,
+      </if>
+      <if test="min != null">
+        min,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="abbreviation != null">
+        #{abbreviation,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="units != null">
+        #{units,jdbcType=VARCHAR},
+      </if>
+      <if test="max != null">
+        #{max,jdbcType=DOUBLE},
+      </if>
+      <if test="min != null">
+        #{min,jdbcType=DOUBLE},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.ParameterInfo">
+    update tb_parameterinfo
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="abbreviation != null">
+        abbreviation = #{abbreviation,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="units != null">
+        units = #{units,jdbcType=VARCHAR},
+      </if>
+      <if test="max != null">
+        max = #{max,jdbcType=DOUBLE},
+      </if>
+      <if test="min != null">
+        min = #{min,jdbcType=DOUBLE},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.ParameterInfo">
+    update tb_parameterinfo
+    set name = #{name,jdbcType=VARCHAR},
+      abbreviation = #{abbreviation,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      units = #{units,jdbcType=VARCHAR},
+      max = #{max,jdbcType=DOUBLE},
+      min = #{min,jdbcType=DOUBLE},
+      description = #{description,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
