@@ -1,18 +1,24 @@
 package com.tnpy.mes.model.mysql;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Date;
-
 public class EquipmentParaRecordKey {
+    @JsonProperty(value = "NULL")
+    private String id;
     @JsonProperty(value = "NULL")
     private String equipmentid;
     @JsonProperty(value = "NULL")
     private String paramid;
-    @JsonProperty(value = "NULL")
-    @JSONField(format ="yyyy-MM-dd HH:mm:ss")
-    private Date recordtime;
+
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
+    }
 
     public String getEquipmentid() {
         return equipmentid;
@@ -30,11 +36,5 @@ public class EquipmentParaRecordKey {
         this.paramid = paramid == null ? null : paramid.trim();
     }
 
-    public Date getRecordtime() {
-        return recordtime;
-    }
 
-    public void setRecordtime(Date recordtime) {
-        this.recordtime = recordtime;
-    }
 }

@@ -1,6 +1,9 @@
 package com.tnpy.mes.model.mysql;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Date;
 
 public class EquipmentParaRecord extends EquipmentParaRecordKey {
     @JsonProperty(value = "NULL")
@@ -11,7 +14,9 @@ public class EquipmentParaRecord extends EquipmentParaRecordKey {
     private String equipmenttypeid;
     @JsonProperty(value = "NULL")
     private String picturefile;
-
+    @JsonProperty(value = "NULL")
+    @JSONField(format ="yyyy-MM-dd HH:mm:ss")
+    private Date recordtime;
     public String getValue() {
         return value;
     }
@@ -42,5 +47,12 @@ public class EquipmentParaRecord extends EquipmentParaRecordKey {
 
     public void setPicturefile(String picturefile) {
         this.picturefile = picturefile == null ? null : picturefile.trim();
+    }
+    public Date getRecordtime() {
+        return recordtime;
+    }
+
+    public void setRecordtime(Date recordtime) {
+        this.recordtime = recordtime;
     }
 }
