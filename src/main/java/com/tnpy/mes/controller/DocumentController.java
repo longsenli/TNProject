@@ -154,9 +154,7 @@ public class DocumentController {
             {
                 str = " where " + str.substring(4);
             }
-            System.out.println(str );
-            System.out.println(startTime );
-            System.out.println(endTime );
+            str += " " + "order by createTime desc";
             List<Document> documents = documentMapper.selectByFilter(str);
             response.setStatus(1);
             response.setData(JSONObject.toJSON(documents).toString());

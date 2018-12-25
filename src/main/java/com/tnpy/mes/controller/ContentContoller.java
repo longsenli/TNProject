@@ -61,9 +61,7 @@ public class ContentContoller {
             {
                 str = " where " + str.substring(4);
             }
-            System.out.println(str );
-            System.out.println(startTime );
-            System.out.println(endTime );
+            str += " " + "order by createTime desc";
             List<Content> contentList = contentMapper.selectByFilter(str);
             response.setStatus(1);
             response.setData(JSONObject.toJSON(contentList).toString());
