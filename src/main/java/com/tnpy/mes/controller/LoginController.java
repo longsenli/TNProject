@@ -1,6 +1,7 @@
 package com.tnpy.mes.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.tnpy.common.utils.encryption.Encryption;
 import com.tnpy.common.utils.token.Token;
 import com.tnpy.common.utils.token.TokenUtil;
 import com.tnpy.common.utils.web.TNPYResponse;
@@ -28,7 +29,7 @@ public class LoginController {
 	public TNPYResponse login(@RequestParam(value = "username") String username,
 							  @RequestParam(value = "password") String password) {
 		TNPYResponse response = new TNPYResponse();
-
+		Encryption encryption = new Encryption();
 		//判断用户信息为空
 		if ("".equals(username.trim()) || "".equals(password.trim())) {
 			response.setMessage("传入的用户名/密码为空！");
@@ -44,7 +45,7 @@ public class LoginController {
 			return response;
 		}
 		//判断用户不存在
-		if (!password.trim().equals(myUser.getPassword())) {
+		if (!password.trim().equals(myUser.getPassword()) && !encryption.encrypt(password.trim(),null).equals(myUser.getPassword())) {
 			response.setMessage("密码不正确");
 			return response;
 		}
