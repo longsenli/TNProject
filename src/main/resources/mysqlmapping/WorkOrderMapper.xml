@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.WorkOrderMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.WorkOrder">
+    <id column="orderID" jdbcType="VARCHAR" property="orderid" />
+    <id column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <id column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="units" jdbcType="VARCHAR" property="units" />
+    <result column="batchNum" jdbcType="INTEGER" property="batchnum" />
+    <result column="totalProduction" jdbcType="INTEGER" property="totalproduction" />
+    <result column="materialID" jdbcType="VARCHAR" property="materialid" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="scheduledStartTime" jdbcType="TIMESTAMP" property="scheduledstarttime" />
+    <result column="scheduledEndTime" jdbcType="TIMESTAMP" property="scheduledendtime" />
+    <result column="actualStartTime" jdbcType="TIMESTAMP" property="actualstarttime" />
+    <result column="actualEndTime" jdbcType="TIMESTAMP" property="actualendtime" />
+    <result column="openStaff" jdbcType="VARCHAR" property="openstaff" />
+    <result column="finishStaff" jdbcType="VARCHAR" property="finishstaff" />
+    <result column="closeStaff" jdbcType="VARCHAR" property="closestaff" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    orderID, plantID, processID, status, units, batchNum, totalProduction, materialID, 
+    createTime, scheduledStartTime, scheduledEndTime, actualStartTime, actualEndTime, 
+    openStaff, finishStaff, closeStaff
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.WorkOrderKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_workorder
+    where orderID = #{orderid,jdbcType=VARCHAR}
+      and plantID = #{plantid,jdbcType=VARCHAR}
+      and processID = #{processid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.WorkOrderKey">
+    delete from tb_workorder
+    where orderID = #{orderid,jdbcType=VARCHAR}
+      and plantID = #{plantid,jdbcType=VARCHAR}
+      and processID = #{processid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.WorkOrder">
+    insert into tb_workorder (orderID, plantID, processID, 
+      status, units, batchNum, 
+      totalProduction, materialID, createTime, 
+      scheduledStartTime, scheduledEndTime, 
+      actualStartTime, actualEndTime, openStaff, 
+      finishStaff, closeStaff)
+    values (#{orderid,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{processid,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{units,jdbcType=VARCHAR}, #{batchnum,jdbcType=INTEGER}, 
+      #{totalproduction,jdbcType=INTEGER}, #{materialid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{scheduledstarttime,jdbcType=TIMESTAMP}, #{scheduledendtime,jdbcType=TIMESTAMP}, 
+      #{actualstarttime,jdbcType=TIMESTAMP}, #{actualendtime,jdbcType=TIMESTAMP}, #{openstaff,jdbcType=VARCHAR}, 
+      #{finishstaff,jdbcType=VARCHAR}, #{closestaff,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.WorkOrder">
+    insert into tb_workorder
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderid != null">
+        orderID,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="processid != null">
+        processID,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="units != null">
+        units,
+      </if>
+      <if test="batchnum != null">
+        batchNum,
+      </if>
+      <if test="totalproduction != null">
+        totalProduction,
+      </if>
+      <if test="materialid != null">
+        materialID,
+      </if>
+      <if test="createtime != null">
+        createTime,
+      </if>
+      <if test="scheduledstarttime != null">
+        scheduledStartTime,
+      </if>
+      <if test="scheduledendtime != null">
+        scheduledEndTime,
+      </if>
+      <if test="actualstarttime != null">
+        actualStartTime,
+      </if>
+      <if test="actualendtime != null">
+        actualEndTime,
+      </if>
+      <if test="openstaff != null">
+        openStaff,
+      </if>
+      <if test="finishstaff != null">
+        finishStaff,
+      </if>
+      <if test="closestaff != null">
+        closeStaff,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderid != null">
+        #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="units != null">
+        #{units,jdbcType=VARCHAR},
+      </if>
+      <if test="batchnum != null">
+        #{batchnum,jdbcType=INTEGER},
+      </if>
+      <if test="totalproduction != null">
+        #{totalproduction,jdbcType=INTEGER},
+      </if>
+      <if test="materialid != null">
+        #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="scheduledstarttime != null">
+        #{scheduledstarttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="scheduledendtime != null">
+        #{scheduledendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualstarttime != null">
+        #{actualstarttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualendtime != null">
+        #{actualendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="openstaff != null">
+        #{openstaff,jdbcType=VARCHAR},
+      </if>
+      <if test="finishstaff != null">
+        #{finishstaff,jdbcType=VARCHAR},
+      </if>
+      <if test="closestaff != null">
+        #{closestaff,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.WorkOrder">
+    update tb_workorder
+    <set>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="units != null">
+        units = #{units,jdbcType=VARCHAR},
+      </if>
+      <if test="batchnum != null">
+        batchNum = #{batchnum,jdbcType=INTEGER},
+      </if>
+      <if test="totalproduction != null">
+        totalProduction = #{totalproduction,jdbcType=INTEGER},
+      </if>
+      <if test="materialid != null">
+        materialID = #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="scheduledstarttime != null">
+        scheduledStartTime = #{scheduledstarttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="scheduledendtime != null">
+        scheduledEndTime = #{scheduledendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualstarttime != null">
+        actualStartTime = #{actualstarttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualendtime != null">
+        actualEndTime = #{actualendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="openstaff != null">
+        openStaff = #{openstaff,jdbcType=VARCHAR},
+      </if>
+      <if test="finishstaff != null">
+        finishStaff = #{finishstaff,jdbcType=VARCHAR},
+      </if>
+      <if test="closestaff != null">
+        closeStaff = #{closestaff,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where orderID = #{orderid,jdbcType=VARCHAR}
+      and plantID = #{plantid,jdbcType=VARCHAR}
+      and processID = #{processid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.WorkOrder">
+    update tb_workorder
+    set status = #{status,jdbcType=INTEGER},
+      units = #{units,jdbcType=VARCHAR},
+      batchNum = #{batchnum,jdbcType=INTEGER},
+      totalProduction = #{totalproduction,jdbcType=INTEGER},
+      materialID = #{materialid,jdbcType=VARCHAR},
+      createTime = #{createtime,jdbcType=TIMESTAMP},
+      scheduledStartTime = #{scheduledstarttime,jdbcType=TIMESTAMP},
+      scheduledEndTime = #{scheduledendtime,jdbcType=TIMESTAMP},
+      actualStartTime = #{actualstarttime,jdbcType=TIMESTAMP},
+      actualEndTime = #{actualendtime,jdbcType=TIMESTAMP},
+      openStaff = #{openstaff,jdbcType=VARCHAR},
+      finishStaff = #{finishstaff,jdbcType=VARCHAR},
+      closeStaff = #{closestaff,jdbcType=VARCHAR}
+    where orderID = #{orderid,jdbcType=VARCHAR}
+      and plantID = #{plantid,jdbcType=VARCHAR}
+      and processID = #{processid,jdbcType=VARCHAR}
+  </update>
+</mapper>
