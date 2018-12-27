@@ -3,6 +3,7 @@
 <mapper namespace="com.tnpy.mes.mapper.mysql.TbUserMapper">
   <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.TbUser">
     <id column="userID" jdbcType="VARCHAR" property="userid" />
+    <result column="loginName" jdbcType="VARCHAR" property="loginname" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="roleID" jdbcType="VARCHAR" property="roleid" />
@@ -10,9 +11,30 @@
     <result column="birthday" jdbcType="DATE" property="birthday" />
     <result column="dutyID" jdbcType="VARCHAR" property="dutyid" />
     <result column="workplace" jdbcType="VARCHAR" property="workplace" />
+    <result column="createdate" jdbcType="TIMESTAMP" property="createdate" />
+    <result column="createuser" jdbcType="VARCHAR" property="createuser" />
+    <result column="updatedate" jdbcType="TIMESTAMP" property="updatedate" />
+    <result column="updateuser" jdbcType="VARCHAR" property="updateuser" />
+    <result column="deletedate" jdbcType="TIMESTAMP" property="deletedate" />
+    <result column="deleteuser" jdbcType="VARCHAR" property="deleteuser" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="mobilephone" jdbcType="VARCHAR" property="mobilephone" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="organID" jdbcType="VARCHAR" property="organid" />
+    <result column="ext1" jdbcType="VARCHAR" property="ext1" />
+    <result column="ext2" jdbcType="VARCHAR" property="ext2" />
+    <result column="ext3" jdbcType="VARCHAR" property="ext3" />
+    <result column="ext4" jdbcType="VARCHAR" property="ext4" />
+    <result column="ext5" jdbcType="VARCHAR" property="ext5" />
+    <result column="ext6" jdbcType="VARCHAR" property="ext6" />
+    <result column="ext7" jdbcType="VARCHAR" property="ext7" />
+    <result column="ext8" jdbcType="VARCHAR" property="ext8" />
   </resultMap>
   <sql id="Base_Column_List">
-    userID, name, password, roleID, sex, birthday, dutyID, workplace
+    userID, loginName, name, password, roleID, sex, birthday, dutyID, workplace, createdate, createuser, 
+    updatedate, updateuser, deletedate, deleteuser, state, email, mobilephone, telephone, 
+    organID, ext1, ext2, ext3, ext4, ext5, ext6, ext7, ext8
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -25,18 +47,33 @@
     where userID = #{userid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.tnpy.mes.model.mysql.TbUser">
-    insert into tb_user (userID, name, password, 
+    insert into tb_user (userID, loginName, name, password, 
       roleID, sex, birthday, 
-      dutyID, workplace)
-    values (#{userid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      dutyID, workplace, createdate, 
+      createuser, updatedate, updateuser, 
+      deletedate, deleteuser, state, 
+      email, mobilephone, telephone, 
+      organID, ext1, ext2, 
+      ext3, ext4, ext5, ext6, 
+      ext7, ext8)
+    values (#{userid,jdbcType=VARCHAR}, #{loginname,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{roleid,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, 
-      #{dutyid,jdbcType=VARCHAR}, #{workplace,jdbcType=VARCHAR})
+      #{dutyid,jdbcType=VARCHAR}, #{workplace,jdbcType=VARCHAR}, #{createdate,jdbcType=TIMESTAMP}, 
+      #{createuser,jdbcType=VARCHAR}, #{updatedate,jdbcType=TIMESTAMP}, #{updateuser,jdbcType=VARCHAR}, 
+      #{deletedate,jdbcType=TIMESTAMP}, #{deleteuser,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, 
+      #{email,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, 
+      #{organid,jdbcType=VARCHAR}, #{ext1,jdbcType=VARCHAR}, #{ext2,jdbcType=VARCHAR}, 
+      #{ext3,jdbcType=VARCHAR}, #{ext4,jdbcType=VARCHAR}, #{ext5,jdbcType=VARCHAR}, #{ext6,jdbcType=VARCHAR}, 
+      #{ext7,jdbcType=VARCHAR}, #{ext8,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.TbUser">
     insert into tb_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="userid != null">
         userID,
+      </if>
+       <if test="loginname != null">
+        loginName,
       </if>
       <if test="name != null">
         name,
@@ -59,10 +96,70 @@
       <if test="workplace != null">
         workplace,
       </if>
+      <if test="createdate != null">
+        createdate,
+      </if>
+      <if test="createuser != null">
+        createuser,
+      </if>
+      <if test="updatedate != null">
+        updatedate,
+      </if>
+      <if test="updateuser != null">
+        updateuser,
+      </if>
+      <if test="deletedate != null">
+        deletedate,
+      </if>
+      <if test="deleteuser != null">
+        deleteuser,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="mobilephone != null">
+        mobilephone,
+      </if>
+      <if test="telephone != null">
+        telephone,
+      </if>
+      <if test="organid != null">
+        organID,
+      </if>
+      <if test="ext1 != null">
+        ext1,
+      </if>
+      <if test="ext2 != null">
+        ext2,
+      </if>
+      <if test="ext3 != null">
+        ext3,
+      </if>
+      <if test="ext4 != null">
+        ext4,
+      </if>
+      <if test="ext5 != null">
+        ext5,
+      </if>
+      <if test="ext6 != null">
+        ext6,
+      </if>
+      <if test="ext7 != null">
+        ext7,
+      </if>
+      <if test="ext8 != null">
+        ext8,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userid != null">
         #{userid,jdbcType=VARCHAR},
+      </if>
+       <if test="loginname != null">
+        #{loginname,jdbcType=VARCHAR},
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
@@ -85,11 +182,71 @@
       <if test="workplace != null">
         #{workplace,jdbcType=VARCHAR},
       </if>
+      <if test="createdate != null">
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createuser != null">
+        #{createuser,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedate != null">
+        #{updatedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateuser != null">
+        #{updateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="deletedate != null">
+        #{deletedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteuser != null">
+        #{deleteuser,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null">
+        #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="organid != null">
+        #{organid,jdbcType=VARCHAR},
+      </if>
+      <if test="ext1 != null">
+        #{ext1,jdbcType=VARCHAR},
+      </if>
+      <if test="ext2 != null">
+        #{ext2,jdbcType=VARCHAR},
+      </if>
+      <if test="ext3 != null">
+        #{ext3,jdbcType=VARCHAR},
+      </if>
+      <if test="ext4 != null">
+        #{ext4,jdbcType=VARCHAR},
+      </if>
+      <if test="ext5 != null">
+        #{ext5,jdbcType=VARCHAR},
+      </if>
+      <if test="ext6 != null">
+        #{ext6,jdbcType=VARCHAR},
+      </if>
+      <if test="ext7 != null">
+        #{ext7,jdbcType=VARCHAR},
+      </if>
+      <if test="ext8 != null">
+        #{ext8,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.TbUser">
     update tb_user
     <set>
+      <if test="loginname != null">
+        loginName = #{loginname,jdbcType=VARCHAR},
+      </if>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
       </if>
@@ -111,18 +268,96 @@
       <if test="workplace != null">
         workplace = #{workplace,jdbcType=VARCHAR},
       </if>
+      <if test="createdate != null">
+        createdate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createuser != null">
+        createuser = #{createuser,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedate != null">
+        updatedate = #{updatedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateuser != null">
+        updateuser = #{updateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="deletedate != null">
+        deletedate = #{deletedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteuser != null">
+        deleteuser = #{deleteuser,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null">
+        mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="organid != null">
+        organID = #{organid,jdbcType=VARCHAR},
+      </if>
+      <if test="ext1 != null">
+        ext1 = #{ext1,jdbcType=VARCHAR},
+      </if>
+      <if test="ext2 != null">
+        ext2 = #{ext2,jdbcType=VARCHAR},
+      </if>
+      <if test="ext3 != null">
+        ext3 = #{ext3,jdbcType=VARCHAR},
+      </if>
+      <if test="ext4 != null">
+        ext4 = #{ext4,jdbcType=VARCHAR},
+      </if>
+      <if test="ext5 != null">
+        ext5 = #{ext5,jdbcType=VARCHAR},
+      </if>
+      <if test="ext6 != null">
+        ext6 = #{ext6,jdbcType=VARCHAR},
+      </if>
+      <if test="ext7 != null">
+        ext7 = #{ext7,jdbcType=VARCHAR},
+      </if>
+      <if test="ext8 != null">
+        ext8 = #{ext8,jdbcType=VARCHAR},
+      </if>
     </set>
     where userID = #{userid,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.TbUser">
     update tb_user
-    set name = #{name,jdbcType=VARCHAR},
+    set 
+      loginName = #{loginname,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
       roleID = #{roleid,jdbcType=VARCHAR},
       sex = #{sex,jdbcType=VARCHAR},
       birthday = #{birthday,jdbcType=DATE},
       dutyID = #{dutyid,jdbcType=VARCHAR},
-      workplace = #{workplace,jdbcType=VARCHAR}
+      workplace = #{workplace,jdbcType=VARCHAR},
+      createdate = #{createdate,jdbcType=TIMESTAMP},
+      createuser = #{createuser,jdbcType=VARCHAR},
+      updatedate = #{updatedate,jdbcType=TIMESTAMP},
+      updateuser = #{updateuser,jdbcType=VARCHAR},
+      deletedate = #{deletedate,jdbcType=TIMESTAMP},
+      deleteuser = #{deleteuser,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      email = #{email,jdbcType=VARCHAR},
+      mobilephone = #{mobilephone,jdbcType=VARCHAR},
+      telephone = #{telephone,jdbcType=VARCHAR},
+      organID = #{organid,jdbcType=VARCHAR},
+      ext1 = #{ext1,jdbcType=VARCHAR},
+      ext2 = #{ext2,jdbcType=VARCHAR},
+      ext3 = #{ext3,jdbcType=VARCHAR},
+      ext4 = #{ext4,jdbcType=VARCHAR},
+      ext5 = #{ext5,jdbcType=VARCHAR},
+      ext6 = #{ext6,jdbcType=VARCHAR},
+      ext7 = #{ext7,jdbcType=VARCHAR},
+      ext8 = #{ext8,jdbcType=VARCHAR}
     where userID = #{userid,jdbcType=VARCHAR}
   </update>
 </mapper>
