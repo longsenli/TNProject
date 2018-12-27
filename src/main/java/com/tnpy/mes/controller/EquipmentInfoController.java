@@ -66,6 +66,24 @@ public class EquipmentInfoController {
        }
     }
 
+
+    @RequestMapping(value = "/deleteequipmentinfo")
+    public TNPYResponse deleteEquipmentInfo( String equipID) {
+        TNPYResponse result = new TNPYResponse();
+        System.out.println("id delete  "  + equipID);
+        try
+        {
+            equipmentInfoMapper.deleteByPrimaryKey(equipID);
+            result.setStatus(1);
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("删除出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
     @RequestMapping(value = "/changeequipmentinfo")
     public TNPYResponse changeEquipmentInfo(@RequestBody String jsonStr) {
 
