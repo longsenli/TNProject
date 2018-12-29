@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.MaterialRelationMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.MaterialRelation">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="inMaterialID" jdbcType="VARCHAR" property="inmaterialid" />
+    <result column="outMaterialID" jdbcType="VARCHAR" property="outmaterialid" />
+    <result column="proportionality" jdbcType="VARCHAR" property="proportionality" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, inMaterialID, outMaterialID, proportionality, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_materialrelation
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from sys_materialrelation
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.MaterialRelation">
+    insert into sys_materialrelation (id, inMaterialID, outMaterialID, 
+      proportionality, status)
+    values (#{id,jdbcType=VARCHAR}, #{inmaterialid,jdbcType=VARCHAR}, #{outmaterialid,jdbcType=VARCHAR}, 
+      #{proportionality,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.MaterialRelation">
+    insert into sys_materialrelation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="inmaterialid != null">
+        inMaterialID,
+      </if>
+      <if test="outmaterialid != null">
+        outMaterialID,
+      </if>
+      <if test="proportionality != null">
+        proportionality,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="inmaterialid != null">
+        #{inmaterialid,jdbcType=VARCHAR},
+      </if>
+      <if test="outmaterialid != null">
+        #{outmaterialid,jdbcType=VARCHAR},
+      </if>
+      <if test="proportionality != null">
+        #{proportionality,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.MaterialRelation">
+    update sys_materialrelation
+    <set>
+      <if test="inmaterialid != null">
+        inMaterialID = #{inmaterialid,jdbcType=VARCHAR},
+      </if>
+      <if test="outmaterialid != null">
+        outMaterialID = #{outmaterialid,jdbcType=VARCHAR},
+      </if>
+      <if test="proportionality != null">
+        proportionality = #{proportionality,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.MaterialRelation">
+    update sys_materialrelation
+    set inMaterialID = #{inmaterialid,jdbcType=VARCHAR},
+      outMaterialID = #{outmaterialid,jdbcType=VARCHAR},
+      proportionality = #{proportionality,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,8 +1,20 @@
 package com.tnpy.mes.model.mysql;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.Date;
 
-public class WorkOrder extends WorkOrderKey {
+public class Workorder {
+    private String id;
+
+    private String orderid;
+
+    private String plantid;
+
+    private String processid;
+
+    private String lineid;
+
     private Integer status;
 
     private String units;
@@ -11,16 +23,18 @@ public class WorkOrder extends WorkOrderKey {
 
     private Integer totalproduction;
 
+    private Double scrapnum;
+
     private String materialid;
-
+    @JSONField(format ="yyyy-MM-dd HH:mm:ss")
     private Date createtime;
-
+    @JSONField(format ="yyyy-MM-dd HH:mm:ss")
     private Date scheduledstarttime;
-
+    @JSONField(format ="yyyy-MM-dd HH:mm:ss")
     private Date scheduledendtime;
-
+    @JSONField(format ="yyyy-MM-dd HH:mm:ss")
     private Date actualstarttime;
-
+    @JSONField(format ="yyyy-MM-dd HH:mm:ss")
     private Date actualendtime;
 
     private String openstaff;
@@ -28,6 +42,46 @@ public class WorkOrder extends WorkOrderKey {
     private String finishstaff;
 
     private String closestaff;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
+    }
+
+    public String getOrderid() {
+        return orderid;
+    }
+
+    public void setOrderid(String orderid) {
+        this.orderid = orderid == null ? null : orderid.trim();
+    }
+
+    public String getPlantid() {
+        return plantid;
+    }
+
+    public void setPlantid(String plantid) {
+        this.plantid = plantid == null ? null : plantid.trim();
+    }
+
+    public String getProcessid() {
+        return processid;
+    }
+
+    public void setProcessid(String processid) {
+        this.processid = processid == null ? null : processid.trim();
+    }
+
+    public String getLineid() {
+        return lineid;
+    }
+
+    public void setLineid(String lineid) {
+        this.lineid = lineid == null ? null : lineid.trim();
+    }
 
     public Integer getStatus() {
         return status;
@@ -59,6 +113,14 @@ public class WorkOrder extends WorkOrderKey {
 
     public void setTotalproduction(Integer totalproduction) {
         this.totalproduction = totalproduction;
+    }
+
+    public Double getScrapnum() {
+        return scrapnum;
+    }
+
+    public void setScrapnum(Double scrapnum) {
+        this.scrapnum = scrapnum;
     }
 
     public String getMaterialid() {

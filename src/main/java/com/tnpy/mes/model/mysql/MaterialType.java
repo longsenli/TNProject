@@ -1,13 +1,15 @@
 package com.tnpy.mes.model.mysql;
 
-public class Material {
+public class MaterialType {
     private String id;
-
-    private String typeid;
 
     private String name;
 
     private String description;
+
+    private String units;
+
+    private Double number;
 
     private Integer status;
 
@@ -17,14 +19,6 @@ public class Material {
 
     public void setId(String id) {
         this.id = id == null ? null : id.trim();
-    }
-
-    public String getTypeid() {
-        return typeid;
-    }
-
-    public void setTypeid(String typeid) {
-        this.typeid = typeid == null ? null : typeid.trim();
     }
 
     public String getName() {
@@ -41,6 +35,22 @@ public class Material {
 
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
+    }
+
+    public String getUnits() {
+        return units;
+    }
+
+    public void setUnits(String units) {
+        this.units = units == null ? null : units.trim();
+    }
+
+    public Double getNumber() {
+        return number;
+    }
+
+    public void setNumber(Double number) {
+        this.number = number;
     }
 
     public Integer getStatus() {

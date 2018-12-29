@@ -76,6 +76,7 @@ public class BasicDataController {
         TNPYResponse result = new TNPYResponse();
         try
         {
+            System.out.println(plantID + " 参数 " +processID);
             List<ProductionLine> productionLineList = productionLineMapper.selectByPlantProcess(plantID,processID);
             result.setStatus(1);
             result.setData(JSONObject.toJSON(productionLineList).toString());
@@ -87,6 +88,7 @@ public class BasicDataController {
             return  result;
         }
     }
+
 
     @RequestMapping(value = "/getmaterial")
     public TNPYResponse getMaterial() {

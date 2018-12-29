@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.tnpy.mes.mapper.mysql.MaterialMapper">
-  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.Material">
+<mapper namespace="com.tnpy.mes.mapper.mysql.MaterialTypeMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.MaterialType">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="units" jdbcType="VARCHAR" property="units" />
+    <result column="number" jdbcType="DOUBLE" property="number" />
     <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, description, status
+    id, name, description, units, number, status
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from sys_material
+    from sys_materialtype
     where id = #{id,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from sys_material
+    delete from sys_materialtype
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.Material">
-    insert into sys_material (id, name, description, 
-      status)
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.MaterialType">
+    insert into sys_materialtype (id, name, description, 
+      units, number, status
+      )
     values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
-      #{status,jdbcType=INTEGER})
+      #{units,jdbcType=VARCHAR}, #{number,jdbcType=DOUBLE}, #{status,jdbcType=INTEGER}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.Material">
-    insert into sys_material
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.MaterialType">
+    insert into sys_materialtype
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -37,6 +41,12 @@
       </if>
       <if test="description != null">
         description,
+      </if>
+      <if test="units != null">
+        units,
+      </if>
+      <if test="number != null">
+        number,
       </if>
       <if test="status != null">
         status,
@@ -52,13 +62,19 @@
       <if test="description != null">
         #{description,jdbcType=VARCHAR},
       </if>
+      <if test="units != null">
+        #{units,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null">
+        #{number,jdbcType=DOUBLE},
+      </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.Material">
-    update sys_material
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.MaterialType">
+    update sys_materialtype
     <set>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
@@ -66,16 +82,24 @@
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
       </if>
+      <if test="units != null">
+        units = #{units,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null">
+        number = #{number,jdbcType=DOUBLE},
+      </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.Material">
-    update sys_material
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.MaterialType">
+    update sys_materialtype
     set name = #{name,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
+      units = #{units,jdbcType=VARCHAR},
+      number = #{number,jdbcType=DOUBLE},
       status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=VARCHAR}
   </update>

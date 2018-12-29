@@ -21,7 +21,6 @@ public interface MaterialMapper {
     int updateByPrimaryKeySelective(Material record);
 
     int updateByPrimaryKey(Material record);
-
     @Select("select * from sys_material")
     List<Material> selectAll();
 }
