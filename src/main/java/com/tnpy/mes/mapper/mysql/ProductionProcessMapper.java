@@ -22,6 +22,8 @@ public interface ProductionProcessMapper {
 
     int updateByPrimaryKey(ProductionProcess record);
 
+
     @Select("select * from sys_productionProcess")
-    List<ProductionProcess>  selectAll();
+    List<ProductionProcess> selectAll();
+
 }

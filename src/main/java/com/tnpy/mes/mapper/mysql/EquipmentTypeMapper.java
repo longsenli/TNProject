@@ -25,4 +25,6 @@ public interface EquipmentTypeMapper {
 
     @Select("select * from tb_equipmenttype")
     List<EquipmentType> selectAllType();
+
+
 }

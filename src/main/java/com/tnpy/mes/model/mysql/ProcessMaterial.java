@@ -5,7 +5,7 @@ public class ProcessMaterial {
 
     private String processid;
 
-    private String materialid;
+    private String materialtypeid;
 
     private Integer inorout;
 
@@ -27,12 +27,12 @@ public class ProcessMaterial {
         this.processid = processid == null ? null : processid.trim();
     }
 
-    public String getMaterialid() {
-        return materialid;
+    public String getMaterialtypeid() {
+        return materialtypeid;
     }
 
-    public void setMaterialid(String materialid) {
-        this.materialid = materialid == null ? null : materialid.trim();
+    public void setMaterialtypeid(String materialtypeid) {
+        this.materialtypeid = materialtypeid == null ? null : materialtypeid.trim();
     }
 
     public Integer getInorout() {

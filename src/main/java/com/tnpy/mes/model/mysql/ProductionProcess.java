@@ -11,6 +11,8 @@ public class ProductionProcess {
 
     private Integer status;
 
+    private String shortname;
+
     public String getId() {
         return id;
     }
@@ -49,5 +51,13 @@ public class ProductionProcess {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getShortname() {
+        return shortname;
+    }
+
+    public void setShortname(String shortname) {
+        this.shortname = shortname == null ? null : shortname.trim();
     }
 }

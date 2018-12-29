@@ -25,4 +25,5 @@ public interface EquipmentInfoMapper {
 
     @Select("select * from tb_equipmentinfo where typeID = #{typeID}")
     List<EquipmentInfo> selectByType(String typeID);
+
 }

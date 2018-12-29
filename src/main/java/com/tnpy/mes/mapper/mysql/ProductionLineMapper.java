@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
 @Mapper
 @Component
 public interface ProductionLineMapper {
@@ -20,7 +21,7 @@ public interface ProductionLineMapper {
     int updateByPrimaryKeySelective(ProductionLine record);
 
     int updateByPrimaryKey(ProductionLine record);
-
     @Select("select * from  sys_productionLine where plantID = #{plantID} and processID = #{processID}")
-    List<ProductionLine> selectByPlantProcess(String plantID,String processID);
+    List<ProductionLine> selectByPlantProcess(String plantID, String processID);
+
 }

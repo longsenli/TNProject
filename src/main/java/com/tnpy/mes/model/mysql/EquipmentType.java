@@ -7,6 +7,8 @@ public class EquipmentType {
 
     private String specification;
 
+    private String processid;
+
     public String getId() {
         return id;
     }
@@ -29,5 +31,13 @@ public class EquipmentType {
 
     public void setSpecification(String specification) {
         this.specification = specification == null ? null : specification.trim();
+    }
+
+    public String getProcessid() {
+        return processid;
+    }
+
+    public void setProcessid(String processid) {
+        this.processid = processid == null ? null : processid.trim();
     }
 }

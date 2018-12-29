@@ -1,7 +1,5 @@
 package com.tnpy.mes.model.mysql;
 
-import com.alibaba.fastjson.annotation.JSONField;
-
 import java.util.Date;
 
 public class EquipmentInfo {
@@ -12,10 +10,12 @@ public class EquipmentInfo {
     private String typeid;
 
     private String manufacturers;
-    @JSONField(format ="yyyy-MM-dd HH:mm:ss")
+
     private Date buytime;
 
     private String location;
+
+    private String plantid;
 
     public String getId() {
         return id;
@@ -63,5 +63,13 @@ public class EquipmentInfo {
 
     public void setLocation(String location) {
         this.location = location == null ? null : location.trim();
+    }
+
+    public String getPlantid() {
+        return plantid;
+    }
+
+    public void setPlantid(String plantid) {
+        this.plantid = plantid == null ? null : plantid.trim();
     }
 }
