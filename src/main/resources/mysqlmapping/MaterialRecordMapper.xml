@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.MaterialRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.MaterialRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="materialID" jdbcType="VARCHAR" property="materialid" />
+    <result column="orderID" jdbcType="VARCHAR" property="orderid" />
+    <result column="subOrderID" jdbcType="VARCHAR" property="suborderid" />
+    <result column="expendOrderID" jdbcType="VARCHAR" property="expendorderid" />
+    <result column="inOrOut" jdbcType="INTEGER" property="inorout" />
+    <result column="number" jdbcType="DOUBLE" property="number" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="inputer" jdbcType="VARCHAR" property="inputer" />
+    <result column="inputTime" jdbcType="TIMESTAMP" property="inputtime" />
+    <result column="outputTime" jdbcType="TIMESTAMP" property="outputtime" />
+    <result column="outputer" jdbcType="VARCHAR" property="outputer" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, materialID, orderID, subOrderID, expendOrderID, inOrOut, number, status, inputer, 
+    inputTime, outputTime, outputer
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_materialrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_materialrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.MaterialRecord">
+    insert into tb_materialrecord (id, materialID, orderID, 
+      subOrderID, expendOrderID, inOrOut, 
+      number, status, inputer, 
+      inputTime, outputTime, outputer
+      )
+    values (#{id,jdbcType=VARCHAR}, #{materialid,jdbcType=VARCHAR}, #{orderid,jdbcType=VARCHAR}, 
+      #{suborderid,jdbcType=VARCHAR}, #{expendorderid,jdbcType=VARCHAR}, #{inorout,jdbcType=INTEGER}, 
+      #{number,jdbcType=DOUBLE}, #{status,jdbcType=INTEGER}, #{inputer,jdbcType=VARCHAR}, 
+      #{inputtime,jdbcType=TIMESTAMP}, #{outputtime,jdbcType=TIMESTAMP}, #{outputer,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.MaterialRecord">
+    insert into tb_materialrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="materialid != null">
+        materialID,
+      </if>
+      <if test="orderid != null">
+        orderID,
+      </if>
+      <if test="suborderid != null">
+        subOrderID,
+      </if>
+      <if test="expendorderid != null">
+        expendOrderID,
+      </if>
+      <if test="inorout != null">
+        inOrOut,
+      </if>
+      <if test="number != null">
+        number,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="inputer != null">
+        inputer,
+      </if>
+      <if test="inputtime != null">
+        inputTime,
+      </if>
+      <if test="outputtime != null">
+        outputTime,
+      </if>
+      <if test="outputer != null">
+        outputer,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="orderid != null">
+        #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="suborderid != null">
+        #{suborderid,jdbcType=VARCHAR},
+      </if>
+      <if test="expendorderid != null">
+        #{expendorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="inorout != null">
+        #{inorout,jdbcType=INTEGER},
+      </if>
+      <if test="number != null">
+        #{number,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="inputer != null">
+        #{inputer,jdbcType=VARCHAR},
+      </if>
+      <if test="inputtime != null">
+        #{inputtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="outputtime != null">
+        #{outputtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="outputer != null">
+        #{outputer,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.MaterialRecord">
+    update tb_materialrecord
+    <set>
+      <if test="materialid != null">
+        materialID = #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="orderid != null">
+        orderID = #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="suborderid != null">
+        subOrderID = #{suborderid,jdbcType=VARCHAR},
+      </if>
+      <if test="expendorderid != null">
+        expendOrderID = #{expendorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="inorout != null">
+        inOrOut = #{inorout,jdbcType=INTEGER},
+      </if>
+      <if test="number != null">
+        number = #{number,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="inputer != null">
+        inputer = #{inputer,jdbcType=VARCHAR},
+      </if>
+      <if test="inputtime != null">
+        inputTime = #{inputtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="outputtime != null">
+        outputTime = #{outputtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="outputer != null">
+        outputer = #{outputer,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.MaterialRecord">
+    update tb_materialrecord
+    set materialID = #{materialid,jdbcType=VARCHAR},
+      orderID = #{orderid,jdbcType=VARCHAR},
+      subOrderID = #{suborderid,jdbcType=VARCHAR},
+      expendOrderID = #{expendorderid,jdbcType=VARCHAR},
+      inOrOut = #{inorout,jdbcType=INTEGER},
+      number = #{number,jdbcType=DOUBLE},
+      status = #{status,jdbcType=INTEGER},
+      inputer = #{inputer,jdbcType=VARCHAR},
+      inputTime = #{inputtime,jdbcType=TIMESTAMP},
+      outputTime = #{outputtime,jdbcType=TIMESTAMP},
+      outputer = #{outputer,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateGainMaterialRecord" parameterType="java.util.List">
+    update tb_materialrecord
+    set
+    expendOrderID = #{expendOrderID},
+    inOrOut=2,
+    outputTime=#{outputTime},
+    outputer=#{outputer}
+    where id in (
+    <foreach collection="materialIDList" item="materilID" index="index" separator=",">
+      #{materilID}
+    </foreach>
+    )
+  </update>
+</mapper>
