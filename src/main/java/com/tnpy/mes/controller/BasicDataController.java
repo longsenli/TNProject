@@ -1,15 +1,10 @@
 package com.tnpy.mes.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.tnpy.common.utils.web.TNPYResponse;
-import com.tnpy.mes.mapper.mysql.IndustrialPlantMapper;
-import com.tnpy.mes.mapper.mysql.MaterialMapper;
-import com.tnpy.mes.mapper.mysql.ProductionLineMapper;
-import com.tnpy.mes.mapper.mysql.ProductionProcessMapper;
-import com.tnpy.mes.model.mysql.IndustrialPlant;
-import com.tnpy.mes.model.mysql.Material;
-import com.tnpy.mes.model.mysql.ProductionLine;
-import com.tnpy.mes.model.mysql.ProductionProcess;
+import com.tnpy.mes.mapper.mysql.*;
+import com.tnpy.mes.model.mysql.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,6 +30,9 @@ public class BasicDataController {
 
     @Autowired
     private MaterialMapper materialMapper;
+
+    @Autowired
+    private EquipmentTypeMapper equipmentTypeMapper;
 
     @RequestMapping(value = "/getindustrialplant")
     public TNPYResponse getIndustrialPlant() {
@@ -105,6 +103,25 @@ public class BasicDataController {
             result.setMessage("查询出错！" + ex.getMessage());
             return  result;
         }
+    }
+
+    @RequestMapping(value = "/getequipmenttype")
+    public TNPYResponse getEquipmentType() {
+
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<EquipmentType> equipmentTypeList = equipmentTypeMapper.selectAllType();
+            result.setStatus(1);
+            result.setData(JSONObject.toJSONString(equipmentTypeList, SerializerFeature.WriteMapNullValue).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+
     }
 
 }

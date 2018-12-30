@@ -23,7 +23,7 @@ public interface EquipmentInfoMapper {
 
     int updateByPrimaryKey(EquipmentInfo record);
 
-    @Select("select * from tb_equipmentinfo where typeID = #{typeID}")
-    List<EquipmentInfo> selectByType(String typeID);
+    @Select("select * from tb_equipmentinfo where typeID = #{typeID} and plantID = #{plantID}")
+    List<EquipmentInfo> selectByType(String typeID,String plantID);
 
 }
