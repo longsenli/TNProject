@@ -1,6 +1,7 @@
 package com.tnpy.mes.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.DocTypeMapper;
 import com.tnpy.mes.mapper.mysql.DocumentMapper;
@@ -39,7 +40,7 @@ public class DocumentController {
         TNPYResponse result = new TNPYResponse();
 
         result.setData(JSONObject.toJSON(docTypeList).toString());
-        result.setStatus(1);
+        result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
         return  result;
     }
     @PostMapping("/documentupload")
@@ -72,7 +73,7 @@ public class DocumentController {
 
             document.setCreatetime(new Date());
             documentMapper.insert(document);
-            response.setStatus(1);
+            response.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             response.setMessage("上传成功！");
             return response;
         } catch (Exception e) {
@@ -156,7 +157,7 @@ public class DocumentController {
             }
             str += " " + "order by createTime desc";
             List<Document> documents = documentMapper.selectByFilter(str);
-            response.setStatus(1);
+            response.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             response.setData(JSONObject.toJSON(documents).toString());
             return response;
         } catch (Exception e) {

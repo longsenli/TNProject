@@ -1,6 +1,7 @@
 package com.tnpy.mes.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.CommentMapper;
 import com.tnpy.mes.model.mysql.Comment;
@@ -37,7 +38,7 @@ public class CommentController {
             if(commentMapper.insertSelective(comment)> 0)
             {
                 result.setMessage("插入成功！");
-                result.setStatus(1);
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
 
             }
             else
@@ -57,7 +58,7 @@ public class CommentController {
         try
         {
             List<Comment> comments = commentMapper.selectByContentID(contentID);
-            result.setStatus(1);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(comments).toString());
         }
         catch (Exception ex)

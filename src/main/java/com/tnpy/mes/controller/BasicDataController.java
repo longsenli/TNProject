@@ -2,6 +2,7 @@ package com.tnpy.mes.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.*;
 import com.tnpy.mes.model.mysql.*;
@@ -40,7 +41,7 @@ public class BasicDataController {
         try
         {
             List<IndustrialPlant> industrialPlantList = industrialPlantMapper.selectAll();
-            result.setStatus(1);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(industrialPlantList).toString());
             return  result;
         }
@@ -59,7 +60,7 @@ public class BasicDataController {
             List<ProductionProcess> productionProcessList = productionProcessMapper.selectAll();
 
             result.setData(JSONObject.toJSON(productionProcessList).toString());
-            result.setStatus(1);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
            return  result;
         }
         catch (Exception ex)
@@ -76,7 +77,8 @@ public class BasicDataController {
         {
             System.out.println(plantID + " 参数 " +processID);
             List<ProductionLine> productionLineList = productionLineMapper.selectByPlantProcess(plantID,processID);
-            result.setStatus(1);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
             result.setData(JSONObject.toJSON(productionLineList).toString());
             return  result;
         }
@@ -94,8 +96,9 @@ public class BasicDataController {
         try
         {
             List<Material> materialList = materialMapper.selectAll();
-            result.setStatus(1);
             result.setData(JSONObject.toJSON(materialList).toString());
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
             return  result;
         }
         catch (Exception ex)
@@ -112,7 +115,7 @@ public class BasicDataController {
         try
         {
             List<EquipmentType> equipmentTypeList = equipmentTypeMapper.selectAllType();
-            result.setStatus(1);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSONString(equipmentTypeList, SerializerFeature.WriteMapNullValue).toString());
             return  result;
         }

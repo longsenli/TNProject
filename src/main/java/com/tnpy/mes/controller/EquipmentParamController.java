@@ -2,6 +2,7 @@ package com.tnpy.mes.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.EquipmentParaRecordMapper;
 import com.tnpy.mes.mapper.mysql.ParameterInfoMapper;
@@ -37,7 +38,7 @@ private EquipmentParaRecordMapper equipmentParaRecordMapper;
         TNPYResponse result = new TNPYResponse();
         try {
             List<ParameterInfo> parameterInfoList = parameterInfoMapper.selectByEquipType(equipmentTypeID);
-            result.setStatus(1);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(parameterInfoList).toString());
             return result;
         } catch (Exception ex) {
@@ -61,7 +62,7 @@ private EquipmentParaRecordMapper equipmentParaRecordMapper;
                 equipmentParaRecordList.get(i).setRecordtime(nowTime);
                 equipmentParaRecordMapper.insertSelective(equipmentParaRecordList.get(i));
             }
-            result.setStatus(1);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData("");
             return result;
         } catch (Exception ex) {
@@ -93,7 +94,7 @@ private EquipmentParaRecordMapper equipmentParaRecordMapper;
             System.out.println(filePath+fileName);
             //将图片保存到static文件夹里
             pictureName.transferTo(new File(filePath+fileName));
-            response.setStatus(1);
+            response.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             response.setMessage("上传成功！");
             response.setData(fileName);
             return response;
@@ -110,7 +111,7 @@ private EquipmentParaRecordMapper equipmentParaRecordMapper;
         TNPYResponse result = new TNPYResponse();
         try {
             List<EquipmentParaRecord> equipmentParaRecordList = equipmentParaRecordMapper.selectRecord(equipID);
-            result.setStatus(1);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(equipmentParaRecordList).toString());
             return result;
         } catch (Exception ex) {

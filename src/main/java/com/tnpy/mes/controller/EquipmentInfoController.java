@@ -2,6 +2,7 @@ package com.tnpy.mes.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.EquipmentInfoMapper;
 import com.tnpy.mes.model.mysql.EquipmentInfo;
@@ -35,7 +36,7 @@ public class EquipmentInfoController {
        try
        {
            List<EquipmentInfo> equipmentInfoList = equipmentInfoMapper.selectByType(typeID,plantID);
-           result.setStatus(1);
+           result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
            result.setData(JSONObject.toJSONString(equipmentInfoList, SerializerFeature.WriteMapNullValue).toString());
            return  result;
        }
@@ -54,7 +55,7 @@ public class EquipmentInfoController {
         try
         {
             equipmentInfoMapper.deleteByPrimaryKey(equipID);
-            result.setStatus(1);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }
         catch (Exception ex)
@@ -80,7 +81,7 @@ public class EquipmentInfoController {
             {
                 equipmentInfoMapper.updateByPrimaryKey(equipmentInfo);
             }
-            result.setStatus(1);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setMessage("修改成功！");
             return  result;
         }

@@ -1,6 +1,7 @@
 package com.tnpy.mes.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.ContentMapper;
 import com.tnpy.mes.mapper.mysql.ContentTypeMapper;
@@ -63,7 +64,7 @@ public class ContentContoller {
             }
             str += " " + "order by createTime desc";
             List<Content> contentList = contentMapper.selectByFilter(str);
-            response.setStatus(1);
+            response.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             response.setData(JSONObject.toJSON(contentList).toString());
             return response;
         } catch (Exception e) {

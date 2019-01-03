@@ -1,12 +1,14 @@
 package com.tnpy.common.utils.web;
 
+import com.tnpy.common.Enum.StatusEnum;
+
 /**
  * @Description: TODO
  * @Author: LLS
  * @Date: 2018/12/19 14:37
  */
 public class TNPYResponse {
-    private int status= 2;
+    private int status= StatusEnum.ResponseStatus.Fail.getIndex();
     private String message="";
     private String data="";
     private String token="";

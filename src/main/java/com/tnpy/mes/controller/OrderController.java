@@ -1,6 +1,7 @@
 package com.tnpy.mes.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.MaterialRecordMapper;
 import com.tnpy.mes.mapper.mysql.OrderSplitMapper;
@@ -14,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.thymeleaf.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @Description: TODO
@@ -39,7 +43,7 @@ public class OrderController {
         try
         {
             List<Workorder> workOrderList = workOrderMapper.selectAll();
-            result.setStatus(1);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(workOrderList).toString());
             return  result;
         }
@@ -56,7 +60,7 @@ public class OrderController {
         try
         {
             List<Workorder> workOrderList = workOrderMapper.selectByFilter(" where lineID = '" + lineID + "' and status < 4");
-            result.setStatus(1);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(workOrderList).toString());
             return  result;
         }
@@ -87,7 +91,7 @@ public class OrderController {
             if(StringUtils.isEmpty(workorder.getId()))
             {
                 workorder.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-                workorder.setStatus(1);
+                workorder.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 workOrderMapper.insertSelective(workorder);
 
                 List<OrderSplit> orderSplitList = new ArrayList<>();;
@@ -95,7 +99,7 @@ public class OrderController {
                     OrderSplit orderSplit = new OrderSplit();
                     orderSplit.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                     orderSplit.setOrderid(workorder.getId());
-                    orderSplit.setStatus(1);
+                    orderSplit.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                     orderSplit.setMaterialid(workorder.getMaterialid());
                     orderSplit.setOrdersplitid(workorder.getOrderid() +getorderNumber(i,3));
                     orderSplit.setProductionnum(workorder.getTotalproduction()/workorder.getBatchnum() *1.0);
@@ -107,7 +111,7 @@ public class OrderController {
             {
                 workOrderMapper.updateByPrimaryKey(workorder);
             }
-            result.setStatus(1);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setMessage("修改成功！");
             return  result;
         }
@@ -124,7 +128,7 @@ public class OrderController {
         try
         {
             List<OrderSplit > orderSplitList = orderSplitMapper.selectByOrderID(orderID);
-            result.setStatus(1);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(orderSplitList).toString());
             return  result;
         }
@@ -152,7 +156,7 @@ public class OrderController {
             materialRecord.setInputtime(new Date());
             materialRecordMapper.insert(materialRecord);
 
-            result.setStatus(1);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }
         catch (Exception ex)

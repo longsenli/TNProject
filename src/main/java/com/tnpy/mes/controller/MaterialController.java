@@ -2,6 +2,7 @@ package com.tnpy.mes.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.MaterialRecordMapper;
 import com.tnpy.mes.model.mysql.MaterialRecord;
@@ -66,7 +67,7 @@ public class MaterialController {
             List<String> materialIDList = JSON.parseArray(materialIDListStr, String.class);
             System.out.println(materialIDList.toString());
             materialRecordMapper.updateGainMaterialRecord(materialIDList,expendOrderID,outputter,new Date());
-            result.setStatus(1);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }
         catch (Exception ex)
