@@ -1,13 +1,9 @@
 package com.tnpy.mes.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.tnpy.common.Enum.DirectoryEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
-import com.tnpy.mes.mapper.mysql.EquipmentParaRecordMapper;
-import com.tnpy.mes.mapper.mysql.ParameterInfoMapper;
-import com.tnpy.mes.model.mysql.EquipmentParaRecord;
-import com.tnpy.mes.model.mysql.ParameterInfo;
+import com.tnpy.mes.service.equipmentParamService.IEquipmentParamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,8 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -29,46 +23,17 @@ import java.util.UUID;
 @RequestMapping("/api/equipment")
 public class EquipmentParamController {
     @Autowired
-    private ParameterInfoMapper parameterInfoMapper;
-@Autowired
-private EquipmentParaRecordMapper equipmentParaRecordMapper;
+    IEquipmentParamService equipmentParamService;
+
     @RequestMapping(value = "/getequipmentparam")
     public TNPYResponse getEquipmentParam(String equipmentTypeID) {
 
-        TNPYResponse result = new TNPYResponse();
-        try {
-            List<ParameterInfo> parameterInfoList = parameterInfoMapper.selectByEquipType(equipmentTypeID);
-            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
-            result.setData(JSONObject.toJSON(parameterInfoList).toString());
-            return result;
-        } catch (Exception ex) {
-            result.setMessage("查询出错！" + ex.getMessage());
-            return result;
-        }
+       return  equipmentParamService.getEquipmentParam(equipmentTypeID);
     }
 
     @RequestMapping(value = "/saveequipmentparam")
     public TNPYResponse saveEquipmentParam(@RequestBody String json) {
-        System.out.println(json);
-
-        TNPYResponse result = new TNPYResponse();
-        try {
-            List<EquipmentParaRecord> equipmentParaRecordList = JSON.parseArray(json, EquipmentParaRecord.class);
-            Date nowTime = new Date();
-            String idStr =  UUID.randomUUID().toString();
-            for(int i =0;i<equipmentParaRecordList.size();i++)
-            {
-                equipmentParaRecordList.get(i).setId(idStr);
-                equipmentParaRecordList.get(i).setRecordtime(nowTime);
-                equipmentParaRecordMapper.insertSelective(equipmentParaRecordList.get(i));
-            }
-            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
-            result.setData("");
-            return result;
-        } catch (Exception ex) {
-            result.setMessage("查询出错！" + ex.getMessage());
-            return result;
-        }
+        return  equipmentParamService.saveEquipmentParam(json);
     }
 
     @PostMapping("/pictureupload")
@@ -84,7 +49,7 @@ private EquipmentParaRecordMapper equipmentParaRecordMapper;
             //重新生成文件名
             fileName = UUID.randomUUID()+suffixName;
             //指定本地文件夹存储图片
-            String filePath = "D:/upload/";
+            String filePath = DirectoryEnum.FileStoreLocation.EquipInfoPicture.getName();
             System.out.println("进入成功！" + fileName);
             File dir = new File(filePath);
             if(!dir.exists())
@@ -108,15 +73,6 @@ private EquipmentParaRecordMapper equipmentParaRecordMapper;
     @RequestMapping(value = "/getequipmentparamrecord")
     public TNPYResponse getEquipmentParamRecord( String equipID) {
 
-        TNPYResponse result = new TNPYResponse();
-        try {
-            List<EquipmentParaRecord> equipmentParaRecordList = equipmentParaRecordMapper.selectRecord(equipID);
-            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
-            result.setData(JSONObject.toJSON(equipmentParaRecordList).toString());
-            return result;
-        } catch (Exception ex) {
-            result.setMessage("查询出错！" + ex.getMessage());
-            return result;
-        }
+        return  equipmentParamService.getEquipmentParamRecord(equipID);
     }
 }
