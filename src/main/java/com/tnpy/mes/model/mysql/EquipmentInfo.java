@@ -19,6 +19,8 @@ public class EquipmentInfo {
 
     private String plantid;
 
+    private String status;
+
     public String getId() {
         return id;
     }
@@ -73,5 +75,13 @@ public class EquipmentInfo {
 
     public void setPlantid(String plantid) {
         this.plantid = plantid == null ? null : plantid.trim();
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
     }
 }

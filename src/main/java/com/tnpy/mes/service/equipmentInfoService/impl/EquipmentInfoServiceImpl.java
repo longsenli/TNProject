@@ -45,10 +45,9 @@ public class EquipmentInfoServiceImpl implements IEquipmentInfoService {
 
     public TNPYResponse deleteEquipmentInfo( String equipID) {
         TNPYResponse result = new TNPYResponse();
-        System.out.println("id delete  "  + equipID);
         try
         {
-            equipmentInfoMapper.deleteByPrimaryKey(equipID);
+            equipmentInfoMapper.deleteByChangeStatus(equipID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }
@@ -68,6 +67,7 @@ public class EquipmentInfoServiceImpl implements IEquipmentInfoService {
             if(StringUtils.isEmpty(equipmentInfo.getId()))
             {
                 equipmentInfo.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                equipmentInfo.setStatus("1");
                 equipmentInfoMapper.insertSelective(equipmentInfo);
             }
             else

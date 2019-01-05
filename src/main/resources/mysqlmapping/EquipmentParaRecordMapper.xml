@@ -10,9 +10,10 @@
     <result column="recorder" jdbcType="VARCHAR" property="recorder" />
     <result column="equipmentTypeID" jdbcType="VARCHAR" property="equipmenttypeid" />
     <result column="pictureFile" jdbcType="VARCHAR" property="picturefile" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id,equipmentID, paramID, recordTime, value, recorder, equipmentTypeID, pictureFile
+    id,equipmentID, paramID, recordTime, value, recorder, equipmentTypeID, pictureFile,status
   </sql>
   <select id="selectByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.EquipmentParaRecordKey" resultMap="BaseResultMap">
     select 
@@ -31,10 +32,10 @@
   <insert id="insert" parameterType="com.tnpy.mes.model.mysql.EquipmentParaRecord">
     insert into tb_equipmentparamrecord (id,equipmentID, paramID, recordTime,
       value, recorder, equipmentTypeID, 
-      pictureFile)
+      pictureFile,status)
     values (#{id,jdbcType=VARCHAR},#{equipmentid,jdbcType=VARCHAR}, #{paramid,jdbcType=VARCHAR}, #{recordtime,jdbcType=TIMESTAMP},
       #{value,jdbcType=VARCHAR}, #{recorder,jdbcType=VARCHAR}, #{equipmenttypeid,jdbcType=VARCHAR}, 
-      #{picturefile,jdbcType=VARCHAR})
+      #{picturefile,jdbcType=VARCHAR},  #{status,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.EquipmentParaRecord">
     insert into tb_equipmentparamrecord
@@ -63,6 +64,9 @@
       <if test="picturefile != null">
         pictureFile,
       </if>
+      <if test="status != null">
+        status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -89,6 +93,9 @@
       <if test="picturefile != null">
         #{picturefile,jdbcType=VARCHAR},
       </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.EquipmentParaRecord">
@@ -109,6 +116,9 @@
       <if test="recordTime != null">
         recordTime = #{recordTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
     </set>
     where equipmentID = #{equipmentid,jdbcType=VARCHAR}
       and paramID = #{paramid,jdbcType=VARCHAR}
@@ -120,7 +130,8 @@
       recorder = #{recorder,jdbcType=VARCHAR},
       equipmentTypeID = #{equipmenttypeid,jdbcType=VARCHAR},
        recordTime = #{recordtime,jdbcType=TIMESTAMP},
-      pictureFile = #{picturefile,jdbcType=VARCHAR}
+      pictureFile = #{picturefile,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR}
     where equipmentID = #{equipmentid,jdbcType=VARCHAR}
       and paramID = #{paramid,jdbcType=VARCHAR}
       and id = #{id,jdbcType=VARCHAR}

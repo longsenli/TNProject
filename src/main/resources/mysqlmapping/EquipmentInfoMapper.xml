@@ -9,9 +9,10 @@
     <result column="buyTime" jdbcType="TIMESTAMP" property="buytime" />
     <result column="location" jdbcType="VARCHAR" property="location" />
     <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, typeID, manufacturers, buyTime, location, plantID
+    id, name, typeID, manufacturers, buyTime, location, plantID,status
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -26,10 +27,10 @@
   <insert id="insert" parameterType="com.tnpy.mes.model.mysql.EquipmentInfo">
     insert into tb_equipmentinfo (id, name, typeID, 
       manufacturers, buyTime, location, 
-      plantID)
+      plantID,status)
     values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{typeid,jdbcType=VARCHAR}, 
       #{manufacturers,jdbcType=VARCHAR}, #{buytime,jdbcType=TIMESTAMP}, #{location,jdbcType=VARCHAR}, 
-      #{plantid,jdbcType=VARCHAR})
+      #{plantid,jdbcType=VARCHAR},#{status,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.EquipmentInfo">
     insert into tb_equipmentinfo
@@ -55,6 +56,9 @@
       <if test="plantid != null">
         plantID,
       </if>
+      <if test="status != null">
+        status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -77,6 +81,9 @@
       </if>
       <if test="plantid != null">
         #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -101,6 +108,9 @@
       <if test="plantid != null">
         plantID = #{plantid,jdbcType=VARCHAR},
       </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -111,7 +121,8 @@
       manufacturers = #{manufacturers,jdbcType=VARCHAR},
       buyTime = #{buytime,jdbcType=TIMESTAMP},
       location = #{location,jdbcType=VARCHAR},
-      plantID = #{plantid,jdbcType=VARCHAR}
+      plantID = #{plantid,jdbcType=VARCHAR},
+       plantID = #{status,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>
