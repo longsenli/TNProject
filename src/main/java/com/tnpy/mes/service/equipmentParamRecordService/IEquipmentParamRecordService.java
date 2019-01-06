@@ -1,4 +1,4 @@
-package com.tnpy.mes.service.equipmentParamService;
+package com.tnpy.mes.service.equipmentParamRecordService;
 
 import com.tnpy.common.utils.web.TNPYResponse;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,9 +8,10 @@ import org.springframework.web.multipart.MultipartFile;
  * @Author: LLS
  * @Date: 2019/1/3 15:26
  */
-public interface IEquipmentParamService {
+public interface IEquipmentParamRecordService {
     public TNPYResponse getEquipmentParam(String equipmentTypeID);
     public TNPYResponse saveEquipmentParam( String json);
     public TNPYResponse getEquipmentParamRecord(String equipID);
     public TNPYResponse pictureUpload(MultipartFile pictureName);
+    public TNPYResponse getLatestParamRecord( String plantID,String equipType,String paramID);
 }

@@ -1,5 +1,6 @@
 package com.tnpy.mes.mapper.mysql;
 
+import com.tnpy.mes.model.customize.EquipParamLatestRecord;
 import com.tnpy.mes.model.mysql.EquipmentParaRecord;
 import com.tnpy.mes.model.mysql.EquipmentParaRecordKey;
 import org.apache.ibatis.annotations.Mapper;
@@ -25,4 +26,6 @@ public interface EquipmentParaRecordMapper {
     int updateByPrimaryKey(EquipmentParaRecord record);
 @Select("select * from tb_equipmentparamrecord where equipmentID = #{equipID} order by recordTime desc,paramID asc")
     List<EquipmentParaRecord> selectRecord( String equipID);
+
+    List<EquipParamLatestRecord> selectLatestRecord(String plantID, String equipType, String paramID);
 }

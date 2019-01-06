@@ -25,4 +25,9 @@ public interface OrderSplitMapper {
     int insertManyOrder(@Param("orderSplitList") List<OrderSplit> orderSplitList, @Param("orderID") String orderID);
 @Select("select * from tb_ordersplit where orderID = #{orderid}")
     List<OrderSplit> selectByOrderID(String orderid);
+
+  /*  @Select("SELECT a.id,orderSplitID,orderID,productionNum,case a.status when '1' then '已下单' when '2' then '已打印'\n" +
+            " when '3' then '已开工' when '4' then '已完成' when '5' then '已关闭' else '状态不详' end as status,\n" +
+            " b.name as materialID FROM tnmesdb.tb_ordersplit a left join sys_material b on a.materialID = b.id where orderID = #{orderid} order by orderSplitID asc") */
+    List<OrderSplit> selectAfterMapByOrderID(String orderid);
 }

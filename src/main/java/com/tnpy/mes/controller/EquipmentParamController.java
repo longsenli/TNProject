@@ -3,7 +3,7 @@ package com.tnpy.mes.controller;
 import com.tnpy.common.Enum.DirectoryEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
-import com.tnpy.mes.service.equipmentParamService.IEquipmentParamService;
+import com.tnpy.mes.service.equipmentParamRecordService.IEquipmentParamRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +23,7 @@ import java.util.UUID;
 @RequestMapping("/api/equipment")
 public class EquipmentParamController {
     @Autowired
-    IEquipmentParamService equipmentParamService;
+    IEquipmentParamRecordService equipmentParamService;
 
     @RequestMapping(value = "/getequipmentparam")
     public TNPYResponse getEquipmentParam(String equipmentTypeID) {
@@ -74,5 +74,11 @@ public class EquipmentParamController {
     public TNPYResponse getEquipmentParamRecord( String equipID) {
 
         return  equipmentParamService.getEquipmentParamRecord(equipID);
+    }
+    @RequestMapping(value = "/getlatestparamrecord")
+    public TNPYResponse getLatestParamRecord( String plantID,String equipType,String paramID) {
+
+        System.out.println(plantID + " " + equipType + " " + paramID);
+        return  equipmentParamService.getLatestParamRecord(plantID, equipType, paramID);
     }
 }

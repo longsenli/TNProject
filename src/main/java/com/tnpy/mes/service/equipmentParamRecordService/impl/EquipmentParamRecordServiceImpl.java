@@ -1,4 +1,4 @@
-package com.tnpy.mes.service.equipmentParamService.impl;
+package com.tnpy.mes.service.equipmentParamRecordService.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -6,9 +6,10 @@ import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.EquipmentParaRecordMapper;
 import com.tnpy.mes.mapper.mysql.ParameterInfoMapper;
+import com.tnpy.mes.model.customize.EquipParamLatestRecord;
 import com.tnpy.mes.model.mysql.EquipmentParaRecord;
 import com.tnpy.mes.model.mysql.ParameterInfo;
-import com.tnpy.mes.service.equipmentParamService.IEquipmentParamService;
+import com.tnpy.mes.service.equipmentParamRecordService.IEquipmentParamRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,7 +25,7 @@ import java.util.UUID;
  * @Date: 2019/1/3 15:26
  */
 @Service("equipmentParamService")
-public class EquipmentParamServiceImpl implements IEquipmentParamService {
+public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordService {
 
     @Autowired
     private ParameterInfoMapper parameterInfoMapper;
@@ -109,6 +110,19 @@ public class EquipmentParamServiceImpl implements IEquipmentParamService {
             List<EquipmentParaRecord> equipmentParaRecordList = equipmentParaRecordMapper.selectRecord(equipID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(equipmentParaRecordList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse getLatestParamRecord( String plantID,String equipType,String paramID) {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            List<EquipParamLatestRecord> parameterInfoList = equipmentParaRecordMapper.selectLatestRecord(plantID,equipType,paramID);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(parameterInfoList).toString());
             return result;
         } catch (Exception ex) {
             result.setMessage("查询出错！" + ex.getMessage());

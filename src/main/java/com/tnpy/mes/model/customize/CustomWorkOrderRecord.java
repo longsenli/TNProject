@@ -1,10 +1,15 @@
-package com.tnpy.mes.model.mysql;
+package com.tnpy.mes.model.customize;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
 import java.util.Date;
 
-public class Workorder {
+/**
+ * @Description: TODO
+ * @Author: LLS
+ * @Date: 2019/1/6 14:42
+ */
+public class CustomWorkOrderRecord {
     private String id;
 
     private String orderid;
@@ -42,6 +47,36 @@ public class Workorder {
     private String finishstaff;
 
     private String closestaff;
+
+    public String getLineName() {
+        return lineName;
+    }
+
+    public void setLineName(String lineName) {
+        this.lineName = lineName;
+    }
+
+    public String getStatusName() {
+        return statusName;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
+    }
+
+    public String getMaterialName() {
+        return materialName;
+    }
+
+    public void setMaterialName(String materialName) {
+        this.materialName = materialName;
+    }
+
+    private String lineName;
+
+    private String statusName;
+
+    private String materialName;
 
     public String getId() {
         return id;

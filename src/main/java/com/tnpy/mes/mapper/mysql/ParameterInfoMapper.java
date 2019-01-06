@@ -25,4 +25,6 @@ public interface ParameterInfoMapper {
 
     @Select("select a.* from tb_parameterinfo a left join tb_equipmentparam b  on a.id = b.paramID where b.status = '1'  and b.equipmentTypeID = #{equipmentTypeID}")
     List<ParameterInfo> selectByEquipType(String equipmentTypeID);
+
+
 }

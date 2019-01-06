@@ -2,12 +2,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tnpy.mes.mapper.mysql.WorkorderMapper">
   <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.Workorder">
+  <id column="id" jdbcType="VARCHAR" property="id" />
+  <result column="orderID" jdbcType="VARCHAR" property="orderid" />
+  <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+  <result column="processID" jdbcType="VARCHAR" property="processid" />
+  <result column="lineID" jdbcType="VARCHAR" property="lineid" />
+  <result column="status" jdbcType="VARCHAR" property="status" />
+  <result column="units" jdbcType="VARCHAR" property="units" />
+  <result column="batchNum" jdbcType="INTEGER" property="batchnum" />
+  <result column="totalProduction" jdbcType="INTEGER" property="totalproduction" />
+  <result column="scrapNum" jdbcType="DOUBLE" property="scrapnum" />
+  <result column="materialID" jdbcType="VARCHAR" property="materialid" />
+  <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+  <result column="scheduledStartTime" jdbcType="TIMESTAMP" property="scheduledstarttime" />
+  <result column="scheduledEndTime" jdbcType="TIMESTAMP" property="scheduledendtime" />
+  <result column="actualStartTime" jdbcType="TIMESTAMP" property="actualstarttime" />
+  <result column="actualEndTime" jdbcType="TIMESTAMP" property="actualendtime" />
+  <result column="openStaff" jdbcType="VARCHAR" property="openstaff" />
+  <result column="finishStaff" jdbcType="VARCHAR" property="finishstaff" />
+  <result column="closeStaff" jdbcType="VARCHAR" property="closestaff" />
+</resultMap>
+
+  <resultMap id="CustomWorkOrderResultMap" type="com.tnpy.mes.model.customize.CustomWorkOrderRecord">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="orderID" jdbcType="VARCHAR" property="orderid" />
     <result column="plantID" jdbcType="VARCHAR" property="plantid" />
     <result column="processID" jdbcType="VARCHAR" property="processid" />
     <result column="lineID" jdbcType="VARCHAR" property="lineid" />
-    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="units" jdbcType="VARCHAR" property="units" />
     <result column="batchNum" jdbcType="INTEGER" property="batchnum" />
     <result column="totalProduction" jdbcType="INTEGER" property="totalproduction" />
@@ -21,18 +43,38 @@
     <result column="openStaff" jdbcType="VARCHAR" property="openstaff" />
     <result column="finishStaff" jdbcType="VARCHAR" property="finishstaff" />
     <result column="closeStaff" jdbcType="VARCHAR" property="closestaff" />
+    <result column="lineName" jdbcType="VARCHAR" property="lineName" />
+    <result column="statusName" jdbcType="VARCHAR" property="statusName" />
+    <result column="materialName" jdbcType="VARCHAR" property="materialName" />
   </resultMap>
+
   <sql id="Base_Column_List">
     id, orderID, plantID, processID, lineID, status, units, batchNum, totalProduction, 
     scrapNum, materialID, createTime, scheduledStartTime, scheduledEndTime, actualStartTime, 
     actualEndTime, openStaff, finishStaff, closeStaff
   </sql>
+  <select id="selectCustomResultByFilter" parameterType="java.lang.String" resultMap="CustomWorkOrderResultMap">
+
+select c.* ,d.name as materialName from (
+
+select a.*,b.name as lineName from
+(
+( SELECT  id, orderID, plantID, processID, lineID, status, units, batchNum, totalProduction,
+    scrapNum, materialID, createTime, scheduledStartTime, scheduledEndTime, actualStartTime,
+    actualEndTime, openStaff, finishStaff, closeStaff,case status when '1' then '已下单' when '2' then '已打印' when '3' then '已开工'
+    when '4' then '已完成' when '5' then '已关闭' else '状态不详' end as statusName FROM tnmesdb.tb_workorder ${filter} ) a
+left join sys_productionline b on a.lineID = b.id
+)
+) c left join sys_material d on c.materialID = d.id
+
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from tb_workorder
     where id = #{id,jdbcType=VARCHAR}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from tb_workorder
     where id = #{id,jdbcType=VARCHAR}
@@ -46,7 +88,7 @@
       actualStartTime, actualEndTime, openStaff, 
       finishStaff, closeStaff)
     values (#{id,jdbcType=VARCHAR}, #{orderid,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, 
-      #{processid,jdbcType=VARCHAR}, #{lineid,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{processid,jdbcType=VARCHAR}, #{lineid,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
       #{units,jdbcType=VARCHAR}, #{batchnum,jdbcType=INTEGER}, #{totalproduction,jdbcType=INTEGER}, 
       #{scrapnum,jdbcType=DOUBLE}, #{materialid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
       #{scheduledstarttime,jdbcType=TIMESTAMP}, #{scheduledendtime,jdbcType=TIMESTAMP}, 
@@ -131,7 +173,7 @@
         #{lineid,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
-        #{status,jdbcType=INTEGER},
+        #{status,jdbcType=VARCHAR},
       </if>
       <if test="units != null">
         #{units,jdbcType=VARCHAR},
@@ -190,7 +232,7 @@
         lineID = #{lineid,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
-        status = #{status,jdbcType=INTEGER},
+        status = #{status,jdbcType=VARCHAR},
       </if>
       <if test="units != null">
         units = #{units,jdbcType=VARCHAR},
@@ -240,7 +282,7 @@
       plantID = #{plantid,jdbcType=VARCHAR},
       processID = #{processid,jdbcType=VARCHAR},
       lineID = #{lineid,jdbcType=VARCHAR},
-      status = #{status,jdbcType=INTEGER},
+      status = #{status,jdbcType=VARCHAR},
       units = #{units,jdbcType=VARCHAR},
       batchNum = #{batchnum,jdbcType=INTEGER},
       totalProduction = #{totalproduction,jdbcType=INTEGER},

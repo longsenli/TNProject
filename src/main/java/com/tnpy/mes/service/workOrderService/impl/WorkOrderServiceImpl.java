@@ -6,6 +6,7 @@ import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.MaterialRecordMapper;
 import com.tnpy.mes.mapper.mysql.OrderSplitMapper;
 import com.tnpy.mes.mapper.mysql.WorkorderMapper;
+import com.tnpy.mes.model.customize.CustomWorkOrderRecord;
 import com.tnpy.mes.model.mysql.MaterialRecord;
 import com.tnpy.mes.model.mysql.OrderSplit;
 import com.tnpy.mes.model.mysql.Workorder;
@@ -67,6 +68,49 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         }
     }
 
+    public TNPYResponse getWorkOrderByParam(String plantID,String processID,String lineID ) {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = "where  plantID ='" + plantID + "' and processID = '" + processID + "' ";
+            if(!"-1".equals(lineID))
+            {
+                filter += " and lineID = '" + lineID + "' ";
+            }
+            List<Workorder> workOrderList = workOrderMapper.selectByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(workOrderList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    public TNPYResponse getCustomWorkOrderByParam(String plantID,String processID,String lineID ) {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = "where  plantID ='" + plantID + "' and processID = '" + processID + "' ";
+            if(!"-1".equals(lineID))
+            {
+                filter += " and lineID = '" + lineID + "' ";
+            }
+            filter += " order by createTime desc limit 1000 ";
+            List<CustomWorkOrderRecord> workOrderList = workOrderMapper.selectCustomResultByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(workOrderList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
     private  String getorderNumber(int number,int length)
     {
         String numStr = String.valueOf(number);
@@ -87,7 +131,8 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             if(StringUtils.isEmpty(workorder.getId()))
             {
                 workorder.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-                workorder.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                workorder.setStatus(StatusEnum.WorkOrderStatus.ordered.getIndex() + "");
+                workorder.setCreatetime(new Date());
                 workOrderMapper.insertSelective(workorder);
 
                 List<OrderSplit> orderSplitList = new ArrayList<>();;
@@ -95,7 +140,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                     OrderSplit orderSplit = new OrderSplit();
                     orderSplit.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                     orderSplit.setOrderid(workorder.getId());
-                    orderSplit.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                    orderSplit.setStatus(StatusEnum.WorkOrderStatus.ordered.getIndex() + "");
                     orderSplit.setMaterialid(workorder.getMaterialid());
                     orderSplit.setOrdersplitid(workorder.getOrderid() +getorderNumber(i + 1,3));
                     orderSplit.setProductionnum(workorder.getTotalproduction()/workorder.getBatchnum() *1.0);
@@ -136,11 +181,28 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     }
 
 
+    public TNPYResponse getOrderSplitAfterMap(String orderID ) {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<OrderSplit > orderSplitList = orderSplitMapper.selectAfterMapByOrderID(orderID);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(orderSplitList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
     public TNPYResponse finishOrderSplit( String jsonStr ) {
         TNPYResponse result = new TNPYResponse();
         try
         {
             OrderSplit orderSplit=(OrderSplit) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), OrderSplit.class);
+            orderSplit.setStatus(StatusEnum.WorkOrderStatus.finished.getIndex() + "");
             orderSplitMapper.updateByPrimaryKeySelective(orderSplit);
             MaterialRecord materialRecord = new MaterialRecord();
             materialRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());

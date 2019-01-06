@@ -24,4 +24,7 @@ public interface MaterialMapper {
     @Select("select * from sys_material")
     List<Material> selectAll();
 
+    @Select("select * from sys_material where typeID in( select distinct materialTypeID from sys_processmaterial where processID = #{processID} and inOrout =2)")
+    List<Material>  selectOutByProcess(String processID);
+
 }

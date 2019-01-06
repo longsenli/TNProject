@@ -44,4 +44,10 @@ public class BasicDataController {
         return  basicDataService.getEquipmentType();
     }
 
+    @RequestMapping(value = "/getmaterialbyprocess")
+    public TNPYResponse getMaterialByProcess(String processID) {
+
+        return  basicDataService.getOutMaterialByProcess(processID);
+    }
+
 }
