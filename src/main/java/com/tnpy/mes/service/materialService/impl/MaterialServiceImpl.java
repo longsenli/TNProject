@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.MaterialRecordMapper;
-import com.tnpy.mes.model.mysql.MaterialRecord;
+import com.tnpy.mes.model.customize.CustomMaterialRecord;
 import com.tnpy.mes.service.materialService.IMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class MaterialServiceImpl implements IMaterialService {
         TNPYResponse result = new TNPYResponse();
         try
         {
-            List<MaterialRecord> materialRecordList = materialRecordMapper.selectByExpendOrder(expendOrderID);
+            List<CustomMaterialRecord> materialRecordList = materialRecordMapper.selectByExpendOrder(expendOrderID);
             result.setStatus(1);
             result.setData(JSONObject.toJSON(materialRecordList).toString());
             return  result;
@@ -44,7 +44,7 @@ public class MaterialServiceImpl implements IMaterialService {
         TNPYResponse result = new TNPYResponse();
         try
         {
-            List<MaterialRecord> materialRecordList = materialRecordMapper.selectUsableMaterial(plantID,materialID);
+            List<CustomMaterialRecord> materialRecordList = materialRecordMapper.selectUsableMaterial(plantID,materialID);
             result.setStatus(1);
             result.setData(JSONObject.toJSON(materialRecordList).toString());
             return  result;
@@ -61,7 +61,7 @@ public class MaterialServiceImpl implements IMaterialService {
         try
         {
             List<String> materialIDList = JSON.parseArray(materialIDListStr, String.class);
-            System.out.println(materialIDList.toString());
+           // System.out.println(materialIDList.toString());
             materialRecordMapper.updateGainMaterialRecord(materialIDList,expendOrderID,outputter,new Date());
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;

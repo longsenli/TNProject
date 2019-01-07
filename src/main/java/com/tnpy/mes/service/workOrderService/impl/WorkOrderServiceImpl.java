@@ -197,7 +197,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         }
     }
 
-    public TNPYResponse finishOrderSplit( String jsonStr ) {
+    public TNPYResponse finishOrderSplit( String jsonStr ,String name) {
         TNPYResponse result = new TNPYResponse();
         try
         {
@@ -212,6 +212,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             materialRecord.setOrderid(orderSplit.getOrderid());
             materialRecord.setSuborderid(orderSplit.getId());
             materialRecord.setInputtime(new Date());
+            materialRecord.setInputer(name);
             materialRecordMapper.insert(materialRecord);
 
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
