@@ -27,7 +27,7 @@ public interface WorkorderMapper {
     @Select("select * from tb_workOrder")
     List<Workorder> selectAll();
 
-    @Select("select * from tb_workOrder ${filter}")
+    @Select("select * from tb_workOrder ${filter} ")
     List<Workorder> selectByFilter(@Param("filter") String filter);
 
     List<CustomWorkOrderRecord> selectCustomResultByFilter(@Param("filter") String filter);
