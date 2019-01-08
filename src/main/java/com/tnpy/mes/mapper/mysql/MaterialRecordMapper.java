@@ -4,6 +4,7 @@ import com.tnpy.mes.model.customize.CustomMaterialRecord;
 import com.tnpy.mes.model.mysql.MaterialRecord;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -42,5 +43,20 @@ public interface MaterialRecordMapper {
     List<CustomMaterialRecord> selectUsableMaterial(String plantID,String materialID );
 
 
-    int updateGainMaterialRecord(List<String> materialIDList, String expendOrderID, String outputer , Date outputTime);
+    int updateGainMaterialRecord(List<String> materialIDList, String expendOrderID, String outputer , Date outputTime, int status);
+
+    @Select("select count(*) from tb_materialrecord where subOrderID = #{qrCode} and inOrOut =#{status}")
+    int checkMaterialRecordUsed(String qrCode, int status);
+
+    @Select("SELECT count(*) FROM tnmesdb.tb_materialrecord where subOrderID = #{qrCode}  and materialID in(\n" +
+            "select distinct inMaterialID from sys_materialrelation where outMaterialID in (select materialID from tb_workorder where id = #{expendOrderID}) )\n")
+    int checkMaterialRelation(String qrCode,String expendOrderID);
+
+    @Update("  update tb_materialrecord\n" +
+            "    set\n" +
+            "    expendOrderID = #{expendOrderID},\n" +
+            "    inOrOut=#{status},\n" +
+            "    outputTime=#{outputTime},\n" +
+            "    outputer=#{outputer} where subOrderID= #{qrCode}")
+    int updateGainMaterialByQR(String qrCode, String expendOrderID, String outputer , Date outputTime, int status);
 }

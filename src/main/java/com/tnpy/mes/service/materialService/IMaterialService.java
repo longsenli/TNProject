@@ -11,5 +11,5 @@ public interface IMaterialService {
     public TNPYResponse getMaterialRecord(String expendOrderID );
     public TNPYResponse getUsableMaterial(String plantID,String materialID );
     public TNPYResponse gainMaterialRecord(String materialIDListStr, String expendOrderID, String outputter );
-
+    public TNPYResponse gainMaterialByQR(String qrCode,String expendOrderID,String outputter );
 }

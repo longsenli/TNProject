@@ -62,7 +62,37 @@ public class MaterialServiceImpl implements IMaterialService {
         {
             List<String> materialIDList = JSON.parseArray(materialIDListStr, String.class);
            // System.out.println(materialIDList.toString());
-            materialRecordMapper.updateGainMaterialRecord(materialIDList,expendOrderID,outputter,new Date());
+            materialRecordMapper.updateGainMaterialRecord(materialIDList,expendOrderID,outputter,new Date(),StatusEnum.InOutStatus.Output.getIndex());
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+   public  TNPYResponse gainMaterialByQR(String qrCode,String expendOrderID,String outputter ){
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            int count1 = materialRecordMapper.checkMaterialRecordUsed(qrCode,StatusEnum.InOutStatus.Input.getIndex());
+            int count2 = materialRecordMapper.checkMaterialRelation(qrCode,expendOrderID);
+
+            if(count1 < 1)
+            {
+                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                result.setMessage("该物料已被领用！");
+                return  result;
+            }
+            if(count2 < 1)
+            {
+                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                result.setMessage("该工单不能够使用该物料！");
+                return  result;
+            }
+            materialRecordMapper.updateGainMaterialByQR(qrCode,expendOrderID,outputter,new Date(),StatusEnum.InOutStatus.Output.getIndex());
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }
