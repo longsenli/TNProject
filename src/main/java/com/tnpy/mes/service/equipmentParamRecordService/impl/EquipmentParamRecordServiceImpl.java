@@ -129,4 +129,31 @@ public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordSer
             return result;
         }
     }
+    public TNPYResponse getOneEquipParamRecord( String startTime,String endTime,String equipID,String paramID)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            List<EquipParamLatestRecord> parameterInfoList = equipmentParaRecordMapper.selectOneEquipParamRecord(startTime,endTime,equipID,paramID);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(parameterInfoList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse getEquipParamRecordByTime(String startTime,String endTime, String equipID)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            List<EquipmentParaRecord> equipmentParaRecordList = equipmentParaRecordMapper.selectRecordByTime(startTime,endTime,equipID);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(equipmentParaRecordList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
 }

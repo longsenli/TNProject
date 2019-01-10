@@ -23,6 +23,6 @@ public interface CommentMapper {
 
     int updateByPrimaryKey(Comment record);
 
-    @Select("select * from tb_comment where contentID = #{contentID} order by createTime desc")
+    @Select("select * from tb_comment where contentID = #{contentID} order by createTime desc limit 1000")
     List<Comment> selectByContentID(String contentID);
 }

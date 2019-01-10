@@ -24,8 +24,16 @@ public interface EquipmentParaRecordMapper {
     int updateByPrimaryKeySelective(EquipmentParaRecord record);
 
     int updateByPrimaryKey(EquipmentParaRecord record);
-@Select("select * from tb_equipmentparamrecord where equipmentID = #{equipID} order by recordTime desc,paramID asc")
+@Select("select * from tb_equipmentparamrecord where equipmentID = #{equipID} order by recordTime desc,paramID asc limit 1000")
     List<EquipmentParaRecord> selectRecord( String equipID);
 
     List<EquipParamLatestRecord> selectLatestRecord(String plantID, String equipType, String paramID);
+
+    @Select("select * from tb_equipmentparamrecord where equipmentID = #{equipID} and paramID = #{paramID} and recordTime >= #{startTime} " +
+            "and recordTime <= #{endTime}  order by recordTime asc limit 1000")
+    List<EquipParamLatestRecord> selectOneEquipParamRecord( String startTime,String endTime,String equipID,String paramID);
+
+    @Select("select * from tb_equipmentparamrecord where equipmentID = #{equipID} and recordTime >= #{startTime} " +
+            "and recordTime <= #{endTime}  order by recordTime desc limit 1000")
+    List<EquipmentParaRecord> selectRecordByTime(  String startTime,String endTime,String equipID);
 }

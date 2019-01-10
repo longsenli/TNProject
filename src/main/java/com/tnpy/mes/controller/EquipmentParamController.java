@@ -75,10 +75,20 @@ public class EquipmentParamController {
 
         return  equipmentParamService.getEquipmentParamRecord(equipID);
     }
+    @RequestMapping(value = "/getequipparamrecordbytime")
+    public TNPYResponse getEquipParamRecordByTime(String startTime,String endTime, String equipID) {
+
+        return  equipmentParamService.getEquipParamRecordByTime(startTime, endTime,equipID);
+    }
     @RequestMapping(value = "/getlatestparamrecord")
     public TNPYResponse getLatestParamRecord( String plantID,String equipType,String paramID) {
 
-        System.out.println(plantID + " " + equipType + " " + paramID);
         return  equipmentParamService.getLatestParamRecord(plantID, equipType, paramID);
+    }
+
+    @RequestMapping(value = "/getoneequipparamrecord")
+    public TNPYResponse getOneEquipParamRecord( String startTime,String endTime,String equipID,String paramID) {
+
+        return  equipmentParamService.getOneEquipParamRecord(startTime, endTime, equipID,paramID);
     }
 }
