@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
+import com.tnpy.mes.mapper.mysql.EquipmentParaMapper;
 import com.tnpy.mes.mapper.mysql.EquipmentParaRecordMapper;
 import com.tnpy.mes.mapper.mysql.ParameterInfoMapper;
 import com.tnpy.mes.model.customize.EquipParamLatestRecord;
@@ -32,6 +33,10 @@ public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordSer
     @Autowired
     private EquipmentParaRecordMapper equipmentParaRecordMapper;
 
+    @Autowired
+    private EquipmentParaMapper equipmentParaMapper;
+
+
     public TNPYResponse getEquipmentParam(String equipmentTypeID) {
 
         TNPYResponse result = new TNPYResponse();
@@ -47,9 +52,7 @@ public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordSer
     }
 
 
-    public TNPYResponse saveEquipmentParam( String json) {
-        System.out.println(json);
-
+    public TNPYResponse saveEquipmentParamRecord( String json) {
         TNPYResponse result = new TNPYResponse();
         try {
             List<EquipmentParaRecord> equipmentParaRecordList = JSON.parseArray(json, EquipmentParaRecord.class);
@@ -61,6 +64,36 @@ public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordSer
                 equipmentParaRecordList.get(i).setRecordtime(nowTime);
                 equipmentParaRecordMapper.insertSelective(equipmentParaRecordList.get(i));
             }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData("");
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse updateEquipmentParam(String params,String equipmentTypeID)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+
+            String[] paramArray = params.split("###");
+            System.out.println(params + "-----"+ paramArray.length);
+        String insertData = " insert into tb_equipmentparam values ";
+if(paramArray.length>1)
+{
+    insertData+= "('"+equipmentTypeID +"','"+  paramArray[0] +"',1)";
+}
+            for(int i =1;i<paramArray.length;i++)
+            {
+                insertData+= ",('"+equipmentTypeID +"','"+  paramArray[i] +"',1)";
+
+            }
+            insertData +=";";
+            if(paramArray.length <1)
+                insertData = "";
+            equipmentParaMapper.updateEquipParams(insertData,equipmentTypeID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData("");
             return result;

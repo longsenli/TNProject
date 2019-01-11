@@ -44,6 +44,10 @@ public class BasicDataServiceImpl implements IBasicDataService {
 
     @Autowired
     private MaterialRelationMapper materialRelationMapper;
+
+    @Autowired
+    private ParameterInfoMapper parameterInfoMapper;
+
     @Override
     public TNPYResponse getIndustrialPlant() {
         TNPYResponse result = new TNPYResponse();
@@ -395,5 +399,22 @@ public class BasicDataServiceImpl implements IBasicDataService {
             result.setMessage("插入失败！" + ex.getMessage());
         }
         return  result;
+    }
+
+    public TNPYResponse getParameterinfo()
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<ParameterInfo> parameterInfoList = parameterInfoMapper.selectAll();
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(parameterInfoList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
     }
 }

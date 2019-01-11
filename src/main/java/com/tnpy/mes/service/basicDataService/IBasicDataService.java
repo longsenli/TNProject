@@ -30,4 +30,6 @@ public interface IBasicDataService {
     public TNPYResponse getMaterialRelationByMaterial(String materialID);
     public TNPYResponse deteteMaterialRelation(String id);
     public TNPYResponse changeMaterialRelation( String jsonStr);
+
+    public TNPYResponse getParameterinfo();
 }

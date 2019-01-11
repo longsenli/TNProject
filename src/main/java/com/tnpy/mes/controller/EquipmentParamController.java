@@ -31,9 +31,15 @@ public class EquipmentParamController {
        return  equipmentParamService.getEquipmentParam(equipmentTypeID);
     }
 
+    @RequestMapping(value = "/updateequipmentparam")
+    public TNPYResponse updateEquipmentParam(String params,String equipmentTypeID) {
+
+        return  equipmentParamService.updateEquipmentParam(params,equipmentTypeID);
+    }
+
     @RequestMapping(value = "/saveequipmentparam")
     public TNPYResponse saveEquipmentParam(@RequestBody String json) {
-        return  equipmentParamService.saveEquipmentParam(json);
+        return  equipmentParamService.saveEquipmentParamRecord(json);
     }
 
     @PostMapping("/pictureupload")
