@@ -1,6 +1,11 @@
-package com.tnpy.mes.model.mysql;
+package com.tnpy.mes.model.customize;
 
-public class OrderSplit {
+/**
+ * @Description: TODO
+ * @Author: LLS
+ * @Date: 2019/1/6 16:51
+ */
+public class CustomOrderSplitRecord {
     private String id;
 
     private String orderid;
@@ -12,6 +17,26 @@ public class OrderSplit {
     private String status;
 
     private String materialid;
+
+    public String getStatusName() {
+        return statusName;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
+    }
+
+    public String getMaterialName() {
+        return materialName;
+    }
+
+    public void setMaterialName(String materialName) {
+        this.materialName = materialName;
+    }
+
+    private String statusName;
+
+    private String materialName;
 
     public String getId() {
         return id;

@@ -17,6 +17,8 @@ public class EquipmentParaRecord extends EquipmentParaRecordKey {
     @JsonProperty(value = "NULL")
     @JSONField(format ="yyyy-MM-dd HH:mm:ss")
     private Date recordtime;
+
+    private String status;
     public String getValue() {
         return value;
     }
@@ -54,5 +56,13 @@ public class EquipmentParaRecord extends EquipmentParaRecordKey {
 
     public void setRecordtime(Date recordtime) {
         this.recordtime = recordtime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
     }
 }

@@ -2,7 +2,9 @@ package com.tnpy.mes.mapper.mysql;
 
 import com.tnpy.mes.model.mysql.EquipmentPara;
 import com.tnpy.mes.model.mysql.EquipmentParaKey;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 @Mapper
@@ -21,5 +23,7 @@ public interface EquipmentParaMapper {
 
     int updateByPrimaryKey(EquipmentPara record);
 
+    @Insert("delete from tb_equipmentparam where equipmentTypeID = #{equipTypeID}; ${insertData}")
+    int updateEquipParams(@Param("insertData") String params,@Param("equipTypeID") String equipTypeID);
 
 }

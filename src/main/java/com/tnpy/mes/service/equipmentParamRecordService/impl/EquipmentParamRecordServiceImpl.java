@@ -1,14 +1,16 @@
-package com.tnpy.mes.service.equipmentParamService.impl;
+package com.tnpy.mes.service.equipmentParamRecordService.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
+import com.tnpy.mes.mapper.mysql.EquipmentParaMapper;
 import com.tnpy.mes.mapper.mysql.EquipmentParaRecordMapper;
 import com.tnpy.mes.mapper.mysql.ParameterInfoMapper;
+import com.tnpy.mes.model.customize.EquipParamLatestRecord;
 import com.tnpy.mes.model.mysql.EquipmentParaRecord;
 import com.tnpy.mes.model.mysql.ParameterInfo;
-import com.tnpy.mes.service.equipmentParamService.IEquipmentParamService;
+import com.tnpy.mes.service.equipmentParamRecordService.IEquipmentParamRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,12 +26,16 @@ import java.util.UUID;
  * @Date: 2019/1/3 15:26
  */
 @Service("equipmentParamService")
-public class EquipmentParamServiceImpl implements IEquipmentParamService {
+public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordService {
 
     @Autowired
     private ParameterInfoMapper parameterInfoMapper;
     @Autowired
     private EquipmentParaRecordMapper equipmentParaRecordMapper;
+
+    @Autowired
+    private EquipmentParaMapper equipmentParaMapper;
+
 
     public TNPYResponse getEquipmentParam(String equipmentTypeID) {
 
@@ -46,9 +52,7 @@ public class EquipmentParamServiceImpl implements IEquipmentParamService {
     }
 
 
-    public TNPYResponse saveEquipmentParam( String json) {
-        System.out.println(json);
-
+    public TNPYResponse saveEquipmentParamRecord( String json) {
         TNPYResponse result = new TNPYResponse();
         try {
             List<EquipmentParaRecord> equipmentParaRecordList = JSON.parseArray(json, EquipmentParaRecord.class);
@@ -60,6 +64,36 @@ public class EquipmentParamServiceImpl implements IEquipmentParamService {
                 equipmentParaRecordList.get(i).setRecordtime(nowTime);
                 equipmentParaRecordMapper.insertSelective(equipmentParaRecordList.get(i));
             }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData("");
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse updateEquipmentParam(String params,String equipmentTypeID)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+
+            String[] paramArray = params.split("###");
+            System.out.println(params + "-----"+ paramArray.length);
+        String insertData = " insert into tb_equipmentparam values ";
+if(paramArray.length>1)
+{
+    insertData+= "('"+equipmentTypeID +"','"+  paramArray[0] +"',1)";
+}
+            for(int i =1;i<paramArray.length;i++)
+            {
+                insertData+= ",('"+equipmentTypeID +"','"+  paramArray[i] +"',1)";
+
+            }
+            insertData +=";";
+            if(paramArray.length <1)
+                insertData = "";
+            equipmentParaMapper.updateEquipParams(insertData,equipmentTypeID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData("");
             return result;
@@ -107,6 +141,46 @@ public class EquipmentParamServiceImpl implements IEquipmentParamService {
         TNPYResponse result = new TNPYResponse();
         try {
             List<EquipmentParaRecord> equipmentParaRecordList = equipmentParaRecordMapper.selectRecord(equipID);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(equipmentParaRecordList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse getLatestParamRecord( String plantID,String equipType,String paramID) {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            List<EquipParamLatestRecord> parameterInfoList = equipmentParaRecordMapper.selectLatestRecord(plantID,equipType,paramID);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(parameterInfoList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+    public TNPYResponse getOneEquipParamRecord( String startTime,String endTime,String equipID,String paramID)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            List<EquipParamLatestRecord> parameterInfoList = equipmentParaRecordMapper.selectOneEquipParamRecord(startTime,endTime,equipID,paramID);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(parameterInfoList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse getEquipParamRecordByTime(String startTime,String endTime, String equipID)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            List<EquipmentParaRecord> equipmentParaRecordList = equipmentParaRecordMapper.selectRecordByTime(startTime,endTime,equipID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(equipmentParaRecordList).toString());
             return result;

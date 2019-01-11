@@ -1,5 +1,6 @@
 package com.tnpy.mes.mapper.mysql;
 
+import com.tnpy.mes.model.customize.CustomWorkOrderRecord;
 import com.tnpy.mes.model.mysql.Workorder;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -26,6 +27,8 @@ public interface WorkorderMapper {
     @Select("select * from tb_workOrder")
     List<Workorder> selectAll();
 
-    @Select("select * from tb_workOrder ${filter}")
+    @Select("select * from tb_workOrder ${filter} ")
     List<Workorder> selectByFilter(@Param("filter") String filter);
+
+    List<CustomWorkOrderRecord> selectCustomResultByFilter(@Param("filter") String filter);
 }

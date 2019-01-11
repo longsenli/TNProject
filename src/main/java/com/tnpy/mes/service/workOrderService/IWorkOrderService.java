@@ -12,5 +12,8 @@ public interface IWorkOrderService {
     public TNPYResponse getWorkOrderByLineID( String lineID );
     public TNPYResponse changeWorkOrder( String jsonStr );
     public TNPYResponse getOrderSplit(String orderID );
-    public TNPYResponse finishOrderSplit( String jsonStr );
+    public TNPYResponse finishOrderSplit( String jsonStr,String name );
+    public TNPYResponse getWorkOrderByParam(String plantID,String processID,String lineID );
+    public TNPYResponse getCustomWorkOrderByParam(String plantID,String processID,String lineID );
+    public TNPYResponse getOrderSplitAfterMap(String orderID );
 }

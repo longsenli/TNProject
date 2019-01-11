@@ -23,6 +23,18 @@ public class OrderController {
         return  workOrderService.getWorkOrder();
     }
 
+    @RequestMapping(value = "/getworkorderbyparam")
+    public TNPYResponse getWorkOrderByParam(String plantID,String processID,String lineID ) {
+
+        return  workOrderService.getWorkOrderByParam(plantID,processID,lineID);
+    }
+
+    @RequestMapping(value = "/getcustomworkorderbyparam")
+    public TNPYResponse getCustomWorkOrderByParam(String plantID,String processID,String lineID ) {
+
+        return  workOrderService.getCustomWorkOrderByParam(plantID,processID,lineID);
+    }
+
     @RequestMapping(value = "/getworkorderbylineid")
     public TNPYResponse getWorkOrderByLineID( String lineID ) {
         return  workOrderService.getWorkOrderByLineID(lineID);
@@ -38,8 +50,13 @@ public class OrderController {
         return  workOrderService.getOrderSplit(orderID);
     }
 
+    @RequestMapping(value = "/getordersplitaftermap")
+    public TNPYResponse getOrderSplitAfterMap(String orderID ) {
+        return  workOrderService.getOrderSplitAfterMap(orderID);
+    }
+
     @RequestMapping(value = "/finishordersplit")
-    public TNPYResponse finishOrderSplit(@RequestBody String jsonStr ) {
-        return  workOrderService.finishOrderSplit(jsonStr);
+    public TNPYResponse finishOrderSplit( String jsonStr,String name ) {
+        return  workOrderService.finishOrderSplit(jsonStr,name);
     }
 }

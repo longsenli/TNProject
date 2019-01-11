@@ -15,6 +15,26 @@
     <result column="outputTime" jdbcType="TIMESTAMP" property="outputtime" />
     <result column="outputer" jdbcType="VARCHAR" property="outputer" />
   </resultMap>
+
+  <resultMap id="CustomResultMap" type="com.tnpy.mes.model.customize.CustomMaterialRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="materialID" jdbcType="VARCHAR" property="materialid" />
+    <result column="orderID" jdbcType="VARCHAR" property="orderid" />
+    <result column="subOrderID" jdbcType="VARCHAR" property="suborderid" />
+    <result column="expendOrderID" jdbcType="VARCHAR" property="expendorderid" />
+    <result column="inOrOut" jdbcType="INTEGER" property="inorout" />
+    <result column="number" jdbcType="DOUBLE" property="number" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="inputer" jdbcType="VARCHAR" property="inputer" />
+    <result column="inputTime" jdbcType="TIMESTAMP" property="inputtime" />
+    <result column="outputTime" jdbcType="TIMESTAMP" property="outputtime" />
+    <result column="outputer" jdbcType="VARCHAR" property="outputer" />
+    <result column="inOrderName" jdbcType="VARCHAR" property="inOrderName" />
+    <result column="inSubOrderName" jdbcType="VARCHAR" property="inSubOrderName" />
+    <result column="outOrderName" jdbcType="VARCHAR" property="outOrderName" />
+    <result column="materialName" jdbcType="VARCHAR" property="materialName" />
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, materialID, orderID, subOrderID, expendOrderID, inOrOut, number, status, inputer, 
     inputTime, outputTime, outputer
@@ -179,7 +199,7 @@
     update tb_materialrecord
     set
     expendOrderID = #{expendOrderID},
-    inOrOut=2,
+    inOrOut=#{status},
     outputTime=#{outputTime},
     outputer=#{outputer}
     where id in (
