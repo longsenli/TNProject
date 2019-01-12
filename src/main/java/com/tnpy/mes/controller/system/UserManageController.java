@@ -37,6 +37,7 @@ public class UserManageController {
 //  private UserService userService;
   private TbUserMapper userService;
   
+  
 //  @RequestMapping("/insert")
 //  public void insert(TbUser user) {
 //	System.out.println("before");
