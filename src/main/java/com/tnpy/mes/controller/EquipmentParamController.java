@@ -56,7 +56,6 @@ public class EquipmentParamController {
             fileName = UUID.randomUUID()+suffixName;
             //指定本地文件夹存储图片
             String filePath = DirectoryEnum.FileStoreLocation.EquipInfoPicture.getName();
-            System.out.println("进入成功！" + fileName);
             File dir = new File(filePath);
             if(!dir.exists())
             {
