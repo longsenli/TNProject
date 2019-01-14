@@ -81,7 +81,7 @@ public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordSer
             String[] paramArray = params.split("###");
             System.out.println(params + "-----"+ paramArray.length);
         String insertData = " insert into tb_equipmentparam values ";
-if(paramArray.length>1)
+if(paramArray.length>0)
 {
     insertData+= "('"+equipmentTypeID +"','"+  paramArray[0] +"',1)";
 }
