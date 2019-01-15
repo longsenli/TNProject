@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.SolidifyRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.SolidifyRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="orderID" jdbcType="VARCHAR" property="orderid" />
+    <result column="orderSplitID" jdbcType="VARCHAR" property="ordersplitid" />
+    <result column="materialID" jdbcType="VARCHAR" property="materialid" />
+    <result column="solidifyRoomID" jdbcType="VARCHAR" property="solidifyroomid" />
+    <result column="recorder1" jdbcType="VARCHAR" property="recorder1" />
+    <result column="starttime1" jdbcType="TIMESTAMP" property="starttime1" />
+    <result column="endtime1" jdbcType="TIMESTAMP" property="endtime1" />
+    <result column="recorder2" jdbcType="VARCHAR" property="recorder2" />
+    <result column="starttime2" jdbcType="TIMESTAMP" property="starttime2" />
+    <result column="endtime2" jdbcType="TIMESTAMP" property="endtime2" />
+    <result column="recorder3" jdbcType="VARCHAR" property="recorder3" />
+    <result column="starttime3" jdbcType="TIMESTAMP" property="starttime3" />
+    <result column="endtime3" jdbcType="TIMESTAMP" property="endtime3" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="orderSplitName" jdbcType="VARCHAR" property="ordersplitname" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, orderID, orderSplitID, materialID, solidifyRoomID, recorder1, starttime1, endtime1, 
+    recorder2, starttime2, endtime2, recorder3, starttime3, endtime3, status, orderSplitName
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_solidifyrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_solidifyrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.SolidifyRecord">
+    insert into tb_solidifyrecord (id, orderID, orderSplitID, 
+      materialID, solidifyRoomID, recorder1, 
+      starttime1, endtime1, recorder2, 
+      starttime2, endtime2, recorder3, 
+      starttime3, endtime3, status, 
+      orderSplitName)
+    values (#{id,jdbcType=VARCHAR}, #{orderid,jdbcType=VARCHAR}, #{ordersplitid,jdbcType=VARCHAR}, 
+      #{materialid,jdbcType=VARCHAR}, #{solidifyroomid,jdbcType=VARCHAR}, #{recorder1,jdbcType=VARCHAR}, 
+      #{starttime1,jdbcType=TIMESTAMP}, #{endtime1,jdbcType=TIMESTAMP}, #{recorder2,jdbcType=VARCHAR}, 
+      #{starttime2,jdbcType=TIMESTAMP}, #{endtime2,jdbcType=TIMESTAMP}, #{recorder3,jdbcType=VARCHAR}, 
+      #{starttime3,jdbcType=TIMESTAMP}, #{endtime3,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR}, 
+      #{ordersplitname,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.SolidifyRecord">
+    insert into tb_solidifyrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderid != null">
+        orderID,
+      </if>
+      <if test="ordersplitid != null">
+        orderSplitID,
+      </if>
+      <if test="materialid != null">
+        materialID,
+      </if>
+      <if test="solidifyroomid != null">
+        solidifyRoomID,
+      </if>
+      <if test="recorder1 != null">
+        recorder1,
+      </if>
+      <if test="starttime1 != null">
+        starttime1,
+      </if>
+      <if test="endtime1 != null">
+        endtime1,
+      </if>
+      <if test="recorder2 != null">
+        recorder2,
+      </if>
+      <if test="starttime2 != null">
+        starttime2,
+      </if>
+      <if test="endtime2 != null">
+        endtime2,
+      </if>
+      <if test="recorder3 != null">
+        recorder3,
+      </if>
+      <if test="starttime3 != null">
+        starttime3,
+      </if>
+      <if test="endtime3 != null">
+        endtime3,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="ordersplitname != null">
+        orderSplitName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="orderid != null">
+        #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="ordersplitid != null">
+        #{ordersplitid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="solidifyroomid != null">
+        #{solidifyroomid,jdbcType=VARCHAR},
+      </if>
+      <if test="recorder1 != null">
+        #{recorder1,jdbcType=VARCHAR},
+      </if>
+      <if test="starttime1 != null">
+        #{starttime1,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime1 != null">
+        #{endtime1,jdbcType=TIMESTAMP},
+      </if>
+      <if test="recorder2 != null">
+        #{recorder2,jdbcType=VARCHAR},
+      </if>
+      <if test="starttime2 != null">
+        #{starttime2,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime2 != null">
+        #{endtime2,jdbcType=TIMESTAMP},
+      </if>
+      <if test="recorder3 != null">
+        #{recorder3,jdbcType=VARCHAR},
+      </if>
+      <if test="starttime3 != null">
+        #{starttime3,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime3 != null">
+        #{endtime3,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="ordersplitname != null">
+        #{ordersplitname,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.SolidifyRecord">
+    update tb_solidifyrecord
+    <set>
+      <if test="orderid != null">
+        orderID = #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="ordersplitid != null">
+        orderSplitID = #{ordersplitid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        materialID = #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="solidifyroomid != null">
+        solidifyRoomID = #{solidifyroomid,jdbcType=VARCHAR},
+      </if>
+      <if test="recorder1 != null">
+        recorder1 = #{recorder1,jdbcType=VARCHAR},
+      </if>
+      <if test="starttime1 != null">
+        starttime1 = #{starttime1,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime1 != null">
+        endtime1 = #{endtime1,jdbcType=TIMESTAMP},
+      </if>
+      <if test="recorder2 != null">
+        recorder2 = #{recorder2,jdbcType=VARCHAR},
+      </if>
+      <if test="starttime2 != null">
+        starttime2 = #{starttime2,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime2 != null">
+        endtime2 = #{endtime2,jdbcType=TIMESTAMP},
+      </if>
+      <if test="recorder3 != null">
+        recorder3 = #{recorder3,jdbcType=VARCHAR},
+      </if>
+      <if test="starttime3 != null">
+        starttime3 = #{starttime3,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime3 != null">
+        endtime3 = #{endtime3,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="ordersplitname != null">
+        orderSplitName = #{ordersplitname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.SolidifyRecord">
+    update tb_solidifyrecord
+    set orderID = #{orderid,jdbcType=VARCHAR},
+      orderSplitID = #{ordersplitid,jdbcType=VARCHAR},
+      materialID = #{materialid,jdbcType=VARCHAR},
+      solidifyRoomID = #{solidifyroomid,jdbcType=VARCHAR},
+      recorder1 = #{recorder1,jdbcType=VARCHAR},
+      starttime1 = #{starttime1,jdbcType=TIMESTAMP},
+      endtime1 = #{endtime1,jdbcType=TIMESTAMP},
+      recorder2 = #{recorder2,jdbcType=VARCHAR},
+      starttime2 = #{starttime2,jdbcType=TIMESTAMP},
+      endtime2 = #{endtime2,jdbcType=TIMESTAMP},
+      recorder3 = #{recorder3,jdbcType=VARCHAR},
+      starttime3 = #{starttime3,jdbcType=TIMESTAMP},
+      endtime3 = #{endtime3,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=VARCHAR},
+      orderSplitName = #{ordersplitname,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

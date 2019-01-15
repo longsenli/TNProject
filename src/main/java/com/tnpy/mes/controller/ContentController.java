@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/content")
-public class ContentContoller {
+public class ContentController {
 
     @Autowired
     private IContentService contentService ;

@@ -30,5 +30,7 @@ public interface WorkorderMapper {
     @Select("select * from tb_workOrder ${filter} ")
     List<Workorder> selectByFilter(@Param("filter") String filter);
 
+    @Select("select processID from tb_workorder where id = #{orderID}")
+    String getProcessIDByOrder(String orderID);
     List<CustomWorkOrderRecord> selectCustomResultByFilter(@Param("filter") String filter);
 }
