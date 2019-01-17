@@ -39,7 +39,7 @@ public class DocumentController {
     }
     @PostMapping("/documentupload")
     public TNPYResponse upload(MultipartFile fileUpload,int type,String summary,String creator){
-        System.out.println(fileUpload.toString());
+      //  System.out.println(fileUpload.toString());
         TNPYResponse response = new TNPYResponse();
         //获取文件名
         String fileName = fileUpload.getOriginalFilename();
@@ -56,7 +56,14 @@ public class DocumentController {
                 dir.mkdirs();
             }
             //将图片保存到static文件夹里
-            fileUpload.transferTo(new File(filePath+fileName));
+
+          //  fileUpload.transferTo(new File(filePath+fileName));
+
+            FileOutputStream out = new FileOutputStream(filePath+fileName);
+            out.write(fileUpload.getBytes());
+            out.flush();
+            out.close();
+
             Document document = new Document();
             document.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
             document.setName(fileName);
@@ -101,7 +108,6 @@ public class DocumentController {
                     os.write(buffer);
                     i = bis.read(buffer);
                 }
-
             } catch (Exception e) {
               //  System.out.println("----------file download failed" + e.getMessage());
                 // TODO Auto-generated catch block
