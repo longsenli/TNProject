@@ -7,9 +7,11 @@ package com.tnpy.mes.service.system;
  */
 
 import java.util.List;
+import java.util.Map;
 
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.model.mysql.TbMenu;
+import com.tnpy.mes.model.mysql.TbRole;
 
 public interface IMenuManageService {
 	public List<TbMenu> listMenus();
@@ -19,4 +21,5 @@ public interface IMenuManageService {
 	public TNPYResponse updateMenu(TbMenu Menu);
 	public TNPYResponse deleteMenu(String ids);
 	public TNPYResponse getAllMenuList();
+	List<Map<String, Object>> roleMenuTreeData(TbRole role);
 }

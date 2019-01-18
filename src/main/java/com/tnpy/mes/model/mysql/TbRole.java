@@ -23,7 +23,27 @@ public class TbRole {
 
     private String remark;
 
-    public Integer getRoleId() {
+    /** 用户是否存在此角色标识 默认不存在 */
+    private boolean flag = false;
+    /** 菜单组 */
+    private Long[] menuIds;
+    public boolean isFlag() {
+		return flag;
+	}
+
+	public void setFlag(boolean flag) {
+		this.flag = flag;
+	}
+
+	public Long[] getMenuIds() {
+		return menuIds;
+	}
+
+	public void setMenuIds(Long[] menuIds) {
+		this.menuIds = menuIds;
+	}
+
+	public Integer getRoleId() {
         return roleId;
     }
 

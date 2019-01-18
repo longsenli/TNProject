@@ -29,16 +29,6 @@ public class RoleManageController {
 	public TNPYResponse listRoles() {
 		System.out.println(roleManageService.listRoles());
 		return roleManageService.listRoles();
-//		TNPYResponse result = new TNPYResponse();
-//		try {
-//			List<TbUser> users = userService.userList();
-//			result.setStatus(1);
-//			result.setData(JSONObject.toJSONString(users, SerializerFeature.WriteMapNullValue).toString());
-//			return result;
-//		} catch (Exception ex) {
-//			result.setMessage("查询出错！" + ex.getMessage());
-//			return result;
-//		}
 	}
 
 	/**
@@ -49,7 +39,8 @@ public class RoleManageController {
 	@ResponseBody
 	@RequestMapping("/addRole")
 	public TNPYResponse addRole(TbRole role) {
-		return roleManageService.addRole(role);
+//		return roleManageService.addRole(role);
+		return roleManageService.saveRole(role);
 	}
 
 	@ResponseBody
@@ -62,6 +53,5 @@ public class RoleManageController {
 	@RequestMapping("/deleteRole")
 	public TNPYResponse deleteRole(String ids) {
 		return roleManageService.deleteRole(ids);
-//		return null;
 	}
 }

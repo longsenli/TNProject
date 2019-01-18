@@ -26,4 +26,12 @@ public interface TbMenuMapper {
 //  @Select("select * from tb_menu where menu_type='M' ")
 	public List<TbMenu> getAllParentMenuList();
 	public List<TbMenu> getSubMenuByParentId(long ParentId);
+    /**
+     * 根据角色ID查询菜单
+     * 
+     * @param roleId 角色ID
+     * @return 菜单列表
+     */
+    public List<String> selectMenuTree(Integer roleId);
+
 }

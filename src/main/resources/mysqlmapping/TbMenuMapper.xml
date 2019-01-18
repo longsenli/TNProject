@@ -37,12 +37,19 @@
    select menu_id, menu_name, parent_id, order_num, url, menu_type, visible, perms, icon, create_by, create_time from tb_menu where menu_type = 'M' 
   </select>
   <select id="getAllParentMenuList" resultMap="BaseResultMap">
-		SELECT menu_id, menu_name, parent_id, order_num, url, menu_type, visible, perms, icon, create_by, create_time
-		 from tb_menu WHERE parent_id=0 and visible=0 ORDER BY order_num ASC
+	SELECT menu_id, menu_name, parent_id, order_num, url, menu_type, visible, perms, icon, create_by, create_time
+	 from tb_menu WHERE parent_id=0 and visible=0 ORDER BY order_num ASC
 	</select>
 	<select id="getSubMenuByParentId" parameterType="long" resultMap="BaseResultMap">
 		SELECT menu_id, menu_name, parent_id, order_num, url, menu_type, visible, perms, icon, create_by, create_time
 		 from tb_menu WHERE parent_id=#{parent_id} and visible=0 ORDER BY order_num ASC
+	</select>
+	<select id="selectMenuTree" parameterType="Long" resultType="String">
+		select m.menu_id
+		from tb_menu m
+			left join tb_role_menu rm on m.menu_id = rm.menu_id
+		where rm.role_id = #{roleId}
+		order by m.parent_id, m.order_num
 	</select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from tb_menu

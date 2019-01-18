@@ -1,17 +1,20 @@
 package com.tnpy.mes.service.system;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.StatusEnum;
-import com.tnpy.common.util.TreeNode.Node;
+import com.tnpy.common.utils.TreeNode.Node;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.TbMenuMapper;
 import com.tnpy.mes.model.mysql.TbMenu;
+import com.tnpy.mes.model.mysql.TbRole;
 /**
  * 
  * @author 2018122008
@@ -129,7 +132,9 @@ public class MenuManageServiceImpl implements IMenuManageService {
             return  result;
         }
 	}
-
+	/**
+	 * bootstrap treegrid
+	 */
 	@Override
 	public TNPYResponse getAllMenuList() {
 		TNPYResponse result = new TNPYResponse();
@@ -176,4 +181,59 @@ public class MenuManageServiceImpl implements IMenuManageService {
         return mt;
     }
 	
+    /**
+     * 根据角色ID查询菜单
+     * 
+     * @param role 角色对象
+     * @return 菜单列表
+     */
+    @Override
+    public List<Map<String, Object>> roleMenuTreeData(TbRole role)
+    {
+        Integer roleId = role.getRoleId();
+        List<Map<String, Object>> trees = new ArrayList<Map<String, Object>>();
+        List<TbMenu> menuList = menuMapper.listMenus();
+        if (roleId!=null)
+        {
+            List<String> roleMenuList = menuMapper.selectMenuTree(roleId);
+            trees = getTrees(menuList, true, roleMenuList, true);
+        }
+        else
+        {
+//            trees = getTrees(menuList, false, null, true);
+        }
+        return trees;
+    }
+    
+    /**
+     * 对象转菜单树
+     * 
+     * @param menuList 菜单列表
+     * @param isCheck 是否需要选中
+     * @param roleMenuList 角色已存在菜单列表
+     * @param permsFlag 是否需要显示权限标识
+     * @return
+     */
+    public List<Map<String, Object>> getTrees(List<TbMenu> menuList, boolean isCheck, List<String> roleMenuList,
+            boolean permsFlag)
+    {
+        List<Map<String, Object>> trees = new ArrayList<Map<String, Object>>();
+        for (TbMenu menu : menuList)
+        {
+            Map<String, Object> deptMap = new HashMap<String, Object>();
+            deptMap.put("id", menu.getMenuId());
+            deptMap.put("pId", menu.getParentId());
+            deptMap.put("name", menu.getMenuName());
+            if (isCheck)
+            {
+                deptMap.put("checked", roleMenuList.contains(menu.getMenuId() + menu.getPerms()));
+            }
+            else
+            {
+                deptMap.put("checked", false);
+            }
+            trees.add(deptMap);
+        }
+        return trees;
+    }
 }

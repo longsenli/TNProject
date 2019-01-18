@@ -1,4 +1,4 @@
-package com.tnpy.common.util.TreeNode;
+package com.tnpy.common.utils.TreeNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,20 +143,20 @@ public class Node {
         return buffer.toString();
     }
 
-    public static void main(String[] args) {
-        List<Node> nodes = new ArrayList<Node>();
-        nodes.add(new Node("系统管理", "0"));
-        nodes.add(new Node("角色管理", "系统管理"));
-        nodes.add(new Node("资源管理", "系统管理"));
-        nodes.add(new Node("用户管理", "系统管理"));
-        nodes.add(new Node("添加用户", "用户管理"));
-        nodes.add(new Node("修改用户", "用户管理"));
-        nodes.add(new Node("机票管理", "系统管理"));
-
-        Node tree = new Node();
-        Node mt = tree.createTree(nodes);
-        System.out.println(tree.iteratorTree(mt));
-    }
+//    public static void main(String[] args) {
+//        List<Node> nodes = new ArrayList<Node>();
+//        nodes.add(new Node("系统管理", "0"));
+//        nodes.add(new Node("角色管理", "系统管理"));
+//        nodes.add(new Node("资源管理", "系统管理"));
+//        nodes.add(new Node("用户管理", "系统管理"));
+//        nodes.add(new Node("添加用户", "用户管理"));
+//        nodes.add(new Node("修改用户", "用户管理"));
+//        nodes.add(new Node("机票管理", "系统管理"));
+//
+//        Node tree = new Node();
+//        Node mt = tree.createTree(nodes);
+//        System.out.println(tree.iteratorTree(mt));
+//    }
 
      
 }

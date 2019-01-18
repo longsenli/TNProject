@@ -14,4 +14,5 @@ public interface IRoleManageService {
 	public TNPYResponse addRole(TbRole role);
 	public TNPYResponse updateRole(TbRole role);
 	public TNPYResponse deleteRole(String ids);
+	public TNPYResponse saveRole(TbRole role);
 }
