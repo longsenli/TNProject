@@ -112,14 +112,17 @@ public class RoleManageServiceImpl implements IRoleManageService {
             {
 //                role.setUpdateBy(ShiroUtils.getLoginName());
                 // 修改角色信息
-//                roleMapper.updateRole(role);
-//                // 删除角色与菜单关联
-//                roleMenuMapper.deleteRoleMenuByRoleId(roleId);
+                roleMapper.updateByPrimaryKey(role);
+                // 删除角色与菜单关联
+                roleMenuMapper.deleteRoleMenuByRoleId(roleId);
+                // 插入角色对应菜单权限
+                insertRoleMenu(role);
             }else
             {
 //              role.setCreateBy(ShiroUtils.getLoginName());
               // 新增角色信息
               roleMapper.insert(role);
+              // 插入角色对应菜单权限
               insertRoleMenu(role);
             }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -128,6 +131,7 @@ public class RoleManageServiceImpl implements IRoleManageService {
         catch (Exception ex)
         {
             result.setMessage("查询出错！" + ex.getMessage());
+            ex.printStackTrace();
             return  result;
         }
         

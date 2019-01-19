@@ -22,6 +22,7 @@ import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.TbUserMapper;
 import com.tnpy.mes.model.mysql.IndustrialPlant;
 import com.tnpy.mes.model.mysql.TbMenu;
+import com.tnpy.mes.model.mysql.TbRole;
 import com.tnpy.mes.model.mysql.TbUser;
 import com.tnpy.mes.service.system.IMenuManageService;
 
@@ -125,7 +126,13 @@ public class MenuManageController {
 		return menuManageService.getAllMenuList();
 //		return null;
 	}
-	
+	@ResponseBody
+	@RequestMapping("/roleMenuTreeData")
+	public TNPYResponse roleMenuTreeData(TbRole role) {
+		System.out.println(role.getRoleId());
+		return menuManageService.roleMenuTreeData(role);
+//		return null;
+	}
 //	@RequestMapping("/getAllMenuList")
 //	public String getAllMenuList(Model model) {
 //		TNPYResponse tnrs = menuManageService.getAllMenuList();

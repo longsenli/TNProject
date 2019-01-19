@@ -46,7 +46,8 @@ public class RoleManageController {
 	@ResponseBody
 	@RequestMapping("/updateRole")
 	public TNPYResponse updateRole(TbRole role) {
-		return roleManageService.updateRole(role);
+//		return roleManageService.updateRole(role);
+		return roleManageService.saveRole(role);
 	}
 
 	@ResponseBody

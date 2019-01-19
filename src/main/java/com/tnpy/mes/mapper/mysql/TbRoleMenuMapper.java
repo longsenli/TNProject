@@ -17,7 +17,7 @@ public interface TbRoleMenuMapper
      * @param roleId 角色ID
      * @return 结果
      */
-    public int deleteRoleMenuByRoleId(Long roleId);
+    public int deleteRoleMenuByRoleId(Integer roleId);
     
     /**
      * 批量删除角色菜单关联信息

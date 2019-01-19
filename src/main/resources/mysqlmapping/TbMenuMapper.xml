@@ -44,7 +44,7 @@
 		SELECT menu_id, menu_name, parent_id, order_num, url, menu_type, visible, perms, icon, create_by, create_time
 		 from tb_menu WHERE parent_id=#{parent_id} and visible=0 ORDER BY order_num ASC
 	</select>
-	<select id="selectMenuTree" parameterType="Long" resultType="String">
+	<select id="selectMenuTree"  resultType="String">
 		select m.menu_id
 		from tb_menu m
 			left join tb_role_menu rm on m.menu_id = rm.menu_id

@@ -21,5 +21,5 @@ public interface IMenuManageService {
 	public TNPYResponse updateMenu(TbMenu Menu);
 	public TNPYResponse deleteMenu(String ids);
 	public TNPYResponse getAllMenuList();
-	List<Map<String, Object>> roleMenuTreeData(TbRole role);
+	public TNPYResponse roleMenuTreeData(TbRole role);
 }

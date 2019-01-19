@@ -35,7 +35,6 @@ public class MenuManageServiceImpl implements IMenuManageService {
             List<TbMenu> menus = menuMapper.listMenus();
 //            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
 //            result.setData(JSONObject.toJSON(menus).toString());
-            
             return  menus;
         }
         catch (Exception ex)
@@ -43,6 +42,7 @@ public class MenuManageServiceImpl implements IMenuManageService {
             result.setMessage("查询出错！" + ex.getMessage());
             return  null;
         }
+        
 	}
 
 	@Override
@@ -188,23 +188,42 @@ public class MenuManageServiceImpl implements IMenuManageService {
      * @return 菜单列表
      */
     @Override
-    public List<Map<String, Object>> roleMenuTreeData(TbRole role)
+    public TNPYResponse roleMenuTreeData(TbRole role)
     {
-        Integer roleId = role.getRoleId();
-        List<Map<String, Object>> trees = new ArrayList<Map<String, Object>>();
-        List<TbMenu> menuList = menuMapper.listMenus();
-        if (roleId!=null)
+    	TNPYResponse result = new TNPYResponse();
+        try
         {
-            List<String> roleMenuList = menuMapper.selectMenuTree(roleId);
-            trees = getTrees(menuList, true, roleMenuList, true);
+        	 Integer roleId = role.getRoleId();
+             List<Map<String, Object>> trees = new ArrayList<Map<String, Object>>();
+             List<TbMenu> menuList = menuMapper.listMenus();
+             if (roleId!=null)
+             {
+                 List<String> roleMenuList = menuMapper.selectMenuTree(roleId);
+                 trees = getTrees(menuList, true, roleMenuList, true);
+             }
+             else
+             {
+                 trees = getTrees(menuList, false, null, true);
+             }
+//        	List<TbMenu> allMenu = menuMapper.getAllParentMenuList();
+//        	for(TbMenu m:allMenu){
+//    			List<TbMenu> child = menuMapper.getSubMenuByParentId(m.getMenuId());
+//    			m.setChildren(child);
+//    		}
+        	
+//        	List<Node> nodes = new ArrayList<Node>();
+//        	nodes.add(getTreeJson());
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(trees).toString());
+            System.out.println("返回TNResponse: " + result.getData().toString());
+            return  result;
         }
-        else
+        catch (Exception ex)
         {
-//            trees = getTrees(menuList, false, null, true);
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
         }
-        return trees;
     }
-    
     /**
      * 对象转菜单树
      * 
