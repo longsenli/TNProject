@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -48,7 +49,9 @@ public class DocumentController {
         //重新生成文件名
        // fileName = UUID.randomUUID()+suffixName;
         //指定本地文件夹存储图片
-        String filePath = DirectoryEnum.FileStoreLocation.UploadDocument.getName();
+        Date date = new Date();
+        SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
+        String filePath = DirectoryEnum.FileStoreLocation.UploadDocument.getName()  + dateFormat.format(date) + "/";
         try {
             File dir = new File(filePath);
             if(!dir.exists())
