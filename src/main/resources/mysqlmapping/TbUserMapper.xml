@@ -3,7 +3,6 @@
 <mapper namespace="com.tnpy.mes.mapper.mysql.TbUserMapper">
   <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.TbUser">
     <id column="userID" jdbcType="VARCHAR" property="userid" />
-    <result column="loginName" jdbcType="VARCHAR" property="loginname" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="roleID" jdbcType="VARCHAR" property="roleid" />
@@ -32,7 +31,7 @@
     <result column="ext8" jdbcType="VARCHAR" property="ext8" />
   </resultMap>
   <sql id="Base_Column_List">
-    userID, loginName, name, password, roleID, sex, birthday, dutyID, workplace, createdate, createuser, 
+    userID, name, password, roleID, sex, birthday, dutyID, workplace, createdate, createuser, 
     updatedate, updateuser, deletedate, deleteuser, state, email, mobilephone, telephone, 
     organID, ext1, ext2, ext3, ext4, ext5, ext6, ext7, ext8
   </sql>
@@ -47,7 +46,7 @@
     where userID = #{userid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.tnpy.mes.model.mysql.TbUser">
-    insert into tb_user (userID, loginName, name, password, 
+    insert into tb_user (userID, name, password, 
       roleID, sex, birthday, 
       dutyID, workplace, createdate, 
       createuser, updatedate, updateuser, 
@@ -56,7 +55,7 @@
       organID, ext1, ext2, 
       ext3, ext4, ext5, ext6, 
       ext7, ext8)
-    values (#{userid,jdbcType=VARCHAR}, #{loginname,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+    values (#{userid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{roleid,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, 
       #{dutyid,jdbcType=VARCHAR}, #{workplace,jdbcType=VARCHAR}, #{createdate,jdbcType=TIMESTAMP}, 
       #{createuser,jdbcType=VARCHAR}, #{updatedate,jdbcType=TIMESTAMP}, #{updateuser,jdbcType=VARCHAR}, 
@@ -71,9 +70,6 @@
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="userid != null">
         userID,
-      </if>
-       <if test="loginname != null">
-        loginName,
       </if>
       <if test="name != null">
         name,
@@ -158,9 +154,6 @@
       <if test="userid != null">
         #{userid,jdbcType=VARCHAR},
       </if>
-       <if test="loginname != null">
-        #{loginname,jdbcType=VARCHAR},
-      </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
@@ -244,9 +237,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.TbUser">
     update tb_user
     <set>
-      <if test="loginname != null">
-        loginName = #{loginname,jdbcType=VARCHAR},
-      </if>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
       </if>
@@ -331,7 +321,6 @@
   <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.TbUser">
     update tb_user
     set 
-      loginName = #{loginname,jdbcType=VARCHAR},
       name = #{name,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
       roleID = #{roleid,jdbcType=VARCHAR},
