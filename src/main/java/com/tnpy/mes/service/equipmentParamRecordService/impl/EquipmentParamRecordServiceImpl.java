@@ -11,6 +11,7 @@ import com.tnpy.mes.model.customize.EquipParamLatestRecord;
 import com.tnpy.mes.model.mysql.EquipmentParaRecord;
 import com.tnpy.mes.model.mysql.ParameterInfo;
 import com.tnpy.mes.service.equipmentParamRecordService.IEquipmentParamRecordService;
+import com.tnpy.mes.service.pushNotification.impl.websocketManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -137,6 +138,7 @@ if(paramArray.length>0)
     }
 
     public TNPYResponse getEquipmentParamRecord(String equipID) {
+
 
         TNPYResponse result = new TNPYResponse();
         try {
