@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.WorkShiftRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.WorkShiftRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="workShift" jdbcType="VARCHAR" property="workshift" />
+    <result column="dayNight" jdbcType="VARCHAR" property="daynight" />
+    <result column="ABShift" jdbcType="VARCHAR" property="abshift" />
+    <result column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="lineID" jdbcType="VARCHAR" property="lineid" />
+    <result column="staffID" jdbcType="VARCHAR" property="staffid" />
+    <result column="staffName" jdbcType="VARCHAR" property="staffname" />
+    <result column="startTime" jdbcType="TIMESTAMP" property="starttime" />
+    <result column="endTime" jdbcType="TIMESTAMP" property="endtime" />
+    <result column="timeMeasure" jdbcType="DOUBLE" property="timemeasure" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, plantID, workShift, dayNight, ABShift, processID, lineID, staffID, staffName, 
+    startTime, endTime, timeMeasure, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_workshiftrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_workshiftrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.WorkShiftRecord">
+    insert into tb_workshiftrecord (id, plantID, workShift, 
+      dayNight, ABShift, processID, 
+      lineID, staffID, staffName, 
+      startTime, endTime, timeMeasure, 
+      status)
+    values (#{id,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{workshift,jdbcType=VARCHAR}, 
+      #{daynight,jdbcType=VARCHAR}, #{abshift,jdbcType=VARCHAR}, #{processid,jdbcType=VARCHAR}, 
+      #{lineid,jdbcType=VARCHAR}, #{staffid,jdbcType=VARCHAR}, #{staffname,jdbcType=VARCHAR}, 
+      #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, #{timemeasure,jdbcType=DOUBLE}, 
+      #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.WorkShiftRecord">
+    insert into tb_workshiftrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="workshift != null">
+        workShift,
+      </if>
+      <if test="daynight != null">
+        dayNight,
+      </if>
+      <if test="abshift != null">
+        ABShift,
+      </if>
+      <if test="processid != null">
+        processID,
+      </if>
+      <if test="lineid != null">
+        lineID,
+      </if>
+      <if test="staffid != null">
+        staffID,
+      </if>
+      <if test="staffname != null">
+        staffName,
+      </if>
+      <if test="starttime != null">
+        startTime,
+      </if>
+      <if test="endtime != null">
+        endTime,
+      </if>
+      <if test="timemeasure != null">
+        timeMeasure,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="workshift != null">
+        #{workshift,jdbcType=VARCHAR},
+      </if>
+      <if test="daynight != null">
+        #{daynight,jdbcType=VARCHAR},
+      </if>
+      <if test="abshift != null">
+        #{abshift,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="staffid != null">
+        #{staffid,jdbcType=VARCHAR},
+      </if>
+      <if test="staffname != null">
+        #{staffname,jdbcType=VARCHAR},
+      </if>
+      <if test="starttime != null">
+        #{starttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null">
+        #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timemeasure != null">
+        #{timemeasure,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.WorkShiftRecord">
+    update tb_workshiftrecord
+    <set>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="workshift != null">
+        workShift = #{workshift,jdbcType=VARCHAR},
+      </if>
+      <if test="daynight != null">
+        dayNight = #{daynight,jdbcType=VARCHAR},
+      </if>
+      <if test="abshift != null">
+        ABShift = #{abshift,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        processID = #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        lineID = #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="staffid != null">
+        staffID = #{staffid,jdbcType=VARCHAR},
+      </if>
+      <if test="staffname != null">
+        staffName = #{staffname,jdbcType=VARCHAR},
+      </if>
+      <if test="starttime != null">
+        startTime = #{starttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null">
+        endTime = #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timemeasure != null">
+        timeMeasure = #{timemeasure,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.WorkShiftRecord">
+    update tb_workshiftrecord
+    set plantID = #{plantid,jdbcType=VARCHAR},
+      workShift = #{workshift,jdbcType=VARCHAR},
+      dayNight = #{daynight,jdbcType=VARCHAR},
+      ABShift = #{abshift,jdbcType=VARCHAR},
+      processID = #{processid,jdbcType=VARCHAR},
+      lineID = #{lineid,jdbcType=VARCHAR},
+      staffID = #{staffid,jdbcType=VARCHAR},
+      staffName = #{staffname,jdbcType=VARCHAR},
+      startTime = #{starttime,jdbcType=TIMESTAMP},
+      endTime = #{endtime,jdbcType=TIMESTAMP},
+      timeMeasure = #{timemeasure,jdbcType=DOUBLE},
+      status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

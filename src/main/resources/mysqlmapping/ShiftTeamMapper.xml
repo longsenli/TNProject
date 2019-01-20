@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.ShiftTeamMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.ShiftTeam">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="ABShift" jdbcType="VARCHAR" property="abshift" />
+    <result column="ABShiftName" jdbcType="VARCHAR" property="abshiftname" />
+    <result column="staffID" jdbcType="VARCHAR" property="staffid" />
+    <result column="staffName" jdbcType="VARCHAR" property="staffname" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, plantID, processID, ABShift, ABShiftName, staffID, staffName, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_shiftteam
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_shiftteam
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.ShiftTeam">
+    insert into tb_shiftteam (ID, plantID, processID, 
+      ABShift, ABShiftName, staffID, 
+      staffName, status)
+    values (#{id,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{processid,jdbcType=VARCHAR}, 
+      #{abshift,jdbcType=VARCHAR}, #{abshiftname,jdbcType=VARCHAR}, #{staffid,jdbcType=VARCHAR}, 
+      #{staffname,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.ShiftTeam">
+    insert into tb_shiftteam
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="processid != null">
+        processID,
+      </if>
+      <if test="abshift != null">
+        ABShift,
+      </if>
+      <if test="abshiftname != null">
+        ABShiftName,
+      </if>
+      <if test="staffid != null">
+        staffID,
+      </if>
+      <if test="staffname != null">
+        staffName,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="abshift != null">
+        #{abshift,jdbcType=VARCHAR},
+      </if>
+      <if test="abshiftname != null">
+        #{abshiftname,jdbcType=VARCHAR},
+      </if>
+      <if test="staffid != null">
+        #{staffid,jdbcType=VARCHAR},
+      </if>
+      <if test="staffname != null">
+        #{staffname,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.ShiftTeam">
+    update tb_shiftteam
+    <set>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        processID = #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="abshift != null">
+        ABShift = #{abshift,jdbcType=VARCHAR},
+      </if>
+      <if test="abshiftname != null">
+        ABShiftName = #{abshiftname,jdbcType=VARCHAR},
+      </if>
+      <if test="staffid != null">
+        staffID = #{staffid,jdbcType=VARCHAR},
+      </if>
+      <if test="staffname != null">
+        staffName = #{staffname,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.ShiftTeam">
+    update tb_shiftteam
+    set plantID = #{plantid,jdbcType=VARCHAR},
+      processID = #{processid,jdbcType=VARCHAR},
+      ABShift = #{abshift,jdbcType=VARCHAR},
+      ABShiftName = #{abshiftname,jdbcType=VARCHAR},
+      staffID = #{staffid,jdbcType=VARCHAR},
+      staffName = #{staffname,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
