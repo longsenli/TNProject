@@ -160,11 +160,39 @@ public class MenuManageServiceImpl implements IMenuManageService {
         }
 	}
 	
+	/**
+	 * bootstrap treegrid
+	 */
+	@Override
+	public TNPYResponse getUserMenuList() {
+		TNPYResponse result = new TNPYResponse();
+        try
+        {
+//        	List<TbMenu> allMenu = menuMapper.getAllParentMenuList();
+//        	for(TbMenu m:allMenu){
+//    			List<TbMenu> child = menuMapper.getSubMenuByParentId(m.getMenuId());
+//    			m.setChildren(child);
+//    		}
+        	
+        	List<Node> nodes = new ArrayList<Node>();
+        	nodes.add(getTreeJson());
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(nodes).toString());
+            System.out.println("返回TNResponse: " + result.getData().toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+	}
 	
 	
 	
     public Node getTreeJson() {
     	List<TbMenu> allMenu = menuMapper.listMenus();//从数据库获取所有资源
+//    	List<TbMenu> allMenu = menuMapper.listUserMenus();//从数据库获取当前所有菜单
         List<Node> nodes = new ArrayList<Node>();//把所有资源转换成树模型的节点集合，此容器用于保存所有节点
         for(TbMenu tbmenu : allMenu){
             Node node = new Node();

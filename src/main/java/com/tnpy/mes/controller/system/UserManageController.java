@@ -117,8 +117,8 @@ public class UserManageController {
      {
 //         List<EquipmentInfo> equipmentInfoList = equipmentInfoMapper.selectByType(typeID,plantID);
     	 //uuid随机生成userId
-    	 String uuid = UUID.randomUUID().toString(); 
-    	 user.setUserid(uuid);
+//    	 String uuid = UUID.randomUUID().toString(); 
+//    	 user.setUserid(uuid);
     	 int i = userService.insert(user);
          result.setStatus(1);
 //         result.setData(JSONObject.toJSONString(equipmentInfoList, SerializerFeature.WriteMapNullValue).toString());

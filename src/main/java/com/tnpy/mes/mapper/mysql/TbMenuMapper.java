@@ -21,6 +21,7 @@ public interface TbMenuMapper {
     
 //  @Select("select * from tb_role ")
 	public List<TbMenu> listMenus();
+	public List<TbMenu> listUserMenus(String userID);
 //    @Select("select * from tb_menu where menu_type='M' ")
 	public List<TbMenu> listFolders();
 //  @Select("select * from tb_menu where menu_type='M' ")

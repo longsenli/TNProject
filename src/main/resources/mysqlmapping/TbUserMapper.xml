@@ -6,6 +6,7 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="roleID" jdbcType="VARCHAR" property="roleid" />
+    <result column="roleName"  property="roleName" />
     <result column="sex" jdbcType="VARCHAR" property="sex" />
     <result column="birthday" jdbcType="DATE" property="birthday" />
     <result column="dutyID" jdbcType="VARCHAR" property="dutyid" />
@@ -41,6 +42,11 @@
     from tb_user
     where userID = #{userid,jdbcType=VARCHAR}
   </select>
+  <select id="userList" resultMap="BaseResultMap">
+  select u.userID, u.name, u.password, u.roleID, u.sex, u.birthday, u.dutyID, u.workplace, u.createdate, u.createuser, 
+    u.updatedate, u.updateuser, u.deletedate, u.deleteuser, u.state, u.email, u.mobilephone, u.telephone, 
+    u.organID, u.ext1, u.ext2, u.ext3, u.ext4, u.ext5, u.ext6, u.ext7, u.ext8,(select r.role_name from tb_role r where r.role_id=u.roleID) as roleName from tb_user u
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from tb_user
     where userID = #{userid,jdbcType=VARCHAR}
@@ -50,7 +56,7 @@
       roleID, sex, birthday, 
       dutyID, workplace, createdate, 
       createuser, updatedate, updateuser, 
-      deletedate, deleteuser, state, 
+      deletedate, deleteuser, 
       email, mobilephone, telephone, 
       organID, ext1, ext2, 
       ext3, ext4, ext5, ext6, 
@@ -59,7 +65,7 @@
       #{roleid,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, 
       #{dutyid,jdbcType=VARCHAR}, #{workplace,jdbcType=VARCHAR}, #{createdate,jdbcType=TIMESTAMP}, 
       #{createuser,jdbcType=VARCHAR}, #{updatedate,jdbcType=TIMESTAMP}, #{updateuser,jdbcType=VARCHAR}, 
-      #{deletedate,jdbcType=TIMESTAMP}, #{deleteuser,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, 
+      #{deletedate,jdbcType=TIMESTAMP}, #{deleteuser,jdbcType=VARCHAR},
       #{email,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, 
       #{organid,jdbcType=VARCHAR}, #{ext1,jdbcType=VARCHAR}, #{ext2,jdbcType=VARCHAR}, 
       #{ext3,jdbcType=VARCHAR}, #{ext4,jdbcType=VARCHAR}, #{ext5,jdbcType=VARCHAR}, #{ext6,jdbcType=VARCHAR}, 

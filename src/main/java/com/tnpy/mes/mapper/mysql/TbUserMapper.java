@@ -20,7 +20,7 @@ public interface TbUserMapper {
 
 	TbUser selectByPrimaryKey(String userid);
 
-	@Select("select * from tb_user")
+//	@Select("select u.*,(select r.role_name from tb_role r where r.role_id=u.role_id) as roleName from tb_user u ")
 	List<TbUser> userList();
 
 	int updateByPrimaryKeySelective(TbUser record);

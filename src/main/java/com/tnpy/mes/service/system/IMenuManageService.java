@@ -22,4 +22,5 @@ public interface IMenuManageService {
 	public TNPYResponse deleteMenu(String ids);
 	public TNPYResponse getAllMenuList();
 	public TNPYResponse roleMenuTreeData(TbRole role);
+	TNPYResponse getUserMenuList();
 }

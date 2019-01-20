@@ -127,6 +127,12 @@ public class MenuManageController {
 //		return null;
 	}
 	@ResponseBody
+	@RequestMapping("/getUserMenuList")
+	public TNPYResponse getUserMenuList(String menuId) {
+		return menuManageService.getAllMenuList();
+//		return null;
+	}
+	@ResponseBody
 	@RequestMapping("/roleMenuTreeData")
 	public TNPYResponse roleMenuTreeData(TbRole role) {
 		System.out.println(role.getRoleId());

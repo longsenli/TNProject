@@ -6,21 +6,21 @@ public class TbUser {
 
 	private String userid;
 
-	private String loginname;
-
-	public String getLoginname() {
-		return loginname;
-	}
-
-	public void setLoginname(String loginname) {
-		this.loginname = loginname;
-	}
-
 	private String name;
 
 	private String password;
 
 	private String roleid;
+	
+	private String roleName;
+
+	public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
 
 	private String sex;
 
