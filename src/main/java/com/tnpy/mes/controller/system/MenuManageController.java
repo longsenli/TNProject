@@ -128,8 +128,8 @@ public class MenuManageController {
 	}
 	@ResponseBody
 	@RequestMapping("/getUserMenuList")
-	public TNPYResponse getUserMenuList(String menuId) {
-		return menuManageService.getAllMenuList();
+	public TNPYResponse getUserMenuList(String userID) {
+		return menuManageService.getUserMenuList(userID);
 //		return null;
 	}
 	@ResponseBody
