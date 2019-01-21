@@ -62,7 +62,7 @@ select a.*,b.name as lineName from
 ( SELECT  id, orderID, plantID, processID, lineID, status, units, batchNum, totalProduction,
     scrapNum, materialID, createTime, scheduledStartTime, scheduledEndTime, actualStartTime,
     actualEndTime, openStaff, finishStaff, closeStaff,case status when '1' then '已下单' when '2' then '已打印' when '3' then '已开工'
-    when '4' then '已完成' when '5' then '已关闭' else '状态不详' end as statusName FROM tnmesdb.tb_workorder ${filter} ) a
+    when '4' then '已完成' when '5' then '已关闭' else '状态不详' end as statusName FROM tb_workorder ${filter} ) a
 left join sys_productionline b on a.lineID = b.id
 )
 ) c left join sys_material d on c.materialID = d.id order by scheduledStartTime desc,materialName asc

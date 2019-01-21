@@ -29,7 +29,7 @@ public interface MaterialRecordMapper {
    // @Select("select * from tb_materialrecord where expendOrderID = #{expendOrder}")
     @Select("select c.*,d.name as materialName from ( \n" +
             "SELECT a.*,b.orderSplitID as inSubOrderName,left(b.orderSplitID, length(b.orderSplitID)-3)  as inOrderName \n" +
-            "FROM tnmesdb.tb_materialrecord  a left join tb_ordersplit b on a.subOrderID = b.id where expendOrderID = #{expendOrder} \n" +
+            "FROM tb_materialrecord  a left join tb_ordersplit b on a.subOrderID = b.id where expendOrderID = #{expendOrder} \n" +
             ") c left join sys_material d on c.materialID = d.id  order by outputTime desc")
     List<CustomMaterialRecord> selectByExpendOrder(String expendOrder);
 
@@ -48,7 +48,7 @@ public interface MaterialRecordMapper {
     @Select("select count(*) from tb_materialrecord where subOrderID = #{qrCode} and inOrOut =#{status}")
     int checkMaterialRecordUsed(String qrCode, int status);
 
-    @Select("SELECT count(*) FROM tnmesdb.tb_materialrecord where subOrderID = #{qrCode}  and materialID in(\n" +
+    @Select("SELECT count(*) FROM tb_materialrecord where subOrderID = #{qrCode}  and materialID in(\n" +
             "select distinct inMaterialID from sys_materialrelation where outMaterialID in (select materialID from tb_workorder where id = #{expendOrderID}) )\n")
     int checkMaterialRelation(String qrCode,String expendOrderID);
 
