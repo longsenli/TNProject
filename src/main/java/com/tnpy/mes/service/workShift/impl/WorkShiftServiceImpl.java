@@ -190,6 +190,7 @@ public class WorkShiftServiceImpl implements IWorkShiftService {
                 return  result;
             }
             workShiftRecord.setStaffname(user.getName());
+            workShiftRecord.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
             if (StringUtils.isEmpty(workShiftRecord.getId())) {
                 workShiftRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 workShiftRecord.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
