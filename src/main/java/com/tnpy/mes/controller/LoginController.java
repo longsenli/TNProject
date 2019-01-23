@@ -5,7 +5,9 @@ import com.tnpy.common.utils.encryption.Encryption;
 import com.tnpy.common.utils.token.Token;
 import com.tnpy.common.utils.token.TokenUtil;
 import com.tnpy.common.utils.web.TNPYResponse;
+import com.tnpy.mes.mapper.mysql.LoginRecordMapper;
 import com.tnpy.mes.mapper.mysql.TokenMapper;
+import com.tnpy.mes.model.mysql.LoginRecord;
 import com.tnpy.mes.model.mysql.TbUser;
 import com.tnpy.mes.service.ITbUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -25,9 +30,13 @@ public class LoginController {
 	@Autowired
 	private TokenMapper tokenmapper;
 
+	@Autowired
+	private LoginRecordMapper loginRecordMapper;
+
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public TNPYResponse login(@RequestParam(value = "username") String username,
+	public TNPYResponse login(HttpServletRequest request,@RequestParam(value = "username") String username,
 							  @RequestParam(value = "password") String password) {
+		System.out.println("======="+ request.getRemoteAddr());
 		TNPYResponse response = new TNPYResponse();
 		Encryption encryption = new Encryption();
 		//判断用户信息为空
@@ -55,6 +64,14 @@ public class LoginController {
 
 		try
 		{
+			LoginRecord loginRecord = new LoginRecord();
+			loginRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+			loginRecord.setUserid(myUser.getUserid());
+			loginRecord.setUsername(myUser.getName());
+			loginRecord.setLoginip(request.getRemoteAddr());
+			loginRecord.setLogintime(new   Date ());
+			loginRecordMapper.insert(loginRecord);
+
 			TokenUtil tokenUtil = new  TokenUtil();
 			//生成Token
 			if (null == token) {
@@ -69,13 +86,13 @@ public class LoginController {
 
 				token = tokenUtil.creatToken(username) ;
 				//tokenUtil.InsertToken(token);
-				System.out.println(JSONObject.toJSON(token).toString());
+				//System.out.println(JSONObject.toJSON(token).toString());
 				tokenmapper.updateToken(token);
 			}
 		}
 		catch (Exception ex)
 		{
-			System.out.println( ex.getMessage());
+		//	System.out.println( ex.getMessage());
 			response.setMessage("登录失败" + ex.getMessage());
 			return  response;
 		}

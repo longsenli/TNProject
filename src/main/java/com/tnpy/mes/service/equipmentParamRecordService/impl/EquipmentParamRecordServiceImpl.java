@@ -11,7 +11,6 @@ import com.tnpy.mes.model.customize.EquipParamLatestRecord;
 import com.tnpy.mes.model.mysql.EquipmentParaRecord;
 import com.tnpy.mes.model.mysql.ParameterInfo;
 import com.tnpy.mes.service.equipmentParamRecordService.IEquipmentParamRecordService;
-import com.tnpy.mes.service.pushNotification.impl.websocketManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -80,12 +79,12 @@ public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordSer
         try {
 
             String[] paramArray = params.split("###");
-            System.out.println(params + "-----"+ paramArray.length);
+         //   System.out.println(params + "-----"+ paramArray.length);
         String insertData = " insert into tb_equipmentparam values ";
-if(paramArray.length>0)
-{
-    insertData+= "('"+equipmentTypeID +"','"+  paramArray[0] +"',1)";
-}
+        if(paramArray.length>0)
+        {
+              insertData+= "('"+equipmentTypeID +"','"+  paramArray[0] +"',1)";
+        }
             for(int i =1;i<paramArray.length;i++)
             {
                 insertData+= ",('"+equipmentTypeID +"','"+  paramArray[i] +"',1)";

@@ -2,8 +2,10 @@ package com.tnpy.mes.service.pushNotification.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.utils.token.Token;
+import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
+import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -13,8 +15,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @Author: LLS
  * @Date: 2019/1/19 14:14
  */
-//@ServerEndpoint(value = "/websocket")
-//@Component
+@ServerEndpoint(value = "/websocket")
+@Component
 public class websocketManageService {
     //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
     private static int onlineCount = 0;

@@ -128,10 +128,9 @@ public class WorkShiftServiceImpl implements IWorkShiftService {
                 return  result;
             }
             workShift.setStaffname(user.getName());
+            workShift.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
             if (StringUtils.isEmpty(workShift.getId())) {
                 workShift.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-                workShift.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
-
                 workShiftMapper.insertSelective(workShift);
             } else {
                 workShiftMapper.updateByPrimaryKey(workShift);

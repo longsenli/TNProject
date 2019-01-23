@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.LoginRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.LoginRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="userName" jdbcType="VARCHAR" property="username" />
+    <result column="loginTime" jdbcType="TIMESTAMP" property="logintime" />
+    <result column="loginIP" jdbcType="VARCHAR" property="loginip" />
+    <result column="logoutTime" jdbcType="TIMESTAMP" property="logouttime" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="userID" jdbcType="VARCHAR" property="userid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, userName, loginTime, loginIP, logoutTime, status, userID
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_loginrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_loginrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.LoginRecord">
+    insert into tb_loginrecord (id, userName, loginTime, 
+      loginIP, logoutTime, status, 
+      userID)
+    values (#{id,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{logintime,jdbcType=TIMESTAMP}, 
+      #{loginip,jdbcType=VARCHAR}, #{logouttime,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR}, 
+      #{userid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.LoginRecord">
+    insert into tb_loginrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="username != null">
+        userName,
+      </if>
+      <if test="logintime != null">
+        loginTime,
+      </if>
+      <if test="loginip != null">
+        loginIP,
+      </if>
+      <if test="logouttime != null">
+        logoutTime,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="userid != null">
+        userID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="logintime != null">
+        #{logintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="loginip != null">
+        #{loginip,jdbcType=VARCHAR},
+      </if>
+      <if test="logouttime != null">
+        #{logouttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.LoginRecord">
+    update tb_loginrecord
+    <set>
+      <if test="username != null">
+        userName = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="logintime != null">
+        loginTime = #{logintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="loginip != null">
+        loginIP = #{loginip,jdbcType=VARCHAR},
+      </if>
+      <if test="logouttime != null">
+        logoutTime = #{logouttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        userID = #{userid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.LoginRecord">
+    update tb_loginrecord
+    set userName = #{username,jdbcType=VARCHAR},
+      loginTime = #{logintime,jdbcType=TIMESTAMP},
+      loginIP = #{loginip,jdbcType=VARCHAR},
+      logoutTime = #{logouttime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=VARCHAR},
+      userID = #{userid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
