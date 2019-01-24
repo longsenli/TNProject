@@ -36,7 +36,7 @@ public class LoginController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public TNPYResponse login(HttpServletRequest request,@RequestParam(value = "username") String username,
 							  @RequestParam(value = "password") String password) {
-		System.out.println("======="+ request.getRemoteAddr());
+		//System.out.println("======="+ request.getRemoteAddr());
 		TNPYResponse response = new TNPYResponse();
 		Encryption encryption = new Encryption();
 		//判断用户信息为空
