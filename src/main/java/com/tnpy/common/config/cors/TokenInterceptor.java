@@ -30,35 +30,41 @@ public class TokenInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse arg1, Object arg2) throws Exception {
        // System.out.println("==================" + request.getRequestURI());
-        Token token =null ;
-        try
-        {
-            String tokenStr = request.getHeader("Token");
-            token=(Token) JSONObject.toJavaObject(JSONObject.parseObject(tokenStr), Token.class);
-        }
-        catch (Exception ex)
-        {
 
-        }
+        Thread t = new Thread(new Runnable(){
+            public void run(){
+                // run方法具体重写
+                Token token = null;
+                try
+                {
+                    String tokenStr = request.getHeader("Token");
+                     token=(Token) JSONObject.toJavaObject(JSONObject.parseObject(tokenStr), Token.class);
+                }
+                catch (Exception ex)
+                {
 
-        ApiCallRecord apiCallRecord = new ApiCallRecord();
-        apiCallRecord.setApiroute(request.getRequestURI());
-        apiCallRecord.setCalltime(new Date());
-        apiCallRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-        String apiParam = request.getQueryString();
-        apiCallRecord.setLoginip(request.getRemoteAddr());
-        Enumeration<String> paramNames = request.getParameterNames();//获取所有的参数名
-        while (paramNames.hasMoreElements()) {
-            String name = paramNames.nextElement();//得到参数名
-            String value = request.getParameter(name);//通过参数名获取对应的值
-            apiParam += " " + name+ "=" +value ;
-        }
-        apiCallRecord.setParams(apiParam);
-        if(token != null)
-        {
-            apiCallRecord.setUserid(token.getUserid());
-        }
-       apiCallRecordMapper.insertSelective(apiCallRecord);
+                }
+                ApiCallRecord apiCallRecord = new ApiCallRecord();
+                apiCallRecord.setApiroute(request.getRequestURI());
+                apiCallRecord.setCalltime(new Date());
+                apiCallRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                String apiParam = request.getQueryString();
+                apiCallRecord.setLoginip(request.getRemoteAddr());
+                Enumeration<String> paramNames = request.getParameterNames();//获取所有的参数名
+                while (paramNames.hasMoreElements()) {
+                    String name = paramNames.nextElement();//得到参数名
+                    String value = request.getParameter(name);//通过参数名获取对应的值
+                    apiParam += " " + name+ "=" +value ;
+                }
+                apiCallRecord.setParams(apiParam);
+                if(token != null)
+                {
+                    apiCallRecord.setUserid(token.getUserid());
+                }
+                apiCallRecordMapper.insertSelective(apiCallRecord);
+            }});
+        t.start();
+
         //普通路径放行
         if (true || "/api/login".equals(request.getRequestURI()) || "/api/downloadFile".equals(request.getRequestURI())) {
             return true;}
@@ -76,7 +82,8 @@ public class TokenInterceptor implements HandlerInterceptor {
 
         //解析Token信息
         try {
-
+            String tokenStr = request.getHeader("Token");
+            Token token=(Token) JSONObject.toJavaObject(JSONObject.parseObject(tokenStr), Token.class);
             //根据客户Token查找数据库Token
             Token myToken=TokenMapper.findByUserId(token.getUserid() );
             //数据库没有Token记录
