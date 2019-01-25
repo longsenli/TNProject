@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.SalesOrderMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.SalesOrder">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="materialID" jdbcType="VARCHAR" property="materialid" />
+    <result column="workshopid" jdbcType="VARCHAR" property="workshopid" />
+    <result column="workshopname" jdbcType="VARCHAR" property="workshopname" />
+    <result column="salesorder" jdbcType="VARCHAR" property="salesorder" />
+    <result column="productorder" jdbcType="VARCHAR" property="productorder" />
+    <result column="zonecode" jdbcType="VARCHAR" property="zonecode" />
+    <result column="zonename" jdbcType="VARCHAR" property="zonename" />
+    <result column="customer" jdbcType="VARCHAR" property="customer" />
+    <result column="productinfo" jdbcType="VARCHAR" property="productinfo" />
+    <result column="production" jdbcType="REAL" property="production" />
+    <result column="unitproduct" jdbcType="VARCHAR" property="unitproduct" />
+    <result column="salevolume" jdbcType="REAL" property="salevolume" />
+    <result column="unitsale" jdbcType="VARCHAR" property="unitsale" />
+    <result column="productioninputtime" jdbcType="TIMESTAMP" property="productioninputtime" />
+    <result column="salecreatetime" jdbcType="TIMESTAMP" property="salecreatetime" />
+    <result column="producttime" jdbcType="TIMESTAMP" property="producttime" />
+    <result column="orderstatus" jdbcType="VARCHAR" property="orderstatus" />
+    <result column="batterymodel" jdbcType="VARCHAR" property="batterymodel" />
+    <result column="packingquantity" jdbcType="REAL" property="packingquantity" />
+    <result column="deliverytime" jdbcType="TIMESTAMP" property="deliverytime" />
+    <result column="deliveryquality" jdbcType="REAL" property="deliveryquality" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, plantID, materialID, workshopid, workshopname, salesorder, productorder, zonecode, 
+    zonename, customer, productinfo, production, unitproduct, salevolume, unitsale, productioninputtime, 
+    salecreatetime, producttime, orderstatus, batterymodel, packingquantity, deliverytime, 
+    deliveryquality, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_salesorder
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_salesorder
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.SalesOrder">
+    insert into tb_salesorder (id, plantID, materialID, 
+      workshopid, workshopname, salesorder, 
+      productorder, zonecode, zonename, 
+      customer, productinfo, production, 
+      unitproduct, salevolume, unitsale, 
+      productioninputtime, salecreatetime, 
+      producttime, orderstatus, batterymodel, 
+      packingquantity, deliverytime, deliveryquality, 
+      remark)
+    values (#{id,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{materialid,jdbcType=VARCHAR}, 
+      #{workshopid,jdbcType=VARCHAR}, #{workshopname,jdbcType=VARCHAR}, #{salesorder,jdbcType=VARCHAR}, 
+      #{productorder,jdbcType=VARCHAR}, #{zonecode,jdbcType=VARCHAR}, #{zonename,jdbcType=VARCHAR}, 
+      #{customer,jdbcType=VARCHAR}, #{productinfo,jdbcType=VARCHAR}, #{production,jdbcType=REAL}, 
+      #{unitproduct,jdbcType=VARCHAR}, #{salevolume,jdbcType=REAL}, #{unitsale,jdbcType=VARCHAR}, 
+      #{productioninputtime,jdbcType=TIMESTAMP}, #{salecreatetime,jdbcType=TIMESTAMP}, 
+      #{producttime,jdbcType=TIMESTAMP}, #{orderstatus,jdbcType=VARCHAR}, #{batterymodel,jdbcType=VARCHAR}, 
+      #{packingquantity,jdbcType=REAL}, #{deliverytime,jdbcType=TIMESTAMP}, #{deliveryquality,jdbcType=REAL}, 
+      #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.SalesOrder">
+    insert into tb_salesorder
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="materialid != null">
+        materialID,
+      </if>
+      <if test="workshopid != null">
+        workshopid,
+      </if>
+      <if test="workshopname != null">
+        workshopname,
+      </if>
+      <if test="salesorder != null">
+        salesorder,
+      </if>
+      <if test="productorder != null">
+        productorder,
+      </if>
+      <if test="zonecode != null">
+        zonecode,
+      </if>
+      <if test="zonename != null">
+        zonename,
+      </if>
+      <if test="customer != null">
+        customer,
+      </if>
+      <if test="productinfo != null">
+        productinfo,
+      </if>
+      <if test="production != null">
+        production,
+      </if>
+      <if test="unitproduct != null">
+        unitproduct,
+      </if>
+      <if test="salevolume != null">
+        salevolume,
+      </if>
+      <if test="unitsale != null">
+        unitsale,
+      </if>
+      <if test="productioninputtime != null">
+        productioninputtime,
+      </if>
+      <if test="salecreatetime != null">
+        salecreatetime,
+      </if>
+      <if test="producttime != null">
+        producttime,
+      </if>
+      <if test="orderstatus != null">
+        orderstatus,
+      </if>
+      <if test="batterymodel != null">
+        batterymodel,
+      </if>
+      <if test="packingquantity != null">
+        packingquantity,
+      </if>
+      <if test="deliverytime != null">
+        deliverytime,
+      </if>
+      <if test="deliveryquality != null">
+        deliveryquality,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="workshopid != null">
+        #{workshopid,jdbcType=VARCHAR},
+      </if>
+      <if test="workshopname != null">
+        #{workshopname,jdbcType=VARCHAR},
+      </if>
+      <if test="salesorder != null">
+        #{salesorder,jdbcType=VARCHAR},
+      </if>
+      <if test="productorder != null">
+        #{productorder,jdbcType=VARCHAR},
+      </if>
+      <if test="zonecode != null">
+        #{zonecode,jdbcType=VARCHAR},
+      </if>
+      <if test="zonename != null">
+        #{zonename,jdbcType=VARCHAR},
+      </if>
+      <if test="customer != null">
+        #{customer,jdbcType=VARCHAR},
+      </if>
+      <if test="productinfo != null">
+        #{productinfo,jdbcType=VARCHAR},
+      </if>
+      <if test="production != null">
+        #{production,jdbcType=REAL},
+      </if>
+      <if test="unitproduct != null">
+        #{unitproduct,jdbcType=VARCHAR},
+      </if>
+      <if test="salevolume != null">
+        #{salevolume,jdbcType=REAL},
+      </if>
+      <if test="unitsale != null">
+        #{unitsale,jdbcType=VARCHAR},
+      </if>
+      <if test="productioninputtime != null">
+        #{productioninputtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="salecreatetime != null">
+        #{salecreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="producttime != null">
+        #{producttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderstatus != null">
+        #{orderstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="batterymodel != null">
+        #{batterymodel,jdbcType=VARCHAR},
+      </if>
+      <if test="packingquantity != null">
+        #{packingquantity,jdbcType=REAL},
+      </if>
+      <if test="deliverytime != null">
+        #{deliverytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deliveryquality != null">
+        #{deliveryquality,jdbcType=REAL},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.SalesOrder">
+    update tb_salesorder
+    <set>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        materialID = #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="workshopid != null">
+        workshopid = #{workshopid,jdbcType=VARCHAR},
+      </if>
+      <if test="workshopname != null">
+        workshopname = #{workshopname,jdbcType=VARCHAR},
+      </if>
+      <if test="salesorder != null">
+        salesorder = #{salesorder,jdbcType=VARCHAR},
+      </if>
+      <if test="productorder != null">
+        productorder = #{productorder,jdbcType=VARCHAR},
+      </if>
+      <if test="zonecode != null">
+        zonecode = #{zonecode,jdbcType=VARCHAR},
+      </if>
+      <if test="zonename != null">
+        zonename = #{zonename,jdbcType=VARCHAR},
+      </if>
+      <if test="customer != null">
+        customer = #{customer,jdbcType=VARCHAR},
+      </if>
+      <if test="productinfo != null">
+        productinfo = #{productinfo,jdbcType=VARCHAR},
+      </if>
+      <if test="production != null">
+        production = #{production,jdbcType=REAL},
+      </if>
+      <if test="unitproduct != null">
+        unitproduct = #{unitproduct,jdbcType=VARCHAR},
+      </if>
+      <if test="salevolume != null">
+        salevolume = #{salevolume,jdbcType=REAL},
+      </if>
+      <if test="unitsale != null">
+        unitsale = #{unitsale,jdbcType=VARCHAR},
+      </if>
+      <if test="productioninputtime != null">
+        productioninputtime = #{productioninputtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="salecreatetime != null">
+        salecreatetime = #{salecreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="producttime != null">
+        producttime = #{producttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderstatus != null">
+        orderstatus = #{orderstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="batterymodel != null">
+        batterymodel = #{batterymodel,jdbcType=VARCHAR},
+      </if>
+      <if test="packingquantity != null">
+        packingquantity = #{packingquantity,jdbcType=REAL},
+      </if>
+      <if test="deliverytime != null">
+        deliverytime = #{deliverytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deliveryquality != null">
+        deliveryquality = #{deliveryquality,jdbcType=REAL},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.SalesOrder">
+    update tb_salesorder
+    set plantID = #{plantid,jdbcType=VARCHAR},
+      materialID = #{materialid,jdbcType=VARCHAR},
+      workshopid = #{workshopid,jdbcType=VARCHAR},
+      workshopname = #{workshopname,jdbcType=VARCHAR},
+      salesorder = #{salesorder,jdbcType=VARCHAR},
+      productorder = #{productorder,jdbcType=VARCHAR},
+      zonecode = #{zonecode,jdbcType=VARCHAR},
+      zonename = #{zonename,jdbcType=VARCHAR},
+      customer = #{customer,jdbcType=VARCHAR},
+      productinfo = #{productinfo,jdbcType=VARCHAR},
+      production = #{production,jdbcType=REAL},
+      unitproduct = #{unitproduct,jdbcType=VARCHAR},
+      salevolume = #{salevolume,jdbcType=REAL},
+      unitsale = #{unitsale,jdbcType=VARCHAR},
+      productioninputtime = #{productioninputtime,jdbcType=TIMESTAMP},
+      salecreatetime = #{salecreatetime,jdbcType=TIMESTAMP},
+      producttime = #{producttime,jdbcType=TIMESTAMP},
+      orderstatus = #{orderstatus,jdbcType=VARCHAR},
+      batterymodel = #{batterymodel,jdbcType=VARCHAR},
+      packingquantity = #{packingquantity,jdbcType=REAL},
+      deliverytime = #{deliverytime,jdbcType=TIMESTAMP},
+      deliveryquality = #{deliveryquality,jdbcType=REAL},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
