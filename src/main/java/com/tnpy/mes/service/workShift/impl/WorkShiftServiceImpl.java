@@ -50,6 +50,7 @@ public class WorkShiftServiceImpl implements IWorkShiftService {
         }
         catch (Exception ex)
         {
+            System.out.println(ex.getMessage());
             result.setMessage("查询出错！" + ex.getMessage());
             return  result;
         }

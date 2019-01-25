@@ -13,20 +13,17 @@ import org.springframework.web.bind.annotation.RestController;
  * @Date: 2018/12/24 8:57
  */
 @RestController
-@RequestMapping("/api/equipment")
+@RequestMapping(value ="/api/equipment")
 
 public class EquipmentInfoController {
 
     @Autowired
     private IEquipmentInfoService equipmentInfoService ;
 
-
-
     @RequestMapping(value = "/getequipmentinfo")
     public TNPYResponse getEquipmentInfo(String typeID,String plantID) {
       return  equipmentInfoService.getEquipmentInfo(typeID, plantID);
     }
-
 
     @RequestMapping(value = "/deleteequipmentinfo")
     public TNPYResponse deleteEquipmentInfo( String equipID) {

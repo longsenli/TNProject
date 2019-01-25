@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Date: 2018/12/27 15:46
  */
 @RestController
-@RequestMapping("/api/basicdata")
+@RequestMapping(value ="/api/basicdata")
 public class BasicDataController {
     @Autowired
     private IBasicDataService basicDataService;

@@ -1,12 +1,11 @@
-package com.tnpy.mes.service.impl;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
+package com.tnpy.mes.service.userService.impl;
 
 import com.tnpy.mes.mapper.mysql.TbUserMapper;
 import com.tnpy.mes.model.mysql.TbUser;
-import com.tnpy.mes.service.ITbUserService;
+import com.tnpy.mes.service.userService.ITbUserService;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 @Service
 public class TbUserServiceImpl implements ITbUserService {

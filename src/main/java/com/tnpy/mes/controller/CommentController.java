@@ -13,11 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
  * @Date: 2018/12/22 17:27
  */
 @RestController
-@RequestMapping("/api/comment")
+@RequestMapping(value ="/api/comment")
 public class CommentController {
     @Autowired
     ICommentService commentService;
-
 
     @RequestMapping(value = "/insertcomment")
     public TNPYResponse insertComment(@RequestBody String jsonStr) {

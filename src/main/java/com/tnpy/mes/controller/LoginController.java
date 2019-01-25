@@ -9,7 +9,7 @@ import com.tnpy.mes.mapper.mysql.LoginRecordMapper;
 import com.tnpy.mes.mapper.mysql.TokenMapper;
 import com.tnpy.mes.model.mysql.LoginRecord;
 import com.tnpy.mes.model.mysql.TbUser;
-import com.tnpy.mes.service.ITbUserService;
+import com.tnpy.mes.service.userService.ITbUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

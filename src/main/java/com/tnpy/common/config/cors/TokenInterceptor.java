@@ -1,17 +1,25 @@
-package com.tnpy.common.utils.token;
+package com.tnpy.common.config.cors;
 
 import com.alibaba.fastjson.JSONObject;
-
+import com.tnpy.common.utils.token.Token;
+import com.tnpy.mes.mapper.mysql.ApiCallRecordMapper;
+import com.tnpy.mes.model.mysql.ApiCallRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.UUID;
 
 public class TokenInterceptor implements HandlerInterceptor {
     @Autowired
     private com.tnpy.mes.mapper.mysql.TokenMapper TokenMapper;
+
+    @Autowired
+    private ApiCallRecordMapper apiCallRecordMapper;
     //提供查询
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse arg1, Object arg2, Exception arg3)
@@ -21,11 +29,39 @@ public class TokenInterceptor implements HandlerInterceptor {
             throws Exception {}
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse arg1, Object arg2) throws Exception {
-        System.out.println(request.getRequestURI());
+       // System.out.println("==================" + request.getRequestURI());
+        Token token =null ;
+        try
+        {
+            String tokenStr = request.getHeader("Token");
+            token=(Token) JSONObject.toJavaObject(JSONObject.parseObject(tokenStr), Token.class);
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+        ApiCallRecord apiCallRecord = new ApiCallRecord();
+        apiCallRecord.setApiroute(request.getRequestURI());
+        apiCallRecord.setCalltime(new Date());
+        apiCallRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+        String apiParam = request.getQueryString();
+        apiCallRecord.setLoginip(request.getRemoteAddr());
+        Enumeration<String> paramNames = request.getParameterNames();//获取所有的参数名
+        while (paramNames.hasMoreElements()) {
+            String name = paramNames.nextElement();//得到参数名
+            String value = request.getParameter(name);//通过参数名获取对应的值
+            apiParam += " " + name+ "=" +value ;
+        }
+        apiCallRecord.setParams(apiParam);
+        if(token != null)
+        {
+            apiCallRecord.setUserid(token.getUserid());
+        }
+       apiCallRecordMapper.insertSelective(apiCallRecord);
         //普通路径放行
         if (true || "/api/login".equals(request.getRequestURI()) || "/api/downloadFile".equals(request.getRequestURI())) {
             return true;}
-
 
         //权限路径拦截
         final String headerToken = request.getHeader("token");
@@ -37,10 +73,10 @@ public class TokenInterceptor implements HandlerInterceptor {
             return false;
         }
 
+
         //解析Token信息
         try {
-            String tokenStr = request.getHeader("Token");
-            Token token=(Token) JSONObject.toJavaObject(JSONObject.parseObject(tokenStr), Token.class);
+
             //根据客户Token查找数据库Token
             Token myToken=TokenMapper.findByUserId(token.getUserid() );
             //数据库没有Token记录
