@@ -139,7 +139,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 workorder.setCreatetime(new Date());
                 workOrderMapper.insertSelective(workorder);
 
-                List<OrderSplit> orderSplitList = new ArrayList<>();;
+                List<OrderSplit> orderSplitList = new ArrayList<>();
                 for(int i =0 ;i<workorder.getBatchnum();i++) {
                     OrderSplit orderSplit = new OrderSplit();
                     orderSplit.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());

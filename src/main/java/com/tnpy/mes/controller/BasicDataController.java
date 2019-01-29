@@ -116,4 +116,9 @@ public class BasicDataController {
     public TNPYResponse changeMaterialRelation(@RequestBody String jsonStr) {
         return  basicDataService.changeMaterialRelation(jsonStr);
     }
+
+    @RequestMapping(value = "/getinputmaterialbymaterial")
+    public TNPYResponse getInputMaterialByMaterial(String materialID) {
+        return  basicDataService.getInputMaterialByMaterial(materialID);
+    }
 }

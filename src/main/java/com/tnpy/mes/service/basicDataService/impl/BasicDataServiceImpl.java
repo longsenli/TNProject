@@ -417,4 +417,26 @@ public class BasicDataServiceImpl implements IBasicDataService {
             return  result;
         }
     }
+
+    public TNPYResponse getInputMaterialByMaterial(String materialID)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = "";
+            if(!("-1".equals(materialID)))
+            {
+                filter += " where outMaterialID = '" + materialID + "'";
+            }
+            List<Material> materialList = materialMapper.selectByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSONString(materialList, SerializerFeature.WriteMapNullValue).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
 }

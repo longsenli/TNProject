@@ -2,6 +2,7 @@ package com.tnpy.mes.mapper.mysql;
 
 import com.tnpy.mes.model.mysql.Material;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +29,11 @@ public interface MaterialMapper {
     @Select("select * from sys_material")
     List<Material> selectAll();
 
-    @Select("select * from sys_material where typeID in( select distinct materialTypeID from sys_processmaterial where processID = #{processID} and inOrout =2)")
+    @Select("select c.id,c.typeID,c.name,c.status,c.shortname,d.number as description from \n" +
+            "( select a.id,a.typeID,a.name,a.status,a.shortname  from sys_material  a left join sys_processmaterial b \n" +
+            " on a.typeID = b.materialTypeID  where processID = #{processID} and inOrout =2 ) c left join sys_materialtype d on c.typeID = d.id" )
     List<Material>  selectOutByProcess(String processID);
 
+    @Select("select * from sys_material where id in (select distinct inMaterialID from  sys_materialrelation  ${filter} )")
+    List<Material> selectByFilter(@Param("filter") String filter);
 }

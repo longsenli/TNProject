@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.WorkOrderScrapInfoMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.WorkOrderScrapInfo">
+    <id column="orderID" jdbcType="VARCHAR" property="orderid" />
+    <id column="materialID" jdbcType="VARCHAR" property="materialid" />
+    <result column="orderName" jdbcType="VARCHAR" property="ordername" />
+    <result column="materialName" jdbcType="VARCHAR" property="materialname" />
+    <result column="value" jdbcType="REAL" property="value" />
+    <result column="orderTime" jdbcType="TIMESTAMP" property="ordertime" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    orderID, materialID, orderName, materialName, value, orderTime, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.WorkOrderScrapInfoKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_workorderscrapinfo
+    where orderID = #{orderid,jdbcType=VARCHAR}
+      and materialID = #{materialid,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByParams" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_workOrderScrapInfo
+    where orderID in (
+    select id from tb_workorder where
+    plantID =#{plantID} and processID = #{processID} and
+     <if test=" '-1' != lineID ">  lineID = #{lineID} and </if>
+    scheduledStartTime &gt;= #{startTime} and  scheduledStartTime  &lt;= #{endTime} )
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.WorkOrderScrapInfoKey">
+    delete from tb_workorderscrapinfo
+    where orderID = #{orderid,jdbcType=VARCHAR}
+      and materialID = #{materialid,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insertManyOrderScrap" parameterType="java.util.List">
+    delete from tb_workorderscrapinfo where orderID=#{orderID};
+    <if test="workOrderScrapInfoList != null and workOrderScrapInfoList.size()>0">
+    insert into tb_workorderscrapinfo (orderID, materialID, orderName,
+    materialName,value,orderTime,status)
+    values
+    <foreach collection="workOrderScrapInfoList" item="item" index="index" separator=",">
+      ( #{item.orderid}, #{item.materialid}, #{item.ordername}, #{item.materialname}, #{item.value}, #{item.ordertime}, #{item.status})
+    </foreach>
+    </if>
+  </insert>
+
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.WorkOrderScrapInfo">
+    insert into tb_workorderscrapinfo (orderID, materialID, orderName, 
+      materialName, value, orderTime, 
+      status)
+    values (#{orderid,jdbcType=VARCHAR}, #{materialid,jdbcType=VARCHAR}, #{ordername,jdbcType=VARCHAR}, 
+      #{materialname,jdbcType=VARCHAR}, #{value,jdbcType=REAL}, #{ordertime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.WorkOrderScrapInfo">
+    insert into tb_workorderscrapinfo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderid != null">
+        orderID,
+      </if>
+      <if test="materialid != null">
+        materialID,
+      </if>
+      <if test="ordername != null">
+        orderName,
+      </if>
+      <if test="materialname != null">
+        materialName,
+      </if>
+      <if test="value != null">
+        value,
+      </if>
+      <if test="ordertime != null">
+        orderTime,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderid != null">
+        #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="ordername != null">
+        #{ordername,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null">
+        #{value,jdbcType=REAL},
+      </if>
+      <if test="ordertime != null">
+        #{ordertime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.WorkOrderScrapInfo">
+    update tb_workorderscrapinfo
+    <set>
+      <if test="ordername != null">
+        orderName = #{ordername,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        materialName = #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null">
+        value = #{value,jdbcType=REAL},
+      </if>
+      <if test="ordertime != null">
+        orderTime = #{ordertime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where orderID = #{orderid,jdbcType=VARCHAR}
+      and materialID = #{materialid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.WorkOrderScrapInfo">
+    update tb_workorderscrapinfo
+    set orderName = #{ordername,jdbcType=VARCHAR},
+      materialName = #{materialname,jdbcType=VARCHAR},
+      value = #{value,jdbcType=REAL},
+      orderTime = #{ordertime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=VARCHAR}
+    where orderID = #{orderid,jdbcType=VARCHAR}
+      and materialID = #{materialid,jdbcType=VARCHAR}
+  </update>
+</mapper>
