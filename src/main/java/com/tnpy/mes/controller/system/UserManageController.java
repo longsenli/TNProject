@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.tnpy.common.utils.encryption.Encryption;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.TbUserMapper;
 import com.tnpy.mes.model.mysql.EquipmentInfo;
@@ -106,19 +107,21 @@ public class UserManageController {
 
   
   /**
-	 * 新增用户
-	 * @param TbUser
-	 */
+ * 新增用户
+ * @param TbUser
+ */
   @ResponseBody
   @RequestMapping("/addUser")
   public TNPYResponse addUser(TbUser user) {
 	 TNPYResponse result = new TNPYResponse();
+	 Encryption encryption = new Encryption();
      try
      {
 //         List<EquipmentInfo> equipmentInfoList = equipmentInfoMapper.selectByType(typeID,plantID);
     	 //uuid随机生成userId
 //    	 String uuid = UUID.randomUUID().toString(); 
 //    	 user.setUserid(uuid);
+    	 user.setPassword(encryption.encrypt(user.getPassword(),null));
     	 int i = userService.insert(user);
          result.setStatus(1);
 //         result.setData(JSONObject.toJSONString(equipmentInfoList, SerializerFeature.WriteMapNullValue).toString());
@@ -135,8 +138,10 @@ public class UserManageController {
   @RequestMapping("/updateUser")
   public TNPYResponse updateUser(TbUser user) {
 	TNPYResponse result = new TNPYResponse();
+	Encryption encryption = new Encryption();
 	try
     {
+	user.setPassword(encryption.encrypt(user.getPassword(),null));
    	 int i = userService.updateByPrimaryKey(user);
         result.setStatus(1);
 //        result.setData(JSONObject.toJSONString(equipmentInfoList, SerializerFeature.WriteMapNullValue).toString());
