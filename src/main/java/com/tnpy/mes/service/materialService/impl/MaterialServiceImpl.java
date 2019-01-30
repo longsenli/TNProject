@@ -6,12 +6,14 @@ import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.MaterialRecordMapper;
 import com.tnpy.mes.model.customize.CustomMaterialRecord;
+import com.tnpy.mes.model.mysql.MaterialRecord;
 import com.tnpy.mes.service.materialService.IMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @Description: TODO
@@ -61,7 +63,6 @@ public class MaterialServiceImpl implements IMaterialService {
         try
         {
             List<String> materialIDList = JSON.parseArray(materialIDListStr, String.class);
-           // System.out.println(materialIDList.toString());
             materialRecordMapper.updateGainMaterialRecord(materialIDList,expendOrderID,outputter,new Date(),StatusEnum.InOutStatus.Output.getIndex());
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
@@ -72,7 +73,34 @@ public class MaterialServiceImpl implements IMaterialService {
             return  result;
         }
     }
+    public TNPYResponse gainPartMaterialRecord(String materialID,String number,String expendOrderID,String outputter )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            MaterialRecord materialRecord = materialRecordMapper.selectByPrimaryKey(materialID);
+            MaterialRecord materialRecordCopy =  materialRecordMapper.selectByPrimaryKey(materialID);
 
+            materialRecordCopy.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+            materialRecordCopy.setNumber(materialRecord.getNumber() - Float.parseFloat(number) );
+            materialRecord.setInorout(StatusEnum.InOutStatus.Output.getIndex());
+            materialRecord.setOutputer(outputter);
+            materialRecord.setOutputtime(new Date());
+            materialRecord.setExpendorderid(expendOrderID);
+            materialRecord.setNumber(Float.parseFloat(number) * 1.0);
+            materialRecordMapper.updateByPrimaryKey(materialRecord);
+            if(materialRecordCopy.getNumber() >0){
+                materialRecordMapper.insert(materialRecordCopy);
+            }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
    public  TNPYResponse gainMaterialByQR(String qrCode,String expendOrderID,String outputter ){
         TNPYResponse result = new TNPYResponse();
         try

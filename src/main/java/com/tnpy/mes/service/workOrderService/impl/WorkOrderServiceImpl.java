@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
-import com.tnpy.mes.mapper.mysql.MaterialRecordMapper;
-import com.tnpy.mes.mapper.mysql.OrderSplitMapper;
-import com.tnpy.mes.mapper.mysql.SolidifyRecordMapper;
-import com.tnpy.mes.mapper.mysql.WorkorderMapper;
+import com.tnpy.mes.mapper.mysql.*;
 import com.tnpy.mes.model.customize.CustomWorkOrderRecord;
 import com.tnpy.mes.model.mysql.MaterialRecord;
 import com.tnpy.mes.model.mysql.OrderSplit;
@@ -18,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @Description: TODO
@@ -40,6 +34,13 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     private MaterialRecordMapper materialRecordMapper;
     @Autowired
     private SolidifyRecordMapper solidifyRecordMapper;
+
+    @Autowired
+    private MaterialMapper materialMapper;
+
+    @Autowired
+    private MaterialTypeMapper materialTypeMapper;
+
     public TNPYResponse getWorkOrder( ) {
         TNPYResponse result = new TNPYResponse();
         try
@@ -206,6 +207,11 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         try
         {
             OrderSplit orderSplit=(OrderSplit) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), OrderSplit.class);
+            TNPYResponse judgeResult = judgeEnoughMaterial(orderSplit.getMaterialid(),orderSplit.getOrderid(),orderSplit.getProductionnum());
+            if(judgeResult.getStatus() != StatusEnum.ResponseStatus.Success.getIndex())
+            {
+                return  judgeResult;
+            }
             orderSplit.setStatus(StatusEnum.WorkOrderStatus.finished.getIndex() + "");
             orderSplitMapper.updateByPrimaryKeySelective(orderSplit);
             MaterialRecord materialRecord = new MaterialRecord();
@@ -236,5 +242,91 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             result.setMessage("查询出错！" + ex.getMessage());
             return  result;
         }
+    }
+
+    private TNPYResponse judgeEnoughMaterial(String outMaterial,String finishOrderID,double production)
+    {
+        TNPYResponse result = new TNPYResponse();
+        result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+        boolean bl = true;
+        try
+        {
+            List<Map<String, String>> outMaterialProportion = materialMapper.selectProportionalityByOut(outMaterial);
+            List<Map<String, String>> inputRecord = materialRecordMapper.selectBatchChargingByOrder(finishOrderID);
+            double productionALl = materialRecordMapper.getProductionByOrderID(finishOrderID);
+            productionALl = productionALl + production;
+
+            Map<String, Double> outMaterialProportionMap = new HashMap<String, Double>();
+            Map<String, Double> inputRecordMap = new HashMap<String, Double>();
+
+            String typeID= "";
+            double number=-1;
+            for (Map<String, String> proportionMap : outMaterialProportion)
+            {
+                typeID = null;
+                number = -1;
+                for (Map.Entry<String, String> entry : proportionMap.entrySet()) {
+                    if (org.springframework.util.StringUtils.isEmpty(entry.getValue()))
+                        break;
+                    if("typeID".equals(entry.getKey()))
+                    {
+                        typeID = entry.getValue();
+                    }
+                    if("proportionality".equals(entry.getKey()) && entry.getValue().split(":").length ==2)
+                    {
+                        number =Double.valueOf(entry.getValue().split(":")[0]) /Double.valueOf(entry.getValue().split(":")[1])  ;
+                    }
+                }
+                if(number > -1)
+                {
+                    outMaterialProportionMap.put(typeID,number);
+                }
+            }
+
+            for (Map<String, String> inputMap : inputRecord)
+            {
+                typeID = null;
+                number = -1;
+                for (Map.Entry<String, String> entry : inputMap.entrySet()) {
+                    if("typeID".equals(entry.getKey()))
+                    {
+                        typeID = entry.getValue();
+                    }
+                    if("sum".equals(entry.getKey()))
+                    {
+                        number = Double.valueOf(entry.getValue());
+                    }
+                }
+                if(number > -1)
+                {
+                    inputRecordMap.put(typeID,number);
+                }
+            }
+
+            for (Map.Entry<String, Double> entry : outMaterialProportionMap.entrySet()) {
+               if(!inputRecordMap.containsKey(entry.getKey()))
+               {
+                   result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                   result.setMessage(materialTypeMapper.getTypeNameByID(entry.getKey()) + "投料不足，已投："
+                           + "0" + "，至少需要投入：" +  entry.getValue() * productionALl );
+                   bl = false;
+                   break;
+               }
+               if(inputRecordMap.get(entry.getKey()) + 1.0 < entry.getValue() * productionALl)
+               {
+                   result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                   result.setMessage(materialTypeMapper.getTypeNameByID(entry.getKey()) + "投料不足，已投："
+                           + inputRecordMap.get(entry.getKey()) + "，至少需要投入：" +  entry.getValue() * productionALl );
+                   break;
+               }
+            }
+        }
+       catch (Exception ex)
+       {
+           result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+           result.setMessage(ex.getMessage());
+       }
+
+        return  result;
     }
 }

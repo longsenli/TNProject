@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 @Component
@@ -59,4 +60,13 @@ public interface MaterialRecordMapper {
             "    outputTime=#{outputTime},\n" +
             "    outputer=#{outputer} where subOrderID= #{qrCode}")
     int updateGainMaterialByQR(String qrCode, String expendOrderID, String outputer , Date outputTime, int status);
+
+    @Select("select b.typeID,sum(a.number) as sum  from \n" +
+            "(\n" +
+            "SELECT materialID,number FROM ilpsdb.tb_materialrecord where expendOrderID = #{outOrderID}\n" +
+            ") a left join sys_material b on a.materialID = b.id group by b.typeID ")
+    List<Map<String, String>> selectBatchChargingByOrder(String outOrderID);
+
+    @Select("select sum(number) from tb_materialrecord where orderID = #{orderID}")
+    double getProductionByOrderID(String orderID);
 }

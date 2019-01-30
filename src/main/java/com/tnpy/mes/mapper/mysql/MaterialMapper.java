@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 @Component
@@ -36,4 +37,11 @@ public interface MaterialMapper {
 
     @Select("select * from sys_material where id in (select distinct inMaterialID from  sys_materialrelation  ${filter} )")
     List<Material> selectByFilter(@Param("filter") String filter);
+
+    @Select("select * from\n" +
+            "(\n" +
+            " SELECT   a.proportionality,b.typeID FROM sys_materialrelation a left join sys_material b \n" +
+            " on a.inMaterialID = b.id  where a.outMaterialID = #{outMaterialID} group by a.proportionality,b.typeID order by proportionality desc\n" +
+            " ) c group by typeID ")
+    List<Map<String, String>> selectProportionalityByOut( String outMaterialID);
 }

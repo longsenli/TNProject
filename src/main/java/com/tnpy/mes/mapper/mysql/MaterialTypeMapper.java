@@ -24,4 +24,7 @@ public interface MaterialTypeMapper {
 
     @Select("select * from sys_materialtype order by name asc")
     List<MaterialType> selectAll();
+
+    @Select("select name from sys_materialtype where id = #{id}")
+    String getTypeNameByID(String id);
 }

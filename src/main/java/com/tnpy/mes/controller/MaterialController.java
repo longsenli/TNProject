@@ -33,6 +33,11 @@ public class MaterialController {
         return materialService.gainMaterialRecord(materialIDListStr,expendOrderID,outputter);
     }
 
+    @RequestMapping(value = "/gainpartmaterialrecord")
+    public TNPYResponse gainPartMaterialRecord(String materialID,String number,String expendOrderID,String outputter ) {
+        return materialService.gainPartMaterialRecord(materialID,number,expendOrderID,outputter);
+    }
+
     @RequestMapping(value = "/gainmaterialbyqr")
     public TNPYResponse gainMaterialByQR(String qrCode,String expendOrderID,String outputter ) {
         return materialService.gainMaterialByQR(qrCode,expendOrderID,outputter);
