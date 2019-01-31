@@ -4,12 +4,15 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
+import com.tnpy.mes.mapper.mysql.BatchrelationcontrolMapper;
 import com.tnpy.mes.mapper.mysql.MaterialRecordMapper;
 import com.tnpy.mes.model.customize.CustomMaterialRecord;
+import com.tnpy.mes.model.mysql.Batchrelationcontrol;
 import com.tnpy.mes.model.mysql.MaterialRecord;
 import com.tnpy.mes.service.materialService.IMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -25,7 +28,8 @@ public class MaterialServiceImpl implements IMaterialService {
 
     @Autowired
     private MaterialRecordMapper materialRecordMapper;
-
+    @Autowired
+    private BatchrelationcontrolMapper batchrelationcontrolMapper;
     public TNPYResponse getMaterialRecord(String expendOrderID ) {
         TNPYResponse result = new TNPYResponse();
         try
@@ -58,11 +62,52 @@ public class MaterialServiceImpl implements IMaterialService {
         }
     }
 
-    public TNPYResponse gainMaterialRecord(String materialIDListStr, String expendOrderID, String outputter ) {
+    public TNPYResponse judgeAvailable(String materialOrderID, String expendOrderID )
+    {
         TNPYResponse result = new TNPYResponse();
         try
         {
-            List<String> materialIDList = JSON.parseArray(materialIDListStr, String.class);
+            String materialTBBatch = batchrelationcontrolMapper.selectTBBatchByOrderID(materialOrderID);
+            String expendTBBatch = batchrelationcontrolMapper.selectTBBatchByOrderID(expendOrderID);
+            if(StringUtils.isEmpty(expendTBBatch))
+            {
+                Batchrelationcontrol batchrelationcontrol = new Batchrelationcontrol();
+                batchrelationcontrol.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                batchrelationcontrol.setRelationtime(new Date());
+                batchrelationcontrol.setRelationorderid(expendOrderID);
+                batchrelationcontrol.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
+                batchrelationcontrol.setTbbatch(materialTBBatch);
+                batchrelationcontrolMapper.insert(batchrelationcontrol);
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                return  result;
+            }
+            if(expendTBBatch.equals(materialTBBatch))
+            {
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            }
+            else
+            {
+                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                result.setMessage("当前工单所用涂板批次号为：" + expendTBBatch + "所投物料所用涂板批次号为：" + materialOrderID);
+            }
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询物料是否可用出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+    public TNPYResponse gainMaterialRecord(String materialRecordIDListStr,String materialOrderID, String expendOrderID, String outputter ) {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            TNPYResponse materialUseable = judgeAvailable(materialOrderID,expendOrderID);
+            if(materialUseable.getStatus() != StatusEnum.ResponseStatus.Success.getIndex() )
+            {
+                return materialUseable;
+            }
+            List<String> materialIDList = JSON.parseArray(materialRecordIDListStr, String.class);
             materialRecordMapper.updateGainMaterialRecord(materialIDList,expendOrderID,outputter,new Date(),StatusEnum.InOutStatus.Output.getIndex());
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
@@ -73,13 +118,18 @@ public class MaterialServiceImpl implements IMaterialService {
             return  result;
         }
     }
-    public TNPYResponse gainPartMaterialRecord(String materialID,String number,String expendOrderID,String outputter )
+    public TNPYResponse gainPartMaterialRecord(String materialRecordID,String materialOrderID,String number,String expendOrderID,String outputter )
     {
         TNPYResponse result = new TNPYResponse();
         try
         {
-            MaterialRecord materialRecord = materialRecordMapper.selectByPrimaryKey(materialID);
-            MaterialRecord materialRecordCopy =  materialRecordMapper.selectByPrimaryKey(materialID);
+            TNPYResponse materialUseable = judgeAvailable(materialOrderID,expendOrderID);
+            if(materialUseable.getStatus() != StatusEnum.ResponseStatus.Success.getIndex() )
+            {
+                return materialUseable;
+            }
+            MaterialRecord materialRecord = materialRecordMapper.selectByPrimaryKey(materialRecordID);
+            MaterialRecord materialRecordCopy =  materialRecordMapper.selectByPrimaryKey(materialRecordID);
 
             materialRecordCopy.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
             materialRecordCopy.setNumber(materialRecord.getNumber() - Float.parseFloat(number) );

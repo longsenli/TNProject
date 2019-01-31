@@ -6,10 +6,7 @@ import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.*;
 import com.tnpy.mes.model.customize.CustomWorkOrderRecord;
-import com.tnpy.mes.model.mysql.MaterialRecord;
-import com.tnpy.mes.model.mysql.OrderSplit;
-import com.tnpy.mes.model.mysql.SolidifyRecord;
-import com.tnpy.mes.model.mysql.Workorder;
+import com.tnpy.mes.model.mysql.*;
 import com.tnpy.mes.service.workOrderService.IWorkOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +37,9 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
 
     @Autowired
     private MaterialTypeMapper materialTypeMapper;
+
+    @Autowired
+    private  BatchrelationcontrolMapper batchrelationcontrolMapper;
 
     public TNPYResponse getWorkOrder( ) {
         TNPYResponse result = new TNPYResponse();
@@ -224,16 +224,47 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             materialRecord.setInputtime(new Date());
             materialRecord.setInputer(name);
             materialRecordMapper.insert(materialRecord);
-            if(ConfigParamEnum.BasicParamEnum.TBProcessID.getName().equals(workOrderMapper.getProcessIDByOrder(orderSplit.getOrderid())))
+            boolean blTB = ConfigParamEnum.BasicParamEnum.TBProcessID.getName().equals(workOrderMapper.getProcessIDByOrder(orderSplit.getOrderid()));
+            try
             {
-                SolidifyRecord solidifyRecord = new SolidifyRecord();
-                solidifyRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-                solidifyRecord.setMaterialid(orderSplit.getMaterialid());
-                solidifyRecord.setOrderid(orderSplit.getOrderid());
-                solidifyRecord.setOrdersplitid(orderSplit.getId());
-                solidifyRecord.setOrdersplitname(orderSplit.getOrdersplitid());
-                solidifyRecordMapper.insertSelective(solidifyRecord);
+                if(blTB)
+                {
+                    SolidifyRecord solidifyRecord = new SolidifyRecord();
+                    solidifyRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                    solidifyRecord.setMaterialid(orderSplit.getMaterialid());
+                    solidifyRecord.setOrderid(orderSplit.getOrderid());
+                    solidifyRecord.setOrdersplitid(orderSplit.getId());
+                    solidifyRecord.setOrdersplitname(orderSplit.getOrdersplitid());
+                    solidifyRecordMapper.insertSelective(solidifyRecord);
+                }
+            }catch (Exception ex)
+            {
+                result.setMessage(result.getMessage() + " " +ex.getMessage() );
             }
+
+            try
+            {
+                if(blTB)
+                {
+                    String batchID = batchrelationcontrolMapper.selectTBBatchByOrderID(orderSplit.getOrderid());
+                    if(org.springframework.util.StringUtils.isEmpty(batchID) || "null".equals(batchID.trim()) || batchID.length() < 6)
+                    {
+                        Batchrelationcontrol batchrelationcontrol = new Batchrelationcontrol();
+                        batchrelationcontrol.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                        batchrelationcontrol.setRelationorderid(orderSplit.getOrderid());
+                        batchrelationcontrol.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
+                        batchrelationcontrol.setRelationtime(new Date());
+                        String batch = orderSplit.getOrdersplitid().substring(0,orderSplit.getOrdersplitid().length() - 13)
+                                + orderSplit.getOrdersplitid().substring(orderSplit.getOrdersplitid().length() - 11,orderSplit.getOrdersplitid().length() - 3);
+                        batchrelationcontrol.setTbbatch(batch);
+                        batchrelationcontrolMapper.insert(batchrelationcontrol);
+                    }
+                }
+            }catch (Exception ex)
+            {
+                result.setMessage(result.getMessage() + " " +ex.getMessage() );
+            }
+
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }
@@ -253,9 +284,16 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         {
             List<Map<String, String>> outMaterialProportion = materialMapper.selectProportionalityByOut(outMaterial);
             List<Map<String, String>> inputRecord = materialRecordMapper.selectBatchChargingByOrder(finishOrderID);
-            double productionALl = materialRecordMapper.getProductionByOrderID(finishOrderID);
+            String productionStr = materialRecordMapper.getProductionByOrderID(finishOrderID);
+            Double productionALl = 0.0;
+            try
+            {
+                productionALl = Double.parseDouble(productionStr);
+            }catch (Exception ex)
+            {
+                productionALl = 0.0;
+            }
             productionALl = productionALl + production;
-
             Map<String, Double> outMaterialProportionMap = new HashMap<String, Double>();
             Map<String, Double> inputRecordMap = new HashMap<String, Double>();
 

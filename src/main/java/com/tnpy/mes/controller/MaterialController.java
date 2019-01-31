@@ -29,13 +29,13 @@ public class MaterialController {
     }
 
     @RequestMapping(value = "/gainmaterialrecord")
-    public TNPYResponse gainMaterialRecord(String materialIDListStr,String expendOrderID,String outputter ) {
-        return materialService.gainMaterialRecord(materialIDListStr,expendOrderID,outputter);
+    public TNPYResponse gainMaterialRecord(String materialRecordIDListStr,String materialOrderID,String expendOrderID,String outputter ) {
+        return materialService.gainMaterialRecord(materialRecordIDListStr,materialOrderID,expendOrderID,outputter);
     }
 
     @RequestMapping(value = "/gainpartmaterialrecord")
-    public TNPYResponse gainPartMaterialRecord(String materialID,String number,String expendOrderID,String outputter ) {
-        return materialService.gainPartMaterialRecord(materialID,number,expendOrderID,outputter);
+    public TNPYResponse gainPartMaterialRecord(String materialRecordID,String materialOrderID,String number,String expendOrderID,String outputter ) {
+        return materialService.gainPartMaterialRecord(materialRecordID,materialOrderID,number,expendOrderID,outputter);
     }
 
     @RequestMapping(value = "/gainmaterialbyqr")

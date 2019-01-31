@@ -68,5 +68,5 @@ public interface MaterialRecordMapper {
     List<Map<String, String>> selectBatchChargingByOrder(String outOrderID);
 
     @Select("select sum(number) from tb_materialrecord where orderID = #{orderID}")
-    double getProductionByOrderID(String orderID);
+    String getProductionByOrderID(String orderID);
 }
