@@ -69,4 +69,5 @@ public interface MaterialRecordMapper {
 
     @Select("select sum(number) from tb_materialrecord where orderID = #{orderID}")
     String getProductionByOrderID(String orderID);
+
 }

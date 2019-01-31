@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.BatchrelationcontrolMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.Batchrelationcontrol">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="tbBatch" jdbcType="VARCHAR" property="tbbatch" />
+    <result column="relationOrderID" jdbcType="VARCHAR" property="relationorderid" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="relationTime" jdbcType="TIMESTAMP" property="relationtime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, tbBatch, relationOrderID, status, relationTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_batchrelationcontrol
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_batchrelationcontrol
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.Batchrelationcontrol">
+    insert into tb_batchrelationcontrol (id, tbBatch, relationOrderID, 
+      status, relationTime)
+    values (#{id,jdbcType=VARCHAR}, #{tbbatch,jdbcType=VARCHAR}, #{relationorderid,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{relationtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.Batchrelationcontrol">
+    insert into tb_batchrelationcontrol
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="tbbatch != null">
+        tbBatch,
+      </if>
+      <if test="relationorderid != null">
+        relationOrderID,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="relationtime != null">
+        relationTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="tbbatch != null">
+        #{tbbatch,jdbcType=VARCHAR},
+      </if>
+      <if test="relationorderid != null">
+        #{relationorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="relationtime != null">
+        #{relationtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.Batchrelationcontrol">
+    update tb_batchrelationcontrol
+    <set>
+      <if test="tbbatch != null">
+        tbBatch = #{tbbatch,jdbcType=VARCHAR},
+      </if>
+      <if test="relationorderid != null">
+        relationOrderID = #{relationorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="relationtime != null">
+        relationTime = #{relationtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.Batchrelationcontrol">
+    update tb_batchrelationcontrol
+    set tbBatch = #{tbbatch,jdbcType=VARCHAR},
+      relationOrderID = #{relationorderid,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      relationTime = #{relationtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

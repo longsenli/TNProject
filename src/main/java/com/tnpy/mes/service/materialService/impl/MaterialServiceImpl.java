@@ -6,9 +6,11 @@ import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.BatchrelationcontrolMapper;
 import com.tnpy.mes.mapper.mysql.MaterialRecordMapper;
+import com.tnpy.mes.mapper.mysql.OrderSplitMapper;
 import com.tnpy.mes.model.customize.CustomMaterialRecord;
 import com.tnpy.mes.model.mysql.Batchrelationcontrol;
 import com.tnpy.mes.model.mysql.MaterialRecord;
+import com.tnpy.mes.model.mysql.OrderSplit;
 import com.tnpy.mes.service.materialService.IMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,8 @@ public class MaterialServiceImpl implements IMaterialService {
     private MaterialRecordMapper materialRecordMapper;
     @Autowired
     private BatchrelationcontrolMapper batchrelationcontrolMapper;
+    @Autowired
+    private OrderSplitMapper orderSplitMapper;
     public TNPYResponse getMaterialRecord(String expendOrderID ) {
         TNPYResponse result = new TNPYResponse();
         try
@@ -88,7 +92,7 @@ public class MaterialServiceImpl implements IMaterialService {
             else
             {
                 result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
-                result.setMessage("当前工单所用涂板批次号为：" + expendTBBatch + "所投物料所用涂板批次号为：" + materialOrderID);
+                result.setMessage("当前工单所用涂板批次号为：" + expendTBBatch + "所投物料所用涂板批次号为：" + materialTBBatch);
             }
             return  result;
         }
@@ -170,6 +174,14 @@ public class MaterialServiceImpl implements IMaterialService {
                 result.setMessage("该工单不能够使用该物料！");
                 return  result;
             }
+
+            OrderSplit orderSplit = orderSplitMapper.selectByPrimaryKey(qrCode);
+            TNPYResponse materialUseable = judgeAvailable(orderSplit.getOrderid(),expendOrderID);
+            if(materialUseable.getStatus() != StatusEnum.ResponseStatus.Success.getIndex() )
+            {
+                return materialUseable;
+            }
+
             materialRecordMapper.updateGainMaterialByQR(qrCode,expendOrderID,outputter,new Date(),StatusEnum.InOutStatus.Output.getIndex());
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
