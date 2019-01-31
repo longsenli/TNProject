@@ -5,6 +5,7 @@ import com.tnpy.mes.model.mysql.Workorder;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -33,4 +34,10 @@ public interface WorkorderMapper {
     @Select("select processID from tb_workorder where id = #{orderID}")
     String getProcessIDByOrder(String orderID);
     List<CustomWorkOrderRecord> selectCustomResultByFilter(@Param("filter") String filter);
+
+    @Update("UPDATE tb_workOrder set status = #{status} where scheduledStartTime = #{time}")
+    int finishOrder(String time,String status);
+
+    @Update("UPDATE tb_workOrder set status = #{status} where scheduledStartTime = #{time}")
+    int startOrder(String time,String status);
 }
