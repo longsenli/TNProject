@@ -24,8 +24,8 @@ public class MaterialController {
     }
 
     @RequestMapping(value = "/getusablematerial")
-    public TNPYResponse getUsableMaterial(String plantID,String materialID ) {
-        return materialService.getUsableMaterial(plantID,materialID);
+    public TNPYResponse getUsableMaterial(String plantID,String materialID,String expendOrderID ) {
+        return materialService.getUsableMaterial(plantID,materialID, expendOrderID);
     }
 
     @RequestMapping(value = "/gainmaterialrecord")

@@ -45,6 +45,23 @@
     from tb_materialrecord
     where id = #{id,jdbcType=VARCHAR}
   </select>
+
+  <select id="selectUsableMaterial" parameterType="java.lang.String" resultMap="CustomResultMap">
+   select g.* from
+   ( select e.*,f.name as materialName from ( select c.*,d.orderSplitID as inSubOrderName,
+            left(d.orderSplitID, length(d.orderSplitID)-3)  as inOrderName from (
+            select a.* from ( SELECT * FROM tb_materialrecord where materialID in(
+            select inMaterialID from sys_materialrelation where outMaterialID = #{materialID}) and inOrOut = '1'
+            ) a left join tb_workorder b on a.orderID = b.id
+            where b.plantID = #{plantID} ) c left join tb_ordersplit d on c.subOrderID = d.id
+            ) e left join sys_material f on e.materialID = f.id  ) g
+    <if test="batchID != null">
+      left join  tb_batchrelationcontrol m
+      on g.orderID = m.relationOrderID where m.tbBatch = #{batchID}
+    </if>
+              order by inputTime asc
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from tb_materialrecord
     where id = #{id,jdbcType=VARCHAR}

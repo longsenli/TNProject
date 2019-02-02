@@ -50,12 +50,15 @@ public class MaterialServiceImpl implements IMaterialService {
         }
     }
 
-    public TNPYResponse getUsableMaterial(String plantID,String materialID ) {
+    public TNPYResponse getUsableMaterial(String plantID,String materialID,String expendOrderID ) {
         TNPYResponse result = new TNPYResponse();
         try
         {
-            List<CustomMaterialRecord> materialRecordList = materialRecordMapper.selectUsableMaterial(plantID,materialID);
-            result.setStatus(1);
+            String materialTBBatch = batchrelationcontrolMapper.selectTBBatchByOrderID(expendOrderID);
+            if(StringUtils.isEmpty(materialTBBatch))
+                materialTBBatch = null;
+            List<CustomMaterialRecord> materialRecordList = materialRecordMapper.selectUsableMaterial(plantID,materialID,materialTBBatch);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(materialRecordList).toString());
             return  result;
         }
@@ -65,7 +68,7 @@ public class MaterialServiceImpl implements IMaterialService {
             return  result;
         }
     }
-
+    //materialOrderID 工单号 如
     public TNPYResponse judgeAvailable(String materialOrderID, String expendOrderID )
     {
         TNPYResponse result = new TNPYResponse();
@@ -159,13 +162,23 @@ public class MaterialServiceImpl implements IMaterialService {
         TNPYResponse result = new TNPYResponse();
         try
         {
+            OrderSplit orderSplit = orderSplitMapper.selectByPrimaryKey(qrCode);
+            String msgStr = "";
+            if(orderSplit != null)
+            {
+                msgStr = "工单批次码： " + orderSplit.getOrdersplitid();
+            }
+            else
+            {
+                msgStr = "该批次码未找到，二维码数据为：" +  qrCode;
+            }
             int count1 = materialRecordMapper.checkMaterialRecordUsed(qrCode,StatusEnum.InOutStatus.Input.getIndex());
             int count2 = materialRecordMapper.checkMaterialRelation(qrCode,expendOrderID);
 
             if(count1 < 1)
             {
                 result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
-                result.setMessage("该物料已被领用！");
+                result.setMessage(msgStr + "， 该批次码不存在或已被领用！");
                 return  result;
             }
             if(count2 < 1)
@@ -175,7 +188,7 @@ public class MaterialServiceImpl implements IMaterialService {
                 return  result;
             }
 
-            OrderSplit orderSplit = orderSplitMapper.selectByPrimaryKey(qrCode);
+
             TNPYResponse materialUseable = judgeAvailable(orderSplit.getOrderid(),expendOrderID);
             if(materialUseable.getStatus() != StatusEnum.ResponseStatus.Success.getIndex() )
             {

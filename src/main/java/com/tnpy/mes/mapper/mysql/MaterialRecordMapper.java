@@ -34,14 +34,16 @@ public interface MaterialRecordMapper {
             ") c left join sys_material d on c.materialID = d.id  order by outputTime desc")
     List<CustomMaterialRecord> selectByExpendOrder(String expendOrder);
 
-    @Select("select e.*,f.name as materialName from ( select c.*,d.orderSplitID as inSubOrderName,\n" +
+   /* @Select("select g.* from \n" +
+            "( select e.*,f.name as materialName from ( select c.*,d.orderSplitID as inSubOrderName,\n" +
             "left(d.orderSplitID, length(d.orderSplitID)-3)  as inOrderName from ( \n" +
             "select a.* from ( SELECT * FROM tb_materialrecord where materialID in(\n" +
             "select inMaterialID from sys_materialrelation where outMaterialID = #{materialID}) and inOrOut = '1'\n" +
             ") a left join tb_workorder b on a.orderID = b.id  \n" +
             "where b.plantID = #{plantID} ) c left join tb_ordersplit d on c.subOrderID = d.id \n" +
-            ") e left join sys_material f on e.materialID = f.id  order by inputTime asc ")
-    List<CustomMaterialRecord> selectUsableMaterial(String plantID,String materialID );
+            ") e left join sys_material f on e.materialID = f.id  ) g left join  tb_batchrelationcontrol m\n" +
+            " on g.orderID = m.relationOrderID where m.tbBatch = #{batchID} order by inputTime asc ")*/
+    List<CustomMaterialRecord> selectUsableMaterial(String plantID,String materialID,String batchID );
 
 
     int updateGainMaterialRecord(List<String> materialIDList, String expendOrderID, String outputer , Date outputTime, int status);
