@@ -225,4 +225,14 @@
     </foreach>
     )
   </update>
+
+  <select id="selectByExpendIDList" parameterType="java.util.List" resultMap="CustomResultMap">
+    select c.*,d.name as materialName from (
+    SELECT a.*,b.orderSplitID as inSubOrderName,left(b.orderSplitID, length(b.orderSplitID)-3)  as inOrderName
+    FROM tb_materialrecord  a left join tb_ordersplit b on a.subOrderID = b.id where expendOrderID  in (
+    <foreach collection="expendIDList" item="expendID" index="index" separator=",">
+      #{expendID}
+    </foreach>
+    ) ) c left join sys_material d on c.materialID = d.id  order by outputTime desc
+  </select>
 </mapper>

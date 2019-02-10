@@ -39,7 +39,7 @@ public class MaterialServiceImpl implements IMaterialService {
         try
         {
             List<CustomMaterialRecord> materialRecordList = materialRecordMapper.selectByExpendOrder(expendOrderID);
-            result.setStatus(1);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(materialRecordList).toString());
             return  result;
         }

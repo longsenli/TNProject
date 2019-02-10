@@ -3,6 +3,7 @@ package com.tnpy.mes.mapper.mysql;
 import com.tnpy.mes.model.customize.CustomMaterialRecord;
 import com.tnpy.mes.model.mysql.MaterialRecord;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
@@ -72,4 +73,9 @@ public interface MaterialRecordMapper {
     @Select("select sum(number) from tb_materialrecord where orderID = #{orderID}")
     String getProductionByOrderID(String orderID);
 
+    @Select("select distinct orderID from tb_materialrecord where expendOrderID = #{expendOrderID}")
+    List<String> getOrderIDByExpendID(String expendOrderID);
+
+
+    List<CustomMaterialRecord> selectByExpendIDList(@Param("expendIDList") List<String> expendIDList);
 }
