@@ -21,7 +21,7 @@ public interface ProductionLineMapper {
     int updateByPrimaryKeySelective(ProductionLine record);
 
     int updateByPrimaryKey(ProductionLine record);
-    @Select("select * from  sys_productionLine where plantID = #{plantID} and processID = #{processID}")
+    @Select("select * from  sys_productionLine where plantID = #{plantID} and processID = #{processID} order by name asc ")
     List<ProductionLine> selectByPlantProcess(String plantID, String processID);
 
 }

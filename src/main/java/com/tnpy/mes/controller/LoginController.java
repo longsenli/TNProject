@@ -1,6 +1,7 @@
 package com.tnpy.mes.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.encryption.Encryption;
 import com.tnpy.common.utils.token.Token;
 import com.tnpy.common.utils.token.TokenUtil;
@@ -98,8 +99,8 @@ public class LoginController {
 		}
 		//返回Token信息给客户端
 
-		response.setStatus(1);
-		response.setMessage(myUser.getName());
+		response.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+		response.setMessage(myUser.getName() + " ### " + myUser.getRoleid() );
 		response.setToken(JSONObject.toJSON(token).toString());
 		return response;
 	}

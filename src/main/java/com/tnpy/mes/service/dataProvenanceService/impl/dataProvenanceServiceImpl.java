@@ -46,7 +46,7 @@ public class dataProvenanceServiceImpl implements IDataProvenanceService {
             {
                 expendOrderList.add("-1");
             }
-            System.out.println("==============" +expendOrderList.toString());
+
             List<CustomMaterialRecord> materialRecordList = materialRecordMapper.selectByExpendIDList(expendOrderList);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(materialRecordList).toString());
