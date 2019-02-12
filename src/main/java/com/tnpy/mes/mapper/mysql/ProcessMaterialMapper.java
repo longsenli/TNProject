@@ -24,8 +24,8 @@ public interface ProcessMaterialMapper {
     int updateByPrimaryKey(ProcessMaterial record);
 
     @Select("select * from sys_processmaterial ")
-    List<ProcessMaterial>selectAll();
+    List<ProcessMaterial> selectAll();
 
     @Select("select * from sys_processmaterial ${filter}")
-    List<ProcessMaterial>selectByFilter(@Param("filter") String filter);
+    List<ProcessMaterial> selectByFilter(@Param("filter") String filter);
 }

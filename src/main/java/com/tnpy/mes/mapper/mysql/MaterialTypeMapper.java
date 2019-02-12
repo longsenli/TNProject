@@ -22,7 +22,7 @@ public interface MaterialTypeMapper {
 
     int updateByPrimaryKey(MaterialType record);
 
-    @Select("select * from sys_materialtype order by name asc")
+    @Select("select * from sys_materialtype order by id asc")
     List<MaterialType> selectAll();
 
     @Select("select name from sys_materialtype where id = #{id}")

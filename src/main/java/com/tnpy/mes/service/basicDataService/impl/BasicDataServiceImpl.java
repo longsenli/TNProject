@@ -278,8 +278,9 @@ public class BasicDataServiceImpl implements IBasicDataService {
             String filter = "";
             if(!("-1".equals(processID)))
             {
-                filter += " where processID = '" + processID + "'";
+                filter += " where processID = '" + processID + "' ";
             }
+            filter +=  " order by processID ";
             List<ProcessMaterial> processMaterialList = processMaterialMapper.selectByFilter(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSONString(processMaterialList, SerializerFeature.WriteMapNullValue).toString());
