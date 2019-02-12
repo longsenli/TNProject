@@ -30,4 +30,28 @@ public class SemifinishedBatteryController {
     {
         return  semifinishedBatteryService.getScrapBatteryByline(lineID);
     }
+
+    @RequestMapping(value = "/deletescrapbattery")
+    public TNPYResponse deleteScrapBattery(String batteryID)
+    {
+        return  semifinishedBatteryService.deleteScrapBattery(batteryID);
+    }
+
+    @RequestMapping(value = "/addrepairbattery")
+    public TNPYResponse addRepairBattery( String jsonStr,String type)
+    {
+        return  semifinishedBatteryService.addRepairBattery(jsonStr,type);
+    }
+
+    @RequestMapping(value = "/getrepairbatterybyline")
+    public TNPYResponse getRepairBatteryByline(String lineID)
+    {
+        return  semifinishedBatteryService.getRepairBatteryByline(lineID);
+    }
+
+    @RequestMapping(value = "/deleterepairbattery")
+    public TNPYResponse deleteRepairBattery(String batteryID)
+    {
+        return  semifinishedBatteryService.deleteRepairBattery(batteryID);
+    }
 }

@@ -116,7 +116,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         }
     }
 
-    private  String getorderNumber(int number,int length)
+    private  String getOrderNumber(int number,int length)
     {
         String numStr = String.valueOf(number);
         String tmp = "";
@@ -147,7 +147,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                     orderSplit.setOrderid(workorder.getId());
                     orderSplit.setStatus(StatusEnum.WorkOrderStatus.ordered.getIndex() + "");
                     orderSplit.setMaterialid(workorder.getMaterialid());
-                    orderSplit.setOrdersplitid(workorder.getOrderid() +getorderNumber(i + 1,3));
+                    orderSplit.setOrdersplitid(workorder.getOrderid() + getOrderNumber(i + 1,3));
                     orderSplit.setProductionnum(workorder.getTotalproduction()/workorder.getBatchnum() *1.0);
                     orderSplitList.add(orderSplit);
                 }
