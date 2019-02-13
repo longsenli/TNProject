@@ -27,7 +27,7 @@ public interface MaterialMapper {
     @Select("select * from sys_material where typeID = #{typeID} order by name ")
     List<Material> selectByType(String typeID);
 
-    @Select("select * from sys_material")
+    @Select("select * from sys_material order by typeID,name ")
     List<Material> selectAll();
 
     @Select("select c.id,c.typeID,c.name,c.status,c.shortname,d.number as description from \n" +
@@ -35,7 +35,7 @@ public interface MaterialMapper {
             " on a.typeID = b.materialTypeID  where processID = #{processID} and inOrout ='2' ) c left join sys_materialtype d on c.typeID = d.id" )
     List<Material>  selectOutByProcess(String processID);
 
-    @Select("select * from sys_material where id in (select distinct inMaterialID from  sys_materialrelation  ${filter} )")
+    @Select("select * from sys_material where id in (select distinct inMaterialID from  sys_materialrelation  ${filter} ) order by typeID,name")
     List<Material> selectByFilter(@Param("filter") String filter);
 
     @Select("select * from\n" +

@@ -23,7 +23,7 @@ public interface ProcessMaterialMapper {
 
     int updateByPrimaryKey(ProcessMaterial record);
 
-    @Select("select * from sys_processmaterial ")
+    @Select("select * from sys_processmaterial order by processID")
     List<ProcessMaterial> selectAll();
 
     @Select("select * from sys_processmaterial ${filter}")
