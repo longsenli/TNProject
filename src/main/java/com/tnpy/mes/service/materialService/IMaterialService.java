@@ -13,4 +13,6 @@ public interface IMaterialService {
     public TNPYResponse gainMaterialRecord(String materialRecordIDListStr,String materialOrderID, String expendOrderID, String outputter );
     public TNPYResponse gainMaterialByQR(String qrCode,String expendOrderID,String outputter );
     public TNPYResponse gainPartMaterialRecord(String materialRecordID,String materialOrderID,String number,String expendOrderID,String outputter );
+    public TNPYResponse orderOutputStatistics( String startTime,String endTime,String plantID,String processID,String lineID );
+    public TNPYResponse orderRemnantProductStatistics( String startTime,String endTime,String plantID,String processID,String lineID );
 }

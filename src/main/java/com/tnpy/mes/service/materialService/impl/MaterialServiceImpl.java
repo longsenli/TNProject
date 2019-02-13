@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -197,6 +198,50 @@ public class MaterialServiceImpl implements IMaterialService {
 
             materialRecordMapper.updateGainMaterialByQR(qrCode,expendOrderID,outputter,new Date(),StatusEnum.InOutStatus.Output.getIndex());
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    public TNPYResponse orderOutputStatistics( String startTime,String endTime,String plantID,String processID,String lineID )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String lineFilter = "";
+            if(!"-1".equals(lineID))
+            {
+                lineFilter += " and lineID ='" + lineID + "' ";
+            }
+            List<Map<String, String>> orderOutputStatisticsList = materialRecordMapper.orderOutputStatistics( startTime, endTime, plantID, processID, lineFilter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(orderOutputStatisticsList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    public TNPYResponse orderRemnantProductStatistics( String startTime,String endTime,String plantID,String processID,String lineID )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String lineFilter = "";
+            if(!"-1".equals(lineID))
+            {
+                lineFilter += " and lineID ='" + lineID + "' ";
+            }
+            List<Map<String, String>> orderOutputStatisticsList = materialRecordMapper.orderRemnantProductStatistics( startTime, endTime, plantID, processID, lineFilter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(orderOutputStatisticsList).toString());
             return  result;
         }
         catch (Exception ex)

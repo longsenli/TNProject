@@ -78,4 +78,18 @@ public interface MaterialRecordMapper {
 
 
     List<CustomMaterialRecord> selectByExpendIDList(@Param("expendIDList") List<String> expendIDList);
+
+    @Select("select d.outputTotal,e.name from ( select sum(number) as outputTotal,materialID from \n" +
+            "(\n" +
+            "select a.materialID,b.plantID,b.lineID,b.processID,a.number,a.inputTime,a.inOrOut from ( select * from tb_materialrecord where inputTime > #{startTime} and inputTime < #{endTime} ) a\n" +
+            " left join tb_workorder b on a.orderID = b.id where plantID  = #{plantID} and processID = #{processID} ${lineIDFilter} \n" +
+            " ) c group by materialID ) d left join sys_material e on d.materialID = e.id ")
+    List<Map<String, String>> orderOutputStatistics(String startTime,String endTime,String plantID,String processID,@Param("lineIDFilter") String lineID );
+
+    @Select("select d.remnantTotalNum,e.name from ( select sum(number) as remnantTotalNum,materialID from \n" +
+            "(\n" +
+            "select a.materialID,b.plantID,b.lineID,b.processID,a.number,a.inputTime,a.inOrOut from ( select * from tb_materialrecord where inputTime > #{startTime} and inputTime < #{endTime} ) a\n" +
+            " left join tb_workorder b on a.orderID = b.id where inOrOut = '1' and plantID  = #{plantID} and processID = #{processID} ${lineIDFilter} \n" +
+            " ) c group by materialID ) d left join sys_material e on d.materialID = e.id ")
+    List<Map<String, String>> orderRemnantProductStatistics(String startTime,String endTime,String plantID,String processID,@Param("lineIDFilter") String lineID );
 }
