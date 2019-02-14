@@ -104,7 +104,7 @@ public class AutomaticSchedulingTimer {
         }
     }
 
-    @Scheduled(cron = "0 55 13 * * ?")
+    @Scheduled(cron = "0 50 23 * * ?")
     public void automaticBatteryStatisInventory() {
         try {
 
@@ -112,10 +112,14 @@ public class AutomaticSchedulingTimer {
             Date date = new Date();//取时间
             String startTime = dateFormat.format(date) ;
             String endTime = dateFormat.format(date) + " 23:59:59" ;
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(date);
+            calendar.add(Calendar.DATE, -1);
+            date = calendar.getTime();
             List<IndustrialPlant> industrialPlantList = industrialPlantMapper.selectAll();
             for(int i = 0;i<industrialPlantList.size();i++)
             {
-                String lastInventoryStr = batteryStastisInventoryRecordMapper.getSelectInventory(industrialPlantList.get(i).getId(),startTime,endTime);
+                String lastInventoryStr = batteryStastisInventoryRecordMapper.getSelectInventory(industrialPlantList.get(i).getId(),dateFormat.format(date) ,dateFormat.format(date) + " 23:59:59");
                 int lastInventoryNum = 0;
                try
                 {
@@ -180,18 +184,17 @@ public class AutomaticSchedulingTimer {
                     borrowNum = 0;
                 }
 
-                String dailyProductionStr = materialRecordMapper.getJSProcessBatteryProduction(startTime,endTime,industrialPlantList.get(i).getId(),
-                        ConfigParamEnum.BasicProcessEnum.JSProcessID.getIndex() + "");
+                Object dailyProductionStr = materialRecordMapper.getJSProcessBatteryProduction(startTime,endTime,industrialPlantList.get(i).getId(),
+                        ConfigParamEnum.BasicProcessEnum.JSProcessID.getName());
                 int dailyProduction = 0;
                 try
                 {
-                    dailyProduction = Integer.parseInt( dailyProductionStr );
+                    dailyProduction = (int)Double.parseDouble(dailyProductionStr.toString());
                 }
                 catch (Exception ex)
                 {
                     dailyProduction = 0;
                 }
-
                 BatteryStastisInventoryRecord batteryStastisInventoryRecord = new BatteryStastisInventoryRecord();
                 batteryStastisInventoryRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 batteryStastisInventoryRecord.setBorrownum(borrowNum);
@@ -203,7 +206,8 @@ public class AutomaticSchedulingTimer {
                 batteryStastisInventoryRecord.setScrapnum(scrapNum);
                 batteryStastisInventoryRecord.setStatus(StatusEnum.StatusFlag.using.getIndex()+ "");
                 batteryStastisInventoryRecord.setUpdatetime(new Date());
-                batteryStastisInventoryRecord.setCurrentstorage(lastInventoryNum-loanNum-scrapNum-repairNum + repairBackNum + borrowNum);
+                batteryStastisInventoryRecord.setDailyproduction(dailyProduction);
+                batteryStastisInventoryRecord.setCurrentstorage(lastInventoryNum - loanNum - scrapNum - repairNum + repairBackNum + borrowNum + dailyProduction);
                 batteryStastisInventoryRecordMapper.insertSelective(batteryStastisInventoryRecord);
             }
 

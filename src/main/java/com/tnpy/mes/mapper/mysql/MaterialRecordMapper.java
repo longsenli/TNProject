@@ -98,8 +98,8 @@ public interface MaterialRecordMapper {
     from ( SELECT * FROM ilpsdb.tb_workorder where plantID = '3' and scheduledStartTime > '2019-02-02' and scheduledStartTime <= '2019-02-20' )
     a left join tb_materialrecord b on a.id = b.orderID
     */
-    @Select("select sum(b.number) as sumNum \n" +
-            "    from ( SELECT * FROM ilpsdb.tb_workorder where plantID = #{plantID} and scheduledStartTime > #{startTime} and scheduledStartTime <=  #{endTime} and processID = #{processID} )\n" +
+    @Select("select sum(b.number) \n" +
+            "    from ( SELECT * FROM ilpsdb.tb_workorder where plantID = #{plantID} and scheduledStartTime >= #{startTime} and scheduledStartTime <=  #{endTime} and processID = #{processID} )\n" +
             "    a left join tb_materialrecord b on a.id = b.orderID")
-    String getJSProcessBatteryProduction(String startTime,String endTime,String plantID,String processID);
+    Object getJSProcessBatteryProduction(String startTime,String endTime,String plantID,String processID);
 }
