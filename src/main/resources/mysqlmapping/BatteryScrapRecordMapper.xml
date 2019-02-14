@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.BatteryScrapRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.BatteryScrapRecord">
+    <id column="batteryID" jdbcType="VARCHAR" property="batteryid" />
+    <result column="lineID" jdbcType="VARCHAR" property="lineid" />
+    <result column="scrapType" jdbcType="VARCHAR" property="scraptype" />
+    <result column="scrapReason" jdbcType="VARCHAR" property="scrapreason" />
+    <result column="scrapStaff" jdbcType="VARCHAR" property="scrapstaff" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="scrapTime" jdbcType="TIMESTAMP" property="scraptime" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="batteryType" jdbcType="VARCHAR" property="batterytype" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    batteryID, lineID, scrapType, scrapReason, scrapStaff, status, scrapTime, plantID, 
+    batteryType
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_batteryscraprecord
+    where batteryID = #{batteryid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_batteryscraprecord
+    where batteryID = #{batteryid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.BatteryScrapRecord">
+    insert into tb_batteryscraprecord (batteryID, lineID, scrapType, 
+      scrapReason, scrapStaff, status, 
+      scrapTime, plantID, batteryType
+      )
+    values (#{batteryid,jdbcType=VARCHAR}, #{lineid,jdbcType=VARCHAR}, #{scraptype,jdbcType=VARCHAR}, 
+      #{scrapreason,jdbcType=VARCHAR}, #{scrapstaff,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{scraptime,jdbcType=TIMESTAMP}, #{plantid,jdbcType=VARCHAR}, #{batterytype,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.BatteryScrapRecord">
+    insert into tb_batteryscraprecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="batteryid != null">
+        batteryID,
+      </if>
+      <if test="lineid != null">
+        lineID,
+      </if>
+      <if test="scraptype != null">
+        scrapType,
+      </if>
+      <if test="scrapreason != null">
+        scrapReason,
+      </if>
+      <if test="scrapstaff != null">
+        scrapStaff,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="scraptime != null">
+        scrapTime,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="batterytype != null">
+        batteryType,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="batteryid != null">
+        #{batteryid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="scraptype != null">
+        #{scraptype,jdbcType=VARCHAR},
+      </if>
+      <if test="scrapreason != null">
+        #{scrapreason,jdbcType=VARCHAR},
+      </if>
+      <if test="scrapstaff != null">
+        #{scrapstaff,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="scraptime != null">
+        #{scraptime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="batterytype != null">
+        #{batterytype,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.BatteryScrapRecord">
+    update tb_batteryscraprecord
+    <set>
+      <if test="lineid != null">
+        lineID = #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="scraptype != null">
+        scrapType = #{scraptype,jdbcType=VARCHAR},
+      </if>
+      <if test="scrapreason != null">
+        scrapReason = #{scrapreason,jdbcType=VARCHAR},
+      </if>
+      <if test="scrapstaff != null">
+        scrapStaff = #{scrapstaff,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="scraptime != null">
+        scrapTime = #{scraptime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="batterytype != null">
+        batteryType = #{batterytype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where batteryID = #{batteryid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.BatteryScrapRecord">
+    update tb_batteryscraprecord
+    set lineID = #{lineid,jdbcType=VARCHAR},
+      scrapType = #{scraptype,jdbcType=VARCHAR},
+      scrapReason = #{scrapreason,jdbcType=VARCHAR},
+      scrapStaff = #{scrapstaff,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      scrapTime = #{scraptime,jdbcType=TIMESTAMP},
+      plantID = #{plantid,jdbcType=VARCHAR},
+      batteryType = #{batterytype,jdbcType=VARCHAR}
+    where batteryID = #{batteryid,jdbcType=VARCHAR}
+  </update>
+</mapper>

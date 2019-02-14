@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.BatteryRepairRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.BatteryRepairRecord">
+    <id column="batteryID" jdbcType="VARCHAR" property="batteryid" />
+    <result column="lineID" jdbcType="VARCHAR" property="lineid" />
+    <result column="reportStaff" jdbcType="VARCHAR" property="reportstaff" />
+    <result column="repairReason" jdbcType="VARCHAR" property="repairreason" />
+    <result column="repairTime" jdbcType="TIMESTAMP" property="repairtime" />
+    <result column="backTime" jdbcType="TIMESTAMP" property="backtime" />
+    <result column="repairStaff" jdbcType="VARCHAR" property="repairstaff" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="batteryType" jdbcType="VARCHAR" property="batterytype" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    batteryID, lineID, reportStaff, repairReason, repairTime, backTime, repairStaff, 
+    status, plantID, batteryType
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_batteryrepairrecord
+    where batteryID = #{batteryid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_batteryrepairrecord
+    where batteryID = #{batteryid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.BatteryRepairRecord">
+    insert into tb_batteryrepairrecord (batteryID, lineID, reportStaff, 
+      repairReason, repairTime, backTime, 
+      repairStaff, status, plantID, 
+      batteryType)
+    values (#{batteryid,jdbcType=VARCHAR}, #{lineid,jdbcType=VARCHAR}, #{reportstaff,jdbcType=VARCHAR}, 
+      #{repairreason,jdbcType=VARCHAR}, #{repairtime,jdbcType=TIMESTAMP}, #{backtime,jdbcType=TIMESTAMP}, 
+      #{repairstaff,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, 
+      #{batterytype,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.BatteryRepairRecord">
+    insert into tb_batteryrepairrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="batteryid != null">
+        batteryID,
+      </if>
+      <if test="lineid != null">
+        lineID,
+      </if>
+      <if test="reportstaff != null">
+        reportStaff,
+      </if>
+      <if test="repairreason != null">
+        repairReason,
+      </if>
+      <if test="repairtime != null">
+        repairTime,
+      </if>
+      <if test="backtime != null">
+        backTime,
+      </if>
+      <if test="repairstaff != null">
+        repairStaff,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="batterytype != null">
+        batteryType,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="batteryid != null">
+        #{batteryid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="reportstaff != null">
+        #{reportstaff,jdbcType=VARCHAR},
+      </if>
+      <if test="repairreason != null">
+        #{repairreason,jdbcType=VARCHAR},
+      </if>
+      <if test="repairtime != null">
+        #{repairtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="backtime != null">
+        #{backtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="repairstaff != null">
+        #{repairstaff,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="batterytype != null">
+        #{batterytype,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.BatteryRepairRecord">
+    update tb_batteryrepairrecord
+    <set>
+      <if test="lineid != null">
+        lineID = #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="reportstaff != null">
+        reportStaff = #{reportstaff,jdbcType=VARCHAR},
+      </if>
+      <if test="repairreason != null">
+        repairReason = #{repairreason,jdbcType=VARCHAR},
+      </if>
+      <if test="repairtime != null">
+        repairTime = #{repairtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="backtime != null">
+        backTime = #{backtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="repairstaff != null">
+        repairStaff = #{repairstaff,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="batterytype != null">
+        batteryType = #{batterytype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where batteryID = #{batteryid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.BatteryRepairRecord">
+    update tb_batteryrepairrecord
+    set lineID = #{lineid,jdbcType=VARCHAR},
+      reportStaff = #{reportstaff,jdbcType=VARCHAR},
+      repairReason = #{repairreason,jdbcType=VARCHAR},
+      repairTime = #{repairtime,jdbcType=TIMESTAMP},
+      backTime = #{backtime,jdbcType=TIMESTAMP},
+      repairStaff = #{repairstaff,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      plantID = #{plantid,jdbcType=VARCHAR},
+      batteryType = #{batterytype,jdbcType=VARCHAR}
+    where batteryID = #{batteryid,jdbcType=VARCHAR}
+  </update>
+</mapper>

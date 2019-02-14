@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.BatteryBorrowReturnRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.BatteryBorrowReturnRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="outPlantID" jdbcType="VARCHAR" property="outplantid" />
+    <result column="inPlantID" jdbcType="VARCHAR" property="inplantid" />
+    <result column="changeNum" jdbcType="INTEGER" property="changenum" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="batteryType" jdbcType="VARCHAR" property="batterytype" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, outPlantID, inPlantID, changeNum, updateTime, status, batteryType
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_batteryborrowreturnrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_batteryborrowreturnrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.BatteryBorrowReturnRecord">
+    insert into tb_batteryborrowreturnrecord (id, outPlantID, inPlantID, 
+      changeNum, updateTime, status, 
+      batteryType)
+    values (#{id,jdbcType=VARCHAR}, #{outplantid,jdbcType=VARCHAR}, #{inplantid,jdbcType=VARCHAR}, 
+      #{changenum,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR}, 
+      #{batterytype,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.BatteryBorrowReturnRecord">
+    insert into tb_batteryborrowreturnrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="outplantid != null">
+        outPlantID,
+      </if>
+      <if test="inplantid != null">
+        inPlantID,
+      </if>
+      <if test="changenum != null">
+        changeNum,
+      </if>
+      <if test="updatetime != null">
+        updateTime,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="batterytype != null">
+        batteryType,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="outplantid != null">
+        #{outplantid,jdbcType=VARCHAR},
+      </if>
+      <if test="inplantid != null">
+        #{inplantid,jdbcType=VARCHAR},
+      </if>
+      <if test="changenum != null">
+        #{changenum,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="batterytype != null">
+        #{batterytype,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.BatteryBorrowReturnRecord">
+    update tb_batteryborrowreturnrecord
+    <set>
+      <if test="outplantid != null">
+        outPlantID = #{outplantid,jdbcType=VARCHAR},
+      </if>
+      <if test="inplantid != null">
+        inPlantID = #{inplantid,jdbcType=VARCHAR},
+      </if>
+      <if test="changenum != null">
+        changeNum = #{changenum,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="batterytype != null">
+        batteryType = #{batterytype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.BatteryBorrowReturnRecord">
+    update tb_batteryborrowreturnrecord
+    set outPlantID = #{outplantid,jdbcType=VARCHAR},
+      inPlantID = #{inplantid,jdbcType=VARCHAR},
+      changeNum = #{changenum,jdbcType=INTEGER},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=VARCHAR},
+      batteryType = #{batterytype,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
