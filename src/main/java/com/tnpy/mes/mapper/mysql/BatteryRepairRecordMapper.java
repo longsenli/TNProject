@@ -25,7 +25,7 @@ public interface BatteryRepairRecordMapper {
     @Select("select * from tb_batteryrepairrecord ${filter}")
     List<BatteryRepairRecord> selectByFilter(@Param("filter") String filter);
 
-    @Select("select count(1) from tb_batteryrepairrecord where plantID = #{plantID} and repairTime >= #{startTime} and repairTime <= #{endTime} and status = #{status}")
-    String getRepairNum(String plantID,String startTime,String endTime,String status);
+    @Select("select count(1) from tb_batteryrepairrecord where plantID = #{plantID}  and batteryType = #{batteryType} and repairTime >= #{startTime} and repairTime <= #{endTime} and status = #{status}")
+    String getRepairNum(String plantID,String startTime,String endTime,String status,String batteryType);
 
 }

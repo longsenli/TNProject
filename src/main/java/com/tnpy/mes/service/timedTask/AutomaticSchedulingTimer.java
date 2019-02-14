@@ -5,6 +5,7 @@ import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.mes.mapper.mysql.*;
 import com.tnpy.mes.model.mysql.BatteryStastisInventoryRecord;
 import com.tnpy.mes.model.mysql.IndustrialPlant;
+import com.tnpy.mes.model.mysql.Material;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -43,6 +44,9 @@ public class AutomaticSchedulingTimer {
 
     @Autowired
     private  MaterialRecordMapper materialRecordMapper;
+
+    @Autowired
+    private MaterialMapper materialMapper;
     /**
      * 每天晚上21:50:30运行
      */
@@ -117,98 +121,108 @@ public class AutomaticSchedulingTimer {
             calendar.add(Calendar.DATE, -1);
             date = calendar.getTime();
             List<IndustrialPlant> industrialPlantList = industrialPlantMapper.selectAll();
+            List<Material> materialList = materialMapper.selectOutByProcess(ConfigParamEnum.BasicProcessEnum.JSProcessID.getName());
             for(int i = 0;i<industrialPlantList.size();i++)
             {
-                String lastInventoryStr = batteryStastisInventoryRecordMapper.getSelectInventory(industrialPlantList.get(i).getId(),dateFormat.format(date) ,dateFormat.format(date) + " 23:59:59");
-                int lastInventoryNum = 0;
-               try
+                for(int j =0 ;j<materialList.size();j++)
                 {
-                    lastInventoryNum = Integer.parseInt( lastInventoryStr );
-                }
-               catch (Exception ex)
-               {
-                   lastInventoryNum = 0;
-               }
+                    String lastInventoryStr = batteryStastisInventoryRecordMapper.getSelectInventory(industrialPlantList.get(i).getId(),dateFormat.format(date) ,
+                            dateFormat.format(date) + " 23:59:59",materialList.get(j).getId());
+                    int lastInventoryNum = 0;
+                    try
+                    {
+                        lastInventoryNum = Integer.parseInt( lastInventoryStr );
+                    }
+                    catch (Exception ex)
+                    {
+                        lastInventoryNum = 0;
+                    }
 
-               String scrapNumStr = batteryScrapRecordMapper.getScrapNum(industrialPlantList.get(i).getId(),startTime,endTime);
-               int scrapNum = 0;
-                try
-                {
-                    scrapNum = Integer.parseInt( scrapNumStr );
-                }
-                catch (Exception ex)
-                {
-                    scrapNum = 0;
+                    String scrapNumStr = batteryScrapRecordMapper.getScrapNum(industrialPlantList.get(i).getId(),startTime,endTime,materialList.get(j).getId());
+                    int scrapNum = 0;
+                    try
+                    {
+                        scrapNum = Integer.parseInt( scrapNumStr );
+                    }
+                    catch (Exception ex)
+                    {
+                        scrapNum = 0;
+                    }
+
+                    String repairNumStr = batteryRepairRecordMapper.getRepairNum(industrialPlantList.get(i).getId(),startTime,endTime,"1",materialList.get(j).getId());
+                    int repairNum = 0;
+                    try
+                    {
+                        repairNum = Integer.parseInt( repairNumStr );
+                    }
+                    catch (Exception ex)
+                    {
+                        repairNum = 0;
+                    }
+
+                    String repairBackNumStr = batteryRepairRecordMapper.getRepairNum(industrialPlantList.get(i).getId(),startTime,endTime,"2",materialList.get(j).getId());
+                    int repairBackNum = 0;
+                    try
+                    {
+                        repairBackNum = Integer.parseInt( repairBackNumStr );
+                    }
+                    catch (Exception ex)
+                    {
+                        repairBackNum = 0;
+                    }
+
+                    String loanNumStr = batteryBorrowReturnRecordMapper.getLoanNum(industrialPlantList.get(i).getId(),startTime,endTime,materialList.get(j).getId());
+                    int loanNum = 0;
+                    try
+                    {
+                        loanNum = Integer.parseInt( loanNumStr );
+                    }
+                    catch (Exception ex)
+                    {
+                        loanNum = 0;
+                    }
+                    String borrowNumStr = batteryBorrowReturnRecordMapper.getBorrowNum(industrialPlantList.get(i).getId(),startTime,endTime,materialList.get(j).getId());
+                    int borrowNum = 0;
+                    try
+                    {
+                        borrowNum = Integer.parseInt( borrowNumStr );
+                    }
+                    catch (Exception ex)
+                    {
+                        borrowNum = 0;
+                    }
+
+                    Object dailyProductionStr = materialRecordMapper.getJSProcessBatteryProduction(startTime,endTime,industrialPlantList.get(i).getId(),
+                            ConfigParamEnum.BasicProcessEnum.JSProcessID.getName(),materialList.get(j).getId());
+                    int dailyProduction = 0;
+                    try
+                    {
+                        dailyProduction = (int)Double.parseDouble(dailyProductionStr.toString());
+                    }
+                    catch (Exception ex)
+                    {
+                        dailyProduction = 0;
+                    }
+                    BatteryStastisInventoryRecord batteryStastisInventoryRecord = new BatteryStastisInventoryRecord();
+                    batteryStastisInventoryRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                    batteryStastisInventoryRecord.setBorrownum(borrowNum);
+                    batteryStastisInventoryRecord.setLaststorage(lastInventoryNum);
+                    batteryStastisInventoryRecord.setLoannum(loanNum);
+                    batteryStastisInventoryRecord.setPlantid(industrialPlantList.get(i).getId());
+                    batteryStastisInventoryRecord.setRepairbacknum(repairBackNum);
+                    batteryStastisInventoryRecord.setRepairnum(repairNum);
+                    batteryStastisInventoryRecord.setScrapnum(scrapNum);
+                    batteryStastisInventoryRecord.setStatus(StatusEnum.StatusFlag.using.getIndex()+ "");
+                    batteryStastisInventoryRecord.setUpdatetime(new Date());
+                    batteryStastisInventoryRecord.setDailyproduction(dailyProduction);
+                    batteryStastisInventoryRecord.setBatterytype(materialList.get(j).getId());
+                    batteryStastisInventoryRecord.setCurrentstorage(lastInventoryNum - loanNum - scrapNum - repairNum + repairBackNum + borrowNum + dailyProduction);
+                   if((lastInventoryNum + loanNum + scrapNum + repairNum + repairBackNum + borrowNum + dailyProduction) != 0)
+                   {
+                       batteryStastisInventoryRecordMapper.insertSelective(batteryStastisInventoryRecord);
+                   }
                 }
 
-                String repairNumStr = batteryRepairRecordMapper.getRepairNum(industrialPlantList.get(i).getId(),startTime,endTime,"1");
-                int repairNum = 0;
-                try
-                {
-                    repairNum = Integer.parseInt( repairNumStr );
-                }
-                catch (Exception ex)
-                {
-                    repairNum = 0;
-                }
-
-                String repairBackNumStr = batteryRepairRecordMapper.getRepairNum(industrialPlantList.get(i).getId(),startTime,endTime,"2");
-                int repairBackNum = 0;
-                try
-                {
-                    repairBackNum = Integer.parseInt( repairBackNumStr );
-                }
-                catch (Exception ex)
-                {
-                    repairBackNum = 0;
-                }
-
-                String loanNumStr = batteryBorrowReturnRecordMapper.getLoanNum(industrialPlantList.get(i).getId(),startTime,endTime);
-                int loanNum = 0;
-                try
-                {
-                    loanNum = Integer.parseInt( loanNumStr );
-                }
-                catch (Exception ex)
-                {
-                    loanNum = 0;
-                }
-                String borrowNumStr = batteryBorrowReturnRecordMapper.getBorrowNum(industrialPlantList.get(i).getId(),startTime,endTime);
-                int borrowNum = 0;
-                try
-                {
-                    borrowNum = Integer.parseInt( borrowNumStr );
-                }
-                catch (Exception ex)
-                {
-                    borrowNum = 0;
-                }
-
-                Object dailyProductionStr = materialRecordMapper.getJSProcessBatteryProduction(startTime,endTime,industrialPlantList.get(i).getId(),
-                        ConfigParamEnum.BasicProcessEnum.JSProcessID.getName());
-                int dailyProduction = 0;
-                try
-                {
-                    dailyProduction = (int)Double.parseDouble(dailyProductionStr.toString());
-                }
-                catch (Exception ex)
-                {
-                    dailyProduction = 0;
-                }
-                BatteryStastisInventoryRecord batteryStastisInventoryRecord = new BatteryStastisInventoryRecord();
-                batteryStastisInventoryRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-                batteryStastisInventoryRecord.setBorrownum(borrowNum);
-                batteryStastisInventoryRecord.setLaststorage(lastInventoryNum);
-                batteryStastisInventoryRecord.setLoannum(loanNum);
-                batteryStastisInventoryRecord.setPlantid(industrialPlantList.get(i).getId());
-                batteryStastisInventoryRecord.setRepairbacknum(repairBackNum);
-                batteryStastisInventoryRecord.setRepairnum(repairNum);
-                batteryStastisInventoryRecord.setScrapnum(scrapNum);
-                batteryStastisInventoryRecord.setStatus(StatusEnum.StatusFlag.using.getIndex()+ "");
-                batteryStastisInventoryRecord.setUpdatetime(new Date());
-                batteryStastisInventoryRecord.setDailyproduction(dailyProduction);
-                batteryStastisInventoryRecord.setCurrentstorage(lastInventoryNum - loanNum - scrapNum - repairNum + repairBackNum + borrowNum + dailyProduction);
-                batteryStastisInventoryRecordMapper.insertSelective(batteryStastisInventoryRecord);
             }
 
         } catch (Exception ex) {

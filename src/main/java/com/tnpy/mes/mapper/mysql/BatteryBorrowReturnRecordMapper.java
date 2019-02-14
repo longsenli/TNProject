@@ -20,10 +20,10 @@ public interface BatteryBorrowReturnRecordMapper {
 
     int updateByPrimaryKey(BatteryBorrowReturnRecord record);
 
-    @Select("select sum(changeNum) from tb_batteryborrowreturnrecord where outPlantID = #{plantID} and updateTime >= #{startTime} and updateTime <= #{endTime}")
-    String getLoanNum(String plantID,String startTime,String endTime);
+    @Select("select sum(changeNum) from tb_batteryborrowreturnrecord where outPlantID = #{plantID}  and batteryType = #{batteryType} and updateTime >= #{startTime} and updateTime <= #{endTime}")
+    String getLoanNum(String plantID,String startTime,String endTime,String batteryType);
 
-    @Select("select sum(changeNum) from tb_batteryborrowreturnrecord where inPlantID = #{plantID} and updateTime >= #{startTime} and updateTime <= #{endTime}")
-    String getBorrowNum(String plantID,String startTime,String endTime);
+    @Select("select sum(changeNum) from tb_batteryborrowreturnrecord where inPlantID = #{plantID}  and batteryType = #{batteryType}  and updateTime >= #{startTime} and updateTime <= #{endTime}")
+    String getBorrowNum(String plantID,String startTime,String endTime,String batteryType);
 
 }

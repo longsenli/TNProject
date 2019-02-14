@@ -21,8 +21,9 @@ public interface BatteryStastisInventoryRecordMapper {
 
     int updateByPrimaryKey(BatteryStastisInventoryRecord record);
 
-    @Select("select currentStorage from tb_batterystastisinventoryrecord where plantID = #{plantID} and updateTime >= #{startTime}  and updateTime<= #{endTime} order by updateTime desc limit 1")
-    String getSelectInventory(String plantID,String startTime,String endTime);
+    @Select("select currentStorage from tb_batterystastisinventoryrecord where plantID = #{plantID} and updateTime >= #{startTime}" +
+            "  and updateTime<= #{endTime} and batteryType = #{batteryType} order by updateTime desc limit 1")
+    String getSelectInventory(String plantID,String startTime,String endTime,String batteryType);
 
     @Select("select * from tb_batterystastisinventoryrecord where plantID = #{plantID} and updateTime >= #{startTime}  and updateTime<= #{endTime} order by updateTime desc ")
     List<BatteryStastisInventoryRecord> selectStatisInventoryByParam(String plantID, String startTime, String endTime);
