@@ -14,6 +14,8 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -166,4 +168,39 @@ public class UserManageController {
 	result.put("state", "success");
 	return result;
   }
+  
+  
+  @PostMapping(value = "/selectAll", headers = "Accept=application/json")
+  public TNPYResponse selectAll(@RequestBody PageInfo pageInfo) {
+	  TNPYResponse result = new TNPYResponse();
+	     try
+	     {
+	    	 
+	         
+	         
+	         
+	         
+	         PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize());
+//	         Page page = new Page();
+//	         List<Page> list = pageMapper.selectAll(page);
+	        
+	         
+	         
+	         List<TbUser> users =userService.userList();
+	         PageInfo pageInfo1 = new PageInfo(users);
+	         result.setStatus(1);
+	         result.setData(JSONObject.toJSONString(pageInfo1, SerializerFeature.WriteMapNullValue).toString());
+	         System.out.println(result);
+	         
+
+	         return  result;
+	     }
+	     catch (Exception ex)
+	     {
+	         result.setMessage("查询出错！" + ex.getMessage());
+	         return  result;
+	     }
+  }
+
+  
 }
