@@ -9,10 +9,10 @@ import com.tnpy.common.utils.web.TNPYResponse;
  */
 public interface ISemifinishedBatteryService {
     public TNPYResponse addScrapBattery(String jsonStr);
-    public TNPYResponse getScrapBatteryByline(String lineID);
+    public TNPYResponse getScrapBatteryByline(String lineID,String plantID);
     public TNPYResponse deleteScrapBattery(String batteryID);
 
     public TNPYResponse addRepairBattery( String jsonStr,String type);
-    public TNPYResponse getRepairBatteryByline(String lineID);
+    public TNPYResponse getRepairBatteryByline(String lineID,String plantID);
     public TNPYResponse deleteRepairBattery(String batteryID);
 }

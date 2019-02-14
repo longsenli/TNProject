@@ -68,7 +68,7 @@ public interface MaterialRecordMapper {
             "(\n" +
             "SELECT materialID,number FROM ilpsdb.tb_materialrecord where expendOrderID = #{outOrderID}\n" +
             ") a left join sys_material b on a.materialID = b.id group by b.typeID ")
-    List<Map<String, String>> selectBatchChargingByOrder(String outOrderID);
+    List<Map<Object, Object>> selectBatchChargingByOrder(String outOrderID);
 
     @Select("select sum(number) from tb_materialrecord where orderID = #{orderID}")
     String getProductionByOrderID(String orderID);
@@ -92,4 +92,14 @@ public interface MaterialRecordMapper {
             " left join tb_workorder b on a.orderID = b.id where inOrOut = '1' and plantID  = #{plantID} and processID = #{processID} ${lineIDFilter} \n" +
             " ) c group by materialID ) d left join sys_material e on d.materialID = e.id ")
     List<Map<String, String>> orderRemnantProductStatistics(String startTime,String endTime,String plantID,String processID,@Param("lineIDFilter") String lineID );
+
+    /*
+    select a.materialID,a.plantID,b.number,a.scheduledStartTime
+    from ( SELECT * FROM ilpsdb.tb_workorder where plantID = '3' and scheduledStartTime > '2019-02-02' and scheduledStartTime <= '2019-02-20' )
+    a left join tb_materialrecord b on a.id = b.orderID
+    */
+    @Select("select sum(b.number) as sumNum \n" +
+            "    from ( SELECT * FROM ilpsdb.tb_workorder where plantID = #{plantID} and scheduledStartTime > #{startTime} and scheduledStartTime <=  #{endTime} and processID = #{processID} )\n" +
+            "    a left join tb_materialrecord b on a.id = b.orderID")
+    String getJSProcessBatteryProduction(String startTime,String endTime,String plantID,String processID);
 }

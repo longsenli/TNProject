@@ -26,9 +26,9 @@ public class SemifinishedBatteryController {
     }
 
     @RequestMapping(value = "/getscrapbatterybyline")
-    public TNPYResponse getScrapBatteryByline(String lineID)
+    public TNPYResponse getScrapBatteryByline(String lineID,String plantID)
     {
-        return  semifinishedBatteryService.getScrapBatteryByline(lineID);
+        return  semifinishedBatteryService.getScrapBatteryByline(lineID, plantID);
     }
 
     @RequestMapping(value = "/deletescrapbattery")
@@ -44,9 +44,9 @@ public class SemifinishedBatteryController {
     }
 
     @RequestMapping(value = "/getrepairbatterybyline")
-    public TNPYResponse getRepairBatteryByline(String lineID)
+    public TNPYResponse getRepairBatteryByline(String lineID,String plantID)
     {
-        return  semifinishedBatteryService.getRepairBatteryByline(lineID);
+        return  semifinishedBatteryService.getRepairBatteryByline(lineID,plantID);
     }
 
     @RequestMapping(value = "/deleterepairbattery")

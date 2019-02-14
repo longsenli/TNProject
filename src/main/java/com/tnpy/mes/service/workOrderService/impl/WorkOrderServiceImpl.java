@@ -206,6 +206,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         TNPYResponse result = new TNPYResponse();
         try
         {
+
             OrderSplit orderSplit=(OrderSplit) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), OrderSplit.class);
             TNPYResponse judgeResult = judgeEnoughMaterial(orderSplit.getMaterialid(),orderSplit.getOrderid(),orderSplit.getProductionnum());
             if(judgeResult.getStatus() != StatusEnum.ResponseStatus.Success.getIndex())
@@ -214,9 +215,10 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             }
             orderSplit.setStatus(StatusEnum.WorkOrderStatus.finished.getIndex() + "");
             orderSplitMapper.updateByPrimaryKeySelective(orderSplit);
+
             MaterialRecord materialRecord = new MaterialRecord();
             materialRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-            materialRecord.setInorout(1);
+            materialRecord.setInorout(StatusEnum.InOutStatus.Input.getIndex());
             materialRecord.setMaterialid(orderSplit.getMaterialid());
             materialRecord.setNumber(orderSplit.getProductionnum());
             materialRecord.setOrderid(orderSplit.getOrderid());
@@ -224,7 +226,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             materialRecord.setInputtime(new Date());
             materialRecord.setInputer(name);
             materialRecordMapper.insert(materialRecord);
-            boolean blTB = ConfigParamEnum.BasicParamEnum.TBProcessID.getName().equals(workOrderMapper.getProcessIDByOrder(orderSplit.getOrderid()));
+            boolean blTB = ConfigParamEnum.BasicProcessEnum.TBProcessID.getName().equals(workOrderMapper.getProcessIDByOrder(orderSplit.getOrderid()));
             try
             {
                 if(blTB)
@@ -282,8 +284,8 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         boolean bl = true;
         try
         {
-            List<Map<String, String>> outMaterialProportion = materialMapper.selectProportionalityByOut(outMaterial);
-            List<Map<String, String>> inputRecord = materialRecordMapper.selectBatchChargingByOrder(finishOrderID);
+            List<Map<Object, Object>> outMaterialProportion = materialMapper.selectProportionalityByOut(outMaterial);
+            List<Map<Object, Object>> inputRecord = materialRecordMapper.selectBatchChargingByOrder(finishOrderID);
             String productionStr = materialRecordMapper.getProductionByOrderID(finishOrderID);
             Double productionALl = 0.0;
             try
@@ -298,21 +300,21 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             Map<String, Double> inputRecordMap = new HashMap<String, Double>();
 
             String typeID= "";
-            double number=-1;
-            for (Map<String, String> proportionMap : outMaterialProportion)
+            double number=-1.0;
+            for (Map<Object, Object> proportionMap : outMaterialProportion)
             {
                 typeID = null;
                 number = -1;
-                for (Map.Entry<String, String> entry : proportionMap.entrySet()) {
+                for (Map.Entry<Object, Object> entry : proportionMap.entrySet()) {
                     if (org.springframework.util.StringUtils.isEmpty(entry.getValue()))
                         break;
                     if("typeID".equals(entry.getKey()))
                     {
-                        typeID = entry.getValue();
+                        typeID = entry.getValue().toString();
                     }
-                    if("proportionality".equals(entry.getKey()) && entry.getValue().split(":").length ==2)
+                    if("proportionality".equals(entry.getKey().toString()) && entry.getValue().toString().split(":").length ==2)
                     {
-                        number =Double.valueOf(entry.getValue().split(":")[0]) /Double.valueOf(entry.getValue().split(":")[1])  ;
+                        number =Double.valueOf(entry.getValue().toString().split(":")[0]) /Double.valueOf(entry.getValue().toString().split(":")[1])  ;
                     }
                 }
                 if(number > -1)
@@ -321,18 +323,24 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 }
             }
 
-            for (Map<String, String> inputMap : inputRecord)
+            for (Map<Object, Object> inputMap : inputRecord)
             {
                 typeID = null;
                 number = -1;
-                for (Map.Entry<String, String> entry : inputMap.entrySet()) {
+                for (Map.Entry<Object, Object> entry : inputMap.entrySet()) {
                     if("typeID".equals(entry.getKey()))
                     {
-                        typeID = entry.getValue();
+                        typeID = entry.getValue().toString();
                     }
                     if("sum".equals(entry.getKey()))
                     {
-                        number = Double.valueOf(entry.getValue());
+                        try
+                        {
+                            number = Double.valueOf(entry.getValue().toString());
+                        }catch (Exception ex)
+                        {
+                            number = 0.0;
+                        }
                     }
                 }
                 if(number > -1)
@@ -340,7 +348,6 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                     inputRecordMap.put(typeID,number);
                 }
             }
-
             for (Map.Entry<String, Double> entry : outMaterialProportionMap.entrySet()) {
                if(!inputRecordMap.containsKey(entry.getKey()))
                {

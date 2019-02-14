@@ -6,19 +6,19 @@ package com.tnpy.common.Enum;
  * @Date: 2019/1/15 13:34
  */
 public class ConfigParamEnum {
-    public static  enum BasicParamEnum {
-        TBProcessID("1003", 1), GHProcessID("1004", 2);
+    public static  enum BasicProcessEnum {
+        TBProcessID("1003", 1), GHProcessID("1004", 2),CDProcessID("1009",3),JSProcessID("1008",4);
         // 成员变量
         private String name;
         private int index;
         // 构造方法
-        private BasicParamEnum(String name, int index) {
+        private BasicProcessEnum(String name, int index) {
             this.name = name;
             this.index = index;
         }
         // 普通方法
         public static String getName(int index) {
-            for (ConfigParamEnum.BasicParamEnum c : ConfigParamEnum.BasicParamEnum.values()) {
+            for (ConfigParamEnum.BasicProcessEnum c : ConfigParamEnum.BasicProcessEnum.values()) {
                 if (c.getIndex() == index) {
                     return c.name;
                 }

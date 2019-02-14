@@ -43,5 +43,5 @@ public interface MaterialMapper {
             " SELECT   a.proportionality,b.typeID FROM sys_materialrelation a left join sys_material b \n" +
             " on a.inMaterialID = b.id  where a.outMaterialID = #{outMaterialID} group by a.proportionality,b.typeID order by proportionality desc\n" +
             " ) c group by typeID ")
-    List<Map<String, String>> selectProportionalityByOut( String outMaterialID);
+    List<Map<Object, Object>> selectProportionalityByOut( String outMaterialID);
 }

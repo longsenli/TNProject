@@ -52,4 +52,9 @@ public class MaterialController {
     public TNPYResponse orderRemnantProductStatistics( String startTime,String endTime,String plantID,String processID,String lineID ) {
         return  materialService.orderRemnantProductStatistics( startTime, endTime, plantID, processID, lineID);
     }
+
+    @RequestMapping(value = "/batterystatisinventory")
+    public TNPYResponse batteryStatisInventory( String startTime,String endTime,String plantID ) {
+        return  materialService.batteryStatisInventory( startTime, endTime, plantID);
+    }
 }

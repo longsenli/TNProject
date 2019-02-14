@@ -5,10 +5,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.BatchrelationcontrolMapper;
+import com.tnpy.mes.mapper.mysql.BatteryStastisInventoryRecordMapper;
 import com.tnpy.mes.mapper.mysql.MaterialRecordMapper;
 import com.tnpy.mes.mapper.mysql.OrderSplitMapper;
 import com.tnpy.mes.model.customize.CustomMaterialRecord;
 import com.tnpy.mes.model.mysql.Batchrelationcontrol;
+import com.tnpy.mes.model.mysql.BatteryStastisInventoryRecord;
 import com.tnpy.mes.model.mysql.MaterialRecord;
 import com.tnpy.mes.model.mysql.OrderSplit;
 import com.tnpy.mes.service.materialService.IMaterialService;
@@ -35,6 +37,8 @@ public class MaterialServiceImpl implements IMaterialService {
     private BatchrelationcontrolMapper batchrelationcontrolMapper;
     @Autowired
     private OrderSplitMapper orderSplitMapper;
+    @Autowired
+    private BatteryStastisInventoryRecordMapper batteryStastisInventoryRecordMapper;
     public TNPYResponse getMaterialRecord(String expendOrderID ) {
         TNPYResponse result = new TNPYResponse();
         try
@@ -242,6 +246,22 @@ public class MaterialServiceImpl implements IMaterialService {
             List<Map<String, String>> orderOutputStatisticsList = materialRecordMapper.orderRemnantProductStatistics( startTime, endTime, plantID, processID, lineFilter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(orderOutputStatisticsList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+    public TNPYResponse batteryStatisInventory( String startTime,String endTime,String plantID )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<BatteryStastisInventoryRecord> batteryStastisInventoryRecordList = batteryStastisInventoryRecordMapper.selectStatisInventoryByParam(plantID,startTime,endTime);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(batteryStastisInventoryRecordList).toString());
             return  result;
         }
         catch (Exception ex)

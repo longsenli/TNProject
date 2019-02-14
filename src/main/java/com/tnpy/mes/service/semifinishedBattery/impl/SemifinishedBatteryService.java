@@ -46,15 +46,15 @@ public class SemifinishedBatteryService implements ISemifinishedBatteryService {
         }
     }
 
-    public TNPYResponse getScrapBatteryByline(String lineID)
+    public TNPYResponse getScrapBatteryByline(String lineID,String plantID)
     {
         TNPYResponse result = new TNPYResponse();
         try
         {
-            String filter = "";
+            String filter = " where plantID = '" + plantID + "'";
             if(!"-1".equals(lineID))
             {
-                filter += " where lineID = '" + lineID + "'";
+                filter += "  and lineID = '" + lineID + "' ";
             }
             filter += " order by scrapTime desc ";
             List<BatteryScrapRecord> batteryScrapRecordList = batteryScrapRecordMapper.selectByFilter(filter);
@@ -95,10 +95,20 @@ public class SemifinishedBatteryService implements ISemifinishedBatteryService {
 
             if("add".equals(type))
             {
+                if(batteryRepairRecord.getBacktime() == null)
+                {
+                    batteryRepairRecord.setStatus("1");
+                }
+                else
+                    batteryRepairRecord.setStatus("2");
                 batteryRepairRecordMapper.insertSelective(batteryRepairRecord);
             }
            else if("change".equals(type))
            {
+               if(batteryRepairRecord.getBacktime() != null)
+               {
+                   batteryRepairRecord.setStatus("2");
+               }
                batteryRepairRecordMapper.updateByPrimaryKey(batteryRepairRecord);
            }
            else
@@ -116,15 +126,15 @@ public class SemifinishedBatteryService implements ISemifinishedBatteryService {
             return  result;
         }
     }
-    public TNPYResponse getRepairBatteryByline(String lineID)
+    public TNPYResponse getRepairBatteryByline(String lineID,String plantID)
     {
         TNPYResponse result = new TNPYResponse();
         try
         {
-            String filter = "";
+            String filter = " where plantID = '" + plantID + "'";
             if(!"-1".equals(lineID))
             {
-                filter += "  where lineID = '" + lineID + "' ";
+                filter += "  and lineID = '" + lineID + "' ";
             }
             filter += " order by repairTime desc ";
             List<BatteryRepairRecord> batteryRepairRecordList = batteryRepairRecordMapper.selectByFilter(filter);
