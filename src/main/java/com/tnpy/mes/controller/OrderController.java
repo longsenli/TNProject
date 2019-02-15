@@ -60,4 +60,8 @@ public class OrderController {
         return  workOrderService.finishOrderSplit(jsonStr,name);
     }
 
+    @RequestMapping(value = "/getsuborderbyid")
+    public TNPYResponse getSubOrderByID( String id ) {
+        return  workOrderService.getSubOrderByID(id);
+    }
 }

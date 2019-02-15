@@ -56,7 +56,22 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             return  result;
         }
     }
-
+    public TNPYResponse getSubOrderByID( String id )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<OrderSplit> orderSplitList = orderSplitMapper.selectAfterMapBySubOrderID(id);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(orderSplitList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
     public TNPYResponse getWorkOrderByLineID( String lineID ) {
         TNPYResponse result = new TNPYResponse();
         try

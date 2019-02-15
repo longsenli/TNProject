@@ -30,4 +30,6 @@ public interface OrderSplitMapper {
             " when '3' then '已开工' when '4' then '已完成' when '5' then '已关闭' else '状态不详' end as status,\n" +
             " b.name as materialID FROM tb_ordersplit a left join sys_material b on a.materialID = b.id where orderID = #{orderid} order by orderSplitID asc") */
     List<OrderSplit> selectAfterMapByOrderID(String orderid);
+
+    List<OrderSplit> selectAfterMapBySubOrderID(String id);
 }
