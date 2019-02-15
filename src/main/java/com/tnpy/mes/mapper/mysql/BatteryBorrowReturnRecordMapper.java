@@ -2,8 +2,11 @@ package com.tnpy.mes.mapper.mysql;
 
 import com.tnpy.mes.model.mysql.BatteryBorrowReturnRecord;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Mapper
 @Component
@@ -26,4 +29,6 @@ public interface BatteryBorrowReturnRecordMapper {
     @Select("select sum(changeNum) from tb_batteryborrowreturnrecord where inPlantID = #{plantID}  and batteryType = #{batteryType}  and updateTime >= #{startTime} and updateTime <= #{endTime}")
     String getBorrowNum(String plantID,String startTime,String endTime,String batteryType);
 
+    @Select("select * from tb_batteryborrowreturnrecord ${filter}")
+    List<BatteryBorrowReturnRecord> getBorrowReturnRecordByFilter(@Param("filter") String filter);
 }

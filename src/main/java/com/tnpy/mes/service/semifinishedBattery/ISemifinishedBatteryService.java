@@ -15,4 +15,8 @@ public interface ISemifinishedBatteryService {
     public TNPYResponse addRepairBattery( String jsonStr,String type);
     public TNPYResponse getRepairBatteryByline(String lineID,String plantID);
     public TNPYResponse deleteRepairBattery(String batteryID);
+
+    public TNPYResponse addBorrowReturnRecord( String jsonStr);
+    public TNPYResponse getBorrowReturnRecord(String outPlantID,String inPlantID,String startTime,String endTime,String batteryType);
+    public TNPYResponse deleteBorrowReturnRecord(String id);
 }

@@ -3,8 +3,10 @@ package com.tnpy.mes.service.semifinishedBattery.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
+import com.tnpy.mes.mapper.mysql.BatteryBorrowReturnRecordMapper;
 import com.tnpy.mes.mapper.mysql.BatteryRepairRecordMapper;
 import com.tnpy.mes.mapper.mysql.BatteryScrapRecordMapper;
+import com.tnpy.mes.model.mysql.BatteryBorrowReturnRecord;
 import com.tnpy.mes.model.mysql.BatteryRepairRecord;
 import com.tnpy.mes.model.mysql.BatteryScrapRecord;
 import com.tnpy.mes.service.semifinishedBattery.ISemifinishedBatteryService;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @Description: TODO
@@ -27,6 +30,8 @@ public class SemifinishedBatteryService implements ISemifinishedBatteryService {
     @Autowired
     private BatteryRepairRecordMapper batteryRepairRecordMapper;
 
+    @Autowired
+    private BatteryBorrowReturnRecordMapper batteryBorrowReturnRecordMapper;
     public TNPYResponse addScrapBattery(String jsonStr)
     {
         TNPYResponse result = new TNPYResponse();
@@ -154,6 +159,69 @@ public class SemifinishedBatteryService implements ISemifinishedBatteryService {
         try
         {
             batteryRepairRecordMapper.deleteByPrimaryKey(batteryID);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("删除失败！" + ex.getMessage());
+            return  result;
+        }
+    }
+    public TNPYResponse addBorrowReturnRecord( String jsonStr)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            BatteryBorrowReturnRecord batteryBorrowReturnRecord=(BatteryBorrowReturnRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), BatteryBorrowReturnRecord.class);
+            batteryBorrowReturnRecord.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
+            batteryBorrowReturnRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+            batteryBorrowReturnRecordMapper.insert(batteryBorrowReturnRecord);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("插入出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+    public TNPYResponse getBorrowReturnRecord(String outPlantID,String inPlantID,String startTime,String endTime,String batteryType)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = " where updateTime >= '" + startTime + "' and updateTime <= '" + endTime + "' ";
+            if(!"-1".equals(outPlantID))
+            {
+                filter += "  and outPlantID = '" + outPlantID + "' ";
+            }
+            if(!"-1".equals(inPlantID))
+            {
+                filter += "  and inPlantID = '" + inPlantID + "' ";
+            }
+            if(!"-1".equals(batteryType))
+            {
+                filter += "  and batteryType = '" + batteryType + "' ";
+            }
+            filter += " order by updateTime desc, outPlantID";
+            List<BatteryBorrowReturnRecord> batteryBorrowReturnRecordList = batteryBorrowReturnRecordMapper.getBorrowReturnRecordByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(batteryBorrowReturnRecordList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+    public TNPYResponse deleteBorrowReturnRecord(String id)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            batteryBorrowReturnRecordMapper.deleteByPrimaryKey(id);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }

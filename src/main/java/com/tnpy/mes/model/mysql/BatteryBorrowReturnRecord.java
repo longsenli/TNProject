@@ -19,6 +19,8 @@ public class BatteryBorrowReturnRecord {
 
     private String batterytype;
 
+    private String dealreason;
+
     public String getId() {
         return id;
     }
@@ -73,5 +75,13 @@ public class BatteryBorrowReturnRecord {
 
     public void setBatterytype(String batterytype) {
         this.batterytype = batterytype == null ? null : batterytype.trim();
+    }
+
+    public String getDealreason() {
+        return dealreason;
+    }
+
+    public void setDealreason(String dealreason) {
+        this.dealreason = dealreason == null ? null : dealreason.trim();
     }
 }
