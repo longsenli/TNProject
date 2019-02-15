@@ -23,7 +23,7 @@ public interface OrderSplitMapper {
     int updateByPrimaryKey(OrderSplit record);
 
     int insertManyOrder(@Param("orderSplitList") List<OrderSplit> orderSplitList, @Param("orderID") String orderID);
-@Select("select * from tb_ordersplit where orderID = #{orderid}")
+@Select("select * from tb_ordersplit where orderID = #{orderid} order by status,orderSplitID ")
     List<OrderSplit> selectByOrderID(String orderid);
 
   /*  @Select("SELECT a.id,orderSplitID,orderID,productionNum,case a.status when '1' then '已下单' when '2' then '已打印'\n" +
