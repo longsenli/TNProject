@@ -52,17 +52,65 @@ public class TbUser {
 
 	private String organid;
 
-	private String ext1;
+	private String industrialplant_id;
 
-	private String ext2;
+	private String industrialplant_name;
 
-	private String ext3;
+	private String productionline_id;
 
-	private String ext4;
+	public String getIndustrialplant_id() {
+		return industrialplant_id;
+	}
 
-	private String ext5;
+	public void setIndustrialplant_id(String industrialplant_id) {
+		this.industrialplant_id = industrialplant_id;
+	}
 
-	private String ext6;
+	public String getIndustrialplant_name() {
+		return industrialplant_name;
+	}
+
+	public void setIndustrialplant_name(String industrialplant_name) {
+		this.industrialplant_name = industrialplant_name;
+	}
+
+	public String getProductionline_id() {
+		return productionline_id;
+	}
+
+	public void setProductionline_id(String productionline_id) {
+		this.productionline_id = productionline_id;
+	}
+
+	public String getProductionline_name() {
+		return productionline_name;
+	}
+
+	public void setProductionline_name(String productionline_name) {
+		this.productionline_name = productionline_name;
+	}
+
+	public String getProductionprocess_id() {
+		return productionprocess_id;
+	}
+
+	public void setProductionprocess_id(String productionprocess_id) {
+		this.productionprocess_id = productionprocess_id;
+	}
+
+	public String getProductionprocess_name() {
+		return productionprocess_name;
+	}
+
+	public void setProductionprocess_name(String productionprocess_name) {
+		this.productionprocess_name = productionprocess_name;
+	}
+
+	private String productionline_name;
+
+	private String productionprocess_id;
+
+	private String productionprocess_name;
 
 	private String ext7;
 
@@ -218,54 +266,6 @@ public class TbUser {
 
 	public void setOrganid(String organid) {
 		this.organid = organid == null ? null : organid.trim();
-	}
-
-	public String getExt1() {
-		return ext1;
-	}
-
-	public void setExt1(String ext1) {
-		this.ext1 = ext1 == null ? null : ext1.trim();
-	}
-
-	public String getExt2() {
-		return ext2;
-	}
-
-	public void setExt2(String ext2) {
-		this.ext2 = ext2 == null ? null : ext2.trim();
-	}
-
-	public String getExt3() {
-		return ext3;
-	}
-
-	public void setExt3(String ext3) {
-		this.ext3 = ext3 == null ? null : ext3.trim();
-	}
-
-	public String getExt4() {
-		return ext4;
-	}
-
-	public void setExt4(String ext4) {
-		this.ext4 = ext4 == null ? null : ext4.trim();
-	}
-
-	public String getExt5() {
-		return ext5;
-	}
-
-	public void setExt5(String ext5) {
-		this.ext5 = ext5 == null ? null : ext5.trim();
-	}
-
-	public String getExt6() {
-		return ext6;
-	}
-
-	public void setExt6(String ext6) {
-		this.ext6 = ext6 == null ? null : ext6.trim();
 	}
 
 	public String getExt7() {
