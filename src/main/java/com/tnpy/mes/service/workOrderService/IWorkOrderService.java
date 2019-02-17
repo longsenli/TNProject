@@ -17,4 +17,7 @@ public interface IWorkOrderService {
     public TNPYResponse getCustomWorkOrderByParam(String plantID,String processID,String lineID );
     public TNPYResponse getOrderSplitAfterMap(String orderID );
     public TNPYResponse getSubOrderByID( String id );
+
+    public TNPYResponse getPlanProductionDashboard( String plantID,String processID,String startTime,String endTime );
+    public TNPYResponse getRealtimeProductionDashboard( String plantID,String processID,String startTime,String endTime );
 }

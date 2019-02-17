@@ -64,4 +64,14 @@ public class OrderController {
     public TNPYResponse getSubOrderByID( String id ) {
         return  workOrderService.getSubOrderByID(id);
     }
+
+    @RequestMapping(value = "/getplanproductiondashboard")
+    public TNPYResponse getPlanProductionDashboard( String plantID,String processID,String startTime,String endTime ) {
+        return  workOrderService.getPlanProductionDashboard(plantID,processID,startTime,endTime);
+    }
+
+    @RequestMapping(value = "/getrealtimeproductiondashboard")
+    public TNPYResponse getRealtimeProductionDashboard( String plantID,String processID,String startTime,String endTime ) {
+        return  workOrderService.getRealtimeProductionDashboard(plantID,processID,startTime,endTime);
+    }
 }

@@ -390,5 +390,36 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         return  result;
     }
 
+    public TNPYResponse getPlanProductionDashboard( String plantID,String processID,String startTime,String endTime )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<Map<Object, Object> > planProductionDashboardList = workOrderMapper.getPlanProductionDashboard(plantID,processID,startTime,endTime);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(planProductionDashboardList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
 
+    public TNPYResponse getRealtimeProductionDashboard( String plantID,String processID,String startTime,String endTime ){
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<Map<Object, Object> > realtimeProductionDashboardList = workOrderMapper.getRealtimeProductionDashboard(plantID,processID,startTime,endTime);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(realtimeProductionDashboardList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
 }
