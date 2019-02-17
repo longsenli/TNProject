@@ -100,7 +100,8 @@ public class LoginController {
 		//返回Token信息给客户端
 
 		response.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
-		response.setMessage(myUser.getName() + " ### " + myUser.getRoleid() );
+		response.setMessage(myUser.getName() + " ### " + myUser.getRoleid() + " ### " + myUser.getIndustrialplant_id()
+				+ " ### " +  myUser.getProductionprocess_id() + " ### " + myUser.getProductionline_id());
 		response.setToken(JSONObject.toJSON(token).toString());
 		return response;
 	}
