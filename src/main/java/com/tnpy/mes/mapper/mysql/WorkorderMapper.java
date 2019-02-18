@@ -55,6 +55,6 @@ public interface WorkorderMapper {
             "select id,orderID,totalProduction,materialID,lineID from tb_workorder where plantID = #{plantID} and processID = #{processID} and scheduledStartTime >= #{startTime} and scheduledStartTime <= #{endTime}\n" +
             ") a left join tb_materialrecord b on a.id = b.orderID\n" +
             ") c  left join sys_material d on c.materialID = d.id \n" +
-            ") e left join sys_productionline f on e.lineID = f.id order by lineName")
+            ") e left join sys_productionline f on e.lineID = f.id  where realProduction is not null order by lineName")
     List<Map<Object,Object>> getRealtimeProductionDashboard(String plantID, String processID, String startTime, String endTime );
 }
