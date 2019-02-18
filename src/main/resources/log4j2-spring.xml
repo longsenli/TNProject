@@ -25,7 +25,7 @@
         <!-- 这个会打印出所有的info及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档 -->
         <RollingFile name="RollingFileInfo" fileName="${LOG_HOME}/info.log" filePattern="${LOG_HOME}/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch） -->
-            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY" />
+            <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY" />
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
             <Policies>
                 <!-- 基于时间的滚动策略，interval属性用来指定多久滚动一次，默认是1 hour。 modulate=true用来调整时间：比如现在是早上3am，interval是4，那么第一次滚动是在4am，接着是8am，12am...而不是7am. -->
@@ -62,17 +62,17 @@
     <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效-->
     <Loggers>
         <!--过滤掉spring和mybatis的一些无用的DEBUG信息-->
-        <logger name="org.springframework" level="INFO"></logger>
-        <logger name="org.mybatis" level="INFO"></logger>
+        <logger name="org.springframework" level="WARN"></logger>
+        <logger name="org.mybatis" level="WARN"></logger>
         <!-- 第三方日志系统 -->
-        <logger name="org.springframework.core" level="info" />
-        <logger name="org.springframework.beans" level="info" />
-        <logger name="org.springframework.context" level="info" />
-        <logger name="org.springframework.web" level="info" />
+        <logger name="org.springframework.core" level="WARN" />
+        <logger name="org.springframework.beans" level="WARN" />
+        <logger name="org.springframework.context" level="WARN" />
+        <logger name="org.springframework.web" level="WARN" />
         <logger name="org.jboss.netty" level="warn" />
         <logger name="org.apache.http" level="warn" />
         <!-- 配置日志的根节点 -->
-        <root level="all">
+        <root level="info">
             <appender-ref ref="Console"/>
             <appender-ref ref="log"/>
             <appender-ref ref="RollingFileInfo"/>
