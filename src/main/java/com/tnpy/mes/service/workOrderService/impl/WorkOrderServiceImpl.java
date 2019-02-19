@@ -217,6 +217,29 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         }
     }
 
+    public TNPYResponse changeWorkOrderStatus( String ID,String status )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String productionOrder = materialRecordMapper.getProductionByOrderID(ID);
+            if (!org.springframework.util.StringUtils.isEmpty(productionOrder))
+            {
+                result.setMessage("该工单已有入库记录不能删除！" );
+                return  result;
+            }
+            orderSplitMapper.deleteByOrderID(ID);
+            workOrderMapper.updateWorkOrderStatus(ID,status);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            //  result.setData(JSONObject.toJSONString(equipmentTypeList, SerializerFeature.WriteMapNullValue).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("删除失败！" + ex.getMessage());
+            return  result;
+        }
+    }
     public TNPYResponse finishOrderSplit( String jsonStr ,String name) {
         TNPYResponse result = new TNPYResponse();
         try

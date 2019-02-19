@@ -1,6 +1,7 @@
 package com.tnpy.mes.mapper.mysql;
 
 import com.tnpy.mes.model.mysql.OrderSplit;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -32,4 +33,7 @@ public interface OrderSplitMapper {
     List<OrderSplit> selectAfterMapByOrderID(String orderid);
 
     List<OrderSplit> selectAfterMapBySubOrderID(String id);
+
+    @Delete("delete from tb_ordersplit where orderID = #{orderID}")
+    int deleteByOrderID(String orderID);
 }
