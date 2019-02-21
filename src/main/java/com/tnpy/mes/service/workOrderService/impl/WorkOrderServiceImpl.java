@@ -21,6 +21,7 @@ import java.util.*;
  */
 @Service("workOrderService")
 public class WorkOrderServiceImpl implements IWorkOrderService {
+    //final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(WorkOrderServiceImpl.class);
     @Autowired
     private WorkorderMapper workOrderMapper;
 
@@ -205,8 +206,10 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         TNPYResponse result = new TNPYResponse();
         try
         {
+
             List<OrderSplit > orderSplitList = orderSplitMapper.selectAfterMapByOrderID(orderID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+           // log.warn(orderID + "===" + JSONObject.toJSON(orderSplitList).toString());
             result.setData(JSONObject.toJSON(orderSplitList).toString());
             return  result;
         }

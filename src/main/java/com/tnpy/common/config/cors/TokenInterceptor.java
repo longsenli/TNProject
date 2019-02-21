@@ -30,7 +30,10 @@ public class TokenInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse arg1, Object arg2) throws Exception {
        // System.out.println("==================" + request.getRequestURI());
-
+        if("OPTIONS" .equals(request.getMethod()))
+        {
+            return true;
+        }
         Thread t = new Thread(new Runnable(){
             public void run(){
                 // run方法具体重写
