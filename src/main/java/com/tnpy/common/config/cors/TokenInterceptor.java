@@ -30,7 +30,7 @@ public class TokenInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse arg1, Object arg2) throws Exception {
        // System.out.println("==================" + request.getRequestURI());
-        /*
+
         final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TokenInterceptor.class);
 
         String apiParam = request.getQueryString();
@@ -41,12 +41,15 @@ public class TokenInterceptor implements HandlerInterceptor {
             String value = request.getParameter(name);//通过参数名获取对应的值
             apiParam += " " + name+ "=" +value ;
         }
-        log.warn(request.getRequestURI() + "=========" + apiParam);
-*/
+
         if("OPTIONS" .equals(request.getMethod()))
         {
+            System.out.println(request.getRequestURI() + "====OPTION=====" + apiParam);
             return true;
         }
+        else
+            System.out.println(request.getRequestURI() + "=========" + apiParam);
+
         Thread t = new Thread(new Runnable(){
             public void run(){
                 // run方法具体重写

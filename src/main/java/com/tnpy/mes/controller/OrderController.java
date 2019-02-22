@@ -57,6 +57,7 @@ public class OrderController {
 
     @RequestMapping(value = "/getordersplitaftermap")
     public TNPYResponse getOrderSplitAfterMap(String orderID ) {
+        System.out.println("controller=============" + orderID);
         return  workOrderService.getOrderSplitAfterMap(orderID);
     }
 
