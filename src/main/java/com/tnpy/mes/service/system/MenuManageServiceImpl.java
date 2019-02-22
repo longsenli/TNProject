@@ -1,13 +1,5 @@
 package com.tnpy.mes.service.system;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.TreeNode.Node;
@@ -17,6 +9,13 @@ import com.tnpy.mes.mapper.mysql.TbUserMapper;
 import com.tnpy.mes.model.mysql.TbMenu;
 import com.tnpy.mes.model.mysql.TbRole;
 import com.tnpy.mes.model.mysql.TbUser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 /**
  * 
  * @author 2018122008
@@ -126,7 +125,7 @@ public class MenuManageServiceImpl implements IMenuManageService {
             menus.add(menu);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(menus).toString());
-            System.out.println("返回TNResponse: " + result.toString());
+           // System.out.println("返回TNResponse: " + result.toString());
             return  result;
         }
         catch (Exception ex)
@@ -153,7 +152,7 @@ public class MenuManageServiceImpl implements IMenuManageService {
         	nodes.add(getTreeJson());
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(nodes).toString());
-            System.out.println("返回TNResponse: " + result.getData().toString());
+            //System.out.println("返回TNResponse: " + result.getData().toString());
             return  result;
         }
         catch (Exception ex)
@@ -177,7 +176,7 @@ public class MenuManageServiceImpl implements IMenuManageService {
         	nodes.add(getUserTreeJson(tbuser.getRoleid()));
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(nodes).toString());
-            System.out.println("返回TNResponse: " + result.getData().toString());
+            //System.out.println("返回TNResponse: " + result.getData().toString());
             return  result;
         }
         catch (Exception ex)
@@ -259,7 +258,7 @@ public class MenuManageServiceImpl implements IMenuManageService {
 //        	nodes.add(getTreeJson());
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(trees).toString());
-            System.out.println("返回TNResponse: " + result.getData().toString());
+            //System.out.println("返回TNResponse: " + result.getData().toString());
             return  result;
         }
         catch (Exception ex)
