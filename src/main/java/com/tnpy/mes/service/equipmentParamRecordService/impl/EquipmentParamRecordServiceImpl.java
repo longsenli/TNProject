@@ -16,9 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @Description: TODO
@@ -184,6 +183,26 @@ public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordSer
             List<EquipmentParaRecord> equipmentParaRecordList = equipmentParaRecordMapper.selectRecordByTime(startTime,endTime,equipID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(equipmentParaRecordList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+    public TNPYResponse getRecentAllParamPecord( String plantID,String equipType)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date recentTime = new Date();//取时间
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(recentTime);
+            calendar.add(Calendar.MINUTE, -12);
+            recentTime = calendar.getTime();
+
+            List<Map<Object,Object>> parameterInfoList = equipmentParaRecordMapper.selectRecentAllParamPecord(plantID,equipType,dateFormat.format(recentTime));
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(parameterInfoList).toString());
             return result;
         } catch (Exception ex) {
             result.setMessage("查询出错！" + ex.getMessage());

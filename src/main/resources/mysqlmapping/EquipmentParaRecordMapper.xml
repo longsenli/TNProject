@@ -34,12 +34,11 @@
       and id = #{id,jdbcType=VARCHAR}
   </select>
 
-
   <select id="selectLatestRecord" resultMap="ParamLatestRecordResultMap">
  select a.equipmentID as equipmentID,b.name as equipName,b.location as equipLocation , a.recordTime as recordTime,a.value as value,a.status as status,a.recorder as recorder
  from (select * from ( select ROW_NUMBER() over(partition by equipmentID,paramID order by recordTime desc) RowNum,tb_equipmentparamrecord.*
  from tb_equipmentparamrecord where  paramID=#{paramID} and equipmentTypeID =#{equipType} ) as t1  where RowNum = 1) a
- left join tb_equipmentinfo b on a.equipmentID = b.id where b.plantID = #{plantID} order by equipName desc
+ left join tb_equipmentinfo b on a.equipmentID = b.id where b.plantID = #{plantID} order by equipmentID asc
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.EquipmentParaRecordKey">

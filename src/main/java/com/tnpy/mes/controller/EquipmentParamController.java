@@ -96,6 +96,12 @@ public class EquipmentParamController {
         return  equipmentParamService.getLatestParamRecord(plantID, equipType, paramID);
     }
 
+    @RequestMapping(value = "/getrecentallparamrecord")
+    public TNPYResponse getRecentAllParamPecord( String plantID,String equipType) {
+
+        return  equipmentParamService.getRecentAllParamPecord(plantID, equipType);
+    }
+
     @RequestMapping(value = "/getoneequipparamrecord")
     public TNPYResponse getOneEquipParamRecord( String startTime,String endTime,String equipID,String paramID) {
 
