@@ -29,8 +29,48 @@ public class TokenInterceptor implements HandlerInterceptor {
             throws Exception {}
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse arg1, Object arg2) throws Exception {
-       // System.out.println("==================" + request.getRequestURI());
+        if("OPTIONS" .equals(request.getMethod()))
+        {
+            return true;
+        }
+        try
+        {
+            Token tokenAPILog = null;
+            try
+            {
+                String tokenStr = request.getHeader("Token");
+                tokenAPILog=(Token) JSONObject.toJavaObject(JSONObject.parseObject(tokenStr), Token.class);
+            }
+            catch (Exception ex)
+            {
 
+            }
+            ApiCallRecord apiCallRecord = new ApiCallRecord();
+            apiCallRecord.setApiroute(request.getRequestURI());
+            apiCallRecord.setCalltime(new Date());
+            apiCallRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+            String apiParam = request.getQueryString();
+            apiCallRecord.setLoginip(request.getRemoteAddr());
+            Enumeration<String> paramNames = request.getParameterNames();//获取所有的参数名
+            while (paramNames.hasMoreElements()) {
+                String name = paramNames.nextElement();//得到参数名
+                String value = request.getParameter(name);//通过参数名获取对应的值
+                apiParam += " " + name+ "=" +value ;
+            }
+            apiCallRecord.setParams(apiParam);
+            if(tokenAPILog != null)
+            {
+                apiCallRecord.setUserid(tokenAPILog.getUserid());
+            }
+            apiCallRecordMapper.insertSelective(apiCallRecord);
+        }
+        catch (Exception ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+
+       // System.out.println("==================" + request.getRequestURI());
+/*
         final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TokenInterceptor.class);
 
         String apiParam = request.getQueryString();
@@ -83,7 +123,7 @@ public class TokenInterceptor implements HandlerInterceptor {
                 apiCallRecordMapper.insertSelective(apiCallRecord);
             }});
         t.start();
-
+*/
         //普通路径放行
         if (true || "/api/login".equals(request.getRequestURI()) || "/api/downloadFile".equals(request.getRequestURI())) {
             return true;}

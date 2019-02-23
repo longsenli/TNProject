@@ -64,7 +64,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         {
             List<OrderSplit> orderSplitList = orderSplitMapper.selectAfterMapBySubOrderID(id);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
-            System.out.println(id + "============" + orderSplitList.size());
+           // System.out.println(id + "============" + orderSplitList.size());
             result.setData(JSONObject.toJSON(orderSplitList).toString());
             return  result;
         }
@@ -208,7 +208,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         TNPYResponse result = new TNPYResponse();
         try
         {
-            System.out.println("impl=============" + orderID);
+            //System.out.println("impl=============" + orderID);
             List<OrderSplit > orderSplitList = orderSplitMapper.selectAfterMapByOrderID(orderID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
            // log.warn(orderID + "======================" );
