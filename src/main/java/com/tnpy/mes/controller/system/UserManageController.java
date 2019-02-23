@@ -1,34 +1,20 @@
 package com.tnpy.mes.controller.system;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.TbUserMapper;
-import com.tnpy.mes.model.mysql.EquipmentInfo;
+import com.tnpy.mes.model.mysql.TbUser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
 //import com.tnpy.mes.mapper.mysql.TbUserMapper;
 //import com.tnpy.mes.model.mysql.TbUser;
-import com.tnpy.mes.model.mysql.TbUser;
 
 
 
@@ -96,7 +82,7 @@ public class UserManageController {
     	 List<TbUser> users =userService.userList();
          result.setStatus(1);
          result.setData(JSONObject.toJSONString(users, SerializerFeature.WriteMapNullValue).toString());
-         System.out.println(result);
+        // System.out.println(result);
          return  result;
      }
      catch (Exception ex)
@@ -158,12 +144,10 @@ public class UserManageController {
 	System.out.println(list);
 	for (int i = 0; i < list.length; i++) {
 	    String id = list[i];
-	    System.out.println(id);
+	   // System.out.println(id);
 //	    userService.deleteUser(id);
 	    userService.deleteByPrimaryKey(id);
-	    
 	}
-	
 	JSONObject result = new JSONObject();
 	result.put("state", "success");
 	return result;
@@ -175,24 +159,14 @@ public class UserManageController {
 	  TNPYResponse result = new TNPYResponse();
 	     try
 	     {
-	    	 
-	         
-	         
-	         
-	         
 	         PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize());
 //	         Page page = new Page();
 //	         List<Page> list = pageMapper.selectAll(page);
-	        
-	         
-	         
 	         List<TbUser> users =userService.userList();
 	         PageInfo pageInfo1 = new PageInfo(users);
 	         result.setStatus(1);
 	         result.setData(JSONObject.toJSONString(pageInfo1, SerializerFeature.WriteMapNullValue).toString());
-	         System.out.println(result);
-	         
-
+	         //System.out.println(result);
 	         return  result;
 	     }
 	     catch (Exception ex)
@@ -201,6 +175,4 @@ public class UserManageController {
 	         return  result;
 	     }
   }
-
-  
 }

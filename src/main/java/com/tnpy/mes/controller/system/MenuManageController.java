@@ -1,30 +1,17 @@
 package com.tnpy.mes.controller.system;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.tnpy.common.utils.web.TNPYResponse;
+import com.tnpy.mes.model.mysql.TbMenu;
+import com.tnpy.mes.model.mysql.TbRole;
+import com.tnpy.mes.service.system.IMenuManageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.tnpy.common.Enum.StatusEnum;
-import com.tnpy.common.utils.web.TNPYResponse;
-import com.tnpy.mes.mapper.mysql.TbUserMapper;
-import com.tnpy.mes.model.mysql.IndustrialPlant;
-import com.tnpy.mes.model.mysql.TbMenu;
-import com.tnpy.mes.model.mysql.TbRole;
-import com.tnpy.mes.model.mysql.TbUser;
-import com.tnpy.mes.service.system.IMenuManageService;
+import java.util.List;
 
 @RestController
 //@Controller
@@ -35,7 +22,7 @@ public class MenuManageController {
 
 	@RequestMapping(value = "/listMenus")
 	public JSONArray listMenus() {
-		System.out.println("listmenus");
+		//System.out.println("listmenus");
 		List<TbMenu> list = menuManageService.listMenus();
 //		1、使用JSONObject
 //        JSONObject listObject=JSONObject.toJavaObject(list);
@@ -43,7 +30,7 @@ public class MenuManageController {
         JSONArray listArray=JSONArray.parseArray(JSON.toJSONString(list));
 //        JSONObject.parse
         //System.out.println("listObject:"+listObject.toString());
-        System.out.println(listArray);
+        //System.out.println(listArray);
 		
         return listArray;
 //		System.out.println(menuManageService.listMenus());
@@ -93,7 +80,7 @@ public class MenuManageController {
 	@ResponseBody
 	@RequestMapping(value = "/listByMenuId")
 	public TNPYResponse listByMenuId(String menuId) {
-		System.out.println("listByMenuId 被调用了");
+		//System.out.println("listByMenuId 被调用了");
 		return menuManageService.selectById(menuId);
 	}
 
@@ -135,7 +122,7 @@ public class MenuManageController {
 	@ResponseBody
 	@RequestMapping("/roleMenuTreeData")
 	public TNPYResponse roleMenuTreeData(TbRole role) {
-		System.out.println(role.getRoleId());
+		//System.out.println(role.getRoleId());
 		return menuManageService.roleMenuTreeData(role);
 //		return null;
 	}
