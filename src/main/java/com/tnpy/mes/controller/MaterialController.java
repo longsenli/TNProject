@@ -62,4 +62,9 @@ public class MaterialController {
     public TNPYResponse addGrantMaterialRecord( String orderSplitID,String operator ) {
         return  materialService.addGrantMaterialRecord( orderSplitID, operator);
     }
+
+    @RequestMapping(value = "/grantdndexpendstatistics")
+    public TNPYResponse grantAndExpendStatistics(  String startTime,String endTime,String plantID,String processID ) {
+        return  materialService.grantAndExpendStatistics( startTime, endTime,plantID,processID);
+    }
 }

@@ -18,4 +18,5 @@ public interface IMaterialService {
     public TNPYResponse batteryStatisInventory( String startTime,String endTime,String plantID );
 
     public TNPYResponse addGrantMaterialRecord( String orderSplitID,String operator );
+    public TNPYResponse grantAndExpendStatistics(  String startTime,String endTime,String plantID,String processID );
 }

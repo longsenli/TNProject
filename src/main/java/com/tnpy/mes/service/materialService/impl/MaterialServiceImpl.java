@@ -371,4 +371,21 @@ public class MaterialServiceImpl implements IMaterialService {
            return  result;
        }
     }
+
+    public TNPYResponse grantAndExpendStatistics(  String startTime,String endTime,String plantID,String processID )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<Map<Object,Object>> materialStatisInfo = materialRecordMapper.grantAndExpendStatistics(startTime,endTime,plantID,"1008","1007");
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(materialStatisInfo).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
 }

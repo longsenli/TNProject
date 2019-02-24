@@ -102,4 +102,15 @@ public interface MaterialRecordMapper {
             "    from ( SELECT * FROM ilpsdb.tb_workorder where plantID = #{plantID} and materialID = #{batteryType} and scheduledStartTime >= #{startTime} and scheduledStartTime <=  #{endTime} and processID = #{processID} )\n" +
             "    a left join tb_materialrecord b on a.id = b.orderID")
     Object getJSProcessBatteryProduction(String startTime,String endTime,String plantID,String processID,String batteryType);
+
+    @Select("\n" +
+            "select c.id,c.name,c.grantNum,d.expendNum from (\n" +
+            "select a.id,a.name,b.grantNum from (\n" +
+            "select id,name from sys_material where typeID in (\n" +
+            "select materialTypeID from sys_processmaterial where processID = #{processID} and inOrout = '1') )  a\n" +
+            "left join ( select batteryType,sum(number) as grantNum from tb_grantmaterialrecord where plantID = #{plantID} and processID = #{lastProcessID} \n" +
+            "and grantTime >= #{startTime} and  grantTime <= #{endTime} group by batteryType) b on a.id = b.batteryType ) c left join (\n" +
+            "select materialID,sum(number) as expendNum from tb_materialrecord where  expendOrderID in (select id from tb_workorder where  scheduledStartTime >= #{startTime} \n" +
+            " and  scheduledStartTime <= #{endTime} and plantID = #{plantID} and processID = #{processID} )  group by materialID ) d on c.id = d.materialID")
+    List<Map<Object, Object>> grantAndExpendStatistics(  String startTime,String endTime,String plantID,String processID,String lastProcessID );
 }
