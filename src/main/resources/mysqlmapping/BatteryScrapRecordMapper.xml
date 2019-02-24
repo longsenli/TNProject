@@ -26,6 +26,20 @@
     delete from tb_batteryscraprecord
     where batteryID = #{batteryid,jdbcType=VARCHAR}
   </delete>
+
+  <insert id="insertManyScrapRecord" parameterType="java.util.List">
+
+    insert into tb_batteryscraprecord (batteryID, lineID, scrapType,
+    scrapReason, scrapStaff, status,
+    scrapTime, plantID, batteryType
+    )
+    values
+    <foreach collection="batteryScrapRecordList" item="item" index="index" separator=",">
+      ( #{item.batteryid}, #{item.lineid}, #{item.scraptype}, #{item.scrapreason}, #{item.scrapstaff},
+       #{item.status}, #{item.scraptime}, #{item.plantid}, #{item.batterytype})
+    </foreach>
+  </insert>
+
   <insert id="insert" parameterType="com.tnpy.mes.model.mysql.BatteryScrapRecord">
     insert into tb_batteryscraprecord (batteryID, lineID, scrapType, 
       scrapReason, scrapStaff, status, 

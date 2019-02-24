@@ -20,9 +20,9 @@ public class SemifinishedBatteryController {
     private ISemifinishedBatteryService  semifinishedBatteryService;
 
     @RequestMapping(value = "/addscrapbattery")
-    public TNPYResponse addScrapBattery(@RequestBody String jsonStr)
+    public TNPYResponse addScrapBattery( String jsonStr,int scrapNum)
     {
-        return  semifinishedBatteryService.addScrapBattery(jsonStr);
+        return  semifinishedBatteryService.addScrapBattery(jsonStr,scrapNum);
     }
 
     @RequestMapping(value = "/getscrapbatterybyline")

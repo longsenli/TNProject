@@ -8,7 +8,7 @@ import com.tnpy.common.utils.web.TNPYResponse;
  * @Date: 2019/2/12 10:12
  */
 public interface ISemifinishedBatteryService {
-    public TNPYResponse addScrapBattery(String jsonStr);
+    public TNPYResponse addScrapBattery(String jsonStr,int scrapNum);
     public TNPYResponse getScrapBatteryByline(String lineID,String plantID);
     public TNPYResponse deleteScrapBattery(String batteryID);
 

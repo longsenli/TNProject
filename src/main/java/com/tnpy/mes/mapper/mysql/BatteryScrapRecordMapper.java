@@ -25,7 +25,8 @@ public interface BatteryScrapRecordMapper {
     @Select("select * from tb_batteryScrapRecord ${filter}")
     List<BatteryScrapRecord> selectByFilter(@Param("filter") String filter);
 
-    @Select("select count(1) from tb_batteryscraprecord where plantID = #{plantID} and scrapTime >= #{startTime} and scrapTime <= #{endTime} and batteryType = #{batteryType}")
+    @Select("select count(1) from tb_batteryscraprecord where plantID = #{plantID} and scrapTime >= #{startTime} and scrapTime <= #{endTime} and batteryType = #{batteryType} and status ='1'")
     String getScrapNum(String plantID,String startTime,String endTime,String batteryType);
 
+    int insertManyScrapRecord(@Param("batteryScrapRecordList") List<BatteryScrapRecord> batteryScrapRecordList);
 }

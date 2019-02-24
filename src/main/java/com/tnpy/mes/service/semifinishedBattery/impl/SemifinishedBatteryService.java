@@ -13,6 +13,7 @@ import com.tnpy.mes.service.semifinishedBattery.ISemifinishedBatteryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -32,15 +33,41 @@ public class SemifinishedBatteryService implements ISemifinishedBatteryService {
 
     @Autowired
     private BatteryBorrowReturnRecordMapper batteryBorrowReturnRecordMapper;
-    public TNPYResponse addScrapBattery(String jsonStr)
+    public TNPYResponse addScrapBattery(String jsonStr,int scrapNum)
     {
         TNPYResponse result = new TNPYResponse();
         try
         {
             BatteryScrapRecord batteryScrapRecord=(BatteryScrapRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), BatteryScrapRecord.class);
+           String scrapStatus = "1";
+            if("铸焊不良".equals(batteryScrapRecord.getScraptype()))
+            {
+                scrapStatus = "100";
+            }
             batteryScrapRecord.setScraptime(new Date());
-            batteryScrapRecord.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
-            batteryScrapRecordMapper.insert(batteryScrapRecord);
+            batteryScrapRecord.setStatus(scrapStatus);
+            if(scrapNum < 0)
+           {
+               batteryScrapRecordMapper.insert(batteryScrapRecord);
+           }
+            else
+            {
+                List<BatteryScrapRecord> batteryScrapRecordList = new ArrayList<>();
+                for(int i =0 ;i<scrapNum;i++) {
+                    BatteryScrapRecord batteryScrapRecordTMP = new BatteryScrapRecord();
+                    batteryScrapRecordTMP.setStatus(scrapStatus);
+                    batteryScrapRecordTMP.setBatteryid(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                    batteryScrapRecordTMP.setBatterytype(batteryScrapRecord.getBatterytype());
+                    batteryScrapRecordTMP.setLineid(batteryScrapRecord.getLineid());
+                    batteryScrapRecordTMP.setPlantid(batteryScrapRecord.getPlantid());
+                    batteryScrapRecordTMP.setScrapreason(batteryScrapRecord.getScrapreason());
+                    batteryScrapRecordTMP.setScrapstaff(batteryScrapRecord.getScrapstaff());
+                    batteryScrapRecordTMP.setScraptype(batteryScrapRecord.getScraptype());
+                    batteryScrapRecordTMP.setScraptime(batteryScrapRecord.getScraptime());
+                    batteryScrapRecordList.add(batteryScrapRecordTMP);
+                }
+                batteryScrapRecordMapper.insertManyScrapRecord(batteryScrapRecordList);
+            }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }
