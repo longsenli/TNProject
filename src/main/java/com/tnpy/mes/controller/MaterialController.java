@@ -57,4 +57,9 @@ public class MaterialController {
     public TNPYResponse batteryStatisInventory( String startTime,String endTime,String plantID ) {
         return  materialService.batteryStatisInventory( startTime, endTime, plantID);
     }
+
+    @RequestMapping(value = "/addgrantmaterialrecord")
+    public TNPYResponse addGrantMaterialRecord( String orderSplitID,String operator ) {
+        return  materialService.addGrantMaterialRecord( orderSplitID, operator);
+    }
 }

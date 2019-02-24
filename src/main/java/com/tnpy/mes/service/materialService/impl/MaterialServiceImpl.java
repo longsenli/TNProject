@@ -2,17 +2,12 @@ package com.tnpy.mes.service.materialService.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
-import com.tnpy.mes.mapper.mysql.BatchrelationcontrolMapper;
-import com.tnpy.mes.mapper.mysql.BatteryStastisInventoryRecordMapper;
-import com.tnpy.mes.mapper.mysql.MaterialRecordMapper;
-import com.tnpy.mes.mapper.mysql.OrderSplitMapper;
+import com.tnpy.mes.mapper.mysql.*;
 import com.tnpy.mes.model.customize.CustomMaterialRecord;
-import com.tnpy.mes.model.mysql.Batchrelationcontrol;
-import com.tnpy.mes.model.mysql.BatteryStastisInventoryRecord;
-import com.tnpy.mes.model.mysql.MaterialRecord;
-import com.tnpy.mes.model.mysql.OrderSplit;
+import com.tnpy.mes.model.mysql.*;
 import com.tnpy.mes.service.materialService.IMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +34,10 @@ public class MaterialServiceImpl implements IMaterialService {
     private OrderSplitMapper orderSplitMapper;
     @Autowired
     private BatteryStastisInventoryRecordMapper batteryStastisInventoryRecordMapper;
+    @Autowired
+    private WorkorderMapper workorderMapper;
+    @Autowired
+    private GrantMaterialRecordMapper grantMaterialRecordMapper;
     public TNPYResponse getMaterialRecord(String expendOrderID ) {
         TNPYResponse result = new TNPYResponse();
         try
@@ -114,12 +113,19 @@ public class MaterialServiceImpl implements IMaterialService {
         TNPYResponse result = new TNPYResponse();
         try
         {
+
             TNPYResponse materialUseable = judgeAvailable(materialOrderID,expendOrderID);
             if(materialUseable.getStatus() != StatusEnum.ResponseStatus.Success.getIndex() )
             {
                 return materialUseable;
             }
             List<String> materialIDList = JSON.parseArray(materialRecordIDListStr, String.class);
+            MaterialRecord materialRecord = materialRecordMapper.selectByPrimaryKey(materialIDList.get(0));
+            TNPYResponse resultGrant = judgeZHGrantStatus(materialRecord.getSuborderid());
+            if(resultGrant.getStatus() != StatusEnum.ResponseStatus.Success.getIndex())
+            {
+                return  resultGrant;
+            }
             materialRecordMapper.updateGainMaterialRecord(materialIDList,expendOrderID,outputter,new Date(),StatusEnum.InOutStatus.Output.getIndex());
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
@@ -135,6 +141,7 @@ public class MaterialServiceImpl implements IMaterialService {
         TNPYResponse result = new TNPYResponse();
         try
         {
+
             TNPYResponse materialUseable = judgeAvailable(materialOrderID,expendOrderID);
             if(materialUseable.getStatus() != StatusEnum.ResponseStatus.Success.getIndex() )
             {
@@ -142,6 +149,12 @@ public class MaterialServiceImpl implements IMaterialService {
             }
             MaterialRecord materialRecord = materialRecordMapper.selectByPrimaryKey(materialRecordID);
             MaterialRecord materialRecordCopy =  materialRecordMapper.selectByPrimaryKey(materialRecordID);
+
+            TNPYResponse resultGrant = judgeZHGrantStatus(materialRecord.getSuborderid());
+            if(resultGrant.getStatus() != StatusEnum.ResponseStatus.Success.getIndex())
+            {
+                return  resultGrant;
+            }
 
             materialRecordCopy.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
             materialRecordCopy.setNumber(materialRecord.getNumber() - Float.parseFloat(number) );
@@ -163,10 +176,51 @@ public class MaterialServiceImpl implements IMaterialService {
             return  result;
         }
     }
+    TNPYResponse judgeZHGrantStatus(String orderSplitID)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            OrderSplit orderSplit = orderSplitMapper.selectByPrimaryKey(orderSplitID);
+            String msgStr = "";
+            if (orderSplit == null) {
+                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                result.setMessage("未找到工单信息！" + orderSplitID);
+                return result;
+            }
+            Workorder workorder = workorderMapper.selectByPrimaryKey(orderSplit.getOrderid());
+            if (workorder != null) {
+                if (ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(workorder.getProcessid())) {
+                    GrantMaterialRecord grantMaterialRecord = grantMaterialRecordMapper.selectByOrderID(orderSplit.getId());
+                    if (grantMaterialRecord == null) {
+                        result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                        result.setMessage("该工单未发料，不能够领用！" + orderSplit.getOrdersplitid());
+                        return result;
+                    }
+                }
+            } else {
+                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                result.setMessage("未找到归属主工单信息！" + orderSplit.getOrderid());
+                return result;
+            }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+            result.setMessage("查找发料信息失败！" + orderSplitID);
+            return result;
+        }
+    }
    public  TNPYResponse gainMaterialByQR(String qrCode,String expendOrderID,String outputter ){
         TNPYResponse result = new TNPYResponse();
         try
         {
+            TNPYResponse resultGrant = judgeZHGrantStatus(qrCode);
+            if(resultGrant.getStatus() != StatusEnum.ResponseStatus.Success.getIndex())
+            {
+                return  resultGrant;
+            }
             OrderSplit orderSplit = orderSplitMapper.selectByPrimaryKey(qrCode);
             String msgStr = "";
             if(orderSplit != null)
@@ -177,6 +231,7 @@ public class MaterialServiceImpl implements IMaterialService {
             {
                 msgStr = "该批次码未找到，二维码数据为：" +  qrCode;
             }
+
             int count1 = materialRecordMapper.checkMaterialRecordUsed(qrCode,StatusEnum.InOutStatus.Input.getIndex());
             int count2 = materialRecordMapper.checkMaterialRelation(qrCode,expendOrderID);
 
@@ -269,5 +324,51 @@ public class MaterialServiceImpl implements IMaterialService {
             result.setMessage("查询出错！" + ex.getMessage());
             return  result;
         }
+    }
+
+    public TNPYResponse addGrantMaterialRecord( String orderSplitID,String operator )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            OrderSplit orderSplit = orderSplitMapper.selectByPrimaryKey(orderSplitID);
+            if(orderSplit ==null)
+            {
+                result.setMessage("未获取到订单信息！" +orderSplitID );
+                return  result;
+            }
+            if(!(StatusEnum.WorkOrderStatus.finished.getIndex()+"").equals(orderSplit.getStatus()))
+            {
+                result.setMessage("该订单尚未入库！" +orderSplitID );
+                return  result;
+            }
+            GrantMaterialRecord grantMaterialRecord = grantMaterialRecordMapper.selectByOrderID(orderSplitID);
+            if(grantMaterialRecord != null)
+            {
+                result.setMessage("该订单已发料！" +orderSplitID );
+                return  result;
+            }
+
+            GrantMaterialRecord newGrantMaterialRecord = new GrantMaterialRecord();
+            newGrantMaterialRecord.setBatterytype(orderSplit.getMaterialid());
+            newGrantMaterialRecord.setGranttime(new Date());
+            newGrantMaterialRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+            newGrantMaterialRecord.setNumber(orderSplit.getProductionnum().intValue());
+            newGrantMaterialRecord.setOperator(operator);
+            newGrantMaterialRecord.setOrderid(orderSplitID);
+            newGrantMaterialRecord.setOrdername(orderSplit.getOrdersplitid());
+            newGrantMaterialRecord.setPlantid("1003");
+            newGrantMaterialRecord.setProcessid("1007");
+            newGrantMaterialRecord.setStatus("1");
+
+            grantMaterialRecordMapper.insert(newGrantMaterialRecord);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+       catch (Exception ex)
+       {
+           result.setMessage("发放失败！" + ex.getMessage());
+           return  result;
+       }
     }
 }
