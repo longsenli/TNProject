@@ -1,7 +1,11 @@
 package com.tnpy.mes.mapper.mysql;
 
 import com.tnpy.mes.model.mysql.MaterialInventoryRecord;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Component;
 
+@Mapper
+@Component
 public interface MaterialInventoryRecordMapper {
     int deleteByPrimaryKey(String id);
 

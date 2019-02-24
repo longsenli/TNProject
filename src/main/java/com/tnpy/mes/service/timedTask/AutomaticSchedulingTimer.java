@@ -3,9 +3,7 @@ package com.tnpy.mes.service.timedTask;
 import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.mes.mapper.mysql.*;
-import com.tnpy.mes.model.mysql.BatteryStastisInventoryRecord;
-import com.tnpy.mes.model.mysql.IndustrialPlant;
-import com.tnpy.mes.model.mysql.Material;
+import com.tnpy.mes.model.mysql.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -47,6 +45,12 @@ public class AutomaticSchedulingTimer {
 
     @Autowired
     private MaterialMapper materialMapper;
+
+    @Autowired
+    private  ProductionProcessMapper productionProcessMapper;
+
+    @Autowired
+    private  MaterialSecondaryInventoryRecordMapper materialSecondaryInventoryRecordMapper;
     /**
      * 每天晚上21:50:30运行
      */
@@ -223,6 +227,43 @@ public class AutomaticSchedulingTimer {
                    }
                 }
 
+            }
+
+        } catch (Exception ex) {
+        }
+    }
+
+    @Scheduled(cron = "0 50 6 * * ?")
+    public void automaticSecondaryInventoryStatistics() {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();//取时间
+            dateFormat.format(date);
+            String timeFinish = "";
+            String timeStart = "";
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(date);
+            timeStart = dateFormat.format(date) + " 07:00:00";
+            calendar.add(Calendar.DATE, -1);
+            date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+            timeFinish =dateFormat.format(date) + " 07:00:00";
+            List<IndustrialPlant> industrialPlantList = industrialPlantMapper.selectAll();
+            List<ProductionProcess> productionProcessList = productionProcessMapper.selectAll();
+            for(int i = 0;i<industrialPlantList.size();i++) {
+                List<MaterialSecondaryInventoryRecord> materialSecondaryInventoryRecordList = new ArrayList<>();
+                for (int j = 0; j < productionProcessList.size(); j++) {
+                    try
+                    {
+                        if(ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals( productionProcessList.get(j).getId()))
+                        {
+                            materialSecondaryInventoryRecordMapper.insertJSSecondaryInventory(timeStart,timeFinish,industrialPlantList.get(i).getId(),productionProcessList.get(j).getId(),productionProcessList.get(j-1).getId());
+                        }
+                    }
+                   catch (Exception ex)
+                   {
+                        System.out.println("二级库盘点出错===============" + ex.getMessage() + "  " + industrialPlantList.get(i).getName() + " " + productionProcessList.get(j).getName());
+                   }
+                }
             }
 
         } catch (Exception ex) {
