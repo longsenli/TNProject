@@ -1,5 +1,7 @@
 package com.tnpy.mes.model.mysql;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.Date;
 
 public class MaterialSecondaryInventoryRecord {
@@ -11,10 +13,10 @@ public class MaterialSecondaryInventoryRecord {
 
     private String processid;
 
-    private Integer currntnum;
+    private Integer currentnum;
 
     private Integer laststorage;
-
+    @JSONField(format ="yyyy-MM-dd HH:mm:ss")
     private Date updatetime;
 
     private Integer gainnum;
@@ -61,12 +63,12 @@ public class MaterialSecondaryInventoryRecord {
         this.processid = processid == null ? null : processid.trim();
     }
 
-    public Integer getCurrntnum() {
-        return currntnum;
+    public Integer getCurrentnum() {
+        return currentnum;
     }
 
-    public void setCurrntnum(Integer currntnum) {
-        this.currntnum = currntnum;
+    public void setCurrentnum(Integer currentnum) {
+        this.currentnum = currentnum;
     }
 
     public Integer getLaststorage() {

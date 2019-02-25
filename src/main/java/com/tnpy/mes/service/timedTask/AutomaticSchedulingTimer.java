@@ -51,6 +51,9 @@ public class AutomaticSchedulingTimer {
 
     @Autowired
     private  MaterialSecondaryInventoryRecordMapper materialSecondaryInventoryRecordMapper;
+
+    @Autowired
+    private  MaterialInventoryRecordMapper materialInventoryRecordMapper;
     /**
      * 每天晚上21:50:30运行
      */
@@ -233,7 +236,7 @@ public class AutomaticSchedulingTimer {
         }
     }
 
-    @Scheduled(cron = "0 50 6 * * ?")
+    @Scheduled(cron = "0 52 6 * * ?")
     public void automaticSecondaryInventoryStatistics() {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -250,7 +253,6 @@ public class AutomaticSchedulingTimer {
             List<IndustrialPlant> industrialPlantList = industrialPlantMapper.selectAll();
             List<ProductionProcess> productionProcessList = productionProcessMapper.selectAll();
             for(int i = 0;i<industrialPlantList.size();i++) {
-                List<MaterialSecondaryInventoryRecord> materialSecondaryInventoryRecordList = new ArrayList<>();
                 for (int j = 0; j < productionProcessList.size(); j++) {
                     try
                     {
@@ -263,6 +265,43 @@ public class AutomaticSchedulingTimer {
                    {
                         System.out.println("二级库盘点出错===============" + ex.getMessage() + "  " + industrialPlantList.get(i).getName() + " " + productionProcessList.get(j).getName());
                    }
+                }
+            }
+
+        } catch (Exception ex) {
+        }
+    }
+
+    @Scheduled(cron = "0 54 6 * * ?")
+    public void automaticInventoryStatistics() {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();//取时间
+            dateFormat.format(date);
+            String timeFinish = "";
+            String timeStart = "";
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(date);
+            timeStart = dateFormat.format(date) + " 07:00:00";
+            calendar.add(Calendar.DATE, -1);
+            date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+            timeFinish =dateFormat.format(date) + " 07:00:00";
+            List<IndustrialPlant> industrialPlantList = industrialPlantMapper.selectAll();
+            List<ProductionProcess> productionProcessList = productionProcessMapper.selectAll();
+            for(int i = 0;i<industrialPlantList.size();i++) {
+
+                for (int j = 0; j < productionProcessList.size(); j++) {
+                    try
+                    {
+                        if(ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals( productionProcessList.get(j).getId()))
+                        {
+                            materialInventoryRecordMapper.insertZHInventoryStatistics(timeStart,timeFinish,industrialPlantList.get(i).getId(),productionProcessList.get(j).getId(),productionProcessList.get(j+1).getId());
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.out.println("一级库盘点出错===============" + ex.getMessage() + "  " + industrialPlantList.get(i).getName() + " " + productionProcessList.get(j).getName());
+                    }
                 }
             }
 

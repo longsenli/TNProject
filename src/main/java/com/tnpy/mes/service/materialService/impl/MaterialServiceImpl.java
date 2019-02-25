@@ -388,4 +388,55 @@ public class MaterialServiceImpl implements IMaterialService {
             return  result;
         }
     }
+
+    public TNPYResponse getSecondaryMaterialInventoryStatistics( String plantID,String processID,String startTime,String endTime )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<Map<Object,Object>> materialStatisInfo = materialRecordMapper.getSecondaryMaterialInventoryStatistics(startTime,endTime,plantID,processID);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(materialStatisInfo).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    public TNPYResponse getMaterialInventoryStatistics( String plantID,String processID,String startTime,String endTime )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<Map<Object,Object>> materialStatisInfo = materialRecordMapper.getMaterialInventoryStatistics(startTime,endTime,plantID,processID);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(materialStatisInfo).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    public TNPYResponse getGrantMaterialRecord( String plantID,String processID,String startTime,String endTime )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<Map<Object,Object>> materialStatisInfo = materialRecordMapper.getGrantMaterialRecord(startTime,endTime,plantID,processID);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(materialStatisInfo).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
 }

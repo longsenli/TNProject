@@ -67,4 +67,19 @@ public class MaterialController {
     public TNPYResponse grantAndExpendStatistics(  String startTime,String endTime,String plantID,String processID ) {
         return  materialService.grantAndExpendStatistics( startTime, endTime,plantID,processID);
     }
+
+    @RequestMapping(value = "/getmaterialinventorystatistics")
+    public TNPYResponse getMaterialInventoryStatistics( String plantID,String processID,String startTime,String endTime ) {
+        return  materialService.getMaterialInventoryStatistics(plantID,processID,startTime,endTime);
+    }
+
+    @RequestMapping(value = "/getsecondarymaterialinventorystatistics")
+    public TNPYResponse getSecondaryMaterialInventoryStatistics( String plantID,String processID,String startTime,String endTime ) {
+        return  materialService.getSecondaryMaterialInventoryStatistics(plantID,processID,startTime,endTime);
+    }
+
+    @RequestMapping(value = "/getgrantmaterialrecord")
+    public TNPYResponse getGrantMaterialRecord( String plantID,String processID,String startTime,String endTime ) {
+        return  materialService.getGrantMaterialRecord(plantID,processID,startTime,endTime);
+    }
 }

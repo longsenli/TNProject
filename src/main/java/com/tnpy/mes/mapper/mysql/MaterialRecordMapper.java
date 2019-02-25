@@ -2,10 +2,7 @@ package com.tnpy.mes.mapper.mysql;
 
 import com.tnpy.mes.model.customize.CustomMaterialRecord;
 import com.tnpy.mes.model.mysql.MaterialRecord;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -113,4 +110,22 @@ public interface MaterialRecordMapper {
             "select materialID,sum(number) as expendNum from tb_materialrecord where  expendOrderID in (select id from tb_workorder where  scheduledStartTime >= #{startTime} \n" +
             " and  scheduledStartTime <= #{endTime} and plantID = #{plantID} and processID = #{processID} )  group by materialID ) d on c.id = d.materialID")
     List<Map<Object, Object>> grantAndExpendStatistics(  String startTime,String endTime,String plantID,String processID,String lastProcessID );
+
+    @Select("select plantID,processID,materialID,currentNum,lastStorage,gainNum,inNum,expendNum,outNum,date_format(updateTime,'%Y-%m-%d %H:%i') as updateTime,name from (\n" +
+            "select plantID,processID,materialID,currentNum,lastStorage,gainNum,inNum,expendNum,outNum,updateTime  from tb_materialsecondaryinventoryrecord \n" +
+            "where plantID = #{plantID} and processID = #{processID} and updateTime >= #{startTime} and updateTime <= #{endTime}\n" +
+            ") a left join  sys_material b on a.materialID = b.id order by updateTime desc,name")
+    List<Map<Object, Object>> getSecondaryMaterialInventoryStatistics(  String startTime,String endTime,String plantID,String processID);
+
+    @Select("select plantID,processID,materialID,currentNum,lastStorage,productionNum,inNum,expendNum,outNum,date_format(updateTime,'%Y-%m-%d %H:%i')  as updateTime,name from (\n" +
+            "select plantID,processID,materialID,currentNum,lastStorage,productionNum,inNum,expendNum,outNum,updateTime  from tb_materialinventoryrecord \n" +
+            "where plantID = #{plantID} and processID = #{processID} and updateTime >= #{startTime} and updateTime <= #{endTime}\n" +
+            ") a left join  sys_material b on a.materialID = b.id order by updateTime desc,name")
+    List<Map<Object, Object>> getMaterialInventoryStatistics(  String startTime,String endTime,String plantID,String processID);
+
+    @Select("select orderName,number,operator,date_format(grantTime,'%Y-%m-%d %H:%i') as grantTime,name from (\n" +
+            "select batteryType,orderName,number,operator,grantTime from tb_grantmaterialrecord \n" +
+            "where plantID = #{plantID} and processID = #{processID}  and grantTime >= #{startTime}  and grantTime <= #{endTime} ) \n" +
+            " a left join  sys_material b on a.batteryType = b.id order by grantTime desc")
+    List<Map<Object, Object>> getGrantMaterialRecord(  String startTime,String endTime,String plantID,String processID);
 }
