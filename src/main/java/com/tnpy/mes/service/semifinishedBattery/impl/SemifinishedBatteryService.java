@@ -40,10 +40,6 @@ public class SemifinishedBatteryService implements ISemifinishedBatteryService {
         {
             BatteryScrapRecord batteryScrapRecord=(BatteryScrapRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), BatteryScrapRecord.class);
            String scrapStatus = "1";
-            if("铸焊不良".equals(batteryScrapRecord.getScraptype()))
-            {
-                scrapStatus = "100";
-            }
             batteryScrapRecord.setScraptime(new Date());
             batteryScrapRecord.setStatus(scrapStatus);
             if(scrapNum < 0)
@@ -118,7 +114,7 @@ public class SemifinishedBatteryService implements ISemifinishedBatteryService {
         }
     }
 
-    public TNPYResponse  addRepairBattery( String jsonStr,String type)
+    public TNPYResponse addRepairBattery( String jsonStr,String type,int number)
     {
        TNPYResponse result = new TNPYResponse();
         try
@@ -127,13 +123,36 @@ public class SemifinishedBatteryService implements ISemifinishedBatteryService {
 
             if("add".equals(type))
             {
-                if(batteryRepairRecord.getBacktime() == null)
+                if(number < 0)
                 {
-                    batteryRepairRecord.setStatus("1");
+                    if(batteryRepairRecord.getBacktime() == null)
+                    {
+                        batteryRepairRecord.setStatus("1");
+                    }
+                    else
+                        batteryRepairRecord.setStatus("2");
+                    batteryRepairRecordMapper.insertSelective(batteryRepairRecord);
                 }
-                else
-                    batteryRepairRecord.setStatus("2");
-                batteryRepairRecordMapper.insertSelective(batteryRepairRecord);
+               else
+                {
+
+                        List<BatteryRepairRecord> batteryRepairRecordList = new ArrayList<>();
+                        for(int i =0 ;i<number;i++) {
+                            BatteryRepairRecord batteryRepairRecordTMP = new BatteryRepairRecord();
+                            batteryRepairRecordTMP.setStatus("1");
+                            batteryRepairRecordTMP.setBatteryid(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                            batteryRepairRecordTMP.setBatterytype(batteryRepairRecord.getBatterytype());
+                            batteryRepairRecordTMP.setLineid(batteryRepairRecord.getLineid());
+                            batteryRepairRecordTMP.setPlantid(batteryRepairRecord.getPlantid());
+                            batteryRepairRecordTMP.setRepairreason(batteryRepairRecord.getRepairreason());
+                            batteryRepairRecordTMP.setReportstaff(batteryRepairRecord.getReportstaff());
+                            batteryRepairRecordTMP.setRepairtime(batteryRepairRecord.getRepairtime());
+
+                            batteryRepairRecordList.add(batteryRepairRecordTMP);
+                        }
+                        batteryRepairRecordMapper.insertManyRepairRecord(batteryRepairRecordList);
+
+                }
             }
            else if("change".equals(type))
            {

@@ -38,9 +38,9 @@ public class SemifinishedBatteryController {
     }
 
     @RequestMapping(value = "/addrepairbattery")
-    public TNPYResponse addRepairBattery( String jsonStr,String type)
+    public TNPYResponse addRepairBattery( String jsonStr,String type,int number)
     {
-        return  semifinishedBatteryService.addRepairBattery(jsonStr,type);
+        return  semifinishedBatteryService.addRepairBattery(jsonStr,type,number);
     }
 
     @RequestMapping(value = "/getrepairbatterybyline")

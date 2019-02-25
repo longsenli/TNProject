@@ -12,7 +12,7 @@ public interface ISemifinishedBatteryService {
     public TNPYResponse getScrapBatteryByline(String lineID,String plantID);
     public TNPYResponse deleteScrapBattery(String batteryID);
 
-    public TNPYResponse addRepairBattery( String jsonStr,String type);
+    public TNPYResponse addRepairBattery( String jsonStr,String type,int number);
     public TNPYResponse getRepairBatteryByline(String lineID,String plantID);
     public TNPYResponse deleteRepairBattery(String batteryID);
 

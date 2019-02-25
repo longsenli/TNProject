@@ -27,6 +27,18 @@
     delete from tb_batteryrepairrecord
     where batteryID = #{batteryid,jdbcType=VARCHAR}
   </delete>
+
+  <insert id="insertManyRepairRecord" parameterType="java.util.List">
+
+    insert into tb_batteryrepairrecord (batteryID, lineID, reportStaff, repairReason, repairTime, status, plantID, batteryType
+    )
+    values
+    <foreach collection="batteryRepairRecordList" item="item" index="index" separator=",">
+      ( #{item.batteryid}, #{item.lineid}, #{item.reportstaff}, #{item.repairreason}, #{item.repairtime},
+      #{item.status},  #{item.plantid}, #{item.batterytype})
+    </foreach>
+  </insert>
+
   <insert id="insert" parameterType="com.tnpy.mes.model.mysql.BatteryRepairRecord">
     insert into tb_batteryrepairrecord (batteryID, lineID, reportStaff, 
       repairReason, repairTime, backTime, 
