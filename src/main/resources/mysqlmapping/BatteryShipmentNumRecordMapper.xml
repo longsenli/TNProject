@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.BatteryShipmentNumRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.BatteryShipmentNumRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="materialID" jdbcType="VARCHAR" property="materialid" />
+    <result column="batteryType" jdbcType="VARCHAR" property="batterytype" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="shipmentNum" jdbcType="INTEGER" property="shipmentnum" />
+    <result column="shipmentTime" jdbcType="TIMESTAMP" property="shipmenttime" />
+    <result column="operator" jdbcType="VARCHAR" property="operator" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, materialID, batteryType, plantID, shipmentNum, shipmentTime, operator, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_batteryshipmentnumrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_batteryshipmentnumrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.BatteryShipmentNumRecord">
+    insert into tb_batteryshipmentnumrecord (id, materialID, batteryType, 
+      plantID, shipmentNum, shipmentTime, 
+      operator, status)
+    values (#{id,jdbcType=VARCHAR}, #{materialid,jdbcType=VARCHAR}, #{batterytype,jdbcType=VARCHAR}, 
+      #{plantid,jdbcType=VARCHAR}, #{shipmentnum,jdbcType=INTEGER}, #{shipmenttime,jdbcType=TIMESTAMP}, 
+      #{operator,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.BatteryShipmentNumRecord">
+    insert into tb_batteryshipmentnumrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="materialid != null">
+        materialID,
+      </if>
+      <if test="batterytype != null">
+        batteryType,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="shipmentnum != null">
+        shipmentNum,
+      </if>
+      <if test="shipmenttime != null">
+        shipmentTime,
+      </if>
+      <if test="operator != null">
+        operator,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="batterytype != null">
+        #{batterytype,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="shipmentnum != null">
+        #{shipmentnum,jdbcType=INTEGER},
+      </if>
+      <if test="shipmenttime != null">
+        #{shipmenttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null">
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.BatteryShipmentNumRecord">
+    update tb_batteryshipmentnumrecord
+    <set>
+      <if test="materialid != null">
+        materialID = #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="batterytype != null">
+        batteryType = #{batterytype,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="shipmentnum != null">
+        shipmentNum = #{shipmentnum,jdbcType=INTEGER},
+      </if>
+      <if test="shipmenttime != null">
+        shipmentTime = #{shipmenttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null">
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.BatteryShipmentNumRecord">
+    update tb_batteryshipmentnumrecord
+    set materialID = #{materialid,jdbcType=VARCHAR},
+      batteryType = #{batterytype,jdbcType=VARCHAR},
+      plantID = #{plantid,jdbcType=VARCHAR},
+      shipmentNum = #{shipmentnum,jdbcType=INTEGER},
+      shipmentTime = #{shipmenttime,jdbcType=TIMESTAMP},
+      operator = #{operator,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
