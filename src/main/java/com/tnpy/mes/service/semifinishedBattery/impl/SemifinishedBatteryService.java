@@ -315,7 +315,7 @@ public class SemifinishedBatteryService implements ISemifinishedBatteryService {
 
             batteryShipmentNumRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
             batteryShipmentNumRecord.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
-
+            batteryShipmentNumRecord.setShipmenttime(new Date());
             batteryShipmentNumRecordMapper.insert(batteryShipmentNumRecord);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
