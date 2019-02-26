@@ -210,6 +210,18 @@ public class AutomaticSchedulingTimer {
                     {
                         dailyProduction = 0;
                     }
+
+                    Object dailyShipmentsStr = materialRecordMapper.getBatteryShipmentNum(startTime,endTime,industrialPlantList.get(i).getId(),materialList.get(j).getId());
+                    int dailyShipments = 0;
+                    try
+                    {
+                        dailyShipments = (int)Double.parseDouble(dailyShipmentsStr.toString());
+                    }
+                    catch (Exception ex)
+                    {
+                        dailyShipments = 0;
+                    }
+
                     BatteryStastisInventoryRecord batteryStastisInventoryRecord = new BatteryStastisInventoryRecord();
                     batteryStastisInventoryRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                     batteryStastisInventoryRecord.setBorrownum(borrowNum);
@@ -223,8 +235,9 @@ public class AutomaticSchedulingTimer {
                     batteryStastisInventoryRecord.setUpdatetime(new Date());
                     batteryStastisInventoryRecord.setDailyproduction(dailyProduction);
                     batteryStastisInventoryRecord.setBatterytype(materialList.get(j).getId());
-                    batteryStastisInventoryRecord.setCurrentstorage(lastInventoryNum - loanNum - scrapNum - repairNum + repairBackNum + borrowNum + dailyProduction);
-                   if((lastInventoryNum + loanNum + scrapNum + repairNum + repairBackNum + borrowNum + dailyProduction) != 0)
+                    batteryStastisInventoryRecord.setDailyshipmentsnum(dailyShipments);
+                    batteryStastisInventoryRecord.setCurrentstorage(lastInventoryNum -dailyShipments - loanNum - scrapNum - repairNum + repairBackNum + borrowNum + dailyProduction);
+                   if((lastInventoryNum + loanNum + scrapNum + repairNum + repairBackNum + borrowNum + dailyProduction + dailyShipments) != 0)
                    {
                        batteryStastisInventoryRecordMapper.insertSelective(batteryStastisInventoryRecord);
                    }

@@ -72,4 +72,23 @@ public class SemifinishedBatteryController {
     {
         return  semifinishedBatteryService.deleteBorrowReturnRecord(id);
     }
+
+    @RequestMapping(value = "/getbatteryshipmentnumrecord")
+    public TNPYResponse getBatteryShipmentnumRecord(String plantID,String typeID)
+    {
+        return  semifinishedBatteryService.getBatteryShipmentnumRecord(plantID,typeID);
+    }
+
+    @RequestMapping(value = "/addbatteryshipmentnumrecord")
+    public TNPYResponse addBatteryShipmentnumRecord(@RequestBody String jsonStr)
+    {
+        return  semifinishedBatteryService.addBatteryShipmentnumRecord(jsonStr);
+    }
+
+
+    @RequestMapping(value = "/deletebatteryshipmentnumrecord")
+    public TNPYResponse deleteBatteryShipmentnumRecord(String id)
+    {
+        return  semifinishedBatteryService.deleteBatteryShipmentnumRecord(id);
+    }
 }

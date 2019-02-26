@@ -32,6 +32,12 @@ public interface MaterialRecordMapper {
             ") c left join sys_material d on c.materialID = d.id  order by outputTime desc")
     List<CustomMaterialRecord> selectByExpendOrder(String expendOrder);
 
+    @Select("select c.*,d.name as materialName from ( \n" +
+            "SELECT a.*,b.orderSplitID as inSubOrderName,left(b.orderSplitID, length(b.orderSplitID)-3)  as inOrderName \n" +
+            "FROM tb_materialrecord  a left join tb_ordersplit b on a.subOrderID = b.id where a.subOrderID = #{subOrderID} and a.inOrOut = 1 \n" +
+            ") c left join sys_material d on c.materialID = d.id  order by outputTime desc")
+    List<CustomMaterialRecord> selectBySubOrderID(String subOrderID);
+
    /* @Select("select g.* from \n" +
             "( select e.*,f.name as materialName from ( select c.*,d.orderSplitID as inSubOrderName,\n" +
             "left(d.orderSplitID, length(d.orderSplitID)-3)  as inOrderName from ( \n" +
@@ -100,7 +106,12 @@ public interface MaterialRecordMapper {
             "    a left join tb_materialrecord b on a.id = b.orderID")
     Object getJSProcessBatteryProduction(String startTime,String endTime,String plantID,String processID,String batteryType);
 
-    @Select("\n" +
+ @Select("SELECT sum(shipmentNum) FROM tb_batteryshipmentnumrecord  where plantID = #{plantID} and materialID = #{batteryType}" +
+         " and shipmentTime >= #{startTime} and shipmentTime <=  #{endTime}")
+ Object getBatteryShipmentNum(String startTime,String endTime,String plantID,String batteryType);
+
+
+ @Select("\n" +
             "select c.id,c.name,c.grantNum,d.expendNum from (\n" +
             "select a.id,a.name,b.grantNum from (\n" +
             "select id,name from sys_material where typeID in (\n" +

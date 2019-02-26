@@ -42,7 +42,10 @@ public class MaterialController {
     public TNPYResponse gainMaterialByQR(String qrCode,String expendOrderID,String outputter ) {
         return materialService.gainMaterialByQR(qrCode,expendOrderID,outputter);
     }
-
+    @RequestMapping(value = "/getmaterialrecordbysuborderid")
+    public TNPYResponse getMaterialRecordBySuborderid(String qrCode,String expendOrderID ) {
+        return materialService.getMaterialRecordBySubOrderID(qrCode,expendOrderID);
+    }
     @RequestMapping(value = "/orderoutputstatistics")
     public TNPYResponse orderOutputStatistics( String startTime,String endTime,String plantID,String processID,String lineID ) {
         return  materialService.orderOutputStatistics( startTime, endTime, plantID, processID, lineID);

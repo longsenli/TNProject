@@ -254,8 +254,63 @@ public class MaterialServiceImpl implements IMaterialService {
             {
                 return materialUseable;
             }
-
+          //  List<CustomMaterialRecord> materialRecordList = materialRecordMapper.selectUsableMaterial(plantID,materialID,materialTBBatch);
             materialRecordMapper.updateGainMaterialByQR(qrCode,expendOrderID,outputter,new Date(),StatusEnum.InOutStatus.Output.getIndex());
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    public  TNPYResponse getMaterialRecordBySubOrderID(String qrCode,String expendOrderID ){
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            TNPYResponse resultGrant = judgeZHGrantStatus(qrCode);
+            if(resultGrant.getStatus() != StatusEnum.ResponseStatus.Success.getIndex())
+            {
+                return  resultGrant;
+            }
+            OrderSplit orderSplit = orderSplitMapper.selectByPrimaryKey(qrCode);
+            String msgStr = "";
+            if(orderSplit != null)
+            {
+                msgStr = "工单批次码： " + orderSplit.getOrdersplitid();
+            }
+            else
+            {
+                msgStr = "该批次码未找到，二维码数据为：" +  qrCode;
+            }
+
+            int count1 = materialRecordMapper.checkMaterialRecordUsed(qrCode,StatusEnum.InOutStatus.Input.getIndex());
+            int count2 = materialRecordMapper.checkMaterialRelation(qrCode,expendOrderID);
+
+            if(count1 < 1)
+            {
+                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                result.setMessage(msgStr + "， 该批次码不存在或已被领用！");
+                return  result;
+            }
+            if(count2 < 1)
+            {
+                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                result.setMessage("该工单不能够使用该物料！");
+                return  result;
+            }
+
+
+            TNPYResponse materialUseable = judgeAvailable(orderSplit.getOrderid(),expendOrderID);
+            if(materialUseable.getStatus() != StatusEnum.ResponseStatus.Success.getIndex() )
+            {
+                return materialUseable;
+            }
+            List<CustomMaterialRecord> materialRecordList = materialRecordMapper.selectBySubOrderID(qrCode);
+
+            result.setData(JSONObject.toJSON(materialRecordList).toString());
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }

@@ -19,4 +19,8 @@ public interface ISemifinishedBatteryService {
     public TNPYResponse addBorrowReturnRecord( String jsonStr);
     public TNPYResponse getBorrowReturnRecord(String outPlantID,String inPlantID,String startTime,String endTime,String batteryType);
     public TNPYResponse deleteBorrowReturnRecord(String id);
+
+    public TNPYResponse getBatteryShipmentnumRecord(String plantID,String typeID);
+    public TNPYResponse addBatteryShipmentnumRecord(String jsonStr);
+    public TNPYResponse deleteBatteryShipmentnumRecord(String id);
 }

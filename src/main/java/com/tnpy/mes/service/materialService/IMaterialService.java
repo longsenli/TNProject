@@ -24,4 +24,6 @@ public interface IMaterialService {
     public TNPYResponse getSecondaryMaterialInventoryStatistics( String plantID,String processID,String startTime,String endTime );
 
     public TNPYResponse getGrantMaterialRecord( String plantID,String processID,String startTime,String endTime );
+
+    public  TNPYResponse getMaterialRecordBySubOrderID(String qrCode,String expendOrderID );
 }

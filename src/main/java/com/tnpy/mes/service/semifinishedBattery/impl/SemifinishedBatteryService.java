@@ -6,9 +6,11 @@ import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.BatteryBorrowReturnRecordMapper;
 import com.tnpy.mes.mapper.mysql.BatteryRepairRecordMapper;
 import com.tnpy.mes.mapper.mysql.BatteryScrapRecordMapper;
+import com.tnpy.mes.mapper.mysql.BatteryShipmentNumRecordMapper;
 import com.tnpy.mes.model.mysql.BatteryBorrowReturnRecord;
 import com.tnpy.mes.model.mysql.BatteryRepairRecord;
 import com.tnpy.mes.model.mysql.BatteryScrapRecord;
+import com.tnpy.mes.model.mysql.BatteryShipmentNumRecord;
 import com.tnpy.mes.service.semifinishedBattery.ISemifinishedBatteryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,9 @@ public class SemifinishedBatteryService implements ISemifinishedBatteryService {
 
     @Autowired
     private BatteryBorrowReturnRecordMapper batteryBorrowReturnRecordMapper;
+
+    @Autowired
+    private BatteryShipmentNumRecordMapper batteryShipmentNumRecordMapper;
     public TNPYResponse addScrapBattery(String jsonStr,int scrapNum)
     {
         TNPYResponse result = new TNPYResponse();
@@ -268,6 +273,67 @@ public class SemifinishedBatteryService implements ISemifinishedBatteryService {
         try
         {
             batteryBorrowReturnRecordMapper.deleteByPrimaryKey(id);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("删除失败！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    public TNPYResponse getBatteryShipmentnumRecord(String plantID,String typeID)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = " where plantID = '" + plantID + "'  ";
+            if(!"-1".equals(typeID))
+            {
+                filter += "  and materialID = '" + typeID + "' ";
+            }
+
+            filter += " order by shipmentTime desc, batteryType";
+            List<BatteryShipmentNumRecord> batteryShipmentNumRecordList = batteryShipmentNumRecordMapper.selectByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(batteryShipmentNumRecordList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+    public TNPYResponse addBatteryShipmentnumRecord(String jsonStr )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            BatteryShipmentNumRecord batteryShipmentNumRecord = (BatteryShipmentNumRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), BatteryShipmentNumRecord.class);
+
+            batteryShipmentNumRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+            batteryShipmentNumRecord.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
+
+            batteryShipmentNumRecordMapper.insert(batteryShipmentNumRecord);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("添加出错！" + ex.getMessage());
+            return  result;
+        }
+
+    }
+    public TNPYResponse deleteBatteryShipmentnumRecord(String id)
+    {
+
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            batteryShipmentNumRecordMapper.deleteByPrimaryKey(id);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }
