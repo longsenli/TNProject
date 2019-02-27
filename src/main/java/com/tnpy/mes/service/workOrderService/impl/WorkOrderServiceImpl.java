@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -78,7 +79,34 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         TNPYResponse result = new TNPYResponse();
         try
         {
-            List<Workorder> workOrderList = workOrderMapper.selectByFilter(" where lineID = '" + lineID + "' and status < 4  order by  scheduledStartTime desc ");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();//取时间
+            dateFormat.format(date);
+            String timeFinish = "";
+            String timeStart = "";
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(date);
+            if(calendar.get(Calendar.HOUR_OF_DAY) < 7)
+            {
+                timeFinish = dateFormat.format(date) + " 06:00:00";
+
+                calendar.add(Calendar.DATE, -1);
+                date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+                timeStart  =dateFormat.format(date) + " 18:00:00";
+            }
+            else  if(calendar.get(Calendar.HOUR_OF_DAY) > 18)
+            {
+                timeStart = dateFormat.format(date) + " 18:00:00";
+                timeFinish = dateFormat.format(date) + " 20:00:00";
+            }
+            else
+            {
+                timeStart = dateFormat.format(date) + " 06:00:00";
+                timeFinish = dateFormat.format(date) + " 08:00:00";
+            }
+
+            List<Workorder> workOrderList = workOrderMapper.selectByFilter(" where lineID = '" + lineID + "' and status < 4  and scheduledStartTime <='" + timeFinish
+                    + "' and  scheduledStartTime >= '" +timeStart + "' order by  scheduledStartTime desc ");
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(workOrderList).toString());
             return  result;
