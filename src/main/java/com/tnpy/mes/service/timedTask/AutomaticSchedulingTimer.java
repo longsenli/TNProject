@@ -259,10 +259,10 @@ public class AutomaticSchedulingTimer {
             String timeStart = "";
             Calendar calendar = new GregorianCalendar();
             calendar.setTime(date);
-            timeStart = dateFormat.format(date) + " 07:00:00";
+            timeFinish = dateFormat.format(date) + " 07:00:00";
             calendar.add(Calendar.DATE, -1);
             date = calendar.getTime();   //这个时间就是日期往后推一天的结果
-            timeFinish =dateFormat.format(date) + " 07:00:00";
+            timeStart =dateFormat.format(date) + " 07:00:00";
             List<IndustrialPlant> industrialPlantList = industrialPlantMapper.selectAll();
             List<ProductionProcess> productionProcessList = productionProcessMapper.selectAll();
             for(int i = 0;i<industrialPlantList.size();i++) {
@@ -295,10 +295,10 @@ public class AutomaticSchedulingTimer {
             String timeStart = "";
             Calendar calendar = new GregorianCalendar();
             calendar.setTime(date);
-            timeStart = dateFormat.format(date) + " 07:00:00";
+            timeFinish = dateFormat.format(date) + " 07:00:00";
             calendar.add(Calendar.DATE, -1);
             date = calendar.getTime();   //这个时间就是日期往后推一天的结果
-            timeFinish =dateFormat.format(date) + " 07:00:00";
+            timeStart =dateFormat.format(date) + " 07:00:00";
             List<IndustrialPlant> industrialPlantList = industrialPlantMapper.selectAll();
             List<ProductionProcess> productionProcessList = productionProcessMapper.selectAll();
             for(int i = 0;i<industrialPlantList.size();i++) {

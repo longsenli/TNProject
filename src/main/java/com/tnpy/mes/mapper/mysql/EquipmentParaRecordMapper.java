@@ -49,7 +49,7 @@ public interface EquipmentParaRecordMapper {
     @Select(" \n" +
             "select d.*,concat(ifnull(e.name,''),'：' ,ifnull(value,''),ifnull(e.units,'')) as showName  from (\n" +
             "select p.id,p.paramID,equipName,equipLocation,value,recordTime,status,recorder from (\n" +
-            "select m.id,m.name as equipName, m.location as equipLocation,n.paramID from tb_equipmentinfo m left join tb_equipmentparam n on m.typeID = n.equipmentTypeID where typeID = #{equipType} and plantID =  #{plantID} ) p\n" +
+            "select m.id,m.name as equipName, m.location as equipLocation,n.paramID from ( select * from tb_equipmentinfo where typeID = #{equipType} and plantID =  #{plantID}  and ifnull(status,1) != '-1' ) m left join tb_equipmentparam n on m.typeID = n.equipmentTypeID ) p\n" +
             "left join (select a.equipmentID as equipmentID,a.paramID, a.recordTime as recordTime,a.value as value,a.status as status,a.recorder as recorder \n" +
             " from (select * from ( select ROW_NUMBER() over(partition by equipmentID,paramID order by recordTime desc) RowNum,tb_equipmentparamrecord.* \n" +
             " from tb_equipmentparamrecord where  paramID in ( select paramID from tb_equipmentparam where equipmentTypeID = #{equipType})  and equipmentTypeID =#{equipType} and  recordTime >= #{recentTime} ) as t1  where RowNum = 1) a\n" +
