@@ -10,9 +10,10 @@
     <result column="location" jdbcType="VARCHAR" property="location" />
     <result column="plantID" jdbcType="VARCHAR" property="plantid" />
     <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="ordernum" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, typeID, manufacturers, buyTime, location, plantID,status
+    id, name, typeID, manufacturers, buyTime, location, plantID,status,ordernum
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 

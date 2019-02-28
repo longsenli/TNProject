@@ -20,8 +20,18 @@ public class EquipmentInfo {
     private String plantid;
 
     private String status;
+    
+    private Integer ordernum;
 
-    public String getId() {
+    public Integer getOrder() {
+		return ordernum;
+	}
+
+	public void setOrder(Integer ordernum) {
+		this.ordernum = ordernum;
+	}
+
+	public String getId() {
         return id;
     }
 
