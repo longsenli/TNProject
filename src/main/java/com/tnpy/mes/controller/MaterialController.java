@@ -62,8 +62,8 @@ public class MaterialController {
     }
 
     @RequestMapping(value = "/addgrantmaterialrecord")
-    public TNPYResponse addGrantMaterialRecord( String orderSplitID,String operator ) {
-        return  materialService.addGrantMaterialRecord( orderSplitID, operator);
+    public TNPYResponse addGrantMaterialRecord( String orderSplitID,String operator ,int orderType ) {
+        return  materialService.addGrantMaterialRecord( orderSplitID, operator,orderType);
     }
 
     @RequestMapping(value = "/grantdndexpendstatistics")

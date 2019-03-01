@@ -17,7 +17,7 @@ public interface IMaterialService {
     public TNPYResponse orderRemnantProductStatistics( String startTime,String endTime,String plantID,String processID,String lineID );
     public TNPYResponse batteryStatisInventory( String startTime,String endTime,String plantID );
 
-    public TNPYResponse addGrantMaterialRecord( String orderSplitID,String operator );
+    public TNPYResponse addGrantMaterialRecord( String orderSplitID,String operator ,int orderType );
     public TNPYResponse grantAndExpendStatistics(  String startTime,String endTime,String plantID,String processID );
 
     public TNPYResponse getMaterialInventoryStatistics( String plantID,String processID,String startTime,String endTime );

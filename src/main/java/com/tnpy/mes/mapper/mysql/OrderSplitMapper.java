@@ -19,6 +19,9 @@ public interface OrderSplitMapper {
 
     OrderSplit selectByPrimaryKey(String id);
 
+    @Select("select * from tb_ordersplit where orderSplitID= #{orderSplitName}")
+    List<OrderSplit> selectByOrderSplitName(String orderSplitName);
+
     int updateByPrimaryKeySelective(OrderSplit record);
 
     int updateByPrimaryKey(OrderSplit record);

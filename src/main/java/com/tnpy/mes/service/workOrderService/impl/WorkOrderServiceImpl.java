@@ -183,6 +183,12 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 workorder.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 workorder.setStatus(StatusEnum.WorkOrderStatus.ordered.getIndex() + "");
                 workorder.setCreatetime(new Date());
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                System.out.println(dateFormat.format(workorder.getScheduledstarttime()));
+                int orderNum = workOrderMapper.selectOrderNumber(workorder.getLineid(),dateFormat.format(workorder.getScheduledstarttime()));
+                String numStr = workorder.getOrderid().substring(0,workorder.getOrderid().length() - 10) + String.valueOf(orderNum+1)
+                        + workorder.getOrderid().substring(workorder.getOrderid().length() - 10,workorder.getOrderid().length() );
+                workorder.setOrderid(numStr);
                 workOrderMapper.insertSelective(workorder);
 
                 List<OrderSplit> orderSplitList = new ArrayList<>();

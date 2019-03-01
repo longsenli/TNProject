@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @Description: TODO
@@ -381,12 +378,29 @@ public class MaterialServiceImpl implements IMaterialService {
         }
     }
 
-    public TNPYResponse addGrantMaterialRecord( String orderSplitID,String operator )
+
+    //1 当天工单ID 2第二天工单ID 3 当天工单名称 4 第二天工单名称
+    public TNPYResponse addGrantMaterialRecord( String orderSplitID,String operator ,int orderType)
     {
         TNPYResponse result = new TNPYResponse();
         try
         {
-            OrderSplit orderSplit = orderSplitMapper.selectByPrimaryKey(orderSplitID);
+            OrderSplit orderSplit = null;
+            if(orderType < 3)
+            {
+                orderSplit = orderSplitMapper.selectByPrimaryKey(orderSplitID);
+            }
+            else
+            {
+                List<OrderSplit> orderSplitList =orderSplitMapper.selectByOrderSplitName(orderSplitID);
+                if(orderSplitList == null || orderSplitList.size() < 1)
+                {
+                    result.setMessage("未获取到订单信息！" +orderSplitID );
+                    return  result;
+                }
+                orderSplit = orderSplitList.get(0);
+            }
+            orderSplitID = orderSplit.getId();
             if(orderSplit ==null)
             {
                 result.setMessage("未获取到订单信息！" +orderSplitID );
@@ -404,9 +418,20 @@ public class MaterialServiceImpl implements IMaterialService {
                 return  result;
             }
 
+
+            Date date = new Date();//取时间
+
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(date);
+            if(orderType%2 == 0)
+            {
+                calendar.add(Calendar.DATE, 1);
+            }
+            date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+
             GrantMaterialRecord newGrantMaterialRecord = new GrantMaterialRecord();
             newGrantMaterialRecord.setBatterytype(orderSplit.getMaterialid());
-            newGrantMaterialRecord.setGranttime(new Date());
+            newGrantMaterialRecord.setGranttime(date);
             newGrantMaterialRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
             newGrantMaterialRecord.setNumber(orderSplit.getProductionnum().intValue());
             newGrantMaterialRecord.setOperator(operator);
