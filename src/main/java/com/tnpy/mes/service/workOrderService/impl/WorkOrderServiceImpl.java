@@ -88,8 +88,8 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             calendar.setTime(date);
             if(calendar.get(Calendar.HOUR_OF_DAY) < 7)
             {
-                timeFinish = dateFormat.format(date) + " 06:00:00";
-
+              //  timeFinish = dateFormat.format(date) + " 06:00:00";
+                timeFinish = "2020-11-11 00:00:00";
                 calendar.add(Calendar.DATE, -1);
                 date = calendar.getTime();   //这个时间就是日期往后推一天的结果
                 timeStart  =dateFormat.format(date) + " 18:00:00";
@@ -97,16 +97,18 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             else  if(calendar.get(Calendar.HOUR_OF_DAY) > 18)
             {
                 timeStart = dateFormat.format(date) + " 18:00:00";
-                timeFinish = dateFormat.format(date) + " 20:00:00";
+                timeFinish = "2020-11-11 00:00:00";
+               // timeFinish = dateFormat.format(date) + " 20:00:00";
             }
             else
             {
                 timeStart = dateFormat.format(date) + " 06:00:00";
-                timeFinish = dateFormat.format(date) + " 08:00:00";
+                timeFinish = "2020-11-11 00:00:00";
+                //timeFinish = dateFormat.format(date) + " 08:00:00";
             }
 
             List<Workorder> workOrderList = workOrderMapper.selectByFilter(" where lineID = '" + lineID + "' and status < 4  and scheduledStartTime <='" + timeFinish
-                    + "' and  scheduledStartTime >= '" +timeStart + "' order by  scheduledStartTime desc ");
+                    + "' and  scheduledStartTime >= '" +timeStart + "' order by  scheduledStartTime  ");
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(workOrderList).toString());
             return  result;
