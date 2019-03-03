@@ -21,4 +21,6 @@ public interface IWorkOrderService {
 
     public TNPYResponse getPlanProductionDashboard( String plantID,String processID,String startTime,String endTime );
     public TNPYResponse getRealtimeProductionDashboard( String plantID,String processID,String startTime,String endTime );
+
+    public TNPYResponse cancelFinishSuborder( String subOrdderID );
 }

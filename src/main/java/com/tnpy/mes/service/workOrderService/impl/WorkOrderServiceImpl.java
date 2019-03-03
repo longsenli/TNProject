@@ -43,6 +43,9 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     @Autowired
     private  BatchrelationcontrolMapper batchrelationcontrolMapper;
 
+    @Autowired
+    private  GrantMaterialRecordMapper grantMaterialRecordMapper;
+
     public TNPYResponse getWorkOrder( ) {
         TNPYResponse result = new TNPYResponse();
         try
@@ -478,6 +481,29 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             List<Map<Object, Object> > realtimeProductionDashboardList = workOrderMapper.getRealtimeProductionDashboard(plantID,processID,startTime,endTime);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(realtimeProductionDashboardList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    public TNPYResponse cancelFinishSuborder( String subOrdderID )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+           GrantMaterialRecord grantMaterialRecord =  grantMaterialRecordMapper.selectByOrderID(subOrdderID);
+           if(grantMaterialRecord !=null)
+           {
+               result.setMessage("该工单已发料，不能取消！" );
+               return  result;
+           }
+            orderSplitMapper.cancelFinishStatus(subOrdderID);
+
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }
         catch (Exception ex)

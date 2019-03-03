@@ -44,9 +44,15 @@
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from tb_ordersplit
+   delete from tb_ordersplit
     where id = #{id,jdbcType=VARCHAR}
   </delete>
+
+  <delete id="cancelFinishStatus" parameterType="java.lang.String">
+    update tb_ordersplit set status = '1' where id = #{suborderID};
+    delete from tb_materialrecord where subOrderID = #{suborderID};
+  </delete>
+
   <insert id="insert" parameterType="com.tnpy.mes.model.mysql.OrderSplit">
     insert into tb_ordersplit (id, orderID, orderSplitID, 
       productionNum, status,materialID)

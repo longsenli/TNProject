@@ -80,4 +80,10 @@ public class OrderController {
     public TNPYResponse getRealtimeProductionDashboard( String plantID,String processID,String startTime,String endTime ) {
         return  workOrderService.getRealtimeProductionDashboard(plantID,processID,startTime,endTime);
     }
+
+
+    @RequestMapping(value = "/cancelfinishsuborder")
+    public TNPYResponse cancelFinishSuborder( String subOrdderID ) {
+        return  workOrderService.cancelFinishSuborder(subOrdderID);
+    }
 }

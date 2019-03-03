@@ -39,4 +39,6 @@ public interface OrderSplitMapper {
 
     @Delete("delete from tb_ordersplit where orderID = #{orderID}")
     int deleteByOrderID(String orderID);
+
+    int cancelFinishStatus(String suborderID);
 }
