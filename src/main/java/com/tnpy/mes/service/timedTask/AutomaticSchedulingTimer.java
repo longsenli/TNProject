@@ -271,7 +271,7 @@ public class AutomaticSchedulingTimer {
                     {
                         if(ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals( productionProcessList.get(j).getId()))
                         {
-                            materialSecondaryInventoryRecordMapper.insertJSSecondaryInventory(timeStart,timeFinish,industrialPlantList.get(i).getId(),productionProcessList.get(j).getId(),productionProcessList.get(j-1).getId());
+                            materialSecondaryInventoryRecordMapper.insertJSSecondaryInventory(timeStart,timeFinish,industrialPlantList.get(i).getId(),productionProcessList.get(j).getId(),productionProcessList.get(j-1).getId(),dateFormat.format(date) + " 06:00:00");
                         }
                     }
                    catch (Exception ex)
@@ -308,7 +308,7 @@ public class AutomaticSchedulingTimer {
                     {
                         if(ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals( productionProcessList.get(j).getId()))
                         {
-                            materialInventoryRecordMapper.insertZHInventoryStatistics(timeStart,timeFinish,industrialPlantList.get(i).getId(),productionProcessList.get(j).getId(),productionProcessList.get(j+1).getId());
+                            materialInventoryRecordMapper.insertZHInventoryStatistics(timeStart,timeFinish,industrialPlantList.get(i).getId(),productionProcessList.get(j).getId(),productionProcessList.get(j+1).getId(),dateFormat.format(date) +" 06:00:00");
                         }
                     }
                     catch (Exception ex)
