@@ -89,13 +89,13 @@ public interface MaterialRecordMapper {
             " ) c group by materialID ) d left join sys_material e on d.materialID = e.id ")*/
   @Select("  (select * from (select e.*, f.name as lineName from (  select plantID,processID,lineID,materialID,outputTotal ,d.name as materialName from (\n" +
           " select a.plantID,a.processID,a.lineID,a.materialID,sum(b.number) as outputTotal from (  select id,plantID,processID,lineID,materialID  \n" +
-          " from tb_workorder  where plantID  = #{plantID} and processID = #{processID} and scheduledStartTime  >= #{startTime} and scheduledStartTime <= #{endTime} ) a \n" +
+          " from tb_workorder  where plantID  = #{plantID} and processID = #{processID} and scheduledStartTime  >= #{startTime} and scheduledStartTime < #{endTime} ) a \n" +
           " left join  tb_materialrecord b on a.id = b.orderID group by lineID,materialID ) c left join sys_material d on c.materialID = d.id ) e left join sys_productionline f on e.lineID = f.id ) g order by g.lineName limit 1000)\n" +
           " UNION ALL\n" +
           " ( select 'plantID' as plantID,'processID' as processID,'lineID' as lineID,'materialID' as materialID, sum(g.outputTotal) as outputTotal,g.materialName,'总计' as lineName from (\n" +
           "  select e.*, f.name as lineName from (  select plantID,processID,lineID,materialID,outputTotal ,d.name as materialName from (\n" +
           " select a.plantID,a.processID,a.lineID,a.materialID,sum(b.number) as outputTotal from (  select id,plantID,processID,lineID,materialID  \n" +
-          " from tb_workorder  where plantID  = #{plantID} and processID = #{processID} and scheduledStartTime  >= #{startTime} and scheduledStartTime <= #{endTime} ) a \n" +
+          " from tb_workorder  where plantID  = #{plantID} and processID = #{processID} and scheduledStartTime  >= #{startTime} and scheduledStartTime < #{endTime} ) a \n" +
           " left join  tb_materialrecord b on a.id = b.orderID group by lineID,materialID ) c left join sys_material d on c.materialID = d.id ) e left join sys_productionline f on e.lineID = f.id ) g  group by g.materialName )\n" )
     List<Map<String, String>> orderOutputStatistics(String startTime,String endTime,String plantID,String processID,@Param("lineIDFilter") String lineID );
 
