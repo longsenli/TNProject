@@ -36,10 +36,10 @@ public interface WorkorderMapper {
     String getProcessIDByOrder(String orderID);
     List<CustomWorkOrderRecord> selectCustomResultByFilter(@Param("filter") String filter);
 
-    @Update("UPDATE tb_workOrder set status = #{status} where scheduledStartTime = #{time}")
+    @Update("UPDATE tb_workOrder set status = #{status} where scheduledStartTime = #{time} and status < '5'")
     int finishOrder(String time,String status);
 
-    @Update("UPDATE tb_workOrder set status = #{status} where scheduledStartTime = #{time}")
+    @Update("UPDATE tb_workOrder set status = #{status} where scheduledStartTime = #{time}  and status < '5'")
     int startOrder(String time,String status);
 
     @Select("select totalProduction,c.name as materialName,d.name as lineName from\n" +
