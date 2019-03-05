@@ -67,8 +67,8 @@ public class OrderController {
     }
 
     @RequestMapping(value = "/getsuborderbyid")
-    public TNPYResponse getSubOrderByID( String id ) {
-        return  workOrderService.getSubOrderByID(id);
+    public TNPYResponse getSubOrderByID( String id ,String type) {
+        return  workOrderService.getSubOrderByID(id,type);
     }
 
     @RequestMapping(value = "/getplanproductiondashboard")

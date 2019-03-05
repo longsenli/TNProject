@@ -43,6 +43,12 @@
       b.name as materialName FROM tb_ordersplit a left join sys_material b on a.materialID = b.id where a.id = #{id} order by status ,orderSplitID
   </select>
 
+  <select id="selectAfterMapBySubOrderName" parameterType="java.lang.String" resultMap="CustomResultMap">
+    SELECT a.id,orderSplitID,a.orderID,productionNum,a.materialID ,a.status,case a.status when '1' then '已下单' when '2' then '已打印'
+     when '3' then '已开工' when '4' then '已完成' when '5' then '已关闭' else '状态不详' end as statusName,
+      b.name as materialName FROM tb_ordersplit a left join sys_material b on a.materialID = b.id where a.orderSplitID = #{orderName} order by status ,orderSplitID
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
    delete from tb_ordersplit
     where id = #{id,jdbcType=VARCHAR}

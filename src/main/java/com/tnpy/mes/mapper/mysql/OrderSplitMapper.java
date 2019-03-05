@@ -37,6 +37,8 @@ public interface OrderSplitMapper {
 
     List<OrderSplit> selectAfterMapBySubOrderID(String id);
 
+    List<OrderSplit> selectAfterMapBySubOrderName(String orderName);
+
     @Delete("delete from tb_ordersplit where orderID = #{orderID}")
     int deleteByOrderID(String orderID);
 
