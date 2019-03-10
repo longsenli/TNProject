@@ -34,6 +34,14 @@ public class LoginController {
 	@Autowired
 	private LoginRecordMapper loginRecordMapper;
 
+	@RequestMapping(value = "/getappversion")
+	public TNPYResponse getAppVersion( ) {
+		TNPYResponse response = new TNPYResponse();
+		response.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+		response.setMessage("1.0.3");
+		return  response;
+	}
+
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public TNPYResponse login(HttpServletRequest request,@RequestParam(value = "username") String username,
 							  @RequestParam(value = "password") String password) {
