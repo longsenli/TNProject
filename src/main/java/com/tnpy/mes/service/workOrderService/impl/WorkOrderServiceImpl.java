@@ -46,6 +46,9 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     @Autowired
     private  GrantMaterialRecordMapper grantMaterialRecordMapper;
 
+    @Autowired
+    private  PlanProductionRecordMapper planProductionRecordMapper;
+
     public TNPYResponse getWorkOrder( ) {
         TNPYResponse result = new TNPYResponse();
         try
@@ -513,6 +516,71 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
            }
             orderSplitMapper.cancelFinishStatus(subOrdderID);
 
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    public TNPYResponse changePlanProductionRecord(  String jsonStr )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            PlanProductionRecord planProductionRecord = (PlanProductionRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), PlanProductionRecord.class);
+
+            if (StringUtils.isEmpty(planProductionRecord.getId())) {
+                planProductionRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                planProductionRecord.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
+
+                planProductionRecordMapper.insertSelective(planProductionRecord);
+            } else {
+                planProductionRecordMapper.updateByPrimaryKey(planProductionRecord);
+            }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setMessage("修改成功！");
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("修改出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+    public TNPYResponse getPlanProductionRecord(  String plantID,String processID,String startTime,String endTime )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = " where planMonth >= '" + startTime + "' and planMonth <= '" + endTime + "' ";
+            if(!"-1".equals(plantID))
+            {
+                filter += " and plantID ='" + plantID + "' ";
+            }
+            if(!"-1".equals(processID))
+            {
+                filter += " and processID ='" + processID + "' ";
+            }
+            List<PlanProductionRecord> planProductionRecordList = planProductionRecordMapper.getPlanProductionRecordByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(planProductionRecordList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+    public TNPYResponse deletePlanProductionRecord(  String id )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            planProductionRecordMapper.deleteByPrimaryKey(id);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }

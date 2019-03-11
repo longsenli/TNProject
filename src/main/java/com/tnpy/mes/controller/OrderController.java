@@ -86,4 +86,19 @@ public class OrderController {
     public TNPYResponse cancelFinishSuborder( String subOrdderID ) {
         return  workOrderService.cancelFinishSuborder(subOrdderID);
     }
+
+    @RequestMapping(value = "/addplanproductionrecord")
+    public TNPYResponse changePlanProductionRecord( @RequestBody String jsonStr ) {
+        return  workOrderService.changePlanProductionRecord(jsonStr);
+    }
+
+    @RequestMapping(value = "/getplanproductionrecord")
+    public TNPYResponse getPlanProductionRecord(  String plantID,String processID,String startTime,String endTime ) {
+        return  workOrderService.getPlanProductionRecord(plantID, processID, startTime, endTime );
+    }
+
+    @RequestMapping(value = "/deleteplanproductionrecord")
+    public TNPYResponse deletePlanProductionRecord(  String id ) {
+        return  workOrderService.deletePlanProductionRecord(id);
+    }
 }

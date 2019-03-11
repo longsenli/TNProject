@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.PlanProductionRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.PlanProductionRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="materialID" jdbcType="VARCHAR" property="materialid" />
+    <result column="materialName" jdbcType="VARCHAR" property="materialname" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="planProduction" jdbcType="INTEGER" property="planproduction" />
+    <result column="planDailyProduction" jdbcType="INTEGER" property="plandailyproduction" />
+    <result column="realProduction" jdbcType="INTEGER" property="realproduction" />
+    <result column="accomplishmentRatio" jdbcType="DOUBLE" property="accomplishmentratio" />
+    <result column="planMonth" jdbcType="VARCHAR" property="planmonth" />
+    <result column="operator" jdbcType="VARCHAR" property="operator" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, materialID, materialName, plantID, processID, planProduction, planDailyProduction, 
+    realProduction, accomplishmentRatio, planMonth, operator, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_planproductionrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_planproductionrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.PlanProductionRecord">
+    insert into tb_planproductionrecord (id, materialID, materialName, 
+      plantID, processID, planProduction, 
+      planDailyProduction, realProduction, accomplishmentRatio, 
+      planMonth, operator, status
+      )
+    values (#{id,jdbcType=VARCHAR}, #{materialid,jdbcType=VARCHAR}, #{materialname,jdbcType=VARCHAR}, 
+      #{plantid,jdbcType=VARCHAR}, #{processid,jdbcType=VARCHAR}, #{planproduction,jdbcType=INTEGER}, 
+      #{plandailyproduction,jdbcType=INTEGER}, #{realproduction,jdbcType=INTEGER}, #{accomplishmentratio,jdbcType=DOUBLE}, 
+      #{planmonth,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.PlanProductionRecord">
+    insert into tb_planproductionrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="materialid != null">
+        materialID,
+      </if>
+      <if test="materialname != null">
+        materialName,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="processid != null">
+        processID,
+      </if>
+      <if test="planproduction != null">
+        planProduction,
+      </if>
+      <if test="plandailyproduction != null">
+        planDailyProduction,
+      </if>
+      <if test="realproduction != null">
+        realProduction,
+      </if>
+      <if test="accomplishmentratio != null">
+        accomplishmentRatio,
+      </if>
+      <if test="planmonth != null">
+        planMonth,
+      </if>
+      <if test="operator != null">
+        operator,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="planproduction != null">
+        #{planproduction,jdbcType=INTEGER},
+      </if>
+      <if test="plandailyproduction != null">
+        #{plandailyproduction,jdbcType=INTEGER},
+      </if>
+      <if test="realproduction != null">
+        #{realproduction,jdbcType=INTEGER},
+      </if>
+      <if test="accomplishmentratio != null">
+        #{accomplishmentratio,jdbcType=DOUBLE},
+      </if>
+      <if test="planmonth != null">
+        #{planmonth,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null">
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.PlanProductionRecord">
+    update tb_planproductionrecord
+    <set>
+      <if test="materialid != null">
+        materialID = #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        materialName = #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        processID = #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="planproduction != null">
+        planProduction = #{planproduction,jdbcType=INTEGER},
+      </if>
+      <if test="plandailyproduction != null">
+        planDailyProduction = #{plandailyproduction,jdbcType=INTEGER},
+      </if>
+      <if test="realproduction != null">
+        realProduction = #{realproduction,jdbcType=INTEGER},
+      </if>
+      <if test="accomplishmentratio != null">
+        accomplishmentRatio = #{accomplishmentratio,jdbcType=DOUBLE},
+      </if>
+      <if test="planmonth != null">
+        planMonth = #{planmonth,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null">
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.PlanProductionRecord">
+    update tb_planproductionrecord
+    set materialID = #{materialid,jdbcType=VARCHAR},
+      materialName = #{materialname,jdbcType=VARCHAR},
+      plantID = #{plantid,jdbcType=VARCHAR},
+      processID = #{processid,jdbcType=VARCHAR},
+      planProduction = #{planproduction,jdbcType=INTEGER},
+      planDailyProduction = #{plandailyproduction,jdbcType=INTEGER},
+      realProduction = #{realproduction,jdbcType=INTEGER},
+      accomplishmentRatio = #{accomplishmentratio,jdbcType=DOUBLE},
+      planMonth = #{planmonth,jdbcType=VARCHAR},
+      operator = #{operator,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
