@@ -87,7 +87,7 @@ public class OrderController {
         return  workOrderService.cancelFinishSuborder(subOrdderID);
     }
 
-    @RequestMapping(value = "/addplanproductionrecord")
+    @RequestMapping(value = "/changeplanproductionrecord")
     public TNPYResponse changePlanProductionRecord( @RequestBody String jsonStr ) {
         return  workOrderService.changePlanProductionRecord(jsonStr);
     }

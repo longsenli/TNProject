@@ -447,10 +447,19 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                if(!inputRecordMap.containsKey(entry.getKey()))
                {
                    result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
-                   result.setMessage(materialTypeMapper.getTypeNameByID(entry.getKey()) + "投料不足，已投："
-                           + "0" + "，至少需要投入：" +  entry.getValue() * productionALl );
-                   bl = false;
-                   break;
+                   if(1 < entry.getValue() * productionALl)
+                   {
+                       result.setMessage(materialTypeMapper.getTypeNameByID(entry.getKey()) + "投料不足，已投："
+                               + "0" + "，至少需要投入：" +  entry.getValue() * productionALl );
+                       bl = false;
+                       break;
+                   }
+                   else
+                   {
+                       bl = true;
+                       break;
+                   }
+
                }
                if(inputRecordMap.get(entry.getKey()) + 1.0 < entry.getValue() * productionALl)
                {
@@ -564,6 +573,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             {
                 filter += " and processID ='" + processID + "' ";
             }
+            filter += " order by planMonth desc";
             List<PlanProductionRecord> planProductionRecordList = planProductionRecordMapper.getPlanProductionRecordByFilter(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(planProductionRecordList).toString());
