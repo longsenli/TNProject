@@ -301,13 +301,14 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         TNPYResponse result = new TNPYResponse();
         try
         {
-
             OrderSplit orderSplit=(OrderSplit) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), OrderSplit.class);
             TNPYResponse judgeResult = judgeEnoughMaterial(orderSplit.getMaterialid(),orderSplit.getOrderid(),orderSplit.getProductionnum());
             if(judgeResult.getStatus() != StatusEnum.ResponseStatus.Success.getIndex())
             {
+                System.out.println(JSONObject.toJSON(judgeResult).toString());
                 return  judgeResult;
             }
+
             orderSplit.setStatus(StatusEnum.WorkOrderStatus.finished.getIndex() + "");
             orderSplitMapper.updateByPrimaryKeySelective(orderSplit);
 
@@ -376,9 +377,9 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     {
         TNPYResponse result = new TNPYResponse();
         result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
-        boolean bl = true;
         try
         {
+
             List<Map<Object, Object>> outMaterialProportion = materialMapper.selectProportionalityByOut(outMaterial);
             List<Map<Object, Object>> inputRecord = materialRecordMapper.selectBatchChargingByOrder(finishOrderID);
             String productionStr = materialRecordMapper.getProductionByOrderID(finishOrderID);
@@ -417,7 +418,6 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                     outMaterialProportionMap.put(typeID,number);
                 }
             }
-
             for (Map<Object, Object> inputMap : inputRecord)
             {
                 typeID = null;
@@ -446,17 +446,16 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             for (Map.Entry<String, Double> entry : outMaterialProportionMap.entrySet()) {
                if(!inputRecordMap.containsKey(entry.getKey()))
                {
-                   result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+
                    if(1 < entry.getValue() * productionALl)
                    {
+                       result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
                        result.setMessage(materialTypeMapper.getTypeNameByID(entry.getKey()) + "投料不足，已投："
                                + "0" + "，至少需要投入：" +  entry.getValue() * productionALl );
-                       bl = false;
                        break;
                    }
                    else
                    {
-                       bl = true;
                        break;
                    }
 
