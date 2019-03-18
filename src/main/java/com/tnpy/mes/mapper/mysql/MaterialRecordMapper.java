@@ -87,12 +87,13 @@ public interface MaterialRecordMapper {
             "select a.materialID,b.plantID,b.lineID,b.processID,a.number,a.inputTime,a.inOrOut from ( select * from tb_materialrecord where inputTime > #{startTime} and inputTime < #{endTime} ) a\n" +
             " left join tb_workorder b on a.orderID = b.id where plantID  = #{plantID} and processID = #{processID} ${lineIDFilter} \n" +
             " ) c group by materialID ) d left join sys_material e on d.materialID = e.id ")*/
-  @Select("  (select * from (select e.*, f.name as lineName from (  select plantID,processID,lineID,materialID,outputTotal ,d.name as materialName from (\n" +
-          " select a.plantID,a.processID,a.lineID,a.materialID,sum(b.number) as outputTotal from (  select id,plantID,processID,lineID,materialID  \n" +
+  @Select("  (select * from (select e.*, f.name as lineName from (  select plantID,processID,lineID,materialID,scheduledStartTime,outputTotal,orderDay,orderHour,classType ,d.name as materialName from (\n" +
+          " select a.plantID,a.processID,a.lineID,a.materialID,sum(b.number) as outputTotal,a.scheduledStartTime,orderDay,orderHour, case  when orderHour < '10' then '白班'  when orderHour > '16' then '夜班' end as classType from (  " +
+          " select id,plantID,processID,lineID,materialID,scheduledStartTime,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,date_format(scheduledStartTime,'%H') as orderHour  \n" +
           " from tb_workorder  where plantID  = #{plantID} and processID = #{processID} and scheduledStartTime  >= #{startTime} and scheduledStartTime < #{endTime} ) a \n" +
-          " left join  tb_materialrecord b on a.id = b.orderID group by lineID,materialID ) c left join sys_material d on c.materialID = d.id ) e left join sys_productionline f on e.lineID = f.id ) g order by g.lineName limit 1000)\n" +
+          " left join  tb_materialrecord b on a.id = b.orderID group by lineID,materialID,scheduledStartTime ) c left join sys_material d on c.materialID = d.id ) e left join sys_productionline f on e.lineID = f.id ) g order by g.scheduledStartTime,g.lineName limit 1000)\n" +
           " UNION ALL\n" +
-          " ( select 'plantID' as plantID,'processID' as processID,'lineID' as lineID,'materialID' as materialID, sum(g.outputTotal) as outputTotal,g.materialName,'总计' as lineName from (\n" +
+          " ( select 'plantID' as plantID,'processID' as processID,'lineID' as lineID,'materialID' as materialID, sum(g.outputTotal) as outputTotal,g.materialName,'总计' as lineName,'' as scheduledStartTime,'' as orderDay,'' as orderHour , '' as classType from (\n" +
           "  select e.*, f.name as lineName from (  select plantID,processID,lineID,materialID,outputTotal ,d.name as materialName from (\n" +
           " select a.plantID,a.processID,a.lineID,a.materialID,sum(b.number) as outputTotal from (  select id,plantID,processID,lineID,materialID  \n" +
           " from tb_workorder  where plantID  = #{plantID} and processID = #{processID} and scheduledStartTime  >= #{startTime} and scheduledStartTime < #{endTime} ) a \n" +
