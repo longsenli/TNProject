@@ -93,7 +93,7 @@ public interface MaterialRecordMapper {
           " from tb_workorder  where plantID  = #{plantID} and processID = #{processID} and scheduledStartTime  >= #{startTime} and scheduledStartTime < #{endTime} ) a \n" +
           " left join  tb_materialrecord b on a.id = b.orderID group by lineID,materialID,scheduledStartTime ) c left join sys_material d on c.materialID = d.id ) e left join sys_productionline f on e.lineID = f.id ) g order by g.scheduledStartTime,g.lineName limit 1000)\n" +
           " UNION ALL\n" +
-          " ( select 'plantID' as plantID,'processID' as processID,'lineID' as lineID,'materialID' as materialID, sum(g.outputTotal) as outputTotal,g.materialName,'总计' as lineName,'' as scheduledStartTime,'' as orderDay,'' as orderHour , '' as classType from (\n" +
+          " ( select 'plantID' as plantID,'processID' as processID,'lineID' as lineID,'materialID' as materialID,'' as scheduledStartTime, sum(g.outputTotal) as outputTotal,'' as orderDay,'' as orderHour , '' as classType,g.materialName,'总计' as lineName from (\n" +
           "  select e.*, f.name as lineName from (  select plantID,processID,lineID,materialID,outputTotal ,d.name as materialName from (\n" +
           " select a.plantID,a.processID,a.lineID,a.materialID,sum(b.number) as outputTotal from (  select id,plantID,processID,lineID,materialID  \n" +
           " from tb_workorder  where plantID  = #{plantID} and processID = #{processID} and scheduledStartTime  >= #{startTime} and scheduledStartTime < #{endTime} ) a \n" +
@@ -133,10 +133,16 @@ public interface MaterialRecordMapper {
             " and  scheduledStartTime <= #{endTime} and plantID = #{plantID} and processID = #{processID} )  group by materialID ) d on c.id = d.materialID where c.grantNum + d.expendNum >0")
     List<Map<Object, Object>> grantAndExpendStatistics(  String startTime,String endTime,String plantID,String processID,String lastProcessID );
 
-    @Select("select plantID,processID,materialID,currentNum,lastStorage,gainNum,inNum,expendNum,outNum,date_format(updateTime,'%Y-%m-%d %H:%i') as updateTime,name from (\n" +
+    @Select("( select '' as plantID,'' as processID,'' as materialID,'总计' as currentNum,'' as lastStorage,sum(gainNum) as gainNum,sum(inNum) as inNum,sum(expendNum) as expendNum,sum(outNum) as outNum,'' as updateTime,name\n" +
+            "from ( select plantID,processID,materialID,currentNum,lastStorage,gainNum,inNum,expendNum,outNum,date_format(updateTime,'%Y-%m-%d %H:%i') as updateTime,name from (\n" +
+            "  select plantID,processID,materialID,currentNum,lastStorage,gainNum,inNum,expendNum,outNum,updateTime  from tb_materialsecondaryinventoryrecord \n" +
+            "   where plantID = #{plantID} and processID = #{processID} and updateTime >= #{startTime} and updateTime < #{endTime}\n" +
+            "    ) a left join  sys_material b on a.materialID = b.id order by updateTime desc,name ) d group by materialID limit 1000)\n" +
+            " union all\n" +
+            " (select plantID,processID,materialID,currentNum,lastStorage,gainNum,inNum,expendNum,outNum,date_format(updateTime,'%Y-%m-%d %H:%i') as updateTime,name from (\n" +
             "select plantID,processID,materialID,currentNum,lastStorage,gainNum,inNum,expendNum,outNum,updateTime  from tb_materialsecondaryinventoryrecord \n" +
-            "where plantID = #{plantID} and processID = #{processID} and updateTime >= #{startTime} and updateTime <= #{endTime}\n" +
-            ") a left join  sys_material b on a.materialID = b.id order by updateTime desc,name")
+            "where plantID = #{plantID} and processID = #{processID} and updateTime >= #{startTime} and updateTime < #{endTime}\n" +
+            ") a left join  sys_material b on a.materialID = b.id order by updateTime desc,name)")
     List<Map<Object, Object>> getSecondaryMaterialInventoryStatistics(  String startTime,String endTime,String plantID,String processID);
 
     @Select("select plantID,processID,materialID,currentNum,lastStorage,productionNum,inNum,expendNum,outNum,date_format(updateTime,'%Y-%m-%d %H:%i')  as updateTime,name from (\n" +
