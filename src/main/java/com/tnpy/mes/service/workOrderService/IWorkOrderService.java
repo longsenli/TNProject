@@ -27,4 +27,5 @@ public interface IWorkOrderService {
     public TNPYResponse changePlanProductionRecord(  String jsonStr );
     public TNPYResponse getPlanProductionRecord(  String plantID,String processID,String startTime,String endTime );
     public TNPYResponse deletePlanProductionRecord(  String id );
+    public TNPYResponse getPlanProductionNumber(  String plantID,String processID,String planMonth );
 }

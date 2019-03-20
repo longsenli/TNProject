@@ -599,4 +599,31 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             return  result;
         }
     }
+
+    public TNPYResponse getPlanProductionNumber(  String plantID,String processID,String planMonth )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String strNum = planProductionRecordMapper.getplanNumber(plantID,processID,planMonth);
+
+            int dailyProduction = 0;
+            try
+            {
+                dailyProduction = (int)Double.parseDouble(strNum.toString());
+            }
+            catch (Exception ex)
+            {
+                dailyProduction = 0;
+            }
+            result.setData(dailyProduction + "");
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
 }

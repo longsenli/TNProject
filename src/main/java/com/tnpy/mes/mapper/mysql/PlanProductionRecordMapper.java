@@ -25,4 +25,7 @@ public interface PlanProductionRecordMapper {
 
     @Select("select * from tb_planproductionrecord  ${filter}")
     List<PlanProductionRecord> getPlanProductionRecordByFilter(@Param("filter") String filter );
+
+    @Select("select sum(planDailyProduction)/2 as num from tb_planproductionrecord where plantID = #{plantID} and processID = #{processID} and planMonth = #{planMonth}")
+    String getplanNumber(String plantID,String processID,String planMonth);
 }

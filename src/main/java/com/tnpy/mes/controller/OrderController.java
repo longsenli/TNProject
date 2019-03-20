@@ -101,4 +101,9 @@ public class OrderController {
     public TNPYResponse deletePlanProductionRecord(  String id ) {
         return  workOrderService.deletePlanProductionRecord(id);
     }
+
+    @RequestMapping(value = "/getplanproductionnumber")
+    public TNPYResponse getPlanProductionNumber(  String plantID,String processID,String planMonth ) {
+        return  workOrderService.getPlanProductionNumber(plantID,processID,planMonth);
+    }
 }
