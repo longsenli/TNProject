@@ -39,7 +39,23 @@ public class LoginController {
 	private SoftwareVersionMapper softwareVersionMapper;
 
 	@RequestMapping(value = "/getappversion")
-	public TNPYResponse getAppVersion( String clientType) {
+	public TNPYResponse getAppVersion( ) {
+		TNPYResponse response = new TNPYResponse();
+		try
+		{
+
+			response.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+			response.setMessage("1.0.5");
+			return  response;
+		}
+		catch (Exception ex)
+		{
+			response.setMessage("0");
+			return  response;
+		}
+	}
+	@RequestMapping(value = "/getappversionbyclienttype")
+	public TNPYResponse getAppVersionByClientType( String clientType) {
 		TNPYResponse response = new TNPYResponse();
 		try
 		{
@@ -54,7 +70,6 @@ public class LoginController {
 			return  response;
 		}
 	}
-
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public TNPYResponse login(HttpServletRequest request,@RequestParam(value = "username") String username,
 							  @RequestParam(value = "password") String password) {
