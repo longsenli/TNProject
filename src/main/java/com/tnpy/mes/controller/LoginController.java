@@ -7,6 +7,7 @@ import com.tnpy.common.utils.token.Token;
 import com.tnpy.common.utils.token.TokenUtil;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.LoginRecordMapper;
+import com.tnpy.mes.mapper.mysql.SoftwareVersionMapper;
 import com.tnpy.mes.mapper.mysql.TokenMapper;
 import com.tnpy.mes.model.mysql.LoginRecord;
 import com.tnpy.mes.model.mysql.TbUser;
@@ -34,12 +35,24 @@ public class LoginController {
 	@Autowired
 	private LoginRecordMapper loginRecordMapper;
 
+	@Autowired
+	private SoftwareVersionMapper softwareVersionMapper;
+
 	@RequestMapping(value = "/getappversion")
-	public TNPYResponse getAppVersion( ) {
+	public TNPYResponse getAppVersion( String clientType) {
 		TNPYResponse response = new TNPYResponse();
-		response.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
-		response.setMessage("1.0.3");
-		return  response;
+		try
+		{
+			String version = softwareVersionMapper.selectLatestVersion(clientType);
+			response.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+			response.setMessage(version);
+			return  response;
+		}
+		catch (Exception ex)
+		{
+			response.setMessage("0");
+			return  response;
+		}
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
