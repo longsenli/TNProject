@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.OnlineMaterialRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.OnlineMaterialRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="materialID" jdbcType="VARCHAR" property="materialid" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="lineID" jdbcType="VARCHAR" property="lineid" />
+    <result column="materialNum" jdbcType="INTEGER" property="materialnum" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="operator" jdbcType="VARCHAR" property="operator" />
+    <result column="classType" jdbcType="VARCHAR" property="classtype" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, materialID, plantID, processID, lineID, materialNum, updateTime, operator, classType, 
+    status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_onlinematerialrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_onlinematerialrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.OnlineMaterialRecord">
+    insert into tb_onlinematerialrecord (id, materialID, plantID, 
+      processID, lineID, materialNum, 
+      updateTime, operator, classType, 
+      status)
+    values (#{id,jdbcType=VARCHAR}, #{materialid,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, 
+      #{processid,jdbcType=VARCHAR}, #{lineid,jdbcType=VARCHAR}, #{materialnum,jdbcType=INTEGER}, 
+      #{updatetime,jdbcType=TIMESTAMP}, #{operator,jdbcType=VARCHAR}, #{classtype,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.OnlineMaterialRecord">
+    insert into tb_onlinematerialrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="materialid != null">
+        materialID,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="processid != null">
+        processID,
+      </if>
+      <if test="lineid != null">
+        lineID,
+      </if>
+      <if test="materialnum != null">
+        materialNum,
+      </if>
+      <if test="updatetime != null">
+        updateTime,
+      </if>
+      <if test="operator != null">
+        operator,
+      </if>
+      <if test="classtype != null">
+        classType,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialnum != null">
+        #{materialnum,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null">
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="classtype != null">
+        #{classtype,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.OnlineMaterialRecord">
+    update tb_onlinematerialrecord
+    <set>
+      <if test="materialid != null">
+        materialID = #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        processID = #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        lineID = #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialnum != null">
+        materialNum = #{materialnum,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null">
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="classtype != null">
+        classType = #{classtype,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.OnlineMaterialRecord">
+    update tb_onlinematerialrecord
+    set materialID = #{materialid,jdbcType=VARCHAR},
+      plantID = #{plantid,jdbcType=VARCHAR},
+      processID = #{processid,jdbcType=VARCHAR},
+      lineID = #{lineid,jdbcType=VARCHAR},
+      materialNum = #{materialnum,jdbcType=INTEGER},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      operator = #{operator,jdbcType=VARCHAR},
+      classType = #{classtype,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

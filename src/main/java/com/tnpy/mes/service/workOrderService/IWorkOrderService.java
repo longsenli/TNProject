@@ -28,4 +28,8 @@ public interface IWorkOrderService {
     public TNPYResponse getPlanProductionRecord(  String plantID,String processID,String startTime,String endTime );
     public TNPYResponse deletePlanProductionRecord(  String id );
     public TNPYResponse getPlanProductionNumber(  String plantID,String processID,String planMonth );
+
+    public TNPYResponse changeOnlineMaterialRecord(  String jsonStr );
+    public TNPYResponse getOnlineMaterialRecord(  String plantID,String processID,String lineID ,String startTime,String endTime ) ;
+    public TNPYResponse deleteOnlineMaterialRecord(  String id );
 }

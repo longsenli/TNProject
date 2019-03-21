@@ -49,6 +49,9 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     @Autowired
     private  PlanProductionRecordMapper planProductionRecordMapper;
 
+    @Autowired
+    private  OnlineMaterialRecordMapper onlineMaterialRecordMapper;
+
     public TNPYResponse getWorkOrder( ) {
         TNPYResponse result = new TNPYResponse();
         try
@@ -617,6 +620,73 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 dailyProduction = 0;
             }
             result.setData(dailyProduction + "");
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    public TNPYResponse changeOnlineMaterialRecord(  String jsonStr ){
+        TNPYResponse result = new TNPYResponse();
+        try {
+            OnlineMaterialRecord onlineMaterialRecord = (OnlineMaterialRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), OnlineMaterialRecord.class);
+
+            if (StringUtils.isEmpty(onlineMaterialRecord.getId())) {
+                onlineMaterialRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                onlineMaterialRecord.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
+                onlineMaterialRecord.setUpdatetime(new Date());
+                onlineMaterialRecordMapper.insertSelective(onlineMaterialRecord);
+            } else {
+                onlineMaterialRecordMapper.updateByPrimaryKey(onlineMaterialRecord);
+            }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setMessage("修改成功！");
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("修改出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+    public TNPYResponse getOnlineMaterialRecord(  String plantID,String processID,String lineID ,String startTime,String endTime )  {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = " where updateTime >= '" + startTime + "' and updateTime <= '" + endTime + "' ";
+            if(!"-1".equals(plantID))
+            {
+                filter += " and plantID ='" + plantID + "' ";
+            }
+            if(!"-1".equals(processID))
+        {
+            filter += " and processID ='" + processID + "' ";
+        }
+            if(!"-1".equals(lineID))
+            {
+                filter += " and lineID ='" + lineID + "' ";
+            }
+            filter += " order by updateTime desc";
+            List<OnlineMaterialRecord> onlineMaterialRecordList = onlineMaterialRecordMapper.getOnlineMaterialRecordByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(onlineMaterialRecordList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+    public TNPYResponse deleteOnlineMaterialRecord(  String id )    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            onlineMaterialRecordMapper.deleteByPrimaryKey(id);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }

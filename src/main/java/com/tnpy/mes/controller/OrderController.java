@@ -106,4 +106,19 @@ public class OrderController {
     public TNPYResponse getPlanProductionNumber(  String plantID,String processID,String planMonth ) {
         return  workOrderService.getPlanProductionNumber(plantID,processID,planMonth);
     }
+
+    @RequestMapping(value = "/changeonlinematerialrecord")
+    public TNPYResponse changeOnlineMaterialRecord( @RequestBody String jsonStr ) {
+        return  workOrderService.changeOnlineMaterialRecord(jsonStr);
+    }
+
+    @RequestMapping(value = "/getonlinematerialrecord")
+    public TNPYResponse getOnlineMaterialRecord(  String plantID,String processID,String lineID ,String startTime,String endTime ) {
+        return  workOrderService.getOnlineMaterialRecord(plantID, processID,lineID, startTime, endTime );
+    }
+
+    @RequestMapping(value = "/deleteonlinematerialrecord")
+    public TNPYResponse deleteOnlineMaterialRecord(  String id ) {
+        return  workOrderService.deleteOnlineMaterialRecord(id);
+    }
 }
