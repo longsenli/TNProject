@@ -111,7 +111,10 @@ public class OrderController {
     public TNPYResponse changeOnlineMaterialRecord( @RequestBody String jsonStr ) {
         return  workOrderService.changeOnlineMaterialRecord(jsonStr);
     }
-
+    @RequestMapping(value = "/mergeonlinematerialrecord")
+    public TNPYResponse mergeOnlineMaterialRecord( String mergeID ,String operator ) {
+        return  workOrderService.mergeOnlineMaterialRecord(mergeID,operator);
+    }
     @RequestMapping(value = "/getonlinematerialrecord")
     public TNPYResponse getOnlineMaterialRecord(  String plantID,String processID,String lineID ,String startTime,String endTime ) {
         return  workOrderService.getOnlineMaterialRecord(plantID, processID,lineID, startTime, endTime );

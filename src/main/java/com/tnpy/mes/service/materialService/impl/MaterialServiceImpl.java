@@ -195,9 +195,10 @@ public class MaterialServiceImpl implements IMaterialService {
                     }
                 }
             } else {
+                /*
                 result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
                 result.setMessage("未找到归属主工单信息！" + orderSplit.getOrderid());
-                return result;
+                return result;*/
             }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return result;
@@ -244,7 +245,6 @@ public class MaterialServiceImpl implements IMaterialService {
                 result.setMessage("该工单不能够使用该物料！");
                 return  result;
             }
-
 
             TNPYResponse materialUseable = judgeAvailable(orderSplit.getOrderid(),expendOrderID);
             if(materialUseable.getStatus() != StatusEnum.ResponseStatus.Success.getIndex() )

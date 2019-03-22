@@ -205,7 +205,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 workorder.setStatus(StatusEnum.WorkOrderStatus.ordered.getIndex() + "");
                 workorder.setCreatetime(new Date());
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                System.out.println(dateFormat.format(workorder.getScheduledstarttime()));
+               // System.out.println(dateFormat.format(workorder.getScheduledstarttime()));
                 int orderNum = workOrderMapper.selectOrderNumber(workorder.getLineid(),dateFormat.format(workorder.getScheduledstarttime()));
                 String numStr = workorder.getOrderid().substring(0,workorder.getOrderid().length() - 10) + String.valueOf(orderNum+1)
                         + workorder.getOrderid().substring(workorder.getOrderid().length() - 10,workorder.getOrderid().length() );
@@ -674,6 +674,72 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             List<OnlineMaterialRecord> onlineMaterialRecordList = onlineMaterialRecordMapper.getOnlineMaterialRecordByFilter(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(onlineMaterialRecordList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+    public TNPYResponse mergeOnlineMaterialRecord( String mergeID ,String operator )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String mergeIDList ="'" + mergeID.replace(",","','") + "'";
+
+            List<OnlineMaterialRecord> onlineMaterialRecordList = onlineMaterialRecordMapper.getMergeNum(mergeIDList);
+            if(onlineMaterialRecordList.size() > 1)
+            {
+                result.setMessage("请确认合并的是同一产线，同一物料！当前种类数量是" + onlineMaterialRecordList.size());
+                return  result;
+            }
+
+            if(onlineMaterialRecordList.size() < 1)
+            {
+                result.setMessage("未找到记录！");
+                return  result;
+            }
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
+            Date now = new Date();
+            String orderName = onlineMaterialRecordList.get(0).getPlantid().split("###")[1] + onlineMaterialRecordList.get(0).getProcessid().split("###")[1] + onlineMaterialRecordList.get(0).getLineid().split("###")[1]+ dateFormat.format(now);
+
+            OnlineMaterialRecord onlineMaterialRecord = new OnlineMaterialRecord();
+            onlineMaterialRecord.setId(orderName);
+            onlineMaterialRecord.setUpdatetime(now);
+            onlineMaterialRecord.setStatus("3");
+            onlineMaterialRecord.setMaterialid(onlineMaterialRecordList.get(0).getMaterialid());
+            onlineMaterialRecord.setPlantid(onlineMaterialRecordList.get(0).getPlantid().split("###")[0]);
+            onlineMaterialRecord.setProcessid(onlineMaterialRecordList.get(0).getProcessid().split("###")[0]);
+            onlineMaterialRecord.setLineid(onlineMaterialRecordList.get(0).getLineid().split("###")[0]);
+            onlineMaterialRecord.setMaterialnum(onlineMaterialRecordList.get(0).getMaterialnum());
+            onlineMaterialRecord.setOperator(operator);
+            onlineMaterialRecordMapper.insertSelective(onlineMaterialRecord);
+
+            OrderSplit orderSplit = new OrderSplit();
+            orderSplit.setId(orderName);
+            orderSplit.setMaterialid(onlineMaterialRecordList.get(0).getMaterialid());
+            double dbNum = onlineMaterialRecordList.get(0).getMaterialnum();
+            orderSplit.setProductionnum(dbNum);
+            orderSplit.setOrdersplitid(orderName);
+            orderSplit.setOrderid(orderName);
+            orderSplit.setStatus(StatusEnum.WorkOrderStatus.finished.getIndex() + "");
+            orderSplitMapper.insertSelective(orderSplit);
+
+            MaterialRecord materialRecord = new MaterialRecord();
+            materialRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+            materialRecord.setNumber(orderSplit.getProductionnum());
+            materialRecord.setInorout(StatusEnum.InOutStatus.Input.getIndex());
+            materialRecord.setInputer(operator);
+            materialRecord.setSuborderid(orderName);
+            materialRecord.setMaterialid(orderSplit.getMaterialid());
+            materialRecord.setStatus(StatusEnum.WorkOrderStatus.repairin.getIndex());
+            materialRecordMapper.insertSelective(materialRecord);
+
+            onlineMaterialRecordMapper.updateStatus(mergeIDList,"2");
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }
         catch (Exception ex)
