@@ -285,7 +285,7 @@ public class AutomaticSchedulingTimer {
         }
     }
 
-    @Scheduled(cron = "0 54 6 * * ?")
+    @Scheduled(cron = "0 48 15 * * ?")
     public void automaticInventoryStatistics() {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
