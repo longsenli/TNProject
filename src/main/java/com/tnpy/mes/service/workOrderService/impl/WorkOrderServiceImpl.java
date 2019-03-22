@@ -305,10 +305,18 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         try
         {
             OrderSplit orderSplit=(OrderSplit) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), OrderSplit.class);
+
+            OrderSplit orderSplitTMP = orderSplitMapper.selectByPrimaryKey(orderSplit.getId());
+            if(orderSplitTMP.getStatus().equals(StatusEnum.WorkOrderStatus.finished.getIndex() + ""))
+            {
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setMessage("该工单已完成！" );
+                return  result;
+            }
             TNPYResponse judgeResult = judgeEnoughMaterial(orderSplit.getMaterialid(),orderSplit.getOrderid(),orderSplit.getProductionnum());
             if(judgeResult.getStatus() != StatusEnum.ResponseStatus.Success.getIndex())
             {
-                System.out.println(JSONObject.toJSON(judgeResult).toString());
+               // System.out.println(JSONObject.toJSON(judgeResult).toString());
                 return  judgeResult;
             }
 

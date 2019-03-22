@@ -31,6 +31,16 @@ public class MaterialInventoryRecord {
 
     private String status;
 
+    public Integer getOnlineStorageInNum() {
+        return onlineStorageInNum;
+    }
+
+    public void setOnlineStorageInNum(Integer onlineStorageInNum) {
+        this.onlineStorageInNum = onlineStorageInNum;
+    }
+
+    private Integer onlineStorageInNum;
+
     public String getId() {
         return id;
     }
