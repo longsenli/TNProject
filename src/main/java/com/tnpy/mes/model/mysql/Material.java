@@ -13,7 +13,17 @@ public class Material {
 
     private String shortname;
 
-    public String getId() {
+    private Double  eachbatchnumber;
+    
+    public Double getEachbatchnumber() {
+		return eachbatchnumber;
+	}
+
+	public void setEachbatchnumber(Double eachbatchnumber) {
+		this.eachbatchnumber = eachbatchnumber;
+	}
+
+	public String getId() {
         return id;
     }
 

@@ -30,8 +30,8 @@ public interface MaterialMapper {
     @Select("select * from sys_material order by typeID,name ")
     List<Material> selectAll();
 
-    @Select("select c.id,c.typeID,c.name,c.status,c.shortname,d.number as description from \n" +
-            "( select a.id,a.typeID,a.name,a.status,a.shortname  from sys_material  a left join sys_processmaterial b \n" +
+    @Select("select c.id,c.typeID,c.name,c.status,c.shortname,c.eachbatchnumber as description from \n" +
+            "( select a.id,a.typeID,a.name,a.status,a.shortname,a.eachbatchnumber  from sys_material  a left join sys_processmaterial b \n" +
             " on a.typeID = b.materialTypeID  where processID = #{processID} and inOrout ='2' ) c left join sys_materialtype d on c.typeID = d.id order by name" )
     List<Material>  selectOutByProcess(String processID);
 

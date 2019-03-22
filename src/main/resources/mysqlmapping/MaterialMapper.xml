@@ -8,9 +8,10 @@
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="shortname" jdbcType="VARCHAR" property="shortname" />
+    <result column="eachbatchnumber" jdbcType="DOUBLE" property="eachbatchnumber" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, typeID, name, description, status, shortname
+    id, typeID, name, description, status, shortname, eachbatchnumber
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -24,10 +25,10 @@
   </delete>
   <insert id="insert" parameterType="com.tnpy.mes.model.mysql.Material">
     insert into sys_material (id, typeID, name, 
-      description, status, shortname
+      description, status, shortname, eachbatchnumber
       )
     values (#{id,jdbcType=VARCHAR}, #{typeid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{description,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{shortname,jdbcType=VARCHAR}
+      #{description,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{shortname,jdbcType=VARCHAR}, #{eachbatchnumber,jdbcType=DOUBLE}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.Material">
@@ -51,6 +52,9 @@
       <if test="shortname != null">
         shortname,
       </if>
+      <if test="eachbatchnumber != null">
+        eachbatchnumber,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -70,6 +74,9 @@
       </if>
       <if test="shortname != null">
         #{shortname,jdbcType=VARCHAR},
+      </if>
+      <if test="eachbatchnumber != null">
+        #{eachbatchnumber,jdbcType=DOUBLE},
       </if>
     </trim>
   </insert>
@@ -91,6 +98,9 @@
       <if test="shortname != null">
         shortname = #{shortname,jdbcType=VARCHAR},
       </if>
+      <if test="eachbatchnumber != null">
+        #{eachbatchnumber,jdbcType=DOUBLE},
+      </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -100,7 +110,8 @@
       name = #{name,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER},
-      shortname = #{shortname,jdbcType=VARCHAR}
+      shortname = #{shortname,jdbcType=VARCHAR},
+      eachbatchnumber = #{eachbatchnumber,jdbcType=DOUBLE}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>
