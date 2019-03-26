@@ -122,15 +122,17 @@ public interface MaterialRecordMapper {
  Object getBatteryShipmentNum(String startTime,String endTime,String plantID,String batteryType);
 
 
- @Select("\n" +
-            "select c.id,c.name,c.grantNum,d.expendNum from (\n" +
+ @Select("(select 'id' as id,p.lineID,q.name,'' as grantNum, p.expendNum from (select m.lineID,n.materialID,sum(n.number) as expendNum from ( select id,lineID from tb_workorder where  scheduledStartTime >= #{startTime}\n" +
+         "    and  scheduledStartTime <=  #{endTime} and plantID = #{plantID} and processID = #{processID} and status < '5' ) m left join tb_materialrecord n on m.id = n.expendOrderID group by m.lineID) p \n" +
+         "    left join sys_material q on p.materialID = q.id limit 1000) UNION ALL  " +
+            " ( select c.id,'总计' as lineID,c.name,c.grantNum,d.expendNum from (\n" +
             "select a.id,a.name,b.grantNum from (\n" +
             "select id,name from sys_material where typeID in (\n" +
             "select materialTypeID from sys_processmaterial where processID = #{processID} and inOrout = '1') )  a\n" +
             "left join ( select batteryType,sum(number) as grantNum from tb_grantmaterialrecord where plantID = #{plantID} and processID = #{lastProcessID} \n" +
             "and grantTime >= #{startTime} and  grantTime <= #{endTime} group by batteryType) b on a.id = b.batteryType ) c left join (\n" +
             "select materialID,sum(number) as expendNum from tb_materialrecord where  expendOrderID in (select id from tb_workorder where  scheduledStartTime >= #{startTime} \n" +
-            " and  scheduledStartTime <= #{endTime} and plantID = #{plantID} and processID = #{processID} )  group by materialID ) d on c.id = d.materialID where c.grantNum + d.expendNum >0")
+            " and  scheduledStartTime <= #{endTime} and plantID = #{plantID} and processID = #{processID} )  group by materialID ) d on c.id = d.materialID where c.grantNum + d.expendNum >0 )")
     List<Map<Object, Object>> grantAndExpendStatistics(  String startTime,String endTime,String plantID,String processID,String lastProcessID );
 
     @Select("( select '' as plantID,'' as processID,'' as materialID,'总计' as currentNum,'' as lastStorage,sum(gainNum) as gainNum,sum(inNum) as inNum,sum(expendNum) as expendNum,sum(outNum) as outNum,'' as updateTime,name\n" +
