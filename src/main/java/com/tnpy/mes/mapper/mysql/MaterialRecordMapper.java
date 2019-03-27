@@ -123,7 +123,7 @@ public interface MaterialRecordMapper {
 
 
  @Select("(select 'id' as id,p.lineID,q.name,'' as grantNum, p.expendNum from (select m.lineID,n.materialID,sum(n.number) as expendNum from ( select id,lineID from tb_workorder where  scheduledStartTime >= #{startTime}\n" +
-         "    and  scheduledStartTime <=  #{endTime} and plantID = #{plantID} and processID = #{processID} and status < '5' ) m left join tb_materialrecord n on m.id = n.expendOrderID group by m.lineID) p \n" +
+         "    and  scheduledStartTime <=  #{endTime} and plantID = #{plantID} and processID = #{processID} and status < '5' ) m left join tb_materialrecord n on m.id = n.expendOrderID group by m.lineID,n.materialID) p \n" +
          "    left join sys_material q on p.materialID = q.id limit 1000) UNION ALL  " +
             " ( select c.id,'总计' as lineID,c.name,c.grantNum,d.expendNum from (\n" +
             "select a.id,a.name,b.grantNum from (\n" +
