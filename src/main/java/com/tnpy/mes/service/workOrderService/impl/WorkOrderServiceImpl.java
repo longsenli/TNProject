@@ -770,4 +770,27 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             return  result;
         }
     }
+	@Override
+	public TNPYResponse cancelInputSuborder(String subOrdderID) {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+        	MaterialRecord materialRecord = new MaterialRecord();
+        	materialRecord.setId(subOrdderID);
+        	materialRecord.setExpendorderid("");
+        	materialRecord.setInorout(new Integer(1));
+        	materialRecord.setOutputer("");
+        	materialRecord.setOutputtime(new Date(0));
+           int res =  materialRecordMapper.updateCancelInputSuborder(materialRecord);
+           
+
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
 }

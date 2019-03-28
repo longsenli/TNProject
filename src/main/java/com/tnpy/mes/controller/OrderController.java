@@ -124,4 +124,10 @@ public class OrderController {
     public TNPYResponse deleteOnlineMaterialRecord(  String id ) {
         return  workOrderService.deleteOnlineMaterialRecord(id);
     }
+    
+    //取消投料
+    @RequestMapping(value = "/cancelinputsuborder")
+    public TNPYResponse cancelInputSuborder( String subOrdderID ) {
+        return  workOrderService.cancelInputSuborder(subOrdderID);
+    }
 }

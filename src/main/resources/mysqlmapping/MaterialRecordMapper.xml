@@ -235,4 +235,14 @@
     </foreach>
     ) ) c left join sys_material d on c.materialID = d.id  order by outputTime desc
   </select>
+  
+  <update id="updateCancelInputSuborder" parameterType="com.tnpy.mes.model.mysql.MaterialRecord">
+    update tb_materialrecord
+    set
+      expendOrderID = #{expendorderid,jdbcType=VARCHAR},
+      inOrOut = #{inorout,jdbcType=INTEGER},
+      outputTime = #{outputtime,jdbcType=TIMESTAMP},
+      outputer = #{outputer,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
 </mapper>

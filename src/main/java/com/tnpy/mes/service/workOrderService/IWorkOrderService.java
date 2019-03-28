@@ -33,4 +33,6 @@ public interface IWorkOrderService {
     public TNPYResponse getOnlineMaterialRecord(  String plantID,String processID,String lineID ,String startTime,String endTime ) ;
     public TNPYResponse deleteOnlineMaterialRecord(  String id );
     public TNPYResponse mergeOnlineMaterialRecord( String mergeID ,String operator );
+    
+    public TNPYResponse cancelInputSuborder( String subOrdderID );
 }
