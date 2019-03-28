@@ -158,4 +158,7 @@ public interface MaterialRecordMapper {
             "where plantID = #{plantID} and processID = #{processID}  and grantTime >= #{startTime}  and grantTime <= #{endTime} ) \n" +
             " a left join  sys_material b on a.batteryType = b.id order by grantTime desc")
     List<Map<Object, Object>> getGrantMaterialRecord(  String startTime,String endTime,String plantID,String processID);
+    
+    
+    int updateCancelInputSuborder(MaterialRecord record);
 }
