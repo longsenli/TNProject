@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.WorkLocationMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.WorkLocation">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="lineID" jdbcType="VARCHAR" property="lineid" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="describeInfo" jdbcType="VARCHAR" property="describeinfo" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+    <result column="ordinal" jdbcType="INTEGER" property="ordinal" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="operator" jdbcType="VARCHAR" property="operator" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, plantID, processID, lineID, name, describeInfo, location, ordinal, updateTime, 
+    operator, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_worklocation
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_worklocation
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.WorkLocation">
+    insert into tb_worklocation (id, plantID, processID, 
+      lineID, name, describeInfo, 
+      location, ordinal, updateTime, 
+      operator, status)
+    values (#{id,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{processid,jdbcType=VARCHAR}, 
+      #{lineid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{describeinfo,jdbcType=VARCHAR}, 
+      #{location,jdbcType=VARCHAR}, #{ordinal,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, 
+      #{operator,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.WorkLocation">
+    insert into tb_worklocation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="processid != null">
+        processID,
+      </if>
+      <if test="lineid != null">
+        lineID,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="describeinfo != null">
+        describeInfo,
+      </if>
+      <if test="location != null">
+        location,
+      </if>
+      <if test="ordinal != null">
+        ordinal,
+      </if>
+      <if test="updatetime != null">
+        updateTime,
+      </if>
+      <if test="operator != null">
+        operator,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="describeinfo != null">
+        #{describeinfo,jdbcType=VARCHAR},
+      </if>
+      <if test="location != null">
+        #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="ordinal != null">
+        #{ordinal,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null">
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.WorkLocation">
+    update tb_worklocation
+    <set>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        processID = #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        lineID = #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="describeinfo != null">
+        describeInfo = #{describeinfo,jdbcType=VARCHAR},
+      </if>
+      <if test="location != null">
+        location = #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="ordinal != null">
+        ordinal = #{ordinal,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null">
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.WorkLocation">
+    update tb_worklocation
+    set plantID = #{plantid,jdbcType=VARCHAR},
+      processID = #{processid,jdbcType=VARCHAR},
+      lineID = #{lineid,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      describeInfo = #{describeinfo,jdbcType=VARCHAR},
+      location = #{location,jdbcType=VARCHAR},
+      ordinal = #{ordinal,jdbcType=INTEGER},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      operator = #{operator,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

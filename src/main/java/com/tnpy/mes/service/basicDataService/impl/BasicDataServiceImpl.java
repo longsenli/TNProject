@@ -48,6 +48,9 @@ public class BasicDataServiceImpl implements IBasicDataService {
     @Autowired
     private ParameterInfoMapper parameterInfoMapper;
 
+    @Autowired
+    private WorkLocationMapper workLocationMapper;
+
     @Override
     public TNPYResponse getIndustrialPlant() {
         TNPYResponse result = new TNPYResponse();
@@ -439,5 +442,79 @@ public class BasicDataServiceImpl implements IBasicDataService {
             result.setMessage("查询出错！" + ex.getMessage());
             return  result;
         }
+    }
+
+    public TNPYResponse getWorkLocation(String plantID,String processID,String lineID)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = " where status != '-1' ";
+            if(!"-1".equals(plantID))
+            {
+                filter += " and plantID = '" + plantID + "' ";
+            }
+            if(!"-1".equals(processID))
+            {
+                filter += " and processID = '" + processID + "' ";
+            }
+            if(!"-1".equals(lineID))
+            {
+                filter += " and lineID = '" + lineID + "' ";
+            }
+            filter += " order by lineID,ordinal ";
+            // System.out.println(plantID + " 参数 " +processID);
+            List<WorkLocation> workLocationList = workLocationMapper.selectByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+            result.setData(JSONObject.toJSON(workLocationList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+    public TNPYResponse deteteWorkLocation(String id)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            workLocationMapper.deleteByPrimaryKey(id);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("删除失败！" + ex.getMessage());
+            return  result;
+        }
+    }
+    public TNPYResponse changeWorkLocation( String jsonStr)
+    {
+        WorkLocation workLocation=(WorkLocation) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), WorkLocation.class);
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            if(StringUtils.isEmpty(workLocation.getId()))
+            {
+                workLocation.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                workLocation.setStatus("1");
+                workLocationMapper.insertSelective(workLocation);
+            }
+            else
+            {
+                workLocationMapper.updateByPrimaryKey(workLocation);
+            }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setMessage("修改成功！");
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("插入失败！" + ex.getMessage());
+        }
+        return  result;
     }
 }

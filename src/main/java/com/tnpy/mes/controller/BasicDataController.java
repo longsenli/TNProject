@@ -43,6 +43,21 @@ public class BasicDataController {
         return  basicDataService.changeProductionLine(jsonStr);
     }
 
+    @RequestMapping(value = "/getworklocation")
+    public TNPYResponse getWorkLocation(String plantID,String processID,String lineID) {
+        return  basicDataService.getWorkLocation(plantID,processID,lineID);
+    }
+
+    @RequestMapping(value = "/deleteworklocation")
+    public TNPYResponse deteteWorkLocation(String id) {
+        return  basicDataService.deteteWorkLocation(id);
+    }
+
+    @RequestMapping(value = "/changeworklocation")
+    public TNPYResponse changeWorkLocation(@RequestBody String jsonStr) {
+        return  basicDataService.changeWorkLocation(jsonStr);
+    }
+
     @RequestMapping(value = "/getmaterialtype")
     public TNPYResponse getMaterialType( ) {
         return  basicDataService.getMaterialType();

@@ -34,4 +34,8 @@ public interface IBasicDataService {
     public TNPYResponse getParameterinfo();
 
     public TNPYResponse getInputMaterialByMaterial(String materialID);
+
+    public TNPYResponse getWorkLocation(String plantID,String processID,String lineID);
+    public TNPYResponse deteteWorkLocation(String id);
+    public TNPYResponse changeWorkLocation( String jsonStr);
 }

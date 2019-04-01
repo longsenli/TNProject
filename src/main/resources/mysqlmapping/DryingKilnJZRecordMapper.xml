@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.DryingKilnJZRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.DryingKilnJZRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="dryingKilnID" jdbcType="VARCHAR" property="dryingkilnid" />
+    <result column="dryingKilnName" jdbcType="VARCHAR" property="dryingkilnname" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="lineID" jdbcType="VARCHAR" property="lineid" />
+    <result column="workLocationID" jdbcType="VARCHAR" property="worklocationid" />
+    <result column="workLocationName" jdbcType="VARCHAR" property="worklocationname" />
+    <result column="suborderID" jdbcType="VARCHAR" property="suborderid" />
+    <result column="materialID" jdbcType="VARCHAR" property="materialid" />
+    <result column="materialName" jdbcType="VARCHAR" property="materialname" />
+    <result column="materialQuantity" jdbcType="INTEGER" property="materialquantity" />
+    <result column="inputTime" jdbcType="TIMESTAMP" property="inputtime" />
+    <result column="inputerID" jdbcType="VARCHAR" property="inputerid" />
+    <result column="inputerName" jdbcType="VARCHAR" property="inputername" />
+    <result column="outputTime" jdbcType="TIMESTAMP" property="outputtime" />
+    <result column="outputerID" jdbcType="VARCHAR" property="outputerid" />
+    <result column="outputerName" jdbcType="VARCHAR" property="outputername" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, dryingKilnID, dryingKilnName, plantID, lineID, workLocationID, workLocationName, 
+    suborderID, materialID, materialName, materialQuantity, inputTime, inputerID, inputerName, 
+    outputTime, outputerID, outputerName, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_dryingkilnjzrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_dryingkilnjzrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.DryingKilnJZRecord">
+    insert into tb_dryingkilnjzrecord (id, dryingKilnID, dryingKilnName, 
+      plantID, lineID, workLocationID, 
+      workLocationName, suborderID, materialID, 
+      materialName, materialQuantity, inputTime, 
+      inputerID, inputerName, outputTime, 
+      outputerID, outputerName, status
+      )
+    values (#{id,jdbcType=VARCHAR}, #{dryingkilnid,jdbcType=VARCHAR}, #{dryingkilnname,jdbcType=VARCHAR}, 
+      #{plantid,jdbcType=VARCHAR}, #{lineid,jdbcType=VARCHAR}, #{worklocationid,jdbcType=VARCHAR}, 
+      #{worklocationname,jdbcType=VARCHAR}, #{suborderid,jdbcType=VARCHAR}, #{materialid,jdbcType=VARCHAR}, 
+      #{materialname,jdbcType=VARCHAR}, #{materialquantity,jdbcType=INTEGER}, #{inputtime,jdbcType=TIMESTAMP}, 
+      #{inputerid,jdbcType=VARCHAR}, #{inputername,jdbcType=VARCHAR}, #{outputtime,jdbcType=TIMESTAMP}, 
+      #{outputerid,jdbcType=VARCHAR}, #{outputername,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.DryingKilnJZRecord">
+    insert into tb_dryingkilnjzrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dryingkilnid != null">
+        dryingKilnID,
+      </if>
+      <if test="dryingkilnname != null">
+        dryingKilnName,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="lineid != null">
+        lineID,
+      </if>
+      <if test="worklocationid != null">
+        workLocationID,
+      </if>
+      <if test="worklocationname != null">
+        workLocationName,
+      </if>
+      <if test="suborderid != null">
+        suborderID,
+      </if>
+      <if test="materialid != null">
+        materialID,
+      </if>
+      <if test="materialname != null">
+        materialName,
+      </if>
+      <if test="materialquantity != null">
+        materialQuantity,
+      </if>
+      <if test="inputtime != null">
+        inputTime,
+      </if>
+      <if test="inputerid != null">
+        inputerID,
+      </if>
+      <if test="inputername != null">
+        inputerName,
+      </if>
+      <if test="outputtime != null">
+        outputTime,
+      </if>
+      <if test="outputerid != null">
+        outputerID,
+      </if>
+      <if test="outputername != null">
+        outputerName,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dryingkilnid != null">
+        #{dryingkilnid,jdbcType=VARCHAR},
+      </if>
+      <if test="dryingkilnname != null">
+        #{dryingkilnname,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="worklocationid != null">
+        #{worklocationid,jdbcType=VARCHAR},
+      </if>
+      <if test="worklocationname != null">
+        #{worklocationname,jdbcType=VARCHAR},
+      </if>
+      <if test="suborderid != null">
+        #{suborderid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="materialquantity != null">
+        #{materialquantity,jdbcType=INTEGER},
+      </if>
+      <if test="inputtime != null">
+        #{inputtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inputerid != null">
+        #{inputerid,jdbcType=VARCHAR},
+      </if>
+      <if test="inputername != null">
+        #{inputername,jdbcType=VARCHAR},
+      </if>
+      <if test="outputtime != null">
+        #{outputtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="outputerid != null">
+        #{outputerid,jdbcType=VARCHAR},
+      </if>
+      <if test="outputername != null">
+        #{outputername,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.DryingKilnJZRecord">
+    update tb_dryingkilnjzrecord
+    <set>
+      <if test="dryingkilnid != null">
+        dryingKilnID = #{dryingkilnid,jdbcType=VARCHAR},
+      </if>
+      <if test="dryingkilnname != null">
+        dryingKilnName = #{dryingkilnname,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        lineID = #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="worklocationid != null">
+        workLocationID = #{worklocationid,jdbcType=VARCHAR},
+      </if>
+      <if test="worklocationname != null">
+        workLocationName = #{worklocationname,jdbcType=VARCHAR},
+      </if>
+      <if test="suborderid != null">
+        suborderID = #{suborderid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        materialID = #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        materialName = #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="materialquantity != null">
+        materialQuantity = #{materialquantity,jdbcType=INTEGER},
+      </if>
+      <if test="inputtime != null">
+        inputTime = #{inputtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inputerid != null">
+        inputerID = #{inputerid,jdbcType=VARCHAR},
+      </if>
+      <if test="inputername != null">
+        inputerName = #{inputername,jdbcType=VARCHAR},
+      </if>
+      <if test="outputtime != null">
+        outputTime = #{outputtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="outputerid != null">
+        outputerID = #{outputerid,jdbcType=VARCHAR},
+      </if>
+      <if test="outputername != null">
+        outputerName = #{outputername,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.DryingKilnJZRecord">
+    update tb_dryingkilnjzrecord
+    set dryingKilnID = #{dryingkilnid,jdbcType=VARCHAR},
+      dryingKilnName = #{dryingkilnname,jdbcType=VARCHAR},
+      plantID = #{plantid,jdbcType=VARCHAR},
+      lineID = #{lineid,jdbcType=VARCHAR},
+      workLocationID = #{worklocationid,jdbcType=VARCHAR},
+      workLocationName = #{worklocationname,jdbcType=VARCHAR},
+      suborderID = #{suborderid,jdbcType=VARCHAR},
+      materialID = #{materialid,jdbcType=VARCHAR},
+      materialName = #{materialname,jdbcType=VARCHAR},
+      materialQuantity = #{materialquantity,jdbcType=INTEGER},
+      inputTime = #{inputtime,jdbcType=TIMESTAMP},
+      inputerID = #{inputerid,jdbcType=VARCHAR},
+      inputerName = #{inputername,jdbcType=VARCHAR},
+      outputTime = #{outputtime,jdbcType=TIMESTAMP},
+      outputerID = #{outputerid,jdbcType=VARCHAR},
+      outputerName = #{outputername,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
