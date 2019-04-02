@@ -349,6 +349,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         TNPYResponse result = new TNPYResponse();
         try
         {
+            String[] inputterInfo = name.split("###");
             OrderSplit orderSplit=(OrderSplit) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), OrderSplit.class);
 
             OrderSplit orderSplitTMP = orderSplitMapper.selectByPrimaryKey(orderSplit.getId());
@@ -377,6 +378,20 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             materialRecord.setSuborderid(orderSplit.getId());
             materialRecord.setInputtime(new Date());
             materialRecord.setInputer(name);
+            if(inputterInfo.length >1)
+            {
+                materialRecord.setInputer(inputterInfo[0]);
+                materialRecord.setInputerid(inputterInfo[1]);
+                materialRecord.setInputworklocationid(inputterInfo[2]);
+                materialRecord.setMaterialnameinfo(inputterInfo[3]);
+            }
+            Workorder workorder = workOrderMapper.selectByPrimaryKey(orderSplit.getOrderid());
+            if(workorder != null)
+            {
+                materialRecord.setInputplantid(workorder.getPlantid());
+                materialRecord.setInputprocessid(workorder.getProcessid());
+                materialRecord.setInputlineid(workorder.getLineid());
+            }
             materialRecordMapper.insert(materialRecord);
             boolean blTB = ConfigParamEnum.BasicProcessEnum.TBProcessID.getName().equals(workOrderMapper.getProcessIDByOrder(orderSplit.getOrderid()));
             try

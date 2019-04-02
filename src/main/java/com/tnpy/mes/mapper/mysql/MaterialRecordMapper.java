@@ -25,7 +25,7 @@ public interface MaterialRecordMapper {
 
     int updateByPrimaryKey(MaterialRecord record);
 
-   // @Select("select * from tb_materialrecord where expendOrderID = #{expendOrder}")
+    // @Select("select * from tb_materialrecord where expendOrderID = #{expendOrder}")
     @Select("select c.*,d.name as materialName from ( \n" +
             "SELECT a.*,b.orderSplitID as inSubOrderName,left(b.orderSplitID, length(b.orderSplitID)-3)  as inOrderName \n" +
             "FROM tb_materialrecord  a left join tb_ordersplit b on a.subOrderID = b.id where expendOrderID = #{expendOrder} \n" +
@@ -38,15 +38,15 @@ public interface MaterialRecordMapper {
             ") c left join sys_material d on c.materialID = d.id  order by outputTime desc")
     List<CustomMaterialRecord> selectBySubOrderID(String subOrderID);
 
-   /* @Select("select g.* from \n" +
-            "( select e.*,f.name as materialName from ( select c.*,d.orderSplitID as inSubOrderName,\n" +
-            "left(d.orderSplitID, length(d.orderSplitID)-3)  as inOrderName from ( \n" +
-            "select a.* from ( SELECT * FROM tb_materialrecord where materialID in(\n" +
-            "select inMaterialID from sys_materialrelation where outMaterialID = #{materialID}) and inOrOut = '1'\n" +
-            ") a left join tb_workorder b on a.orderID = b.id  \n" +
-            "where b.plantID = #{plantID} ) c left join tb_ordersplit d on c.subOrderID = d.id \n" +
-            ") e left join sys_material f on e.materialID = f.id  ) g left join  tb_batchrelationcontrol m\n" +
-            " on g.orderID = m.relationOrderID where m.tbBatch = #{batchID} order by inputTime asc ")*/
+    /* @Select("select g.* from \n" +
+             "( select e.*,f.name as materialName from ( select c.*,d.orderSplitID as inSubOrderName,\n" +
+             "left(d.orderSplitID, length(d.orderSplitID)-3)  as inOrderName from ( \n" +
+             "select a.* from ( SELECT * FROM tb_materialrecord where materialID in(\n" +
+             "select inMaterialID from sys_materialrelation where outMaterialID = #{materialID}) and inOrOut = '1'\n" +
+             ") a left join tb_workorder b on a.orderID = b.id  \n" +
+             "where b.plantID = #{plantID} ) c left join tb_ordersplit d on c.subOrderID = d.id \n" +
+             ") e left join sys_material f on e.materialID = f.id  ) g left join  tb_batchrelationcontrol m\n" +
+             " on g.orderID = m.relationOrderID where m.tbBatch = #{batchID} order by inputTime asc ")*/
     List<CustomMaterialRecord> selectUsableMaterial(String plantID,String materialID,String batchID );
 
 
@@ -82,22 +82,22 @@ public interface MaterialRecordMapper {
 
     List<CustomMaterialRecord> selectByExpendIDList(@Param("expendIDList") List<String> expendIDList);
 
-  /*  @Select("select d.outputTotal,e.name from ( select sum(number) as outputTotal,materialID from \n" +
-            "(\n" +
-            "select a.materialID,b.plantID,b.lineID,b.processID,a.number,a.inputTime,a.inOrOut from ( select * from tb_materialrecord where inputTime > #{startTime} and inputTime < #{endTime} ) a\n" +
-            " left join tb_workorder b on a.orderID = b.id where plantID  = #{plantID} and processID = #{processID} ${lineIDFilter} \n" +
-            " ) c group by materialID ) d left join sys_material e on d.materialID = e.id ")*/
-  @Select("  (select * from (select e.*, f.name as lineName from (  select plantID,processID,lineID,materialID,scheduledStartTime,outputTotal,orderDay,orderHour,classType ,d.name as materialName from (\n" +
-          " select a.plantID,a.processID,a.lineID,a.materialID,sum(b.number) as outputTotal,a.scheduledStartTime,orderDay,orderHour, case  when orderHour < '10' then '白班'  when orderHour > '16' then '夜班' end as classType from (  " +
-          " select id,plantID,processID,lineID,materialID,scheduledStartTime,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,date_format(scheduledStartTime,'%H') as orderHour  \n" +
-          " from tb_workorder  where plantID  = #{plantID} and processID = #{processID} and scheduledStartTime  >= #{startTime} and scheduledStartTime < #{endTime} ) a \n" +
-          " left join  tb_materialrecord b on a.id = b.orderID group by lineID,materialID,scheduledStartTime ) c left join sys_material d on c.materialID = d.id ) e left join sys_productionline f on e.lineID = f.id ) g order by g.scheduledStartTime,g.lineName limit 1000)\n" +
-          " UNION ALL\n" +
-          " ( select 'plantID' as plantID,'processID' as processID,'lineID' as lineID,'materialID' as materialID,'' as scheduledStartTime, sum(g.outputTotal) as outputTotal,'' as orderDay,'' as orderHour , '' as classType,g.materialName,'总计' as lineName from (\n" +
-          "  select e.*, f.name as lineName from (  select plantID,processID,lineID,materialID,outputTotal ,d.name as materialName from (\n" +
-          " select a.plantID,a.processID,a.lineID,a.materialID,sum(b.number) as outputTotal from (  select id,plantID,processID,lineID,materialID  \n" +
-          " from tb_workorder  where plantID  = #{plantID} and processID = #{processID} and scheduledStartTime  >= #{startTime} and scheduledStartTime < #{endTime} ) a \n" +
-          " left join  tb_materialrecord b on a.id = b.orderID group by lineID,materialID ) c left join sys_material d on c.materialID = d.id ) e left join sys_productionline f on e.lineID = f.id ) g  group by g.materialName )\n" )
+    /*  @Select("select d.outputTotal,e.name from ( select sum(number) as outputTotal,materialID from \n" +
+              "(\n" +
+              "select a.materialID,b.plantID,b.lineID,b.processID,a.number,a.inputTime,a.inOrOut from ( select * from tb_materialrecord where inputTime > #{startTime} and inputTime < #{endTime} ) a\n" +
+              " left join tb_workorder b on a.orderID = b.id where plantID  = #{plantID} and processID = #{processID} ${lineIDFilter} \n" +
+              " ) c group by materialID ) d left join sys_material e on d.materialID = e.id ")*/
+    @Select("  (select * from (select e.*, f.name as lineName from (  select plantID,processID,lineID,materialID,scheduledStartTime,outputTotal,orderDay,orderHour,classType ,d.name as materialName from (\n" +
+            " select a.plantID,a.processID,a.lineID,a.materialID,sum(b.number) as outputTotal,a.scheduledStartTime,orderDay,orderHour, case  when orderHour < '10' then '白班'  when orderHour > '16' then '夜班' end as classType from (  " +
+            " select id,plantID,processID,lineID,materialID,scheduledStartTime,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,date_format(scheduledStartTime,'%H') as orderHour  \n" +
+            " from tb_workorder  where plantID  = #{plantID} and processID = #{processID} and scheduledStartTime  >= #{startTime} and scheduledStartTime < #{endTime} ) a \n" +
+            " left join  tb_materialrecord b on a.id = b.orderID group by lineID,materialID,scheduledStartTime ) c left join sys_material d on c.materialID = d.id ) e left join sys_productionline f on e.lineID = f.id ) g order by g.scheduledStartTime,g.lineName limit 1000)\n" +
+            " UNION ALL\n" +
+            " ( select 'plantID' as plantID,'processID' as processID,'lineID' as lineID,'materialID' as materialID,'' as scheduledStartTime, sum(g.outputTotal) as outputTotal,'' as orderDay,'' as orderHour , '' as classType,g.materialName,'总计' as lineName from (\n" +
+            "  select e.*, f.name as lineName from (  select plantID,processID,lineID,materialID,outputTotal ,d.name as materialName from (\n" +
+            " select a.plantID,a.processID,a.lineID,a.materialID,sum(b.number) as outputTotal from (  select id,plantID,processID,lineID,materialID  \n" +
+            " from tb_workorder  where plantID  = #{plantID} and processID = #{processID} and scheduledStartTime  >= #{startTime} and scheduledStartTime < #{endTime} ) a \n" +
+            " left join  tb_materialrecord b on a.id = b.orderID group by lineID,materialID ) c left join sys_material d on c.materialID = d.id ) e left join sys_productionline f on e.lineID = f.id ) g  group by g.materialName )\n" )
     List<Map<String, String>> orderOutputStatistics(String startTime,String endTime,String plantID,String processID,@Param("lineIDFilter") String lineID );
 
     @Select("select d.remnantTotalNum,e.name from ( select sum(number) as remnantTotalNum,materialID from \n" +
@@ -117,14 +117,14 @@ public interface MaterialRecordMapper {
             "    a left join tb_materialrecord b on a.id = b.orderID")
     Object getJSProcessBatteryProduction(String startTime,String endTime,String plantID,String processID,String batteryType);
 
- @Select("SELECT sum(shipmentNum) FROM tb_batteryshipmentnumrecord  where plantID = #{plantID} and materialID = #{batteryType}" +
-         " and shipmentTime >= #{startTime} and shipmentTime <=  #{endTime}")
- Object getBatteryShipmentNum(String startTime,String endTime,String plantID,String batteryType);
+    @Select("SELECT sum(shipmentNum) FROM tb_batteryshipmentnumrecord  where plantID = #{plantID} and materialID = #{batteryType}" +
+            " and shipmentTime >= #{startTime} and shipmentTime <=  #{endTime}")
+    Object getBatteryShipmentNum(String startTime,String endTime,String plantID,String batteryType);
 
 
- @Select("(select 'id' as id,p.lineID,q.name,'' as grantNum, p.expendNum from (select m.lineID,n.materialID,sum(n.number) as expendNum from ( select id,lineID from tb_workorder where  scheduledStartTime >= #{startTime}\n" +
-         "    and  scheduledStartTime <=  #{endTime} and plantID = #{plantID} and processID = #{processID} and status < '5' ) m left join tb_materialrecord n on m.id = n.expendOrderID group by m.lineID,n.materialID) p \n" +
-         "    left join sys_material q on p.materialID = q.id limit 1000) UNION ALL  " +
+    @Select("(select 'id' as id,p.lineID,q.name,'' as grantNum, p.expendNum from (select m.lineID,n.materialID,sum(n.number) as expendNum from ( select id,lineID from tb_workorder where  scheduledStartTime >= #{startTime}\n" +
+            "    and  scheduledStartTime <=  #{endTime} and plantID = #{plantID} and processID = #{processID} and status < '5' ) m left join tb_materialrecord n on m.id = n.expendOrderID group by m.lineID,n.materialID) p \n" +
+            "    left join sys_material q on p.materialID = q.id limit 1000) UNION ALL  " +
             " ( select c.id,'总计' as lineID,c.name,c.grantNum,d.expendNum from (\n" +
             "select a.id,a.name,b.grantNum from (\n" +
             "select id,name from sys_material where typeID in (\n" +
@@ -158,7 +158,7 @@ public interface MaterialRecordMapper {
             "where plantID = #{plantID} and processID = #{processID}  and grantTime >= #{startTime}  and grantTime <= #{endTime} ) \n" +
             " a left join  sys_material b on a.batteryType = b.id order by grantTime desc")
     List<Map<Object, Object>> getGrantMaterialRecord(  String startTime,String endTime,String plantID,String processID);
-    
-    
+
+
     int updateCancelInputSuborder(MaterialRecord record);
 }

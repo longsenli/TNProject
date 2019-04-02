@@ -138,7 +138,7 @@ public class MaterialServiceImpl implements IMaterialService {
         TNPYResponse result = new TNPYResponse();
         try
         {
-
+            String[] outputterInfo = outputter.split("###");
             TNPYResponse materialUseable = judgeAvailable(materialOrderID,expendOrderID);
             if(materialUseable.getStatus() != StatusEnum.ResponseStatus.Success.getIndex() )
             {
@@ -160,6 +160,19 @@ public class MaterialServiceImpl implements IMaterialService {
             materialRecord.setOutputtime(new Date());
             materialRecord.setExpendorderid(expendOrderID);
             materialRecord.setNumber(Float.parseFloat(number) * 1.0);
+            if(outputterInfo.length >1)
+            {
+                materialRecord.setOutputer(outputterInfo[0]);
+                materialRecord.setOutputerid(outputterInfo[1]);
+                materialRecord.setOutputworklocationid(outputterInfo[2]);
+            }
+            Workorder workorder = workorderMapper.selectByPrimaryKey(expendOrderID);
+            if(workorder != null)
+            {
+                materialRecord.setOutputplantid(workorder.getPlantid());
+                materialRecord.setOutputprocessid(workorder.getProcessid());
+                materialRecord.setOutputlineid(workorder.getLineid());
+            }
             materialRecordMapper.updateByPrimaryKey(materialRecord);
             if(materialRecordCopy.getNumber() >0){
                 materialRecordMapper.insert(materialRecordCopy);
