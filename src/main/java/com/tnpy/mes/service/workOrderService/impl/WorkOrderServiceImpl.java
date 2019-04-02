@@ -94,6 +94,34 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             return  result;
         }
     }
+
+    public TNPYResponse getSubOrderByIDToMap( String id ,String type,String plantID,String processID)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<Map<String, String>> orderSplitList = null;
+
+            if("2".equals(type.trim()))
+            {
+                orderSplitList  = orderSplitMapper.selectToMapBySubOrderName(id,plantID,processID);
+            }
+            else
+            {
+                orderSplitList  = orderSplitMapper.selectToMapBySubOrderID(id,plantID,processID);
+            }
+
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            // System.out.println(id + "============" + orderSplitList.size());
+            result.setData(JSONObject.toJSON(orderSplitList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
     public TNPYResponse getWorkOrderByLineID( String lineID ) {
         TNPYResponse result = new TNPYResponse();
         try
@@ -201,7 +229,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
 
             if(StringUtils.isEmpty(workorder.getId()))
             {
-                workorder.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                //workorder.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 workorder.setStatus(StatusEnum.WorkOrderStatus.ordered.getIndex() + "");
                 workorder.setCreatetime(new Date());
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -210,18 +238,21 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 String numStr = workorder.getOrderid().substring(0,workorder.getOrderid().length() - 10) + String.valueOf(orderNum+1)
                         + workorder.getOrderid().substring(workorder.getOrderid().length() - 10,workorder.getOrderid().length() );
                 workorder.setOrderid(numStr);
+                workorder.setId(numStr);
                 workOrderMapper.insertSelective(workorder);
 
                 List<OrderSplit> orderSplitList = new ArrayList<>();
                 for(int i =0 ;i<workorder.getBatchnum();i++) {
                     OrderSplit orderSplit = new OrderSplit();
-                    orderSplit.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                    //orderSplit.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                     orderSplit.setOrderid(workorder.getId());
                     orderSplit.setStatus(StatusEnum.WorkOrderStatus.ordered.getIndex() + "");
                     orderSplit.setMaterialid(workorder.getMaterialid());
                     orderSplit.setOrdersplitid(workorder.getOrderid() + getOrderNumber(i + 1,3));
+                    orderSplit.setId(orderSplit.getOrdersplitid());
                     orderSplit.setProductionnum(workorder.getTotalproduction()/workorder.getBatchnum() *1.0);
                     orderSplitList.add(orderSplit);
+
                 }
                 orderSplitMapper.insertManyOrder(orderSplitList,workorder.getId());
             }
@@ -263,10 +294,24 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         TNPYResponse result = new TNPYResponse();
         try
         {
-            //System.out.println("impl=============" + orderID);
             List<OrderSplit > orderSplitList = orderSplitMapper.selectAfterMapByOrderID(orderID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
-           // log.warn(orderID + "======================" );
+            result.setData(JSONObject.toJSON(orderSplitList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    public TNPYResponse getOrderSplitToMap(String orderID ) {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<Map<String, String>> orderSplitList = orderSplitMapper.selectToMapByOrderID(orderID);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(orderSplitList).toString());
             return  result;
         }

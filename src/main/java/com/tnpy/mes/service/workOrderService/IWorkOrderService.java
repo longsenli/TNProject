@@ -19,6 +19,9 @@ public interface IWorkOrderService {
     public TNPYResponse getOrderSplitAfterMap(String orderID );
     public TNPYResponse getSubOrderByID( String id ,String type);
 
+    public TNPYResponse getOrderSplitToMap(String orderID );
+    public TNPYResponse getSubOrderByIDToMap( String id ,String type,String plantID,String processID);
+
     public TNPYResponse getPlanProductionDashboard( String plantID,String processID,String startTime,String endTime );
     public TNPYResponse getRealtimeProductionDashboard( String plantID,String processID,String startTime,String endTime );
 

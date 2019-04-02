@@ -61,6 +61,12 @@ public class OrderController {
         return  workOrderService.getOrderSplitAfterMap(orderID);
     }
 
+    @RequestMapping(value = "/getordersplittomap")
+    public TNPYResponse getOrderSplitToMap(String orderID ) {
+        // System.out.println("controller=============" + orderID);
+        return  workOrderService.getOrderSplitToMap(orderID);
+    }
+
     @RequestMapping(value = "/finishordersplit")
     public TNPYResponse finishOrderSplit( String jsonStr,String name ) {
         return  workOrderService.finishOrderSplit(jsonStr,name);
@@ -69,6 +75,11 @@ public class OrderController {
     @RequestMapping(value = "/getsuborderbyid")
     public TNPYResponse getSubOrderByID( String id ,String type) {
         return  workOrderService.getSubOrderByID(id,type);
+    }
+
+    @RequestMapping(value = "/getsuborderbyidtomap")
+    public TNPYResponse getSubOrderByIDToMap( String id ,String type,String plantID,String processID) {
+        return  workOrderService.getSubOrderByIDToMap(id,type,plantID,processID);
     }
 
     @RequestMapping(value = "/getplanproductiondashboard")
