@@ -738,7 +738,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             {
                 filter += " and lineID ='" + lineID + "' ";
             }
-            filter += " order by updateTime desc";
+            filter += " order by status,updateTime desc";
             List<OnlineMaterialRecord> onlineMaterialRecordList = onlineMaterialRecordMapper.getOnlineMaterialRecordByFilter(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(onlineMaterialRecordList).toString());
@@ -750,7 +750,51 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             return  result;
         }
     }
-    public TNPYResponse mergeOnlineMaterialRecord( String mergeID ,String operator )
+    private  TNPYResponse mergeOnlineMaterialRecordJS(String mergeID ,String operator)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String mergeIDList ="'" + mergeID.replace(",","','") + "'";
+
+            List<OnlineMaterialRecord> onlineMaterialRecordList = onlineMaterialRecordMapper.getMergeNum(mergeIDList);
+
+            if(onlineMaterialRecordList.size() > 1)
+            {
+                result.setMessage("请确认合并的是同一产线，同一物料！当前种类数量是" + onlineMaterialRecordList.size());
+                return  result;
+            }
+            if(onlineMaterialRecordList.size() < 1)
+            {
+                result.setMessage("未找到记录！");
+                return  result;
+            }
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
+            Date now = new Date();
+            OnlineMaterialRecord onlineMaterialRecord = new OnlineMaterialRecord();
+            onlineMaterialRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+            onlineMaterialRecord.setUpdatetime(now);
+            onlineMaterialRecord.setStatus("3");
+            onlineMaterialRecord.setMaterialid(onlineMaterialRecordList.get(0).getMaterialid());
+            onlineMaterialRecord.setPlantid(onlineMaterialRecordList.get(0).getPlantid().split("###")[0]);
+            onlineMaterialRecord.setProcessid(onlineMaterialRecordList.get(0).getProcessid().split("###")[0]);
+            onlineMaterialRecord.setLineid(onlineMaterialRecordList.get(0).getLineid().split("###")[0]);
+            onlineMaterialRecord.setMaterialnum(onlineMaterialRecordList.get(0).getMaterialnum());
+            onlineMaterialRecord.setOperator(operator);
+            onlineMaterialRecordMapper.insertSelective(onlineMaterialRecord);
+
+            onlineMaterialRecordMapper.updateStatus(mergeIDList,"2");
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+    private  TNPYResponse mergeOnlineMaterialRecordZH(String mergeID ,String operator)
     {
         TNPYResponse result = new TNPYResponse();
         try
@@ -815,6 +859,20 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             result.setMessage("查询出错！" + ex.getMessage());
             return  result;
         }
+    }
+    public TNPYResponse mergeOnlineMaterialRecord( String mergeID ,String operator,String processID )
+    {
+        if(ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(processID))
+        {
+            return  mergeOnlineMaterialRecordZH(mergeID,operator);
+        }
+        if(ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(processID))
+        {
+            return  mergeOnlineMaterialRecordJS(mergeID,operator);
+        }
+        TNPYResponse result = new TNPYResponse();
+        result.setMessage("该工段没有线边仓功能，如需添加请联系开发人员！");
+        return  result;
     }
     public TNPYResponse deleteOnlineMaterialRecord(  String id )    {
         TNPYResponse result = new TNPYResponse();

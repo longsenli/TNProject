@@ -123,8 +123,8 @@ public class OrderController {
         return  workOrderService.changeOnlineMaterialRecord(jsonStr);
     }
     @RequestMapping(value = "/mergeonlinematerialrecord")
-    public TNPYResponse mergeOnlineMaterialRecord( String mergeID ,String operator ) {
-        return  workOrderService.mergeOnlineMaterialRecord(mergeID,operator);
+    public TNPYResponse mergeOnlineMaterialRecord( String mergeID ,String operator ,String processID) {
+        return  workOrderService.mergeOnlineMaterialRecord(mergeID,operator,processID);
     }
     @RequestMapping(value = "/getonlinematerialrecord")
     public TNPYResponse getOnlineMaterialRecord(  String plantID,String processID,String lineID ,String startTime,String endTime ) {
