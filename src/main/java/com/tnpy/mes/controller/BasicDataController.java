@@ -91,7 +91,11 @@ public class BasicDataController {
 
         return  basicDataService.getOutMaterialByProcess(processID);
     }
+    @RequestMapping(value = "/getinputmaterialbyprocess")
+    public TNPYResponse getInputMaterialByProcess(String processID) {
 
+        return  basicDataService.getInputMaterialByProcess(processID);
+    }
     @RequestMapping(value = "/deletematerial")
     public TNPYResponse deteteMaterial(String id) {
         return  basicDataService.deteteMaterial(id);

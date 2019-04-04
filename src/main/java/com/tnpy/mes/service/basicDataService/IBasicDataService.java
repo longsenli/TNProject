@@ -14,6 +14,7 @@ public interface IBasicDataService {
     public TNPYResponse getMaterial();
     public TNPYResponse getEquipmentType();
     public TNPYResponse getOutMaterialByProcess(String processID);
+    public TNPYResponse getInputMaterialByProcess(String processID);
 
     public TNPYResponse deteteProductionLine(String id);
     public TNPYResponse changeProductionLine( String jsonStr);

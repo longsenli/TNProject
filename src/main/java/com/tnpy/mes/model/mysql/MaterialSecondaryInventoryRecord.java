@@ -31,6 +31,10 @@ public class MaterialSecondaryInventoryRecord {
 
     private String status;
 
+    private Integer onlinenum;
+
+    private Integer todayrepair;
+
     public String getId() {
         return id;
     }
@@ -133,5 +137,21 @@ public class MaterialSecondaryInventoryRecord {
 
     public void setStatus(String status) {
         this.status = status == null ? null : status.trim();
+    }
+
+    public Integer getOnlinenum() {
+        return onlinenum;
+    }
+
+    public void setOnlinenum(Integer onlinenum) {
+        this.onlinenum = onlinenum;
+    }
+
+    public Integer getTodayrepair() {
+        return todayrepair;
+    }
+
+    public void setTodayrepair(Integer todayrepair) {
+        this.todayrepair = todayrepair;
     }
 }

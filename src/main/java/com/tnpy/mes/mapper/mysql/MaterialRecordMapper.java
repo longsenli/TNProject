@@ -135,14 +135,14 @@ public interface MaterialRecordMapper {
             " and  scheduledStartTime <= #{endTime} and plantID = #{plantID} and processID = #{processID} )  group by materialID ) d on c.id = d.materialID where c.grantNum + d.expendNum >0 )")
     List<Map<Object, Object>> grantAndExpendStatistics(  String startTime,String endTime,String plantID,String processID,String lastProcessID );
 
-    @Select("( select '' as plantID,'' as processID,'' as materialID,'总计' as currentNum,'' as lastStorage,sum(gainNum) as gainNum,sum(inNum) as inNum,sum(expendNum) as expendNum,sum(outNum) as outNum,'' as updateTime,name\n" +
-            "from ( select plantID,processID,materialID,currentNum,lastStorage,gainNum,inNum,expendNum,outNum,date_format(updateTime,'%Y-%m-%d %H:%i') as updateTime,name from (\n" +
-            "  select plantID,processID,materialID,currentNum,lastStorage,gainNum,inNum,expendNum,outNum,updateTime  from tb_materialsecondaryinventoryrecord \n" +
+    @Select("( select '' as plantID,'' as processID,'' as materialID,'总计' as currentNum,'' as lastStorage,sum(gainNum) as gainNum,sum(inNum) as inNum,sum(expendNum) as expendNum,sum(outNum) as outNum,'' as updateTime,sum(onlineNum) as onlineNum,sum(todayRepair) as todayRepair,name\n" +
+            "from ( select plantID,processID,materialID,currentNum,lastStorage,gainNum,inNum,expendNum,outNum,date_format(updateTime,'%Y-%m-%d %H:%i') as updateTime,onlineNum,todayRepair,name from (\n" +
+            "  select plantID,processID,materialID,currentNum,lastStorage,gainNum,inNum,expendNum,outNum,updateTime,onlineNum,todayRepair  from tb_materialsecondaryinventoryrecord \n" +
             "   where plantID = #{plantID} and processID = #{processID} and updateTime >= #{startTime} and updateTime < #{endTime}\n" +
             "    ) a left join  sys_material b on a.materialID = b.id order by updateTime desc,name ) d group by materialID limit 1000)\n" +
             " union all\n" +
-            " (select plantID,processID,materialID,currentNum,lastStorage,gainNum,inNum,expendNum,outNum,date_format(updateTime,'%Y-%m-%d %H:%i') as updateTime,name from (\n" +
-            "select plantID,processID,materialID,currentNum,lastStorage,gainNum,inNum,expendNum,outNum,updateTime  from tb_materialsecondaryinventoryrecord \n" +
+            " (select plantID,processID,materialID,currentNum,lastStorage,gainNum,inNum,expendNum,outNum,date_format(updateTime,'%Y-%m-%d %H:%i') as updateTime,onlineNum,todayRepair,name from (\n" +
+            "select plantID,processID,materialID,currentNum,lastStorage,gainNum,inNum,expendNum,outNum,updateTime,onlineNum,todayRepair  from tb_materialsecondaryinventoryrecord \n" +
             "where plantID = #{plantID} and processID = #{processID} and updateTime >= #{startTime} and updateTime < #{endTime}\n" +
             ") a left join  sys_material b on a.materialID = b.id order by updateTime desc,name)")
     List<Map<Object, Object>> getSecondaryMaterialInventoryStatistics(  String startTime,String endTime,String plantID,String processID);

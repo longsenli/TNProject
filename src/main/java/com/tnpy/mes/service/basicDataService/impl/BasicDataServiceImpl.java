@@ -156,6 +156,22 @@ public class BasicDataServiceImpl implements IBasicDataService {
         }
     }
 
+    public TNPYResponse getInputMaterialByProcess(String processID)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<Material> materialList = materialMapper.selectInputByProcess(processID);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSONString(materialList, SerializerFeature.WriteMapNullValue).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
     public TNPYResponse deteteProductionLine(String id)
     {
         TNPYResponse result = new TNPYResponse();
