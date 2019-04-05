@@ -436,7 +436,11 @@ public class MaterialServiceImpl implements IMaterialService {
                 result.setMessage("未获取到入库信息！请重试或者重新入库！" +orderSplitID );
                 return  result;
             }
-
+            if(!(StatusEnum.InOutStatus.Input.getIndex()+"").equals(materialRecord.getInorout()))
+            {
+                result.setMessage("该订单未完成固化不能发料！" +orderSplitID );
+                return  result;
+            }
             Date date = new Date();//取时间
 
             Calendar calendar = new GregorianCalendar();
