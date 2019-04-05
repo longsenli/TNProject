@@ -378,7 +378,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             materialRecord.setSuborderid(orderSplit.getId());
             materialRecord.setInputtime(new Date());
             materialRecord.setInputer(name);
-            if(inputterInfo.length >1)
+            if(inputterInfo.length >3)
             {
                 materialRecord.setInputer(inputterInfo[0]);
                 materialRecord.setInputerid(inputterInfo[1]);
@@ -391,6 +391,11 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 materialRecord.setInputplantid(workorder.getPlantid());
                 materialRecord.setInputprocessid(workorder.getProcessid());
                 materialRecord.setInputlineid(workorder.getLineid());
+
+            }
+            if(ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(materialRecord.getInputprocessid()))
+            {
+                materialRecord.setInorout(StatusEnum.InOutStatus.PreInput.getIndex());
             }
             materialRecordMapper.insert(materialRecord);
             boolean blTB = ConfigParamEnum.BasicProcessEnum.TBProcessID.getName().equals(workOrderMapper.getProcessIDByOrder(orderSplit.getOrderid()));

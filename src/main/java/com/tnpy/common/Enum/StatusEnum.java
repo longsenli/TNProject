@@ -41,7 +41,7 @@ public class StatusEnum {
     }
 
     public static  enum InOutStatus {
-        Input("入库", 1), Output("出库", 2);
+        Input("入库", 1), Output("出库", 2),PreInput("预入库",0);
         // 成员变量
         private String name;
         private int index;

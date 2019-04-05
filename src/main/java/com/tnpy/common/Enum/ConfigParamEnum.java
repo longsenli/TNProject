@@ -7,7 +7,8 @@ package com.tnpy.common.Enum;
  */
 public class ConfigParamEnum {
     public static  enum BasicProcessEnum {
-        TBProcessID("1003", 1), GHProcessID("1004", 2),CDProcessID("1009",3),JSProcessID("1008",4),ZHProcessID("1007",5);
+        TBProcessID("1003", 1), GHProcessID("1004", 2),CDProcessID("1009",3),JSProcessID("1008",4),
+        ZHProcessID("1007",5), JZProcessID("1011", 6);
         // 成员变量
         private String name;
         private int index;

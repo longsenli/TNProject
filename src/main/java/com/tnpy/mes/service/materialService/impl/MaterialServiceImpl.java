@@ -430,7 +430,12 @@ public class MaterialServiceImpl implements IMaterialService {
                 result.setMessage("该订单已发料！" +orderSplitID );
                 return  result;
             }
-
+            MaterialRecord materialRecord = materialRecordMapper.selectByPrimaryKey(orderSplit.getId());
+            if(materialRecord ==null)
+            {
+                result.setMessage("未获取到入库信息！请重试或者重新入库！" +orderSplitID );
+                return  result;
+            }
 
             Date date = new Date();//取时间
 
@@ -450,8 +455,8 @@ public class MaterialServiceImpl implements IMaterialService {
             newGrantMaterialRecord.setOperator(operator);
             newGrantMaterialRecord.setOrderid(orderSplitID);
             newGrantMaterialRecord.setOrdername(orderSplit.getOrdersplitid());
-            newGrantMaterialRecord.setPlantid("1003");
-            newGrantMaterialRecord.setProcessid("1007");
+            newGrantMaterialRecord.setPlantid(materialRecord.getInputplantid());
+            newGrantMaterialRecord.setProcessid(materialRecord.getInputprocessid());
             newGrantMaterialRecord.setStatus("1");
 
             grantMaterialRecordMapper.insert(newGrantMaterialRecord);
