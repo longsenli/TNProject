@@ -2,6 +2,7 @@ package com.tnpy.mes.service.equipmentParamRecordService.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.EquipmentParaMapper;
@@ -153,7 +154,7 @@ public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordSer
     public TNPYResponse getLatestParamRecord( String plantID,String equipType,String paramID) {
         TNPYResponse result = new TNPYResponse();
         try {
-            List<EquipParamLatestRecord> parameterInfoList = equipmentParaRecordMapper.selectLatestRecord(plantID,equipType,paramID);
+            List<EquipParamLatestRecord> parameterInfoList = equipmentParaRecordMapper.selectLatestRecord(plantID,equipType,paramID, ConfigParamEnum.EquipmentTypeEnum.getName(equipType));
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(parameterInfoList).toString());
             return result;
@@ -200,7 +201,7 @@ public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordSer
             calendar.add(Calendar.MINUTE, -12);
             recentTime = calendar.getTime();
 
-            List<Map<Object,Object>> parameterInfoList = equipmentParaRecordMapper.selectRecentAllParamPecord(plantID,equipType,dateFormat.format(recentTime));
+            List<Map<Object,Object>> parameterInfoList = equipmentParaRecordMapper.selectRecentAllParamPecord(plantID,equipType,dateFormat.format(recentTime), ConfigParamEnum.EquipmentTypeEnum.getName(equipType));
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(parameterInfoList).toString());
             return result;

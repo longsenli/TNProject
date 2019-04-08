@@ -40,4 +40,38 @@ public class ConfigParamEnum {
             this.index = index;
         }
     }
+
+    public static  enum EquipmentTypeEnum {
+        HCSC("3", "tb_equipmentparamrecord"), SZGZY("4", "tb_equipmentparamrecord"), ZNDB("10012", "tb_equipmentparamrecord_10012");
+        // 成员变量
+        private String typeID;
+        private String tableName;
+        // 构造方法
+        private EquipmentTypeEnum(String typeID, String tableName) {
+            this.typeID = typeID;
+            this.tableName = tableName;
+        }
+        // 普通方法
+        public static String getName(String typeID) {
+            for (ConfigParamEnum.EquipmentTypeEnum c : ConfigParamEnum.EquipmentTypeEnum.values()) {
+                if (c.getTypeID().equals(typeID) ) {
+                    return c.tableName;
+                }
+            }
+            return null;
+        }
+        // get set 方法
+        public String getTypeID() {
+            return typeID;
+        }
+        public void setTypeID(String typeID) {
+            this.typeID = typeID;
+        }
+        public String getTableName() {
+            return tableName;
+        }
+        public void setTableName(String tableName) {
+            this.tableName = tableName;
+        }
+    }
 }
