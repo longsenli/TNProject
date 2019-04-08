@@ -6,9 +6,10 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="specification" jdbcType="VARCHAR" property="specification" />
     <result column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="shortname" jdbcType="VARCHAR" property="shortname" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, specification, processID
+    id, name, specification, processID,shortname
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -22,9 +23,9 @@
   </delete>
   <insert id="insert" parameterType="com.tnpy.mes.model.mysql.EquipmentType">
     insert into tb_equipmenttype (id, name, specification, 
-      processID)
+      processID, shortname)
     values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{specification,jdbcType=VARCHAR}, 
-      #{processid,jdbcType=VARCHAR})
+      #{processid,jdbcType=VARCHAR}, #{shortname,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.EquipmentType">
     insert into tb_equipmenttype
@@ -41,6 +42,9 @@
       <if test="processid != null">
         processID,
       </if>
+      <if test="shortname != null">
+        shortname,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -54,6 +58,9 @@
       </if>
       <if test="processid != null">
         #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="shortname != null">
+        #{shortname,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -69,6 +76,9 @@
       <if test="processid != null">
         processID = #{processid,jdbcType=VARCHAR},
       </if>
+      <if test="shortname != null">
+        shortname = #{shortname,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -77,6 +87,7 @@
     set name = #{name,jdbcType=VARCHAR},
       specification = #{specification,jdbcType=VARCHAR},
       processID = #{processid,jdbcType=VARCHAR}
+      shortname = #{shortname,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

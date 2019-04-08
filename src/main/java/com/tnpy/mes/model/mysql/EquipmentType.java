@@ -9,6 +9,8 @@ public class EquipmentType {
 
     private String processid;
 
+    private String shortname;
+
     public String getId() {
         return id;
     }
@@ -39,5 +41,13 @@ public class EquipmentType {
 
     public void setProcessid(String processid) {
         this.processid = processid == null ? null : processid.trim();
+    }
+
+    public String getShortname() {
+        return shortname;
+    }
+
+    public void setShortname(String shortname) {
+        this.shortname = shortname == null ? null : shortname.trim();
     }
 }
