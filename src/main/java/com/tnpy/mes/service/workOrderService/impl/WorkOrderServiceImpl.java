@@ -852,7 +852,11 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             materialRecord.setInputer(operator);
             materialRecord.setSuborderid(orderName);
             materialRecord.setMaterialid(orderSplit.getMaterialid());
+            materialRecord.setInputtime(new Date());
             materialRecord.setStatus(StatusEnum.WorkOrderStatus.repairin.getIndex());
+            materialRecord.setInputplantid(onlineMaterialRecord.getPlantid());
+            materialRecord.setInputprocessid(onlineMaterialRecord.getProcessid());
+            materialRecord.setInputlineid(onlineMaterialRecord.getLineid());
             materialRecordMapper.insertSelective(materialRecord);
 
             onlineMaterialRecordMapper.updateStatus(mergeIDList,"2");
