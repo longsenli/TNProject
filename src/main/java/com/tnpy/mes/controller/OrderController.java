@@ -1,7 +1,14 @@
 package com.tnpy.mes.controller;
 
 import com.tnpy.common.utils.web.TNPYResponse;
+import com.tnpy.mes.model.mysql.DryingKilnJZRecord;
 import com.tnpy.mes.service.workOrderService.IWorkOrderService;
+
+import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.Random;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -141,4 +148,12 @@ public class OrderController {
     public TNPYResponse cancelInputSuborder( String subOrdderID ) {
         return  workOrderService.cancelInputSuborder(subOrdderID);
     }
+    
+    
+    //浇铸固化室批次完成
+    @RequestMapping(value = "/finishDryingKilnjzsuborder")
+    public TNPYResponse finishDryingKilnjzsuborder( String jsonStr,String name ) {
+        return  workOrderService.finishDryingKilnjzsuborder( jsonStr, name);
+    }
+    
 }
