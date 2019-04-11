@@ -45,7 +45,7 @@ public interface OrderSplitMapper {
     List<Map<String, String>> selectToMapByOrderID(String orderid);
 
     @Select(" select c.*,d.plantID,d.processID,d.lineID from ( \n" +
-            "    SELECT a.id,orderSplitID,a.orderID,productionNum,a.materialID ,a.status,case a.status when '1' then '已下单' when '2' then '已打印'\n" +
+            "    SELECT a.id,ordersplitid,a.orderID,productionnum,a.materialid ,a.status,case a.status when '1' then '已下单' when '2' then '已打印'\n" +
             "     when '3' then '已开工' when '4' then '已完成' when '5' then '已关闭' else '状态不详' end as statusName,\n" +
             "      b.name as materialName FROM tb_ordersplit a left join sys_material b on a.materialID = b.id where a.id = #{id} " +
             " ) c left join tb_workorder d on c.orderid = d.id   where d.plantID = #{plantID} and d.processID = #{processID} order by status ,orderSplitID")
