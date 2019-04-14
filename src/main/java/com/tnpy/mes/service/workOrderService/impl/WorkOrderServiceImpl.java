@@ -5,6 +5,7 @@ import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.*;
+import com.tnpy.mes.model.customize.CustomOrderSplitRecord;
 import com.tnpy.mes.model.customize.CustomWorkOrderRecord;
 import com.tnpy.mes.model.mysql.*;
 import com.tnpy.mes.service.workOrderService.IWorkOrderService;
@@ -78,7 +79,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         TNPYResponse result = new TNPYResponse();
         try
         {
-            List<OrderSplit> orderSplitList = null;
+            List<CustomOrderSplitRecord> orderSplitList = null;
 
             if("2".equals(type.trim()))
             {
@@ -90,6 +91,9 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             }
 
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+            if(orderSplitList.size() > 0)
+                result.setMessage(orderSplitList.get(0).getMaterialName() + ": "+ orderSplitList.get(0).getProductionnum());
            // System.out.println(id + "============" + orderSplitList.size());
             result.setData(JSONObject.toJSON(orderSplitList).toString());
             return  result;

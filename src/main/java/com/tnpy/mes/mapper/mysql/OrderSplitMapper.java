@@ -1,11 +1,9 @@
 package com.tnpy.mes.mapper.mysql;
 
+import com.tnpy.mes.model.customize.CustomOrderSplitRecord;
 import com.tnpy.mes.model.mysql.OrderSplit;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;import org.springframework.stereotype.Component;
+import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -57,9 +55,9 @@ public interface OrderSplitMapper {
             " ) c left join tb_workorder d on c.orderid = d.id  where d.plantID = #{plantID} and d.processID = #{processID} order by status ,orderSplitID limit 100")
     List<Map<String, String>> selectToMapBySubOrderName(@Param("orderName") String orderName,String plantID,String processID);
 
-    List<OrderSplit> selectAfterMapBySubOrderID(String id);
+    List<CustomOrderSplitRecord> selectAfterMapBySubOrderID(String id);
 
-    List<OrderSplit> selectAfterMapBySubOrderName(String orderName);
+    List<CustomOrderSplitRecord> selectAfterMapBySubOrderName(String orderName);
 
     @Delete("delete from tb_ordersplit where orderID = #{orderID}")
     int deleteByOrderID(String orderID);
