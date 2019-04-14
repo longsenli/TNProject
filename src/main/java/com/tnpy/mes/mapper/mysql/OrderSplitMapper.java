@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.springframework.stereotype.Component;
+import org.apache.ibatis.annotations.Update;import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -65,4 +65,12 @@ public interface OrderSplitMapper {
     int deleteByOrderID(String orderID);
 
     int cancelFinishStatus(String suborderID);
-}
+ 
+    /**
+   	 * 批量出窑使用
+     * @param dryingkilnid
+     * @return
+     */
+    @Update("UPDATE tb_ordersplit t1 SET t1. STATUS = #{status} WHERE t1.id IN ( SELECT a.id FROM ( SELECT id FROM tb_ordersplit t WHERE t.orderSplitID IN "
+    		+ "( SELECT d.suborderID FROM tb_dryingkilnjzrecord d WHERE d.dryingKilnID = #{dryingkilnid} ) ) AS a )")
+    int updateByDryingkilnid(@Param("dryingkilnid")  String dryingkilnid, String status);}

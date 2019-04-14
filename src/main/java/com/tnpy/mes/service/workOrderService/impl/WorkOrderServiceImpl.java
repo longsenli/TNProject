@@ -927,8 +927,9 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         }
     }
 	
+	//浇铸入窑记录
 	@Override
-	public TNPYResponse finishDryingKilnjzsuborder( String jsonStr ,String name) {
+	public TNPYResponse pushInDryingKilnjzsuborder( String jsonStr ,String name) {
         TNPYResponse result = new TNPYResponse();
         try
         {
@@ -1085,7 +1086,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         		    	dry.setStatus(inOrOut.toString());
         		    	dryingKilnJZRecordMapper.insert(dry);
     		    	}
-
+    		    	result.setMessage("入窑成功!");
     	            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
     	            return  result;
                 }
@@ -1095,6 +1096,41 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             }
 
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+	
+	//出窑
+	@Override
+	public TNPYResponse pushOutDryingKilnjzsuborder( String jsonStr ,String name) {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+        	DryingKilnJZRecord dry = (DryingKilnJZRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), DryingKilnJZRecord.class);
+        	EquipmentInfo equipmentInfo = equipmentInfoMapper.selectByPrimaryKey(dry.getDryingkilnid());
+        	if(equipmentInfo==null) {
+        		 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                 result.setMessage("不是正确的干燥窑二维码" );
+                 return  result;
+        	}
+        	List<DryingKilnJZRecord> dryList = dryingKilnJZRecordMapper.selectByDryingKilnIDAndStatus(dry.getDryingkilnid());
+        	if(dryList == null || dryList.size() == 0) {
+        		result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setMessage("无需出窑, 该窑中没有板栅" );
+                return  result;
+        	}
+        	//设置tb_ordersplit状态
+        	//设置materialRecord状态
+        	materialRecordMapper.updateByDryingkilnid(dry.getDryingkilnid(), StatusEnum.InOutStatus.Input.getIndex());
+        	//更新干燥窑outputer/outputtime/状态信息
+        	dryingKilnJZRecordMapper.updateByDryingKilnIDAndStatus(dry.getOutputerid(),dry.getOutputername(),new Date(),StatusEnum.InOutStatus.Output.getIndex(),dry.getDryingkilnid(),StatusEnum.InOutStatus.Input.getIndex());
+        	result.setMessage("批量出窑成功!");
+        	result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }
         catch (Exception ex)

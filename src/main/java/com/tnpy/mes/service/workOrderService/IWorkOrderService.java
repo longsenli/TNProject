@@ -40,7 +40,10 @@ public interface IWorkOrderService {
     
     public TNPYResponse cancelInputSuborder( String subOrdderID );
     
-    //浇铸干燥窑
-    public TNPYResponse finishDryingKilnjzsuborder( String jsonStr ,String name );
+    //浇铸干燥窑入窑
+    public TNPYResponse pushInDryingKilnjzsuborder( String jsonStr ,String name );
+    
+    //浇铸干燥窑出窑
+    public TNPYResponse pushOutDryingKilnjzsuborder( String jsonStr ,String name );
     
 }

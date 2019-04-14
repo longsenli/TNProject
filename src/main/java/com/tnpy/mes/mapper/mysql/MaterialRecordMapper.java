@@ -164,4 +164,14 @@ public interface MaterialRecordMapper {
 
 
     int updateCancelInputSuborder(MaterialRecord record);
+    
+    
+    /**
+   	 * 批量出窑使用
+     * @param dryingkilnid
+     * @return
+     */
+    @Update("UPDATE tb_materialrecord t1 SET t1.inOrOut = #{inOrOut} WHERE t1.id IN ( SELECT a.id FROM ( SELECT id FROM tb_materialrecord t WHERE t.suborderID IN "
+    		+ "( SELECT d.suborderID FROM tb_dryingkilnjzrecord d WHERE d.dryingKilnID = #{dryingkilnid} ) ) AS a )")
+    int updateByDryingkilnid(@Param("dryingkilnid")  String dryingkilnid, @Param("inOrOut") int inOrOut);
 }

@@ -150,10 +150,15 @@ public class OrderController {
     }
     
     
-    //浇铸固化室批次完成
-    @RequestMapping(value = "/finishDryingKilnjzsuborder")
-    public TNPYResponse finishDryingKilnjzsuborder( String jsonStr,String name ) {
-        return  workOrderService.finishDryingKilnjzsuborder( jsonStr, name);
+    //浇铸固化室批次入窑
+    @RequestMapping(value = "/pushInDryingKilnjzsuborder")
+    public TNPYResponse pushInDryingKilnjzsuborder( String jsonStr,String name ) {
+        return  workOrderService.pushInDryingKilnjzsuborder( jsonStr, name);
     }
     
+  //浇铸固化室批次出窑入库
+    @RequestMapping(value = "/pushOutDryingKilnjzsuborder")
+    public TNPYResponse pushOutDryingKilnjzsuborder( String jsonStr,String name ) {
+        return  workOrderService.pushOutDryingKilnjzsuborder( jsonStr, name);
+    }
 }
