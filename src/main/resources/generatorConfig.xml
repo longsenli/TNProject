@@ -12,7 +12,10 @@
         </commentGenerator>
         <!--数据库驱动，数据库地址及表名，账号，密码-->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://192.168.80.228:3306/ilpsdb"    userId="root" password="123456">
-        </jdbcConnection>
+			<!--MySQL 不支持 schema 或者 catalog 所以需要添加这个,指定生成哪个数据库下的表-->
+            <!--参考 : http://www.mybatis.org/generator/usage/mysql.html-->
+            <property name="nullCatalogMeansCurrent" value="true"/>
+		</jdbcConnection>
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
