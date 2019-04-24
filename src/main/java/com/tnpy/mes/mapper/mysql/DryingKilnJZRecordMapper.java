@@ -36,4 +36,11 @@ public interface DryingKilnJZRecordMapper {
     		+ "t.dryingKilnID = #{dryingKilnID} and t.status = #{status} ")
     int updateByDryingKilnIDAndStatus(@Param("outputerID") String outputerID,@Param("outputerName") String outputerName,
     		@Param("outputtime") Date date, @Param("changestatus") int changestatus, @Param("dryingKilnID") String dryingKilnID, @Param("status") int status);
+    
+    
+    /**
+  	  * 查询当前窑中有多少工单
+     */
+    @Select("select count(1) from tb_dryingkilnjzrecord t where t.dryingKilnID = #{dryingKilnID} and t.outputTime is null")
+    int selectExitsInDryRecord(@Param("dryingKilnID") String dryingKilnID);
 }

@@ -74,4 +74,38 @@ public class ConfigParamEnum {
             this.tableName = tableName;
         }
     }
+    
+    public static  enum EquipmentCapacity {
+    	DRYKILNZY("3bjzZY",90),DRYKILNFY("3bjzFY",90);
+        // 成员变量
+        private String name;
+        private Integer num;
+        // 构造方法
+        private EquipmentCapacity(String name, Integer num) {
+            this.name = name;
+            this.num = num;
+        }
+        // 普通方法
+        public static String getName(String typeID) {
+            for (ConfigParamEnum.EquipmentTypeEnum c : ConfigParamEnum.EquipmentTypeEnum.values()) {
+                if (c.getTypeID().equals(typeID) ) {
+                    return c.tableName;
+                }
+            }
+            return null;
+        }
+        // get set 方法
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+        public Integer getNum() {
+            return num;
+        }
+        public void setNum(Integer num) {
+            this.num = num;
+        }
+    }
 }

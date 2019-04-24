@@ -937,7 +937,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         TNPYResponse result = new TNPYResponse();
         try
         {
-        	//浇铸干燥窑流程判断开始
+        	//判断是否是浇铸干燥窑二维码
         	DryingKilnJZRecord dry = (DryingKilnJZRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), DryingKilnJZRecord.class);
         	EquipmentInfo equipmentInfo = equipmentInfoMapper.selectByPrimaryKey(dry.getDryingkilnid());
         	if(equipmentInfo==null) {
@@ -945,8 +945,16 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                  result.setMessage("不是正确的干燥窑二维码" );
                  return  result;
         	}
-        	//浇铸干燥窑流程判断结束
-        	
+        	//判断是否是浇铸干燥窑二维码结束
+        	//判断浇铸干燥窑是否已满
+        	int exitsIndry = dryingKilnJZRecordMapper.selectExitsInDryRecord(dry.getDryingkilnid());
+        	Integer capacity = ConfigParamEnum.EquipmentCapacity.DRYKILNZY.getNum();
+        	//如果窑满了
+        	if(exitsIndry > capacity) {
+        		 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                 result.setMessage(equipmentInfo.getName() + "中已满, 请批量出窑后再入窑!!" );
+                 return  result;
+        	}
             String[] inputterInfo = name.split("###");
             TNPYResponse resultInsertRecord =   finishOrderSplit(jsonStr,name);
             if(resultInsertRecord.getStatus() != StatusEnum.ResponseStatus.Success.getIndex())
