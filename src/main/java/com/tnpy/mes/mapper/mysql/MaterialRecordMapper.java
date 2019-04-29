@@ -162,6 +162,8 @@ public interface MaterialRecordMapper {
             " a left join  sys_material b on a.batteryType = b.id order by grantTime desc")
     List<Map<Object, Object>> getGrantMaterialRecord(  String startTime,String endTime,String plantID,String processID);
 
+    @Select("select  *  from tb_materialrecord where subOrderID like '%${subOrderID}%'")
+    List<Map<Object, Object>> getMaterialRecordDetailBySubOrderID(@Param("subOrderID") String subOrderID);
 
     int updateCancelInputSuborder(MaterialRecord record);
     

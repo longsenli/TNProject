@@ -542,4 +542,21 @@ public class MaterialServiceImpl implements IMaterialService {
             return  result;
         }
     }
+
+    public TNPYResponse getMaterialRecordDetailBySubOrderID( String subOrderID)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<Map<Object,Object>> materialStatisInfo = materialRecordMapper.getMaterialRecordDetailBySubOrderID(subOrderID);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(materialStatisInfo).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
 }

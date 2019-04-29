@@ -26,4 +26,6 @@ public interface IMaterialService {
     public TNPYResponse getGrantMaterialRecord( String plantID,String processID,String startTime,String endTime );
 
     public  TNPYResponse getMaterialRecordBySubOrderID(String qrCode,String expendOrderID );
+
+    public TNPYResponse getMaterialRecordDetailBySubOrderID( String subOrderID);
 }

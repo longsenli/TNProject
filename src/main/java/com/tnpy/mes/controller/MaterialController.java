@@ -85,4 +85,10 @@ public class MaterialController {
     public TNPYResponse getGrantMaterialRecord( String plantID,String processID,String startTime,String endTime ) {
         return  materialService.getGrantMaterialRecord(plantID,processID,startTime,endTime);
     }
+
+    @RequestMapping(value = "/getmaterialrecorddetailbysuborderid")
+    public TNPYResponse getMaterialRecordDetailBySubOrderID( String subOrderID)
+    {
+        return  materialService.getMaterialRecordDetailBySubOrderID(subOrderID);
+    }
 }
