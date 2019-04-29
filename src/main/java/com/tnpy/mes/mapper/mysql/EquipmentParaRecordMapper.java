@@ -54,6 +54,6 @@ public interface EquipmentParaRecordMapper {
             "left join (select a.equipmentID as equipmentID,a.paramID, a.recordTime as recordTime,a.value as value,a.status as status,a.recorder as recorder \n" +
             " from (select * from ( select ROW_NUMBER() over(partition by equipmentID,paramID order by recordTime desc) RowNum,${tableName}.* \n" +
             " from ${tableName} where  paramID in ( select paramID from tb_equipmentparam where equipmentTypeID = #{equipType})  and equipmentTypeID =#{equipType} and  recordTime >= #{recentTime} ) as t1  where RowNum = 1) a\n" +
-            ") c on p.id = c.equipmentID and p.paramID = c.paramID) d left join tb_parameterinfo e on d.paramID = e.ID  order by ordernum asc")
+            ") c on p.id = c.equipmentID and p.paramID = c.paramID) d left join tb_parameterinfo e on d.paramID = e.ID  order by ordernum asc,paramID asc")
     List<Map<Object,Object>> selectRecentAllParamPecord(String plantID, String equipType,String recentTime, @Param("tableName") String tableName);
 }

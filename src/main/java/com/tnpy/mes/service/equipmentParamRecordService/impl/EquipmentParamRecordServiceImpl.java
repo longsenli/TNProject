@@ -200,8 +200,18 @@ public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordSer
             calendar.setTime(recentTime);
             calendar.add(Calendar.MINUTE, -12);
             recentTime = calendar.getTime();
-
-            List<Map<Object,Object>> parameterInfoList = equipmentParaRecordMapper.selectRecentAllParamPecord(plantID,equipType,dateFormat.format(recentTime), ConfigParamEnum.EquipmentTypeEnum.getName(equipType));
+            String timeStr = dateFormat.format(recentTime);
+            if(ConfigParamEnum.EquipmentTypeEnum.ZNDB.getTypeID().equals(equipType))
+            {
+                Date now = new Date( );
+                Calendar calendar2 = new GregorianCalendar();
+                calendar2.setTime(now);
+                calendar2.add(Calendar.DAY_OF_MONTH, -1);
+                now = calendar2.getTime();
+                SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+                timeStr =  dateFormat2.format(now);
+            }
+            List<Map<Object,Object>> parameterInfoList = equipmentParaRecordMapper.selectRecentAllParamPecord(plantID,equipType,timeStr, ConfigParamEnum.EquipmentTypeEnum.getName(equipType));
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(parameterInfoList).toString());
             return result;

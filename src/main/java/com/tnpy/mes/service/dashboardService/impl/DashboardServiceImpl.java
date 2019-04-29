@@ -109,6 +109,21 @@ public class DashboardServiceImpl implements IDashboardService {
                         "left join tb_materialrecord  b on a.id = b.orderID where inputLineID is not null group by materialNameInfo,orderDay,orderHour order by materialNameInfo,orderDay,orderHour desc limit 1000)" ;
 
             }
+
+            if("byStaffAndMaterial".equals(queryTypeID))
+            {
+                querySQL = "(select inputer,materialNameInfo,'' as orderDay,'' as orderHour,sum(sumProduction)  as sumProduction from (\n" +
+                        "select b.inputer,b.materialNameInfo,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
+                        " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
+                        " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
+                        "left join tb_materialrecord  b on a.id = b.orderID where inputLineID is not null group by inputer,materialNameInfo,orderDay,orderHour order by inputer,materialNameInfo,orderDay,orderHour desc ) a group by inputer,materialNameInfo limit 1000)\n" +
+                        "union all\n" +
+                        "(select b.inputer,b.materialNameInfo,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
+                        " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
+                        "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
+                        "left join tb_materialrecord  b on a.id = b.orderID where inputLineID is not null group by inputer,materialNameInfo,orderDay,orderHour order by inputer,materialNameInfo,orderDay,orderHour desc limit 1000)" ;
+
+            }
            // System.out.println(querySQL);
             List<Map<Object, Object>> mapList = dashboardMapper.getDailyProduction(querySQL);
             result.setStatus(1);
