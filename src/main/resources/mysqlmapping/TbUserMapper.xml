@@ -28,13 +28,13 @@
     <result column="productionline_name" jdbcType="VARCHAR" property="productionline_name" />
     <result column="productionprocess_id" jdbcType="VARCHAR" property="productionprocess_id" />
     <result column="productionprocess_name" jdbcType="VARCHAR" property="productionprocess_name" />
-    <result column="ext7" jdbcType="VARCHAR" property="ext7" />
-    <result column="ext8" jdbcType="VARCHAR" property="ext8" />
+    <result column="worklocation_id" jdbcType="VARCHAR" property="worklocation_id" />
+    <result column="worklocation_name" jdbcType="VARCHAR" property="worklocation_name" />
   </resultMap>
   <sql id="Base_Column_List">
     userID, name, password, roleID, sex, birthday, dutyID, workplace, createdate, createuser, 
     updatedate, updateuser, deletedate, deleteuser, state, email, mobilephone, telephone, 
-    organID, industrialplant_id, industrialplant_name, productionline_id, productionline_name, productionprocess_id, productionprocess_name, ext7, ext8
+    organID, industrialplant_id, industrialplant_name, productionline_id, productionline_name, productionprocess_id, productionprocess_name, worklocation_id, worklocation_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -45,7 +45,7 @@
   <select id="userList" resultMap="BaseResultMap">
   select u.userID, u.name, u.password, u.roleID, u.sex, u.birthday, u.dutyID, u.workplace, u.createdate, u.createuser, 
     u.updatedate, u.updateuser, u.deletedate, u.deleteuser, u.state, u.email, u.mobilephone, u.telephone, 
-    u.organID, u.industrialplant_id, u.industrialplant_name, u.productionline_id, u.productionline_name, u.productionprocess_id, u.productionprocess_name, u.ext7, u.ext8,(select r.role_name from tb_role r where r.role_id=u.roleID) as roleName from tb_user u
+    u.organID, u.industrialplant_id, u.industrialplant_name, u.productionline_id, u.productionline_name, u.productionprocess_id, u.productionprocess_name, u.worklocation_id, u.worklocation_name,(select r.role_name from tb_role r where r.role_id=u.roleID) as roleName from tb_user u
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from tb_user
@@ -60,7 +60,7 @@
       email, mobilephone, telephone, 
       organID, industrialplant_id, industrialplant_name, 
       productionline_id, productionline_name, productionprocess_id, productionprocess_name, 
-      ext7, ext8)
+      worklocation_id, worklocation_name)
     values (#{userid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{roleid,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, 
       #{dutyid,jdbcType=VARCHAR}, #{workplace,jdbcType=VARCHAR}, #{createdate,jdbcType=TIMESTAMP}, 
@@ -69,7 +69,7 @@
       #{email,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, 
       #{organid,jdbcType=VARCHAR}, #{industrialplant_id,jdbcType=VARCHAR}, #{industrialplant_name,jdbcType=VARCHAR}, 
       #{productionline_id,jdbcType=VARCHAR}, #{productionline_name,jdbcType=VARCHAR}, #{productionprocess_id,jdbcType=VARCHAR}, #{productionprocess_name,jdbcType=VARCHAR}, 
-      #{ext7,jdbcType=VARCHAR}, #{ext8,jdbcType=VARCHAR})
+      #{worklocation_id,jdbcType=VARCHAR}, #{worklocation_name,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.TbUser">
     insert into tb_user
@@ -149,11 +149,11 @@
       <if test="productionprocess_name != null">
         productionprocess_name,
       </if>
-      <if test="ext7 != null">
-        ext7,
+      <if test="worklocation_id != null">
+        worklocation_id,
       </if>
-      <if test="ext8 != null">
-        ext8,
+      <if test="worklocation_name != null">
+        worklocation_name,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -232,11 +232,11 @@
       <if test="productionprocess_name != null">
         #{productionprocess_name,jdbcType=VARCHAR},
       </if>
-      <if test="ext7 != null">
-        #{ext7,jdbcType=VARCHAR},
+      <if test="worklocation_id != null">
+        #{worklocation_id,jdbcType=VARCHAR},
       </if>
-      <if test="ext8 != null">
-        #{ext8,jdbcType=VARCHAR},
+      <if test="worklocation_name != null">
+        #{worklocation_name,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -315,11 +315,11 @@
       <if test="productionprocess_name != null">
         productionprocess_name = #{productionprocess_name,jdbcType=VARCHAR},
       </if>
-      <if test="ext7 != null">
-        ext7 = #{ext7,jdbcType=VARCHAR},
+      <if test="worklocation_id != null">
+        worklocation_id = #{worklocation_id,jdbcType=VARCHAR},
       </if>
-      <if test="ext8 != null">
-        ext8 = #{ext8,jdbcType=VARCHAR},
+      <if test="worklocation_name != null">
+        worklocation_name = #{worklocation_name,jdbcType=VARCHAR},
       </if>
     </set>
     where userID = #{userid,jdbcType=VARCHAR}
@@ -351,8 +351,8 @@
       productionline_name = #{productionline_name,jdbcType=VARCHAR},
       productionprocess_id = #{productionprocess_id,jdbcType=VARCHAR},
       productionprocess_name = #{productionprocess_name,jdbcType=VARCHAR},
-      ext7 = #{ext7,jdbcType=VARCHAR},
-      ext8 = #{ext8,jdbcType=VARCHAR}
+      worklocation_id = #{worklocation_id,jdbcType=VARCHAR},
+      worklocation_name = #{worklocation_name,jdbcType=VARCHAR}
     where userID = #{userid,jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -137,7 +137,7 @@ public class LoginController {
 
 		response.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
 		response.setMessage(myUser.getName() + " ### " + myUser.getRoleid() + " ### " + myUser.getIndustrialplant_id()
-				+ " ### " +  myUser.getProductionprocess_id() + " ### " + myUser.getProductionline_id());
+				+ " ### " +  myUser.getProductionprocess_id() + " ### " + myUser.getProductionline_id() + "###" + myUser.getWorklocation_id());
 		response.setToken(JSONObject.toJSON(token).toString());
 		return response;
 	}

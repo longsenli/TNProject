@@ -112,9 +112,9 @@ public class TbUser {
 
 	private String productionprocess_name;
 
-	private String ext7;
+	private String worklocation_id;
 
-	private String ext8;
+	private String worklocation_name;
 
 	public String getUserid() {
 		return userid;
@@ -122,6 +122,22 @@ public class TbUser {
 
 	public void setUserid(String userid) {
 		this.userid = userid == null ? null : userid.trim();
+	}
+
+	public String getWorklocation_id() {
+		return worklocation_id;
+	}
+
+	public void setWorklocation_id(String worklocation_id) {
+		this.worklocation_id = worklocation_id;
+	}
+
+	public String getWorklocation_name() {
+		return worklocation_name;
+	}
+
+	public void setWorklocation_name(String worklocation_name) {
+		this.worklocation_name = worklocation_name;
 	}
 
 	public String getName() {
@@ -268,19 +284,4 @@ public class TbUser {
 		this.organid = organid == null ? null : organid.trim();
 	}
 
-	public String getExt7() {
-		return ext7;
-	}
-
-	public void setExt7(String ext7) {
-		this.ext7 = ext7 == null ? null : ext7.trim();
-	}
-
-	public String getExt8() {
-		return ext8;
-	}
-
-	public void setExt8(String ext8) {
-		this.ext8 = ext8 == null ? null : ext8.trim();
-	}
 }
