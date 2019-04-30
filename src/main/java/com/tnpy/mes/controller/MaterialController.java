@@ -3,6 +3,7 @@ package com.tnpy.mes.controller;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.service.materialService.IMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -90,5 +91,21 @@ public class MaterialController {
     public TNPYResponse getMaterialRecordDetailBySubOrderID( String subOrderID)
     {
         return  materialService.getMaterialRecordDetailBySubOrderID(subOrderID);
+    }
+
+
+    @RequestMapping(value = "/deleteunqualifiedmaterialreturn")
+    public TNPYResponse deteteUnqualifiedMaterialReturn(String id) {
+        return  materialService.deteteUnqualifiedMaterialReturn(id);
+    }
+
+    @RequestMapping(value = "/changeunqualifiedmaterialreturn")
+    public TNPYResponse changeUnqualifiedMaterialReturn(@RequestBody String jsonStr) {
+        return  materialService.changeUnqualifiedMaterialReturn(jsonStr);
+    }
+
+    @RequestMapping(value = "/getunqualifiedmaterialreturn")
+    public TNPYResponse getUnqualifiedMaterialReturn(String plantID,String processID,String lineID,String startTime,String endTime  ) {
+        return  materialService.getUnqualifiedMaterialReturn( plantID, processID, lineID, startTime, endTime );
     }
 }

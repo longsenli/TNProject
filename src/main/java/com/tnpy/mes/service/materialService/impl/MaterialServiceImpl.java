@@ -35,6 +35,9 @@ public class MaterialServiceImpl implements IMaterialService {
     private WorkorderMapper workorderMapper;
     @Autowired
     private GrantMaterialRecordMapper grantMaterialRecordMapper;
+    @Autowired
+    private  UnqualifiedMaterialReturnMapper unqualifiedMaterialReturnMapper;
+
     public TNPYResponse getMaterialRecord(String expendOrderID ) {
         TNPYResponse result = new TNPYResponse();
         try
@@ -551,6 +554,69 @@ public class MaterialServiceImpl implements IMaterialService {
             List<Map<Object,Object>> materialStatisInfo = materialRecordMapper.getMaterialRecordDetailBySubOrderID(subOrderID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(materialStatisInfo).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    @Override
+    public TNPYResponse deteteUnqualifiedMaterialReturn(String id) {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            unqualifiedMaterialReturnMapper.deleteByPrimaryKey(id);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("物料退返记录删除失败！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    @Override
+    public TNPYResponse changeUnqualifiedMaterialReturn(String jsonStr) {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            UnqualifiedMaterialReturn unqualifiedMaterialReturn = (UnqualifiedMaterialReturn) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), UnqualifiedMaterialReturn.class);
+
+            if (org.thymeleaf.util.StringUtils.isEmpty(unqualifiedMaterialReturn.getId())) {
+                unqualifiedMaterialReturn.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                unqualifiedMaterialReturn.setReturntime(new Date());
+                unqualifiedMaterialReturn.setStatus(StatusEnum.StatusFlag.using.getIndex()+"");
+                unqualifiedMaterialReturnMapper.insertSelective(unqualifiedMaterialReturn);
+            } else {
+                unqualifiedMaterialReturnMapper.updateByPrimaryKey(unqualifiedMaterialReturn);
+            }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setMessage("修改成功！");
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("修改出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    @Override
+    public TNPYResponse getUnqualifiedMaterialReturn(String plantID, String processID, String lineID, String startTime, String endTime) {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String lineFilter = "";
+            if(!"-1".equals(lineID))
+            {
+                lineFilter += " and lineID ='" + lineID + "' ";
+            }
+            List<Map<String, String>> unqualifiedMaterialReturnList = unqualifiedMaterialReturnMapper.getByFilter( startTime, endTime, plantID, processID, lineFilter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(unqualifiedMaterialReturnList).toString());
             return  result;
         }
         catch (Exception ex)

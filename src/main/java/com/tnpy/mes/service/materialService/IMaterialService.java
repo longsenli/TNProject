@@ -28,4 +28,9 @@ public interface IMaterialService {
     public  TNPYResponse getMaterialRecordBySubOrderID(String qrCode,String expendOrderID );
 
     public TNPYResponse getMaterialRecordDetailBySubOrderID( String subOrderID);
+
+
+    public TNPYResponse deteteUnqualifiedMaterialReturn(String id);
+    public TNPYResponse changeUnqualifiedMaterialReturn( String jsonStr);
+    public TNPYResponse getUnqualifiedMaterialReturn(String plantID,String processID,String lineID,String startTime,String endTime );
 }

@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.UnqualifiedMaterialReturnMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.UnqualifiedMaterialReturn">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="lineID" jdbcType="VARCHAR" property="lineid" />
+    <result column="materialRecordID" jdbcType="VARCHAR" property="materialrecordid" />
+    <result column="subOrderID" jdbcType="VARCHAR" property="suborderid" />
+    <result column="materialID" jdbcType="VARCHAR" property="materialid" />
+    <result column="materialName" jdbcType="VARCHAR" property="materialname" />
+    <result column="inputer" jdbcType="VARCHAR" property="inputer" />
+    <result column="inputerID" jdbcType="VARCHAR" property="inputerid" />
+    <result column="returner" jdbcType="VARCHAR" property="returner" />
+    <result column="returnerID" jdbcType="VARCHAR" property="returnerid" />
+    <result column="inputPlantID" jdbcType="VARCHAR" property="inputplantid" />
+    <result column="inputProcessID" jdbcType="VARCHAR" property="inputprocessid" />
+    <result column="inputLineID" jdbcType="VARCHAR" property="inputlineid" />
+    <result column="materialNumber" jdbcType="REAL" property="materialnumber" />
+    <result column="returnTime" jdbcType="TIMESTAMP" property="returntime" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, plantID, processID, lineID, materialRecordID, subOrderID, materialID, materialName,
+    inputer, inputerID, returner, returnerID, inputPlantID, inputProcessID, inputLineID,
+    materialNumber, returnTime, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_unqualifiedmaterialreturn
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_unqualifiedmaterialreturn
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.UnqualifiedMaterialReturn">
+    insert into tb_unqualifiedmaterialreturn (id, plantID, processID,
+      lineID, materialRecordID, subOrderID,
+      materialID, materialName, inputer,
+      inputerID, returner, returnerID,
+      inputPlantID, inputProcessID, inputLineID,
+      materialNumber, returnTime, status
+      )
+    values (#{id,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{processid,jdbcType=VARCHAR},
+      #{lineid,jdbcType=VARCHAR}, #{materialrecordid,jdbcType=VARCHAR}, #{suborderid,jdbcType=VARCHAR},
+      #{materialid,jdbcType=VARCHAR}, #{materialname,jdbcType=VARCHAR}, #{inputer,jdbcType=VARCHAR},
+      #{inputerid,jdbcType=VARCHAR}, #{returner,jdbcType=VARCHAR}, #{returnerid,jdbcType=VARCHAR},
+      #{inputplantid,jdbcType=VARCHAR}, #{inputprocessid,jdbcType=VARCHAR}, #{inputlineid,jdbcType=VARCHAR},
+      #{materialnumber,jdbcType=REAL}, #{returntime,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.UnqualifiedMaterialReturn">
+    insert into tb_unqualifiedmaterialreturn
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="processid != null">
+        processID,
+      </if>
+      <if test="lineid != null">
+        lineID,
+      </if>
+      <if test="materialrecordid != null">
+        materialRecordID,
+      </if>
+      <if test="suborderid != null">
+        subOrderID,
+      </if>
+      <if test="materialid != null">
+        materialID,
+      </if>
+      <if test="materialname != null">
+        materialName,
+      </if>
+      <if test="inputer != null">
+        inputer,
+      </if>
+      <if test="inputerid != null">
+        inputerID,
+      </if>
+      <if test="returner != null">
+        returner,
+      </if>
+      <if test="returnerid != null">
+        returnerID,
+      </if>
+      <if test="inputplantid != null">
+        inputPlantID,
+      </if>
+      <if test="inputprocessid != null">
+        inputProcessID,
+      </if>
+      <if test="inputlineid != null">
+        inputLineID,
+      </if>
+      <if test="materialnumber != null">
+        materialNumber,
+      </if>
+      <if test="returntime != null">
+        returnTime,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialrecordid != null">
+        #{materialrecordid,jdbcType=VARCHAR},
+      </if>
+      <if test="suborderid != null">
+        #{suborderid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="inputer != null">
+        #{inputer,jdbcType=VARCHAR},
+      </if>
+      <if test="inputerid != null">
+        #{inputerid,jdbcType=VARCHAR},
+      </if>
+      <if test="returner != null">
+        #{returner,jdbcType=VARCHAR},
+      </if>
+      <if test="returnerid != null">
+        #{returnerid,jdbcType=VARCHAR},
+      </if>
+      <if test="inputplantid != null">
+        #{inputplantid,jdbcType=VARCHAR},
+      </if>
+      <if test="inputprocessid != null">
+        #{inputprocessid,jdbcType=VARCHAR},
+      </if>
+      <if test="inputlineid != null">
+        #{inputlineid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialnumber != null">
+        #{materialnumber,jdbcType=REAL},
+      </if>
+      <if test="returntime != null">
+        #{returntime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.UnqualifiedMaterialReturn">
+    update tb_unqualifiedmaterialreturn
+    <set>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        processID = #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        lineID = #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialrecordid != null">
+        materialRecordID = #{materialrecordid,jdbcType=VARCHAR},
+      </if>
+      <if test="suborderid != null">
+        subOrderID = #{suborderid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        materialID = #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        materialName = #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="inputer != null">
+        inputer = #{inputer,jdbcType=VARCHAR},
+      </if>
+      <if test="inputerid != null">
+        inputerID = #{inputerid,jdbcType=VARCHAR},
+      </if>
+      <if test="returner != null">
+        returner = #{returner,jdbcType=VARCHAR},
+      </if>
+      <if test="returnerid != null">
+        returnerID = #{returnerid,jdbcType=VARCHAR},
+      </if>
+      <if test="inputplantid != null">
+        inputPlantID = #{inputplantid,jdbcType=VARCHAR},
+      </if>
+      <if test="inputprocessid != null">
+        inputProcessID = #{inputprocessid,jdbcType=VARCHAR},
+      </if>
+      <if test="inputlineid != null">
+        inputLineID = #{inputlineid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialnumber != null">
+        materialNumber = #{materialnumber,jdbcType=REAL},
+      </if>
+      <if test="returntime != null">
+        returnTime = #{returntime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.UnqualifiedMaterialReturn">
+    update tb_unqualifiedmaterialreturn
+    set plantID = #{plantid,jdbcType=VARCHAR},
+      processID = #{processid,jdbcType=VARCHAR},
+      lineID = #{lineid,jdbcType=VARCHAR},
+      materialRecordID = #{materialrecordid,jdbcType=VARCHAR},
+      subOrderID = #{suborderid,jdbcType=VARCHAR},
+      materialID = #{materialid,jdbcType=VARCHAR},
+      materialName = #{materialname,jdbcType=VARCHAR},
+      inputer = #{inputer,jdbcType=VARCHAR},
+      inputerID = #{inputerid,jdbcType=VARCHAR},
+      returner = #{returner,jdbcType=VARCHAR},
+      returnerID = #{returnerid,jdbcType=VARCHAR},
+      inputPlantID = #{inputplantid,jdbcType=VARCHAR},
+      inputProcessID = #{inputprocessid,jdbcType=VARCHAR},
+      inputLineID = #{inputlineid,jdbcType=VARCHAR},
+      materialNumber = #{materialnumber,jdbcType=REAL},
+      returnTime = #{returntime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
