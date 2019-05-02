@@ -54,6 +54,9 @@ public class AutomaticSchedulingTimer {
 
     @Autowired
     private  MaterialInventoryRecordMapper materialInventoryRecordMapper;
+
+    @Autowired
+    private  WageDetailMapper wageDetailMapper;
     /**
      * 每天晚上21:50:30运行
      */
@@ -249,7 +252,7 @@ public class AutomaticSchedulingTimer {
         }
     }
 
-    @Scheduled(cron = "0 52 6 * * ?")
+    @Scheduled(cron = "0 10 07 * * ?")
     public void automaticSecondaryInventoryStatistics() {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -285,7 +288,7 @@ public class AutomaticSchedulingTimer {
         }
     }
 
-    @Scheduled(cron = "0 56 6 * * ?")
+    @Scheduled(cron = "0 05 7 * * ?")
     public void automaticInventoryStatistics() {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -314,6 +317,7 @@ public class AutomaticSchedulingTimer {
                         if(ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals( productionProcessList.get(j).getId()))
                         {
                             materialInventoryRecordMapper.insertJZInventoryStatistics(timeStart,timeFinish,industrialPlantList.get(i).getId(),productionProcessList.get(j).getId(),productionProcessList.get(j+1).getId(),dateFormat.format(date) +" 06:00:00");
+                            wageDetailMapper.insertRecord(industrialPlantList.get(i).getId(),productionProcessList.get(j).getId(),timeStart,timeFinish);
                         }
                     }
                     catch (Exception ex)

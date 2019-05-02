@@ -386,6 +386,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             materialRecord.setNumber(orderSplit.getProductionnum());
             materialRecord.setOrderid(orderSplit.getOrderid());
             materialRecord.setSuborderid(orderSplit.getId());
+            materialRecord.setStatus(StatusEnum.StatusFlag.using.getIndex());
             materialRecord.setInputtime(new Date());
             materialRecord.setInputer(name);
             if(inputterInfo.length >3)
