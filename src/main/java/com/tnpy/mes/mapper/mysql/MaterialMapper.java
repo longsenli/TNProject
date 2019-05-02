@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
-
 @Mapper
 @Component
 public interface MaterialMapper {
@@ -23,6 +22,7 @@ public interface MaterialMapper {
     int updateByPrimaryKeySelective(Material record);
 
     int updateByPrimaryKey(Material record);
+
 
     @Select("select * from sys_material where typeID = #{typeID} order by name ")
     List<Material> selectByType(String typeID);
@@ -49,5 +49,5 @@ public interface MaterialMapper {
             " SELECT   a.proportionality,b.typeID FROM sys_materialrelation a left join sys_material b \n" +
             " on a.inMaterialID = b.id  where a.outMaterialID = #{outMaterialID} group by a.proportionality,b.typeID order by proportionality desc\n" +
             " ) c group by typeID ")
-    List<Map<Object, Object>> selectProportionalityByOut( String outMaterialID);
+    List<Map<Object, Object>> selectProportionalityByOut(String outMaterialID);
 }

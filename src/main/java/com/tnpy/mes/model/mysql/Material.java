@@ -13,17 +13,11 @@ public class Material {
 
     private String shortname;
 
-    private Double  eachbatchnumber;
-    
-    public Double getEachbatchnumber() {
-		return eachbatchnumber;
-	}
+    private Double eachbatchnumber;
 
-	public void setEachbatchnumber(Double eachbatchnumber) {
-		this.eachbatchnumber = eachbatchnumber;
-	}
+    private Double wage;
 
-	public String getId() {
+    public String getId() {
         return id;
     }
 
@@ -69,5 +63,21 @@ public class Material {
 
     public void setShortname(String shortname) {
         this.shortname = shortname == null ? null : shortname.trim();
+    }
+
+    public Double getEachbatchnumber() {
+        return eachbatchnumber;
+    }
+
+    public void setEachbatchnumber(Double eachbatchnumber) {
+        this.eachbatchnumber = eachbatchnumber;
+    }
+
+    public Double getWage() {
+        return wage;
+    }
+
+    public void setWage(Double wage) {
+        this.wage = wage;
     }
 }
