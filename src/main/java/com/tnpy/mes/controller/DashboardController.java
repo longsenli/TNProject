@@ -24,4 +24,9 @@ public class DashboardController {
         return  dashboardService.getDailyProduction(plantID,processID,queryTypeID,startTime,endTime);
     }
 
+    //浇铸时效硬化窑当前在窑数据
+    @RequestMapping(value = "/nowInDryingKilnjz")
+    public TNPYResponse nowInDryingKilnjz( String plantID ,String processID,String queryTypeID,String startTime,String endTime) {
+       return dashboardService.nowInDryingKilnjz(plantID, processID, queryTypeID, startTime, endTime);
+    }
 }
