@@ -10,4 +10,5 @@ import com.tnpy.common.utils.web.TNPYResponse;
 public interface IDashboardService {
     public TNPYResponse getDailyProduction(String plantID ,String processID,String queryTypeID,String startTime,String endTime);
     public TNPYResponse nowInDryingKilnjz(String plantID ,String processID,String queryTypeID,String startTime,String endTime);
+    public TNPYResponse getWageDetail(String plantID ,String processID,String startTime,String endTime);
 }

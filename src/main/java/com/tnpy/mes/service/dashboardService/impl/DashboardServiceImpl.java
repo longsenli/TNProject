@@ -21,21 +21,7 @@ public class DashboardServiceImpl implements IDashboardService {
     private DashboardMapper dashboardMapper;
 
     @Autowired
-    private OrderSplitMapper orderSplitMapper;
-
-    @Autowired
-    private MaterialRecordMapper materialRecordMapper;
-    @Autowired
-    private SolidifyRecordMapper solidifyRecordMapper;
-
-    @Autowired
-    private MaterialMapper materialMapper;
-
-    @Autowired
-    private MaterialTypeMapper materialTypeMapper;
-
-    @Autowired
-    private  BatchrelationcontrolMapper batchrelationcontrolMapper;
+    private WageDetailMapper wageDetailMapper ;
 
     @Override
     public TNPYResponse getDailyProduction(String plantID ,String processID,String queryTypeID,String startTime,String endTime) {
@@ -44,12 +30,19 @@ public class DashboardServiceImpl implements IDashboardService {
         <option value='byLine'>产线</option>
 		<option value='byMaterial'>物料</option>
 		<option value='byWorkingLocation'>工位</option>
-        <option value='byStaff'>人员</option>
+		<option value='byStaff'>人员</option>
+		<option value='byClassType'>班次</option>
+		<option value='byStaffAndMaterial'>人员物料</option>
+		<option value='byWage'>人员工资</option>
          */
         TNPYResponse result = new TNPYResponse();
         try
         {
             String querySQL = "";
+            if("byWage".equals(queryTypeID))
+            {
+                return getWageDetail(plantID,processID,startTime.split(" ")[0],endTime.split(" ")[0]);
+            }
             if("byLine".equals(queryTypeID))
             {
                 querySQL = "(select inputLineID,'' as orderDay,'' as orderHour,sum(sumProduction)  as sumProduction from (\n" +
@@ -228,4 +221,21 @@ public class DashboardServiceImpl implements IDashboardService {
         return  result;
     }
 	}
+
+    public TNPYResponse getWageDetail(String plantID ,String processID,String startTime,String endTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<Map<Object, Object>> mapList = wageDetailMapper.selectByFilter(plantID,processID,startTime,endTime);
+            result.setStatus(1);
+            result.setData(JSONObject.toJSON(mapList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
 }
