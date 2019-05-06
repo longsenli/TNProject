@@ -34,6 +34,7 @@ public class DashboardServiceImpl implements IDashboardService {
 		<option value='byClassType'>班次</option>
 		<option value='byStaffAndMaterial'>人员物料</option>
 		<option value='byWage'>人员工资</option>
+		<option value='byOrderDetail'>工单详情</option>
          */
         TNPYResponse result = new TNPYResponse();
         try

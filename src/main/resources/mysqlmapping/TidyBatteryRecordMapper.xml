@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.TidyBatteryRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.TidyBatteryRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="lineID" jdbcType="VARCHAR" property="lineid" />
+    <result column="workLocation" jdbcType="VARCHAR" property="worklocation" />
+    <result column="currentNum" jdbcType="REAL" property="currentnum" />
+    <result column="lastNum" jdbcType="REAL" property="lastnum" />
+    <result column="materialID" jdbcType="VARCHAR" property="materialid" />
+    <result column="materialName" jdbcType="VARCHAR" property="materialname" />
+    <result column="repairNumber" jdbcType="REAL" property="repairnumber" />
+    <result column="repairID" jdbcType="VARCHAR" property="repairid" />
+    <result column="repairName" jdbcType="VARCHAR" property="repairname" />
+    <result column="repairTime" jdbcType="TIMESTAMP" property="repairtime" />
+    <result column="reason" jdbcType="VARCHAR" property="reason" />
+    <result column="materialType" jdbcType="VARCHAR" property="materialtype" />
+    <result column="backToChargeNum" jdbcType="REAL" property="backtochargenum" />
+    <result column="pileNum" jdbcType="REAL" property="pilenum" />
+    <result column="packNum" jdbcType="REAL" property="packnum" />
+    <result column="pullOffNum" jdbcType="REAL" property="pulloffnum" />
+    <result column="repairBackNum" jdbcType="REAL" property="repairbacknum" />
+    <result column="repairCombine" jdbcType="VARCHAR" property="repaircombine" />
+    <result column="dayTime" jdbcType="DATE" property="daytime" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, plantID, processID, lineID, workLocation, currentNum, lastNum, materialID, materialName, 
+    repairNumber, repairID, repairName, repairTime, reason, materialType, backToChargeNum, 
+    pileNum, packNum, pullOffNum, repairBackNum, repairCombine, dayTime, status, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_tidybatteryrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_tidybatteryrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.TidyBatteryRecord">
+    insert into tb_tidybatteryrecord (id, plantID, processID, 
+      lineID, workLocation, currentNum, 
+      lastNum, materialID, materialName, 
+      repairNumber, repairID, repairName, 
+      repairTime, reason, materialType, 
+      backToChargeNum, pileNum, packNum, 
+      pullOffNum, repairBackNum, repairCombine, 
+      dayTime, status, remark
+      )
+    values (#{id,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{processid,jdbcType=VARCHAR}, 
+      #{lineid,jdbcType=VARCHAR}, #{worklocation,jdbcType=VARCHAR}, #{currentnum,jdbcType=REAL}, 
+      #{lastnum,jdbcType=REAL}, #{materialid,jdbcType=VARCHAR}, #{materialname,jdbcType=VARCHAR}, 
+      #{repairnumber,jdbcType=REAL}, #{repairid,jdbcType=VARCHAR}, #{repairname,jdbcType=VARCHAR}, 
+      #{repairtime,jdbcType=TIMESTAMP}, #{reason,jdbcType=VARCHAR}, #{materialtype,jdbcType=VARCHAR}, 
+      #{backtochargenum,jdbcType=REAL}, #{pilenum,jdbcType=REAL}, #{packnum,jdbcType=REAL}, 
+      #{pulloffnum,jdbcType=REAL}, #{repairbacknum,jdbcType=REAL}, #{repaircombine,jdbcType=VARCHAR}, 
+      #{daytime,jdbcType=DATE}, #{status,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.TidyBatteryRecord">
+    insert into tb_tidybatteryrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="processid != null">
+        processID,
+      </if>
+      <if test="lineid != null">
+        lineID,
+      </if>
+      <if test="worklocation != null">
+        workLocation,
+      </if>
+      <if test="currentnum != null">
+        currentNum,
+      </if>
+      <if test="lastnum != null">
+        lastNum,
+      </if>
+      <if test="materialid != null">
+        materialID,
+      </if>
+      <if test="materialname != null">
+        materialName,
+      </if>
+      <if test="repairnumber != null">
+        repairNumber,
+      </if>
+      <if test="repairid != null">
+        repairID,
+      </if>
+      <if test="repairname != null">
+        repairName,
+      </if>
+      <if test="repairtime != null">
+        repairTime,
+      </if>
+      <if test="reason != null">
+        reason,
+      </if>
+      <if test="materialtype != null">
+        materialType,
+      </if>
+      <if test="backtochargenum != null">
+        backToChargeNum,
+      </if>
+      <if test="pilenum != null">
+        pileNum,
+      </if>
+      <if test="packnum != null">
+        packNum,
+      </if>
+      <if test="pulloffnum != null">
+        pullOffNum,
+      </if>
+      <if test="repairbacknum != null">
+        repairBackNum,
+      </if>
+      <if test="repaircombine != null">
+        repairCombine,
+      </if>
+      <if test="daytime != null">
+        dayTime,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="worklocation != null">
+        #{worklocation,jdbcType=VARCHAR},
+      </if>
+      <if test="currentnum != null">
+        #{currentnum,jdbcType=REAL},
+      </if>
+      <if test="lastnum != null">
+        #{lastnum,jdbcType=REAL},
+      </if>
+      <if test="materialid != null">
+        #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="repairnumber != null">
+        #{repairnumber,jdbcType=REAL},
+      </if>
+      <if test="repairid != null">
+        #{repairid,jdbcType=VARCHAR},
+      </if>
+      <if test="repairname != null">
+        #{repairname,jdbcType=VARCHAR},
+      </if>
+      <if test="repairtime != null">
+        #{repairtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reason != null">
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="materialtype != null">
+        #{materialtype,jdbcType=VARCHAR},
+      </if>
+      <if test="backtochargenum != null">
+        #{backtochargenum,jdbcType=REAL},
+      </if>
+      <if test="pilenum != null">
+        #{pilenum,jdbcType=REAL},
+      </if>
+      <if test="packnum != null">
+        #{packnum,jdbcType=REAL},
+      </if>
+      <if test="pulloffnum != null">
+        #{pulloffnum,jdbcType=REAL},
+      </if>
+      <if test="repairbacknum != null">
+        #{repairbacknum,jdbcType=REAL},
+      </if>
+      <if test="repaircombine != null">
+        #{repaircombine,jdbcType=VARCHAR},
+      </if>
+      <if test="daytime != null">
+        #{daytime,jdbcType=DATE},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.TidyBatteryRecord">
+    update tb_tidybatteryrecord
+    <set>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        processID = #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        lineID = #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="worklocation != null">
+        workLocation = #{worklocation,jdbcType=VARCHAR},
+      </if>
+      <if test="currentnum != null">
+        currentNum = #{currentnum,jdbcType=REAL},
+      </if>
+      <if test="lastnum != null">
+        lastNum = #{lastnum,jdbcType=REAL},
+      </if>
+      <if test="materialid != null">
+        materialID = #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        materialName = #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="repairnumber != null">
+        repairNumber = #{repairnumber,jdbcType=REAL},
+      </if>
+      <if test="repairid != null">
+        repairID = #{repairid,jdbcType=VARCHAR},
+      </if>
+      <if test="repairname != null">
+        repairName = #{repairname,jdbcType=VARCHAR},
+      </if>
+      <if test="repairtime != null">
+        repairTime = #{repairtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reason != null">
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="materialtype != null">
+        materialType = #{materialtype,jdbcType=VARCHAR},
+      </if>
+      <if test="backtochargenum != null">
+        backToChargeNum = #{backtochargenum,jdbcType=REAL},
+      </if>
+      <if test="pilenum != null">
+        pileNum = #{pilenum,jdbcType=REAL},
+      </if>
+      <if test="packnum != null">
+        packNum = #{packnum,jdbcType=REAL},
+      </if>
+      <if test="pulloffnum != null">
+        pullOffNum = #{pulloffnum,jdbcType=REAL},
+      </if>
+      <if test="repairbacknum != null">
+        repairBackNum = #{repairbacknum,jdbcType=REAL},
+      </if>
+      <if test="repaircombine != null">
+        repairCombine = #{repaircombine,jdbcType=VARCHAR},
+      </if>
+      <if test="daytime != null">
+        dayTime = #{daytime,jdbcType=DATE},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.TidyBatteryRecord">
+    update tb_tidybatteryrecord
+    set plantID = #{plantid,jdbcType=VARCHAR},
+      processID = #{processid,jdbcType=VARCHAR},
+      lineID = #{lineid,jdbcType=VARCHAR},
+      workLocation = #{worklocation,jdbcType=VARCHAR},
+      currentNum = #{currentnum,jdbcType=REAL},
+      lastNum = #{lastnum,jdbcType=REAL},
+      materialID = #{materialid,jdbcType=VARCHAR},
+      materialName = #{materialname,jdbcType=VARCHAR},
+      repairNumber = #{repairnumber,jdbcType=REAL},
+      repairID = #{repairid,jdbcType=VARCHAR},
+      repairName = #{repairname,jdbcType=VARCHAR},
+      repairTime = #{repairtime,jdbcType=TIMESTAMP},
+      reason = #{reason,jdbcType=VARCHAR},
+      materialType = #{materialtype,jdbcType=VARCHAR},
+      backToChargeNum = #{backtochargenum,jdbcType=REAL},
+      pileNum = #{pilenum,jdbcType=REAL},
+      packNum = #{packnum,jdbcType=REAL},
+      pullOffNum = #{pulloffnum,jdbcType=REAL},
+      repairBackNum = #{repairbacknum,jdbcType=REAL},
+      repairCombine = #{repaircombine,jdbcType=VARCHAR},
+      dayTime = #{daytime,jdbcType=DATE},
+      status = #{status,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

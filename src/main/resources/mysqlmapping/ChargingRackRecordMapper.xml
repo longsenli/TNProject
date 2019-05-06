@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.ChargingRackRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.ChargingRackRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="lineID" jdbcType="VARCHAR" property="lineid" />
+    <result column="workLocation" jdbcType="VARCHAR" property="worklocation" />
+    <result column="staffID" jdbcType="VARCHAR" property="staffid" />
+    <result column="staffName" jdbcType="VARCHAR" property="staffname" />
+    <result column="materialID" jdbcType="VARCHAR" property="materialid" />
+    <result column="materialName" jdbcType="VARCHAR" property="materialname" />
+    <result column="productionNumber" jdbcType="REAL" property="productionnumber" />
+    <result column="putonDate" jdbcType="DATE" property="putondate" />
+    <result column="repairNumber" jdbcType="REAL" property="repairnumber" />
+    <result column="repairID" jdbcType="VARCHAR" property="repairid" />
+    <result column="repairName" jdbcType="VARCHAR" property="repairname" />
+    <result column="repairTime" jdbcType="TIMESTAMP" property="repairtime" />
+    <result column="reason" jdbcType="VARCHAR" property="reason" />
+    <result column="realNumber" jdbcType="REAL" property="realnumber" />
+    <result column="materialType" jdbcType="VARCHAR" property="materialtype" />
+    <result column="pulloffStaffID" jdbcType="VARCHAR" property="pulloffstaffid" />
+    <result column="pulloffStaffName" jdbcType="VARCHAR" property="pulloffstaffname" />
+    <result column="pulloffDate" jdbcType="TIMESTAMP" property="pulloffdate" />
+    <result column="repairCombine" jdbcType="VARCHAR" property="repaircombine" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, plantID, processID, lineID, workLocation, staffID, staffName, materialID, materialName, 
+    productionNumber, putonDate, repairNumber, repairID, repairName, repairTime, reason, 
+    realNumber, materialType, pulloffStaffID, pulloffStaffName, pulloffDate, repairCombine, 
+    status, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_chargingrackrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_chargingrackrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.ChargingRackRecord">
+    insert into tb_chargingrackrecord (id, plantID, processID, 
+      lineID, workLocation, staffID, 
+      staffName, materialID, materialName, 
+      productionNumber, putonDate, repairNumber, 
+      repairID, repairName, repairTime, 
+      reason, realNumber, materialType, 
+      pulloffStaffID, pulloffStaffName, pulloffDate, 
+      repairCombine, status, remark
+      )
+    values (#{id,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{processid,jdbcType=VARCHAR}, 
+      #{lineid,jdbcType=VARCHAR}, #{worklocation,jdbcType=VARCHAR}, #{staffid,jdbcType=VARCHAR}, 
+      #{staffname,jdbcType=VARCHAR}, #{materialid,jdbcType=VARCHAR}, #{materialname,jdbcType=VARCHAR}, 
+      #{productionnumber,jdbcType=REAL}, #{putondate,jdbcType=DATE}, #{repairnumber,jdbcType=REAL}, 
+      #{repairid,jdbcType=VARCHAR}, #{repairname,jdbcType=VARCHAR}, #{repairtime,jdbcType=TIMESTAMP}, 
+      #{reason,jdbcType=VARCHAR}, #{realnumber,jdbcType=REAL}, #{materialtype,jdbcType=VARCHAR}, 
+      #{pulloffstaffid,jdbcType=VARCHAR}, #{pulloffstaffname,jdbcType=VARCHAR}, #{pulloffdate,jdbcType=TIMESTAMP}, 
+      #{repaircombine,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.ChargingRackRecord">
+    insert into tb_chargingrackrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="processid != null">
+        processID,
+      </if>
+      <if test="lineid != null">
+        lineID,
+      </if>
+      <if test="worklocation != null">
+        workLocation,
+      </if>
+      <if test="staffid != null">
+        staffID,
+      </if>
+      <if test="staffname != null">
+        staffName,
+      </if>
+      <if test="materialid != null">
+        materialID,
+      </if>
+      <if test="materialname != null">
+        materialName,
+      </if>
+      <if test="productionnumber != null">
+        productionNumber,
+      </if>
+      <if test="putondate != null">
+        putonDate,
+      </if>
+      <if test="repairnumber != null">
+        repairNumber,
+      </if>
+      <if test="repairid != null">
+        repairID,
+      </if>
+      <if test="repairname != null">
+        repairName,
+      </if>
+      <if test="repairtime != null">
+        repairTime,
+      </if>
+      <if test="reason != null">
+        reason,
+      </if>
+      <if test="realnumber != null">
+        realNumber,
+      </if>
+      <if test="materialtype != null">
+        materialType,
+      </if>
+      <if test="pulloffstaffid != null">
+        pulloffStaffID,
+      </if>
+      <if test="pulloffstaffname != null">
+        pulloffStaffName,
+      </if>
+      <if test="pulloffdate != null">
+        pulloffDate,
+      </if>
+      <if test="repaircombine != null">
+        repairCombine,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="worklocation != null">
+        #{worklocation,jdbcType=VARCHAR},
+      </if>
+      <if test="staffid != null">
+        #{staffid,jdbcType=VARCHAR},
+      </if>
+      <if test="staffname != null">
+        #{staffname,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="productionnumber != null">
+        #{productionnumber,jdbcType=REAL},
+      </if>
+      <if test="putondate != null">
+        #{putondate,jdbcType=DATE},
+      </if>
+      <if test="repairnumber != null">
+        #{repairnumber,jdbcType=REAL},
+      </if>
+      <if test="repairid != null">
+        #{repairid,jdbcType=VARCHAR},
+      </if>
+      <if test="repairname != null">
+        #{repairname,jdbcType=VARCHAR},
+      </if>
+      <if test="repairtime != null">
+        #{repairtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reason != null">
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="realnumber != null">
+        #{realnumber,jdbcType=REAL},
+      </if>
+      <if test="materialtype != null">
+        #{materialtype,jdbcType=VARCHAR},
+      </if>
+      <if test="pulloffstaffid != null">
+        #{pulloffstaffid,jdbcType=VARCHAR},
+      </if>
+      <if test="pulloffstaffname != null">
+        #{pulloffstaffname,jdbcType=VARCHAR},
+      </if>
+      <if test="pulloffdate != null">
+        #{pulloffdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="repaircombine != null">
+        #{repaircombine,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.ChargingRackRecord">
+    update tb_chargingrackrecord
+    <set>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        processID = #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        lineID = #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="worklocation != null">
+        workLocation = #{worklocation,jdbcType=VARCHAR},
+      </if>
+      <if test="staffid != null">
+        staffID = #{staffid,jdbcType=VARCHAR},
+      </if>
+      <if test="staffname != null">
+        staffName = #{staffname,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        materialID = #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        materialName = #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="productionnumber != null">
+        productionNumber = #{productionnumber,jdbcType=REAL},
+      </if>
+      <if test="putondate != null">
+        putonDate = #{putondate,jdbcType=DATE},
+      </if>
+      <if test="repairnumber != null">
+        repairNumber = #{repairnumber,jdbcType=REAL},
+      </if>
+      <if test="repairid != null">
+        repairID = #{repairid,jdbcType=VARCHAR},
+      </if>
+      <if test="repairname != null">
+        repairName = #{repairname,jdbcType=VARCHAR},
+      </if>
+      <if test="repairtime != null">
+        repairTime = #{repairtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reason != null">
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="realnumber != null">
+        realNumber = #{realnumber,jdbcType=REAL},
+      </if>
+      <if test="materialtype != null">
+        materialType = #{materialtype,jdbcType=VARCHAR},
+      </if>
+      <if test="pulloffstaffid != null">
+        pulloffStaffID = #{pulloffstaffid,jdbcType=VARCHAR},
+      </if>
+      <if test="pulloffstaffname != null">
+        pulloffStaffName = #{pulloffstaffname,jdbcType=VARCHAR},
+      </if>
+      <if test="pulloffdate != null">
+        pulloffDate = #{pulloffdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="repaircombine != null">
+        repairCombine = #{repaircombine,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.ChargingRackRecord">
+    update tb_chargingrackrecord
+    set plantID = #{plantid,jdbcType=VARCHAR},
+      processID = #{processid,jdbcType=VARCHAR},
+      lineID = #{lineid,jdbcType=VARCHAR},
+      workLocation = #{worklocation,jdbcType=VARCHAR},
+      staffID = #{staffid,jdbcType=VARCHAR},
+      staffName = #{staffname,jdbcType=VARCHAR},
+      materialID = #{materialid,jdbcType=VARCHAR},
+      materialName = #{materialname,jdbcType=VARCHAR},
+      productionNumber = #{productionnumber,jdbcType=REAL},
+      putonDate = #{putondate,jdbcType=DATE},
+      repairNumber = #{repairnumber,jdbcType=REAL},
+      repairID = #{repairid,jdbcType=VARCHAR},
+      repairName = #{repairname,jdbcType=VARCHAR},
+      repairTime = #{repairtime,jdbcType=TIMESTAMP},
+      reason = #{reason,jdbcType=VARCHAR},
+      realNumber = #{realnumber,jdbcType=REAL},
+      materialType = #{materialtype,jdbcType=VARCHAR},
+      pulloffStaffID = #{pulloffstaffid,jdbcType=VARCHAR},
+      pulloffStaffName = #{pulloffstaffname,jdbcType=VARCHAR},
+      pulloffDate = #{pulloffdate,jdbcType=TIMESTAMP},
+      repairCombine = #{repaircombine,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
