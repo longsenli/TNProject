@@ -45,7 +45,7 @@ public class DashboardServiceImpl implements IDashboardService {
             }
             if("byLine".equals(queryTypeID))
             {
-                querySQL = "(select inputLineID,'' as orderDay,'' as orderHour,sum(sumProduction)  as sumProduction from (\n" +
+                querySQL = "(select inputLineID,'' as orderDay,'总计' as orderHour,sum(sumProduction)  as sumProduction from (\n" +
                         "select b.inputLineID,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
                         " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
@@ -59,7 +59,7 @@ public class DashboardServiceImpl implements IDashboardService {
             }
             if("byWorkingLocation".equals(queryTypeID))
             {
-                querySQL = "select m.* from ((select inputWorkLocationID,'' as orderDay,'' as orderHour,sum(sumProduction)  as sumProduction from (\n" +
+                querySQL = "select m.* from ((select inputWorkLocationID,'' as orderDay,'总计' as orderHour,sum(sumProduction)  as sumProduction from (\n" +
                         "select b.inputWorkLocationID,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
                         " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
@@ -75,22 +75,22 @@ public class DashboardServiceImpl implements IDashboardService {
 
             if("byStaff".equals(queryTypeID))
             {
-                querySQL = "(select inputer,'' as orderDay,'' as orderHour,sum(sumProduction)  as sumProduction from (\n" +
+                querySQL = "(select inputer,'' as orderDay,'总计' as orderHour,sum(sumProduction)  as sumProduction from (\n" +
                         "select b.inputer,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
                         " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
-                        "left join tb_materialrecord  b on a.id = b.orderID where inputLineID is not null group by inputer,orderDay,orderHour order by inputer,orderDay,orderHour desc ) a group by inputer limit 1000)\n" +
+                        "left join tb_materialrecord  b on a.id = b.orderID where inputLineID is not null group by inputer,orderDay,orderHour order by orderDay,orderHour,inputer desc ) a group by inputer limit 1000)\n" +
                         "union all\n" +
                         "(select b.inputer,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
                         "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
-                        "left join tb_materialrecord  b on a.id = b.orderID where inputLineID is not null group by inputer,orderDay,orderHour order by inputer,orderDay,orderHour desc limit 1000)" ;
+                        "left join tb_materialrecord  b on a.id = b.orderID where inputLineID is not null group by inputer,orderDay,orderHour order by orderDay,orderHour desc,inputer limit 1000)" ;
 
             }
 
             if("byMaterial".equals(queryTypeID))
             {
-                querySQL = "(select materialNameInfo,'' as orderDay,'' as orderHour,sum(sumProduction)  as sumProduction from (\n" +
+                querySQL = "(select materialNameInfo,'' as orderDay,'总计' as orderHour,sum(sumProduction)  as sumProduction from (\n" +
                         "select b.materialNameInfo,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
                         " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
@@ -105,21 +105,21 @@ public class DashboardServiceImpl implements IDashboardService {
 
             if("byStaffAndMaterial".equals(queryTypeID))
             {
-                querySQL = "(select inputer,materialNameInfo,'' as orderDay,'' as orderHour,sum(sumProduction)  as sumProduction from (\n" +
+                querySQL = "(select inputer,materialNameInfo,'' as orderDay,'总计' as orderHour,sum(sumProduction)  as sumProduction from (\n" +
                         "select b.inputer,b.materialNameInfo,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
                         " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
-                        "left join tb_materialrecord  b on a.id = b.orderID where inputLineID is not null group by inputer,materialNameInfo,orderDay,orderHour order by inputer,materialNameInfo,orderDay,orderHour desc ) a group by inputer,materialNameInfo limit 1000)\n" +
+                        "left join tb_materialrecord  b on a.id = b.orderID where inputLineID is not null group by inputer,materialNameInfo,orderDay,orderHour order by orderDay,orderHour desc,inputer,materialNameInfo ) a group by inputer,materialNameInfo limit 1000)\n" +
                         "union all\n" +
                         "(select b.inputer,b.materialNameInfo,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
                         "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
-                        "left join tb_materialrecord  b on a.id = b.orderID where inputLineID is not null group by inputer,materialNameInfo,orderDay,orderHour order by inputer,materialNameInfo,orderDay,orderHour desc limit 1000)" ;
+                        "left join tb_materialrecord  b on a.id = b.orderID where inputLineID is not null group by inputer,materialNameInfo,orderDay,orderHour order by orderDay,orderHour desc,inputer,materialNameInfo desc limit 1000)" ;
 
             }
             if("byClassType".equals(queryTypeID))
             {
-                querySQL = "(select '' as orderDay, orderHour,sum(sumProduction)  as sumProduction from (\n" +
+                querySQL = "(select '总计' as orderDay, orderHour,sum(sumProduction)  as sumProduction from (\n" +
                         "select a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
                         " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
@@ -129,6 +129,15 @@ public class DashboardServiceImpl implements IDashboardService {
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
                         "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
                         "left join tb_materialrecord  b on a.id = b.orderID where inputLineID is not null group by orderDay,orderHour order by orderDay,orderHour desc limit 1000)" ;
+
+            }
+
+            if("byOrderDetail".equals(queryTypeID))
+            {
+                querySQL = "(select a.orderDay,a.orderHour,b.subOrderID,b.materialNameInfo,b.number,b.inputer,b.inputTime from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
+                        " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
+                        "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
+                        "left join tb_materialrecord  b on a.id = b.orderID where inputLineID is not null  order by orderDay,orderHour desc,inputTime limit 1000)" ;
 
             }
            // System.out.println(querySQL);

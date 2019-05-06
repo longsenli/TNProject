@@ -31,7 +31,7 @@ public interface WageDetailMapper {
             "and inputProcessID = #{processID} and ifnull(status,0) < 5 group by inputerID,materialID ) a left join sys_material b on a.materialID = b.id ) c")
     int insertRecord(String plantID,String processID,String startTime,String endTime);
 
-    @Select(" ( select staffName,sum(wage) as wage ,'' as materialName,'' as productionNumber ,'' as unitPrice,'总计' as closingDate from tb_wagedetail where plantID = #{plantID} and processID = #{processID} and " +
+    @Select(" ( select staffName,round(sum(wage),2) as wage ,'' as materialName,'' as productionNumber ,'' as unitPrice,'总计' as closingDate from tb_wagedetail where plantID = #{plantID} and processID = #{processID} and " +
             "closingDate >= #{startTime} and closingDate <= #{endTime} group by staffName order by staffName limit 1000 ) " +
             "union all" +
             " ( select staffName,wage,materialName,productionNumber,CONCAT(unitPrice,'') as unitPrice,CONCAT(closingDate,'') as closingDate  from tb_wagedetail where plantID = #{plantID} and processID = #{processID} " +
