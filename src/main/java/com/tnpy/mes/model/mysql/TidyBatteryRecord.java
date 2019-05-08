@@ -28,7 +28,7 @@ public class TidyBatteryRecord {
     private String repairid;
 
     private String repairname;
-    @JSONField(format ="yyyy-MM-dd HH:mm:ss")
+
     private Date repairtime;
 
     private String reason;
@@ -52,6 +52,12 @@ public class TidyBatteryRecord {
     private String status;
 
     private String remark;
+
+    private String operatorid;
+
+    private String operatorname;
+    @JSONField(format ="yyyy-MM-dd HH:mm:ss")
+    private Date operatortime;
 
     public String getId() {
         return id;
@@ -243,5 +249,29 @@ public class TidyBatteryRecord {
 
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
+    }
+
+    public String getOperatorid() {
+        return operatorid;
+    }
+
+    public void setOperatorid(String operatorid) {
+        this.operatorid = operatorid == null ? null : operatorid.trim();
+    }
+
+    public String getOperatorname() {
+        return operatorname;
+    }
+
+    public void setOperatorname(String operatorname) {
+        this.operatorname = operatorname == null ? null : operatorname.trim();
+    }
+
+    public Date getOperatortime() {
+        return operatortime;
+    }
+
+    public void setOperatortime(Date operatortime) {
+        this.operatortime = operatortime;
     }
 }
