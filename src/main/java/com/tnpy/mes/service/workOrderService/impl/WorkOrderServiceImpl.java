@@ -610,7 +610,11 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                return  result;
            }
             orderSplitMapper.cancelFinishStatus(subOrdderID);
-
+            //浇铸时效硬化窑
+            String jzflag = subOrdderID.substring(6, 8);
+            if(jzflag.equals("JZ")) {
+            	dryingKilnJZRecordMapper.deleteBySubOrderId(subOrdderID);
+            }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }
