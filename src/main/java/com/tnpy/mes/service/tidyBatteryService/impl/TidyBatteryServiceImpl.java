@@ -1,11 +1,11 @@
-package com.tnpy.mes.service.chargePackService.impl;
+package com.tnpy.mes.service.tidyBatteryService.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
-import com.tnpy.mes.mapper.mysql.ChargingRackRecordMapper;
-import com.tnpy.mes.model.mysql.ChargingRackRecord;
-import com.tnpy.mes.service.chargePackService.IChargePackService;
+import com.tnpy.mes.mapper.mysql.TidyBatteryRecordMapper;
+import com.tnpy.mes.model.mysql.TidyBatteryRecord;
+import com.tnpy.mes.service.tidyBatteryService.ITidyBatteryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
@@ -18,13 +18,13 @@ import java.util.UUID;
  * @Author: LLS
  * @Date: 2019-05-06 14:40
  */
-@Service("chargePackService")
-public class ChargePackServiceImpl implements IChargePackService {
+@Service("tidyBatteryService")
+public class TidyBatteryServiceImpl implements ITidyBatteryService {
 
     @Autowired
-    private ChargingRackRecordMapper chargingRackRecordMapper;
+    private TidyBatteryRecordMapper tidyBatteryRecordMapper;
 
-    public TNPYResponse getChargingRackRecord(String plantID,String processID)
+    public TNPYResponse getTidyBatteryRecord(String plantID,String processID)
     {
         TNPYResponse result = new TNPYResponse();
         try
@@ -40,7 +40,7 @@ public class ChargePackServiceImpl implements IChargePackService {
             }
 
             // System.out.println(plantID + " 参数 " +processID);
-            List<ChargingRackRecord> workLocationList = chargingRackRecordMapper.selectByFilter(filter);
+            List<TidyBatteryRecord> workLocationList = tidyBatteryRecordMapper.selectByFilter(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
 
             result.setData(JSONObject.toJSON(workLocationList).toString());
@@ -52,12 +52,12 @@ public class ChargePackServiceImpl implements IChargePackService {
             return  result;
         }
     }
-    public TNPYResponse deteteChargingRackRecord(String id)
+    public TNPYResponse deteteTidyBatteryRecord(String id)
     {
         TNPYResponse result = new TNPYResponse();
         try
         {
-            chargingRackRecordMapper.deleteByPrimaryKey(id);
+            tidyBatteryRecordMapper.deleteByPrimaryKey(id);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }
@@ -67,21 +67,21 @@ public class ChargePackServiceImpl implements IChargePackService {
             return  result;
         }
     }
-    public TNPYResponse changeChargingRackRecord(String jsonStr)
+    public TNPYResponse changeTidyBatteryRecord(String jsonStr)
     {
-        ChargingRackRecord chargingRackRecord =(ChargingRackRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), ChargingRackRecord.class);
+        TidyBatteryRecord tidyBatteryRecord =(TidyBatteryRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), TidyBatteryRecord.class);
         TNPYResponse result = new TNPYResponse();
         try
         {
-            if(StringUtils.isEmpty(chargingRackRecord.getId()))
+            if(StringUtils.isEmpty(tidyBatteryRecord.getId()))
             {
-                chargingRackRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-                chargingRackRecord.setStatus("1");
-                chargingRackRecordMapper.insertSelective(chargingRackRecord);
+                tidyBatteryRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                tidyBatteryRecord.setStatus("1");
+                tidyBatteryRecordMapper.insertSelective(tidyBatteryRecord);
             }
             else
             {
-                chargingRackRecordMapper.updateByPrimaryKey(chargingRackRecord);
+                tidyBatteryRecordMapper.updateByPrimaryKey(tidyBatteryRecord);
             }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setMessage("修改成功！");

@@ -2,7 +2,11 @@ package com.tnpy.mes.mapper.mysql;
 
 import com.tnpy.mes.model.mysql.TidyBatteryRecord;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Mapper
 @Component
@@ -18,4 +22,7 @@ public interface TidyBatteryRecordMapper {
     int updateByPrimaryKeySelective(TidyBatteryRecord record);
 
     int updateByPrimaryKey(TidyBatteryRecord record);
+
+    @Select("select * from tb_tidybatteryrecord ${filter} ")
+    List<TidyBatteryRecord> selectByFilter(@Param("filter") String filter);
 }

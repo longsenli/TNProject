@@ -1,7 +1,9 @@
 package com.tnpy.mes.controller;
 
+import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.service.chargePackService.IChargePackService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,4 +17,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChargePackController {
     @Autowired
     private IChargePackService chargePackService;
+
+    @RequestMapping(value = "/getchargingrackrecord")
+    public TNPYResponse getChargingRackRecord(String plantID, String processID) {
+        return  chargePackService.getChargingRackRecord(plantID,processID);
+    }
+
+    @RequestMapping(value = "/detetechargingrackrecord")
+    public TNPYResponse deteteChargingRackRecord(String id) {
+        return  chargePackService.deteteChargingRackRecord(id);
+    }
+
+    @RequestMapping(value = "/changechargingrackrecord")
+    public TNPYResponse changeChargingRackRecord(@RequestBody String jsonStr) {
+        return  chargePackService.changeChargingRackRecord(jsonStr);
+    }
+
 }
