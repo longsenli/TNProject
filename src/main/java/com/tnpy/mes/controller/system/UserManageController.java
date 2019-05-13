@@ -175,4 +175,27 @@ public class UserManageController {
 	         return  result;
 	     }
   }
+  
+  /**
+	 * 按用户名搜索
+	 * @param TbUser
+	 */
+  @ResponseBody
+  @RequestMapping("/searchUser")
+  public TNPYResponse searchUser(String name) {
+	 TNPYResponse result = new TNPYResponse();
+     try
+     {
+    	 List<TbUser> users = userService.selectByName(name);
+         result.setStatus(1);
+         result.setData(JSONObject.toJSONString(users, SerializerFeature.WriteMapNullValue).toString());
+         return  result;
+     }
+     catch (Exception ex)
+     {
+    	 ex.printStackTrace();
+         result.setMessage("查询出错！" + ex.getMessage());
+         return  result;
+     }
+  }
 }

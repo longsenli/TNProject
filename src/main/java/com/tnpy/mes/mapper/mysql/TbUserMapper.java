@@ -3,6 +3,7 @@ package com.tnpy.mes.mapper.mysql;
 
 import com.tnpy.mes.model.mysql.TbUser;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,9 @@ public interface TbUserMapper {
 
 	@Select("select * from tb_user where userID = #{userid} and state != -1 ")
 	TbUser selectByPrimaryKeyWithStatus(String userid);
+	
+	@Select("select * from tb_user where name like '%${name}%'")
+	List<TbUser> selectByName(@Param(value = "name") String name);
 
 	@Select("update  tb_user set state = -1 where userID = #{userid}  ")
 	TbUser deleteByPrimaryKeyWithStatus(String userid);
