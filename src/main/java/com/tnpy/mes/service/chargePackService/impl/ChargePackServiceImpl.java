@@ -185,7 +185,7 @@ public class ChargePackServiceImpl implements IChargePackService {
                 insertTidyBatteryRecord.setMaterialname(chargingRackRecord.getMaterialname());
                 insertTidyBatteryRecord.setMaterialtype(chargingRackRecord.getMaterialtype());
                 insertTidyBatteryRecord.setPulloffnum(chargingRackRecord.getRealnumber());
-                tidyBatteryRecordMapper.insertSelective(tidyBatteryRecord);
+                tidyBatteryRecordMapper.insertSelective(insertTidyBatteryRecord);
             }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setMessage("下架成功！");
