@@ -8,7 +8,8 @@ import com.tnpy.common.utils.web.TNPYResponse;
  * @Date: 2019-05-06 14:39
  */
 public interface IChargePackService {
-    public TNPYResponse getChargingRackRecord(String plantID, String processID) ;
+    public TNPYResponse getChargingRackRecord(String plantID, String processID,String lineID,String locationID,String startTime,String endTime,String selectType) ;
     public TNPYResponse deteteChargingRackRecord(String id);
     public TNPYResponse changeChargingRackRecord( String jsonStr);
+    public TNPYResponse pulloffChargingRackRecord( String jsonStr);
 }

@@ -25,4 +25,7 @@ public interface TidyBatteryRecordMapper {
 
     @Select("select * from tb_tidybatteryrecord ${filter} ")
     List<TidyBatteryRecord> selectByFilter(@Param("filter") String filter);
+
+    @Select("select * from tb_tidybatteryrecord ${filter} ")
+    TidyBatteryRecord selectLatestRecordByFilter(@Param("filter") String filter);
 }

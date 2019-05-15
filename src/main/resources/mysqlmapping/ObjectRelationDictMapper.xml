@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.ObjectRelationDictMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.ObjectRelationDict">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="previousObjectID" jdbcType="VARCHAR" property="previousobjectid" />
+    <result column="nextObjectID" jdbcType="VARCHAR" property="nextobjectid" />
+    <result column="objectType" jdbcType="VARCHAR" property="objecttype" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, previousObjectID, nextObjectID, objectType, status, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_objectrelationdict
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from sys_objectrelationdict
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.ObjectRelationDict">
+    insert into sys_objectrelationdict (id, previousObjectID, nextObjectID, 
+      objectType, status, remark
+      )
+    values (#{id,jdbcType=VARCHAR}, #{previousobjectid,jdbcType=VARCHAR}, #{nextobjectid,jdbcType=VARCHAR}, 
+      #{objecttype,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.ObjectRelationDict">
+    insert into sys_objectrelationdict
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="previousobjectid != null">
+        previousObjectID,
+      </if>
+      <if test="nextobjectid != null">
+        nextObjectID,
+      </if>
+      <if test="objecttype != null">
+        objectType,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="previousobjectid != null">
+        #{previousobjectid,jdbcType=VARCHAR},
+      </if>
+      <if test="nextobjectid != null">
+        #{nextobjectid,jdbcType=VARCHAR},
+      </if>
+      <if test="objecttype != null">
+        #{objecttype,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.ObjectRelationDict">
+    update sys_objectrelationdict
+    <set>
+      <if test="previousobjectid != null">
+        previousObjectID = #{previousobjectid,jdbcType=VARCHAR},
+      </if>
+      <if test="nextobjectid != null">
+        nextObjectID = #{nextobjectid,jdbcType=VARCHAR},
+      </if>
+      <if test="objecttype != null">
+        objectType = #{objecttype,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.ObjectRelationDict">
+    update sys_objectrelationdict
+    set previousObjectID = #{previousobjectid,jdbcType=VARCHAR},
+      nextObjectID = #{nextobjectid,jdbcType=VARCHAR},
+      objectType = #{objecttype,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

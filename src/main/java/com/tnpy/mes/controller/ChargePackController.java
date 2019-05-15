@@ -19,8 +19,8 @@ public class ChargePackController {
     private IChargePackService chargePackService;
 
     @RequestMapping(value = "/getchargingrackrecord")
-    public TNPYResponse getChargingRackRecord(String plantID, String processID) {
-        return  chargePackService.getChargingRackRecord(plantID,processID);
+    public TNPYResponse getChargingRackRecord(String plantID, String processID,String lineID,String locationID,String startTime,String endTime,String selectType) {
+        return  chargePackService.getChargingRackRecord(plantID,processID,lineID, locationID, startTime, endTime,selectType);
     }
 
     @RequestMapping(value = "/detetechargingrackrecord")
@@ -33,4 +33,8 @@ public class ChargePackController {
         return  chargePackService.changeChargingRackRecord(jsonStr);
     }
 
+    @RequestMapping(value = "/pulloffchargingrackrecord")
+    public TNPYResponse pulloffChargingRackRecord(@RequestBody String jsonStr) {
+        return  chargePackService.pulloffChargingRackRecord(jsonStr);
+    }
 }
