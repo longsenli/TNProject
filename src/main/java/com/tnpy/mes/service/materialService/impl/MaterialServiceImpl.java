@@ -38,6 +38,9 @@ public class MaterialServiceImpl implements IMaterialService {
     @Autowired
     private  UnqualifiedMaterialReturnMapper unqualifiedMaterialReturnMapper;
 
+    @Autowired
+    private  DataProvenanceRelationMapper dataProvenanceRelationMapper;
+
     public TNPYResponse getMaterialRecord(String expendOrderID ) {
         TNPYResponse result = new TNPYResponse();
         try
@@ -126,15 +129,62 @@ public class MaterialServiceImpl implements IMaterialService {
             {
                 return  resultGrant;
             }
-            materialRecordMapper.updateGainMaterialRecord(materialIDList,expendOrderID,outputter,new Date(),StatusEnum.InOutStatus.Output.getIndex());
+
+            materialRecord.setInorout(StatusEnum.InOutStatus.Output.getIndex());
+            materialRecord.setOutputer(outputter);
+            materialRecord.setOutputtime(new Date());
+            materialRecord.setExpendorderid(expendOrderID);
+            String[] outputterInfo = outputter.split("###");
+            if(outputterInfo.length >1)
+            {
+                materialRecord.setOutputer(outputterInfo[0]);
+                materialRecord.setOutputerid(outputterInfo[1]);
+                materialRecord.setOutputworklocationid(outputterInfo[2]);
+            }
+            Workorder workorder = workorderMapper.selectByPrimaryKey(expendOrderID);
+            if(workorder != null)
+            {
+                materialRecord.setOutputplantid(workorder.getPlantid());
+                materialRecord.setOutputprocessid(workorder.getProcessid());
+                materialRecord.setOutputlineid(workorder.getLineid());
+            }
+            materialRecordMapper.updateByPrimaryKeySelective(materialRecord);
+            insertDataProvenance(materialRecord);
+            //materialRecordMapper.updateGainMaterialRecord(materialIDList,expendOrderID,outputter,new Date(),StatusEnum.InOutStatus.Output.getIndex());
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }
         catch (Exception ex)
         {
-            result.setMessage("查询出错！" + ex.getMessage());
+            result.setMessage("投料出错！" + ex.getMessage());
             return  result;
         }
+    }
+
+    private  void insertDataProvenance(MaterialRecord materialRecord)
+    {
+        DataProvenanceRelation dataProvenanceRelation = new DataProvenanceRelation();
+        dataProvenanceRelation.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+        dataProvenanceRelation.setBatchstring(batchrelationcontrolMapper.selectTBBatchByOrderID(materialRecord.getOrderid()));
+        dataProvenanceRelation.setInplantid(materialRecord.getInputplantid());
+        dataProvenanceRelation.setInprocessid(materialRecord.getInputprocessid());
+        dataProvenanceRelation.setInlineid(materialRecord.getInputlineid());
+        dataProvenanceRelation.setInworklocationid(materialRecord.getInputworklocationid());
+        dataProvenanceRelation.setProductionnum(materialRecord.getNumber());
+        dataProvenanceRelation.setLeftnumber(materialRecord.getNumber());
+        dataProvenanceRelation.setInorderid(materialRecord.getOrderid());
+        dataProvenanceRelation.setInputername(materialRecord.getInputer());
+        dataProvenanceRelation.setInputmaterialid(materialRecord.getMaterialid());
+        dataProvenanceRelation.setInputmaterialname(materialRecord.getMaterialnameinfo());
+        dataProvenanceRelation.setInputtime(materialRecord.getOutputtime());
+        dataProvenanceRelation.setInsuborderid(materialRecord.getSuborderid());
+        dataProvenanceRelation.setOutplantid(materialRecord.getOutputplantid());
+        dataProvenanceRelation.setOutprocessid(materialRecord.getOutputprocessid());
+        dataProvenanceRelation.setOutlineid(materialRecord.getOutputlineid());
+        dataProvenanceRelation.setOutworklocationid(materialRecord.getOutputworklocationid());
+        dataProvenanceRelation.setOutorderid(materialRecord.getExpendorderid());
+        dataProvenanceRelation.setStatus(StatusEnum.StatusFlag.using.getIndex() +"");
+        dataProvenanceRelationMapper.insertSelective(dataProvenanceRelation);
     }
     public TNPYResponse gainPartMaterialRecord(String materialRecordID,String materialOrderID,String number,String expendOrderID,String outputter )
     {
@@ -180,12 +230,13 @@ public class MaterialServiceImpl implements IMaterialService {
             if(materialRecordCopy.getNumber() >0){
                 materialRecordMapper.insert(materialRecordCopy);
             }
+            insertDataProvenance(materialRecord);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }
         catch (Exception ex)
         {
-            result.setMessage("查询出错！" + ex.getMessage());
+            result.setMessage("投料出错！" + ex.getMessage());
             return  result;
         }
     }
@@ -267,6 +318,7 @@ public class MaterialServiceImpl implements IMaterialService {
             {
                 return materialUseable;
             }
+
           //  List<CustomMaterialRecord> materialRecordList = materialRecordMapper.selectUsableMaterial(plantID,materialID,materialTBBatch);
             materialRecordMapper.updateGainMaterialByQR(qrCode,expendOrderID,outputter,new Date(),StatusEnum.InOutStatus.Output.getIndex());
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());

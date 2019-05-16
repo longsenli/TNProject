@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.DataProvenanceRelationMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.DataProvenanceRelation">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="batchString" jdbcType="VARCHAR" property="batchstring" />
+    <result column="leftNumber" jdbcType="DOUBLE" property="leftnumber" />
+    <result column="inOrderID" jdbcType="VARCHAR" property="inorderid" />
+    <result column="inSubOrderID" jdbcType="VARCHAR" property="insuborderid" />
+    <result column="inputerName" jdbcType="VARCHAR" property="inputername" />
+    <result column="inputTime" jdbcType="TIMESTAMP" property="inputtime" />
+    <result column="inputMaterialID" jdbcType="VARCHAR" property="inputmaterialid" />
+    <result column="inputMaterialName" jdbcType="VARCHAR" property="inputmaterialname" />
+    <result column="productionNum" jdbcType="DOUBLE" property="productionnum" />
+    <result column="inPlantID" jdbcType="VARCHAR" property="inplantid" />
+    <result column="inProcessID" jdbcType="VARCHAR" property="inprocessid" />
+    <result column="inLineID" jdbcType="VARCHAR" property="inlineid" />
+    <result column="inWorkLocationID" jdbcType="VARCHAR" property="inworklocationid" />
+    <result column="outOrderID" jdbcType="VARCHAR" property="outorderid" />
+    <result column="outSubOrderID" jdbcType="VARCHAR" property="outsuborderid" />
+    <result column="outputNumber" jdbcType="DOUBLE" property="outputnumber" />
+    <result column="outputerName" jdbcType="VARCHAR" property="outputername" />
+    <result column="outputTime" jdbcType="TIMESTAMP" property="outputtime" />
+    <result column="outPlantID" jdbcType="VARCHAR" property="outplantid" />
+    <result column="outProcessID" jdbcType="VARCHAR" property="outprocessid" />
+    <result column="outLineID" jdbcType="VARCHAR" property="outlineid" />
+    <result column="outWorkLocationID" jdbcType="VARCHAR" property="outworklocationid" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, batchString, leftNumber, inOrderID, inSubOrderID, inputerName, inputTime, inputMaterialID, 
+    inputMaterialName, productionNum, inPlantID, inProcessID, inLineID, inWorkLocationID, 
+    outOrderID, outSubOrderID, outputNumber, outputerName, outputTime, outPlantID, outProcessID, 
+    outLineID, outWorkLocationID, status, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_dataprovenancerelation
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_dataprovenancerelation
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.DataProvenanceRelation">
+    insert into tb_dataprovenancerelation (id, batchString, leftNumber, 
+      inOrderID, inSubOrderID, inputerName, 
+      inputTime, inputMaterialID, inputMaterialName, 
+      productionNum, inPlantID, inProcessID, 
+      inLineID, inWorkLocationID, outOrderID, 
+      outSubOrderID, outputNumber, outputerName, 
+      outputTime, outPlantID, outProcessID, 
+      outLineID, outWorkLocationID, status, 
+      remark)
+    values (#{id,jdbcType=VARCHAR}, #{batchstring,jdbcType=VARCHAR}, #{leftnumber,jdbcType=DOUBLE}, 
+      #{inorderid,jdbcType=VARCHAR}, #{insuborderid,jdbcType=VARCHAR}, #{inputername,jdbcType=VARCHAR}, 
+      #{inputtime,jdbcType=TIMESTAMP}, #{inputmaterialid,jdbcType=VARCHAR}, #{inputmaterialname,jdbcType=VARCHAR}, 
+      #{productionnum,jdbcType=DOUBLE}, #{inplantid,jdbcType=VARCHAR}, #{inprocessid,jdbcType=VARCHAR}, 
+      #{inlineid,jdbcType=VARCHAR}, #{inworklocationid,jdbcType=VARCHAR}, #{outorderid,jdbcType=VARCHAR}, 
+      #{outsuborderid,jdbcType=VARCHAR}, #{outputnumber,jdbcType=DOUBLE}, #{outputername,jdbcType=VARCHAR}, 
+      #{outputtime,jdbcType=TIMESTAMP}, #{outplantid,jdbcType=VARCHAR}, #{outprocessid,jdbcType=VARCHAR}, 
+      #{outlineid,jdbcType=VARCHAR}, #{outworklocationid,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.DataProvenanceRelation">
+    insert into tb_dataprovenancerelation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="batchstring != null">
+        batchString,
+      </if>
+      <if test="leftnumber != null">
+        leftNumber,
+      </if>
+      <if test="inorderid != null">
+        inOrderID,
+      </if>
+      <if test="insuborderid != null">
+        inSubOrderID,
+      </if>
+      <if test="inputername != null">
+        inputerName,
+      </if>
+      <if test="inputtime != null">
+        inputTime,
+      </if>
+      <if test="inputmaterialid != null">
+        inputMaterialID,
+      </if>
+      <if test="inputmaterialname != null">
+        inputMaterialName,
+      </if>
+      <if test="productionnum != null">
+        productionNum,
+      </if>
+      <if test="inplantid != null">
+        inPlantID,
+      </if>
+      <if test="inprocessid != null">
+        inProcessID,
+      </if>
+      <if test="inlineid != null">
+        inLineID,
+      </if>
+      <if test="inworklocationid != null">
+        inWorkLocationID,
+      </if>
+      <if test="outorderid != null">
+        outOrderID,
+      </if>
+      <if test="outsuborderid != null">
+        outSubOrderID,
+      </if>
+      <if test="outputnumber != null">
+        outputNumber,
+      </if>
+      <if test="outputername != null">
+        outputerName,
+      </if>
+      <if test="outputtime != null">
+        outputTime,
+      </if>
+      <if test="outplantid != null">
+        outPlantID,
+      </if>
+      <if test="outprocessid != null">
+        outProcessID,
+      </if>
+      <if test="outlineid != null">
+        outLineID,
+      </if>
+      <if test="outworklocationid != null">
+        outWorkLocationID,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="batchstring != null">
+        #{batchstring,jdbcType=VARCHAR},
+      </if>
+      <if test="leftnumber != null">
+        #{leftnumber,jdbcType=DOUBLE},
+      </if>
+      <if test="inorderid != null">
+        #{inorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="insuborderid != null">
+        #{insuborderid,jdbcType=VARCHAR},
+      </if>
+      <if test="inputername != null">
+        #{inputername,jdbcType=VARCHAR},
+      </if>
+      <if test="inputtime != null">
+        #{inputtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inputmaterialid != null">
+        #{inputmaterialid,jdbcType=VARCHAR},
+      </if>
+      <if test="inputmaterialname != null">
+        #{inputmaterialname,jdbcType=VARCHAR},
+      </if>
+      <if test="productionnum != null">
+        #{productionnum,jdbcType=DOUBLE},
+      </if>
+      <if test="inplantid != null">
+        #{inplantid,jdbcType=VARCHAR},
+      </if>
+      <if test="inprocessid != null">
+        #{inprocessid,jdbcType=VARCHAR},
+      </if>
+      <if test="inlineid != null">
+        #{inlineid,jdbcType=VARCHAR},
+      </if>
+      <if test="inworklocationid != null">
+        #{inworklocationid,jdbcType=VARCHAR},
+      </if>
+      <if test="outorderid != null">
+        #{outorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="outsuborderid != null">
+        #{outsuborderid,jdbcType=VARCHAR},
+      </if>
+      <if test="outputnumber != null">
+        #{outputnumber,jdbcType=DOUBLE},
+      </if>
+      <if test="outputername != null">
+        #{outputername,jdbcType=VARCHAR},
+      </if>
+      <if test="outputtime != null">
+        #{outputtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="outplantid != null">
+        #{outplantid,jdbcType=VARCHAR},
+      </if>
+      <if test="outprocessid != null">
+        #{outprocessid,jdbcType=VARCHAR},
+      </if>
+      <if test="outlineid != null">
+        #{outlineid,jdbcType=VARCHAR},
+      </if>
+      <if test="outworklocationid != null">
+        #{outworklocationid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.DataProvenanceRelation">
+    update tb_dataprovenancerelation
+    <set>
+      <if test="batchstring != null">
+        batchString = #{batchstring,jdbcType=VARCHAR},
+      </if>
+      <if test="leftnumber != null">
+        leftNumber = #{leftnumber,jdbcType=DOUBLE},
+      </if>
+      <if test="inorderid != null">
+        inOrderID = #{inorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="insuborderid != null">
+        inSubOrderID = #{insuborderid,jdbcType=VARCHAR},
+      </if>
+      <if test="inputername != null">
+        inputerName = #{inputername,jdbcType=VARCHAR},
+      </if>
+      <if test="inputtime != null">
+        inputTime = #{inputtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inputmaterialid != null">
+        inputMaterialID = #{inputmaterialid,jdbcType=VARCHAR},
+      </if>
+      <if test="inputmaterialname != null">
+        inputMaterialName = #{inputmaterialname,jdbcType=VARCHAR},
+      </if>
+      <if test="productionnum != null">
+        productionNum = #{productionnum,jdbcType=DOUBLE},
+      </if>
+      <if test="inplantid != null">
+        inPlantID = #{inplantid,jdbcType=VARCHAR},
+      </if>
+      <if test="inprocessid != null">
+        inProcessID = #{inprocessid,jdbcType=VARCHAR},
+      </if>
+      <if test="inlineid != null">
+        inLineID = #{inlineid,jdbcType=VARCHAR},
+      </if>
+      <if test="inworklocationid != null">
+        inWorkLocationID = #{inworklocationid,jdbcType=VARCHAR},
+      </if>
+      <if test="outorderid != null">
+        outOrderID = #{outorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="outsuborderid != null">
+        outSubOrderID = #{outsuborderid,jdbcType=VARCHAR},
+      </if>
+      <if test="outputnumber != null">
+        outputNumber = #{outputnumber,jdbcType=DOUBLE},
+      </if>
+      <if test="outputername != null">
+        outputerName = #{outputername,jdbcType=VARCHAR},
+      </if>
+      <if test="outputtime != null">
+        outputTime = #{outputtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="outplantid != null">
+        outPlantID = #{outplantid,jdbcType=VARCHAR},
+      </if>
+      <if test="outprocessid != null">
+        outProcessID = #{outprocessid,jdbcType=VARCHAR},
+      </if>
+      <if test="outlineid != null">
+        outLineID = #{outlineid,jdbcType=VARCHAR},
+      </if>
+      <if test="outworklocationid != null">
+        outWorkLocationID = #{outworklocationid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.DataProvenanceRelation">
+    update tb_dataprovenancerelation
+    set batchString = #{batchstring,jdbcType=VARCHAR},
+      leftNumber = #{leftnumber,jdbcType=DOUBLE},
+      inOrderID = #{inorderid,jdbcType=VARCHAR},
+      inSubOrderID = #{insuborderid,jdbcType=VARCHAR},
+      inputerName = #{inputername,jdbcType=VARCHAR},
+      inputTime = #{inputtime,jdbcType=TIMESTAMP},
+      inputMaterialID = #{inputmaterialid,jdbcType=VARCHAR},
+      inputMaterialName = #{inputmaterialname,jdbcType=VARCHAR},
+      productionNum = #{productionnum,jdbcType=DOUBLE},
+      inPlantID = #{inplantid,jdbcType=VARCHAR},
+      inProcessID = #{inprocessid,jdbcType=VARCHAR},
+      inLineID = #{inlineid,jdbcType=VARCHAR},
+      inWorkLocationID = #{inworklocationid,jdbcType=VARCHAR},
+      outOrderID = #{outorderid,jdbcType=VARCHAR},
+      outSubOrderID = #{outsuborderid,jdbcType=VARCHAR},
+      outputNumber = #{outputnumber,jdbcType=DOUBLE},
+      outputerName = #{outputername,jdbcType=VARCHAR},
+      outputTime = #{outputtime,jdbcType=TIMESTAMP},
+      outPlantID = #{outplantid,jdbcType=VARCHAR},
+      outProcessID = #{outprocessid,jdbcType=VARCHAR},
+      outLineID = #{outlineid,jdbcType=VARCHAR},
+      outWorkLocationID = #{outworklocationid,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
