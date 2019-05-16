@@ -27,4 +27,7 @@ public interface MaterialRelationMapper {
             "SELECT a.id,b.name as inMaterialID ,a.outMaterialID,a.proportionality,a.status FROM sys_materialrelation a \n" +
             "left join sys_material b on a.inMaterialID = b.id  ${filter} ) c left join  sys_material d on c.outMaterialID = d.id order by inMaterialID" )
     List<MaterialRelation> selectByFilter(@Param("filter") String filter);
+
+    @Select("select * from sys_materialrelation where outMaterialID = #{outMaterialID} and status != '-1' ")
+    List<MaterialRelation> selectByOutMaterial( String outMaterialID);
 }

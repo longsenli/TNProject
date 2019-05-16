@@ -42,6 +42,10 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     private MaterialTypeMapper materialTypeMapper;
 
     @Autowired
+    private MaterialRelationMapper materialRelationMapper ;
+
+
+    @Autowired
     private  BatchrelationcontrolMapper batchrelationcontrolMapper;
 
     @Autowired
@@ -58,6 +62,9 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     
     @Autowired
     private DryingKilnJZRecordMapper dryingKilnJZRecordMapper;
+
+    @Autowired
+    private  DataProvenanceRelationMapper dataProvenanceRelationMapper;
 
     public TNPYResponse getWorkOrder( ) {
         TNPYResponse result = new TNPYResponse();
@@ -356,9 +363,61 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         }
     }
 
-    private void updateDataProvenance()
+    private void updateDataProvenance(MaterialRecord materialRecord)
     {
+        try
+        {
+            String materialFilte = " where outOrderID = '" + materialRecord.getOrderid() + "' and productionNum > 10 and outSubOrderID is null order by inputTime ";
+            List<DataProvenanceRelation> dataProvenanceRelationList = dataProvenanceRelationMapper.selectByFilter(materialFilte);
+            List<MaterialRelation> materialRelationList = materialRelationMapper.selectByOutMaterial(materialRecord.getMaterialid());
 
+            double leftNum = 0;
+            String[] listRelation ;
+            for(int i =0 ;i< materialRelationList.size();i++)
+            {
+                if(!materialRelationList.get(i).getProportionality().contains(":"))
+                {
+                    continue;
+                }
+                for(int j =0;j< dataProvenanceRelationList.size();j++)
+                {
+                    if(!dataProvenanceRelationList.get(j).getInputmaterialid().equals(materialRelationList.get(i).getInmaterialid()))
+                    {
+                        continue;
+                    }
+                    listRelation = materialRelationList.get(i).getProportionality().split(":");
+                    leftNum = dataProvenanceRelationList.get(j).getLeftnumber() - (Double.valueOf(listRelation[0]) * materialRecord.getNumber() )/Double.valueOf(listRelation[1]);
+                    if(leftNum > 10)
+                    {
+                        String jsonStr = JSONObject.toJSON(dataProvenanceRelationList.get(j)).toString();
+                       // OrderSplit orderSplit=(OrderSplit) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), OrderSplit.class);
+                        DataProvenanceRelation dataProvenanceRelation = (DataProvenanceRelation) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), DataProvenanceRelation.class);
+                        dataProvenanceRelation.setLeftnumber(leftNum);
+                        dataProvenanceRelation.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                        dataProvenanceRelationMapper.insertSelective(dataProvenanceRelation);
+                    }
+
+                    dataProvenanceRelationList.get(j).setOutsuborderid(materialRecord.getSuborderid());
+                    dataProvenanceRelationList.get(j).setOutputername(materialRecord.getInputer());
+                    //dataProvenanceRelationList.get(j).setOutputnumber();
+                    dataProvenanceRelationList.get(j).setOutputtime(materialRecord.getInputtime());
+                    dataProvenanceRelationMapper.updateByPrimaryKeySelective(dataProvenanceRelationList.get(j));
+
+                    if(leftNum < -10)
+                    {
+                        materialRecord.setNumber(materialRecord.getNumber() - (Double.valueOf(listRelation[1]) * dataProvenanceRelationList.get(j).getLeftnumber() )/Double.valueOf(listRelation[0]));
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+     catch (Exception ex)
+     {
+         System.out.println("============= 产出关联出错！ =======" + ex.getMessage());
+     }
     }
     public TNPYResponse finishOrderSplit( String jsonStr ,String name) {
         TNPYResponse result = new TNPYResponse();
@@ -454,7 +513,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             {
                 result.setMessage(result.getMessage() + " " +ex.getMessage() );
             }
-
+            updateDataProvenance(materialRecord);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
         }
