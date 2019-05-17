@@ -35,6 +35,8 @@ public class PileBatteryRecord {
 
     private String remark;
 
+    private String tidyrecordid;
+
     public String getId() {
         return id;
     }
@@ -153,5 +155,13 @@ public class PileBatteryRecord {
 
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
+    }
+
+    public String getTidyrecordid() {
+        return tidyrecordid;
+    }
+
+    public void setTidyrecordid(String tidyrecordid) {
+        this.tidyrecordid = tidyrecordid == null ? null : tidyrecordid.trim();
     }
 }

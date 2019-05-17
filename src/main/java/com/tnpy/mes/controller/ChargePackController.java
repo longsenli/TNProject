@@ -37,4 +37,14 @@ public class ChargePackController {
     public TNPYResponse pulloffChargingRackRecord(@RequestBody String jsonStr) {
         return  chargePackService.pulloffChargingRackRecord(jsonStr);
     }
+
+    @RequestMapping(value = "/gettidybatteryrecord")
+    public TNPYResponse getTidyBatteryRecord(String plantID, String processID,String lineID,String startTime,String endTime,String selectType) {
+        return  chargePackService.getTidyBatteryRecord(plantID,processID,lineID, startTime, endTime,selectType);
+    }
+
+    @RequestMapping(value = "/changetidybatteryrecord")
+    public TNPYResponse changeTidyBatteryRecord(@RequestBody String jsonStr) {
+        return  chargePackService.changeTidyBatteryRecord(jsonStr);
+    }
 }

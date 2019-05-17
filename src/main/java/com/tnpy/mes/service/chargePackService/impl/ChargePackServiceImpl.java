@@ -32,6 +32,8 @@ public class ChargePackServiceImpl implements IChargePackService {
     private TidyBatteryRecordMapper tidyBatteryRecordMapper;
     @Autowired
     private ObjectRelationDictMapper objectRelationDictMapper;
+
+
     //onRack 在架数据 pulloffhistory 下架历史数据 putonhistory 上架历史数据
     public TNPYResponse getChargingRackRecord(String plantID, String processID,String lineID,String locationID,String startTime,String endTime,String selectType)
     {
@@ -178,8 +180,7 @@ public class ChargePackServiceImpl implements IChargePackService {
                 insertTidyBatteryRecord.setProcessid(ConfigParamEnum.BasicProcessEnum.ZLProcessID.getName());
                 insertTidyBatteryRecord.setLineid(nextLineID);
                 insertTidyBatteryRecord.setStatus(StatusEnum.StatusFlag.using.getIndex()+ "");
-                insertTidyBatteryRecord.setCurrentnum(tidyBatteryRecord.getCurrentnum() + chargingRackRecord.getRealnumber());
-                insertTidyBatteryRecord.setLastnum(tidyBatteryRecord.getCurrentnum());
+                insertTidyBatteryRecord.setCurrentnum(chargingRackRecord.getRealnumber());
                 insertTidyBatteryRecord.setDaytime(chargingRackRecord.getPulloffdate());
                 insertTidyBatteryRecord.setMaterialid(chargingRackRecord.getMaterialid());
                 insertTidyBatteryRecord.setMaterialname(chargingRackRecord.getMaterialname());
@@ -194,6 +195,78 @@ public class ChargePackServiceImpl implements IChargePackService {
         catch (Exception ex)
         {
             result.setMessage("下架失败！" + ex.getMessage());
+        }
+        return  result;
+    }
+
+    //onWorkbench 在工作台数据  workbenchHistory 工作台历史数据
+    public TNPYResponse getTidyBatteryRecord(String plantID, String processID,String lineID,String startTime,String endTime,String selectType)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = " where status != '-1' ";
+            if("onWorkbench".equals(selectType))
+            {
+                filter += " and currentNum > 0 ";
+            }
+            if("workbenchHistory".equals(selectType))
+            {
+                filter += " and dayTime >= '" + startTime + "' ";
+                filter += " and dayTime <= '" + endTime + "' ";
+            }
+
+            if(!"-1".equals(plantID))
+            {
+                filter += " and plantID = '" + plantID + "' ";
+            }
+            if(!"-1".equals(processID))
+            {
+                filter += " and processID = '" + processID + "' ";
+            }
+            if(!"-1".equals(lineID))
+            {
+                filter += " and lineID = '" + lineID + "' ";
+            }
+
+            filter += " order by dayTime asc ";
+            // System.out.println(plantID + " 参数 " +processID);
+            List<TidyBatteryRecord> tidyBatteryRecordList = tidyBatteryRecordMapper.selectByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+            result.setData(JSONObject.toJSON(tidyBatteryRecordList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    public TNPYResponse changeTidyBatteryRecord(String jsonStr)
+    {
+        TidyBatteryRecord tidyBatteryRecord =(TidyBatteryRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), TidyBatteryRecord.class);
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            if(StringUtils.isEmpty(tidyBatteryRecord.getId()))
+            {
+                tidyBatteryRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                tidyBatteryRecord.setStatus("1");
+                tidyBatteryRecordMapper.insertSelective(tidyBatteryRecord);
+            }
+            else
+            {
+                tidyBatteryRecordMapper.updateByPrimaryKeySelective(tidyBatteryRecord);
+            }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setMessage("修改成功！");
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("插入失败！" + ex.getMessage());
         }
         return  result;
     }
