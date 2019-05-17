@@ -6,8 +6,10 @@ import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.ChargingRackRecordMapper;
 import com.tnpy.mes.mapper.mysql.ObjectRelationDictMapper;
+import com.tnpy.mes.mapper.mysql.PileBatteryRecordMapper;
 import com.tnpy.mes.mapper.mysql.TidyBatteryRecordMapper;
 import com.tnpy.mes.model.mysql.ChargingRackRecord;
+import com.tnpy.mes.model.mysql.PileBatteryRecord;
 import com.tnpy.mes.model.mysql.TidyBatteryRecord;
 import com.tnpy.mes.service.chargePackService.IChargePackService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,7 +36,8 @@ public class ChargePackServiceImpl implements IChargePackService {
     @Autowired
     private ObjectRelationDictMapper objectRelationDictMapper;
 
-
+    @Autowired
+    private PileBatteryRecordMapper pileBatteryRecordMapper;
     //onRack 在架数据 pulloffhistory 下架历史数据 putonhistory 上架历史数据
     public TNPYResponse getChargingRackRecord(String plantID, String processID,String lineID,String locationID,String startTime,String endTime,String selectType)
     {
@@ -270,4 +274,104 @@ public class ChargePackServiceImpl implements IChargePackService {
         }
         return  result;
     }
+
+    private  String getNumberString(int number)
+    {
+        String numStr = String.valueOf(number);
+        String tmp = "";
+        for(int i =0;i<3 - numStr.length();i++)
+        {
+            tmp += "0";
+        }
+        return  tmp+numStr;
+    }
+
+    public TNPYResponse addPileTidyBatteryRecord( String jsonTidyRecord,String pileNum,String perPileMaterialNum,String storeLocation)
+    {
+        TidyBatteryRecord tidyBatteryRecord =(TidyBatteryRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonTidyRecord), TidyBatteryRecord.class);
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            TidyBatteryRecord tidyBatteryRecordNew = tidyBatteryRecordMapper.selectByPrimaryKey(tidyBatteryRecord.getId());
+            int pileNumInt = Integer.parseInt(pileNum);
+            int perPileMaterialNumInt = Integer.parseInt(perPileMaterialNum);
+            tidyBatteryRecord.setCurrentnum(tidyBatteryRecordNew.getCurrentnum() -pileNumInt*perPileMaterialNumInt);
+            tidyBatteryRecord.setPilenum((float)pileNumInt*perPileMaterialNumInt);
+            tidyBatteryRecordMapper.updateByPrimaryKeySelective(tidyBatteryRecord);
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+            Date now = new Date();
+            PileBatteryRecord pileBatteryRecord = new PileBatteryRecord();
+            pileBatteryRecord.setBatterydate(tidyBatteryRecordNew.getDaytime());
+            pileBatteryRecord.setPlantid(tidyBatteryRecordNew.getPlantid());
+            pileBatteryRecord.setProcessid(tidyBatteryRecordNew.getProcessid());
+            pileBatteryRecord.setLineid(tidyBatteryRecordNew.getLineid());
+            pileBatteryRecord.setMaterialid(tidyBatteryRecordNew.getMaterialid());
+            pileBatteryRecord.setMaterialname(tidyBatteryRecordNew.getMaterialname());
+            pileBatteryRecord.setMaterialtype(tidyBatteryRecordNew.getMaterialtype());
+            pileBatteryRecord.setPilestaffid(tidyBatteryRecord.getOperatorid());
+            pileBatteryRecord.setPilestaffname(tidyBatteryRecord.getOperatorname());
+            pileBatteryRecord.setPiletime(now);
+            pileBatteryRecord.setProductionnumber(Float.valueOf(perPileMaterialNumInt) );
+            pileBatteryRecord.setRemark(tidyBatteryRecord.getRemark());
+            pileBatteryRecord.setTidyrecordid(tidyBatteryRecord.getId());
+            pileBatteryRecord.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
+            pileBatteryRecord.setLocation(storeLocation);
+            for(int i =0 ;i<pileNumInt;i++)
+            {
+                pileBatteryRecord.setId(formatter.format(now) + getNumberString(i));
+                pileBatteryRecordMapper.insert(pileBatteryRecord);
+            }
+
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setMessage("修改成功！");
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("插入失败！" + ex.getMessage());
+        }
+        return  result;
+    }
+
+    //onWorkbench 在工作台数据  workbenchHistory 工作台历史数据
+    public TNPYResponse getPileTidyBatteryRecord(String plantID, String processID,String lineID,String startTime,String endTime,String selectType)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = " where status != '-1' ";
+
+                filter += " and batteryDate >= '" + startTime + "' ";
+                filter += " and batteryDate <= '" + endTime + "' ";
+
+
+            if(!"-1".equals(plantID))
+            {
+                filter += " and plantID = '" + plantID + "' ";
+            }
+            if(!"-1".equals(processID))
+            {
+                filter += " and processID = '" + processID + "' ";
+            }
+            if(!"-1".equals(lineID))
+            {
+                filter += " and lineID = '" + lineID + "' ";
+            }
+
+            filter += " order by batteryDate asc ";
+            // System.out.println(plantID + " 参数 " +processID);
+            List<PileBatteryRecord> pileBatteryRecordList = pileBatteryRecordMapper.selectByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+            result.setData(JSONObject.toJSON(pileBatteryRecordList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
 }

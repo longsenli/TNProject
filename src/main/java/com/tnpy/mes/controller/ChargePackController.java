@@ -47,4 +47,14 @@ public class ChargePackController {
     public TNPYResponse changeTidyBatteryRecord(@RequestBody String jsonStr) {
         return  chargePackService.changeTidyBatteryRecord(jsonStr);
     }
+
+    @RequestMapping(value = "/addpiletidybatteryrecord")
+    public TNPYResponse addPileTidyBatteryRecord( String jsonTidyRecord,String pileNum,String perPileMaterialNum,String storeLocation) {
+        return  chargePackService.addPileTidyBatteryRecord(jsonTidyRecord,pileNum,perPileMaterialNum,storeLocation);
+    }
+
+    @RequestMapping(value = "/getpiletidybatteryrecord")
+    public TNPYResponse getPileTidyBatteryRecord(String plantID, String processID,String lineID,String startTime,String endTime,String selectType) {
+        return  chargePackService.getPileTidyBatteryRecord(plantID,processID,lineID, startTime, endTime,selectType);
+    }
 }
