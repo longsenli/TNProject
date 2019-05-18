@@ -66,7 +66,11 @@ public class MaterialController {
     public TNPYResponse addGrantMaterialRecord( String orderSplitID,String operator ,int orderType ) {
         return  materialService.addGrantMaterialRecord( orderSplitID, operator,orderType);
     }
-
+    @RequestMapping(value = "/addgrantmaterialrecordbybatch")
+    public TNPYResponse addGrantMaterialRecordByBatch( String orderIDList,String operator ,String orderType)
+    {
+        return  materialService.addGrantMaterialRecordByBatch( orderIDList, operator,orderType);
+    }
     @RequestMapping(value = "/grantdndexpendstatistics")
     public TNPYResponse grantAndExpendStatistics(  String startTime,String endTime,String plantID,String processID ) {
         return  materialService.grantAndExpendStatistics( startTime, endTime,plantID,processID);
@@ -108,4 +112,5 @@ public class MaterialController {
     public TNPYResponse getUnqualifiedMaterialReturn(String plantID,String processID,String lineID,String startTime,String endTime  ) {
         return  materialService.getUnqualifiedMaterialReturn( plantID, processID, lineID, startTime, endTime );
     }
+
 }

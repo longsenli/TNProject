@@ -529,6 +529,93 @@ public class MaterialServiceImpl implements IMaterialService {
            return  result;
        }
     }
+    //1 当天工单ID 2第二天工单ID
+    public TNPYResponse addGrantMaterialRecordByBatch( String orderIDList,String operator ,String orderType)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = " where id in ('" + orderIDList.replaceAll("###","','") + "' )";
+           List<OrderSplit> orderInfoList =orderSplitMapper.selectByFilter(filter);
+            List<Map<String, String>> grantResult = new  ArrayList<Map<String, String>>();
+            String[] orderArray = orderIDList.split("###");
+            String orderSplitID = "";
+            OrderSplit orderSplit ;
+            for(int i =0;i<orderArray.length;i++)
+            {
+                Map<String, String> mapResult = new HashMap<String, String>();
+                mapResult.put("orderID",orderArray[i]);
+                mapResult.put("status","失败");
+                mapResult.put("returnMessage","未获取到订单信息!");
+                for(int j =0;j<orderInfoList.size();j++)
+                {
+                    if(!orderArray[i].equals(orderInfoList.get(j).getId()))
+                    {
+                        continue;
+                    }
+                    orderSplit = orderInfoList.get(j);
+                    orderSplitID = orderSplit.getId();
+
+                    if(!(StatusEnum.WorkOrderStatus.finished.getIndex()+"").equals(orderSplit.getStatus()))
+                    {
+                        mapResult.put("returnMessage","该订单尚未入库！" +orderSplitID );
+                        break;
+                    }
+                    GrantMaterialRecord grantMaterialRecord = grantMaterialRecordMapper.selectByOrderID(orderSplitID);
+                    if(grantMaterialRecord != null)
+                    {
+                        mapResult.put("returnMessage","该订单已发料！" +orderSplitID );
+                        break;
+                    }
+                    MaterialRecord materialRecord = materialRecordMapper.selectBySuborderID(orderSplit.getId());
+                    if(materialRecord ==null)
+                    {
+                        mapResult.put("returnMessage","未获取到入库信息！请重试或者重新入库！" +orderSplitID );
+                        break;
+                    }
+
+                    if(!(StatusEnum.InOutStatus.Input.getIndex()+"").equals(materialRecord.getInorout().toString()))
+                    {
+                        mapResult.put("returnMessage","该订单未完成固化不能发料！" +orderSplitID );
+                        break;
+                    }
+                    Date date = new Date();//取时间
+
+                    Calendar calendar = new GregorianCalendar();
+                    calendar.setTime(date);
+                    if("2".equals(orderType))
+                    {
+                        calendar.add(Calendar.DATE, 1);
+                    }
+                    date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+
+                    GrantMaterialRecord newGrantMaterialRecord = new GrantMaterialRecord();
+                    newGrantMaterialRecord.setBatterytype(orderSplit.getMaterialid());
+                    newGrantMaterialRecord.setGranttime(date);
+                    newGrantMaterialRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                    newGrantMaterialRecord.setNumber(orderSplit.getProductionnum().intValue());
+                    newGrantMaterialRecord.setOperator(operator);
+                    newGrantMaterialRecord.setOrderid(orderSplitID);
+                    newGrantMaterialRecord.setOrdername(orderSplit.getOrdersplitid());
+                    newGrantMaterialRecord.setPlantid(materialRecord.getInputplantid());
+                    newGrantMaterialRecord.setProcessid(materialRecord.getInputprocessid());
+                    newGrantMaterialRecord.setStatus("1");
+                    grantMaterialRecordMapper.insert(newGrantMaterialRecord);
+                    mapResult.put("status","成功");
+                    mapResult.put("returnMessage","");
+                }
+                grantResult.add(mapResult);
+            }
+            result.setData(JSONObject.toJSON(grantResult).toString());
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("发放失败！" + ex.getMessage());
+            return  result;
+        }
+    }
 
     public TNPYResponse grantAndExpendStatistics(  String startTime,String endTime,String plantID,String processID )
     {

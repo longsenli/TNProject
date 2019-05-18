@@ -173,8 +173,8 @@ public class ChargePackServiceImpl implements IChargePackService {
                 TidyBatteryRecord changeTidyBatteryRecord = new TidyBatteryRecord();
                 changeTidyBatteryRecord.setId(tidyBatteryRecord.getId());
                 changeTidyBatteryRecord.setCurrentnum(tidyBatteryRecord.getCurrentnum() +chargingRackRecord.getRealnumber());
-                changeTidyBatteryRecord.setPulloffnum(chargingRackRecord.getRealnumber());
-                tidyBatteryRecordMapper.updateByPrimaryKeySelective(tidyBatteryRecord);
+                changeTidyBatteryRecord.setPulloffnum(tidyBatteryRecord.getCurrentnum() +chargingRackRecord.getRealnumber());
+                tidyBatteryRecordMapper.updateByPrimaryKeySelective(changeTidyBatteryRecord);
             }
             else
             {
