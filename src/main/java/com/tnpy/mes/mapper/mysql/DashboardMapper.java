@@ -5,8 +5,6 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
-import com.tnpy.mes.model.mysql.DryingKilnJZRecord;
-
 import java.util.List;
 import java.util.Map;
 
@@ -19,4 +17,7 @@ public interface DashboardMapper {
     
     @Select("${sql}")
     List<Map<Object, Object>> getNowInDryingKilnjz(@Param("sql") String sql);
+
+    @Select("${sql}")
+    List<Map<Object, Object>> getInventoryInfo(@Param("sql") String sql);
 }

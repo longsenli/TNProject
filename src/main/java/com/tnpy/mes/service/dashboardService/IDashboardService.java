@@ -11,4 +11,7 @@ public interface IDashboardService {
     public TNPYResponse getDailyProduction(String plantID ,String processID,String queryTypeID,String startTime,String endTime);
     public TNPYResponse nowInDryingKilnjz(String plantID ,String processID,String queryTypeID,String startTime,String endTime);
     public TNPYResponse getWageDetail(String plantID ,String processID,String startTime,String endTime);
+
+    public TNPYResponse getInventoryInfo(String plantID ,String processID,String dayTime);
+    public TNPYResponse getProductionAndGrantInfo(String plantID ,String processID,String dayTime);
 }

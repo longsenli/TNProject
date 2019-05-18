@@ -29,4 +29,15 @@ public class DashboardController {
     public TNPYResponse nowInDryingKilnjz( String plantID ,String processID,String queryTypeID,String startTime,String endTime) {
        return dashboardService.nowInDryingKilnjz(plantID, processID, queryTypeID, startTime, endTime);
     }
+    @RequestMapping(value = "/getinventoryinfo")
+    public TNPYResponse getInventoryInfo(String plantID ,String processID,String dayTime)
+    {
+        return dashboardService.getInventoryInfo(plantID, processID, dayTime);
+    }
+
+    @RequestMapping(value = "/getproductionandgrantinfo")
+    public TNPYResponse getProductionAndGrantInfo(String plantID ,String processID,String dayTime)
+    {
+        return dashboardService.getProductionAndGrantInfo(plantID, processID, dayTime);
+    }
 }

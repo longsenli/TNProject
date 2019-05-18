@@ -2,13 +2,15 @@ package com.tnpy.mes.service.dashboardService.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.utils.web.TNPYResponse;
-import com.tnpy.mes.mapper.mysql.*;
+import com.tnpy.mes.mapper.mysql.DashboardMapper;
+import com.tnpy.mes.mapper.mysql.WageDetailMapper;
 import com.tnpy.mes.service.dashboardService.IDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @Description: TODO
@@ -238,6 +240,85 @@ public class DashboardServiceImpl implements IDashboardService {
         try
         {
             List<Map<Object, Object>> mapList = wageDetailMapper.selectByFilter(plantID,processID,startTime,endTime);
+            result.setStatus(1);
+            result.setData(JSONObject.toJSON(mapList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    public TNPYResponse getInventoryInfo(String plantID ,String processID,String dayTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String sqlFilter = " select materialID,plantID,processID,currentNum from tb_materialinventoryrecord where status != '-1' " ;
+            if(!"-1".equals(plantID))
+            {
+                sqlFilter += " and plantID ='" + plantID + "' ";
+            }
+            if(!"-1".equals(processID))
+            {
+                sqlFilter += " and processID ='" + processID + "' ";
+            }
+            DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();//取时间
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(date);
+            if( calendar.get(Calendar.HOUR_OF_DAY)<7)
+            {
+                calendar.add(Calendar.DATE, -1);
+                date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+            }
+
+            sqlFilter += " and updateTime > '" + format1.format(date) + "' ";
+            sqlFilter = " select a.*,b.name from ( " + sqlFilter + " ) a left join sys_material b on a.materialID = b.id";
+
+            List<Map<Object, Object>> mapList = dashboardMapper.getInventoryInfo(sqlFilter);
+            result.setStatus(1);
+            result.setData(JSONObject.toJSON(mapList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+
+    public TNPYResponse getProductionAndGrantInfo(String plantID ,String processID,String dayTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String sqlFilter = " select materialID,plantID,processID,productionNum,expendNum, date_format(updateTime, '%Y-%m-%d') as updateTime from tb_materialinventoryrecord where status != '-1' " ;
+            if(!"-1".equals(plantID))
+            {
+                sqlFilter += " and plantID ='" + plantID + "' ";
+            }
+            if(!"-1".equals(processID))
+            {
+                sqlFilter += " and processID ='" + processID + "' ";
+            }
+            DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();//取时间
+
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(date);
+
+            calendar.add(Calendar.DATE, -7);
+
+            date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+
+            sqlFilter += " and updateTime > '" + format1.format(date) + "'";
+
+            sqlFilter = " select a.*,b.name from ( " + sqlFilter + " ) a left join sys_material b on a.materialID = b.id order by a.updateTime asc,b.name";
+            List<Map<Object, Object>> mapList = dashboardMapper.getInventoryInfo(sqlFilter);
             result.setStatus(1);
             result.setData(JSONObject.toJSON(mapList).toString());
             return  result;
