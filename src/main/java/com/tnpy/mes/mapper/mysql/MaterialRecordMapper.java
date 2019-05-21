@@ -156,10 +156,15 @@ public interface MaterialRecordMapper {
             ") a left join  sys_material b on a.materialID = b.id order by updateTime desc,name")
     List<Map<Object, Object>> getMaterialInventoryStatistics(  String startTime,String endTime,String plantID,String processID);
 
-    @Select("select orderName,number,operator,date_format(grantTime,'%Y-%m-%d %H:%i') as grantTime,name from (\n" +
+    @Select("(select  '总计' as orderName,sum(number) as number,'' as operator ,'' as grantTime ,name from (  select orderName,number,operator,date_format(grantTime,'%Y-%m-%d %H:%i') as grantTime,name from (\n" +
             "select batteryType,orderName,number,operator,grantTime from tb_grantmaterialrecord \n" +
             "where plantID = #{plantID} and processID = #{processID}  and grantTime >= #{startTime}  and grantTime <= #{endTime} ) \n" +
-            " a left join  sys_material b on a.batteryType = b.id order by grantTime desc")
+            " a left join  sys_material b on a.batteryType = b.id  ) c group by name limit 100)" +
+            " union all " +
+            " ( select orderName,number,operator,date_format(grantTime,'%Y-%m-%d %H:%i') as grantTime,name from (\n" +
+            "select batteryType,orderName,number,operator,grantTime from tb_grantmaterialrecord \n" +
+            "where plantID = #{plantID} and processID = #{processID}  and grantTime >= #{startTime}  and grantTime <= #{endTime} ) \n" +
+            " a left join  sys_material b on a.batteryType = b.id order by grantTime desc )")
     List<Map<Object, Object>> getGrantMaterialRecord(  String startTime,String endTime,String plantID,String processID);
 
     @Select("select  *  from tb_materialrecord where subOrderID like '%${subOrderID}%'")

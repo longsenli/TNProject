@@ -41,6 +41,9 @@ public class MaterialServiceImpl implements IMaterialService {
     @Autowired
     private  DataProvenanceRelationMapper dataProvenanceRelationMapper;
 
+    @Autowired
+    private  ObjectRelationDictMapper objectRelationDictMapper;
+
     public TNPYResponse getMaterialRecord(String expendOrderID ) {
         TNPYResponse result = new TNPYResponse();
         try
@@ -622,7 +625,13 @@ public class MaterialServiceImpl implements IMaterialService {
         TNPYResponse result = new TNPYResponse();
         try
         {
-            List<Map<Object,Object>> materialStatisInfo = materialRecordMapper.grantAndExpendStatistics(startTime,endTime,plantID,"1008","1007");
+           List<String> previousObjectIDList = objectRelationDictMapper.selectPreviousObjectID(processID,"1001");
+           String previousObjectID = "-1";
+           if(previousObjectIDList.size() > 0)
+           {
+               previousObjectID = previousObjectIDList.get(0);
+           }
+            List<Map<Object,Object>> materialStatisInfo = materialRecordMapper.grantAndExpendStatistics(startTime,endTime,plantID,processID,previousObjectID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(materialStatisInfo).toString());
             return  result;
