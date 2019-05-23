@@ -44,6 +44,10 @@ public class MaterialServiceImpl implements IMaterialService {
     @Autowired
     private  ObjectRelationDictMapper objectRelationDictMapper;
 
+
+    @Autowired
+    private  PileBatteryRecordMapper pileBatteryRecordMapper;
+
     public TNPYResponse getMaterialRecord(String expendOrderID ) {
         TNPYResponse result = new TNPYResponse();
         try
@@ -451,11 +455,15 @@ public class MaterialServiceImpl implements IMaterialService {
 
 
     //1 当天工单ID 2第二天工单ID 3 当天工单名称 4 第二天工单名称
-    public TNPYResponse addGrantMaterialRecord( String orderSplitID,String operator ,int orderType)
+    public TNPYResponse addGrantMaterialRecord( String orderSplitID,String operator ,int orderType,String processID)
     {
         TNPYResponse result = new TNPYResponse();
         try
         {
+            if(ConfigParamEnum.BasicProcessEnum.ZLProcessID.getName().equals(processID))
+            {
+                return pileBatteryGrantOneByOne(orderSplitID,operator,orderType,processID);
+            }
             OrderSplit orderSplit = null;
             if(orderType < 3)
             {
@@ -533,11 +541,16 @@ public class MaterialServiceImpl implements IMaterialService {
        }
     }
     //1 当天工单ID 2第二天工单ID
-    public TNPYResponse addGrantMaterialRecordByBatch( String orderIDList,String operator ,String orderType)
+    public TNPYResponse addGrantMaterialRecordByBatch( String orderIDList,String operator ,String orderType,String processID)
     {
         TNPYResponse result = new TNPYResponse();
         try
         {
+            if(ConfigParamEnum.BasicProcessEnum.ZLProcessID.getName().equals(processID))
+            {
+                return pileBatteryGrantByBatch(orderIDList,operator,orderType,processID);
+            }
+
             String filter = " where id in ('" + orderIDList.replaceAll("###","','") + "' )";
            List<OrderSplit> orderInfoList =orderSplitMapper.selectByFilter(filter);
             List<Map<String, String>> grantResult = new  ArrayList<Map<String, String>>();
@@ -619,7 +632,133 @@ public class MaterialServiceImpl implements IMaterialService {
             return  result;
         }
     }
+    private TNPYResponse pileBatteryGrantOneByOne( String orderSplitID,String operator ,int orderType,String processID)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            PileBatteryRecord pileBatteryRecord = null;
+            if(orderType < 3)
+            {
+                pileBatteryRecord = pileBatteryRecordMapper.selectByPrimaryKey(orderSplitID);
+            }
+            if(pileBatteryRecord ==null)
+            {
+                result.setMessage("未获取到订单信息！" +orderSplitID );
+                return  result;
+            }
+            orderSplitID = pileBatteryRecord.getId();
 
+            if((StatusEnum.InOutStatus.Output.getIndex()+"").equals(pileBatteryRecord.getStatus()))
+            {
+                result.setMessage("该订单已经发料！" +orderSplitID );
+                return  result;
+            }
+            Date date = new Date();//取时间
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(date);
+            if(orderType%2 == 0)
+            {
+                calendar.add(Calendar.DATE, 1);
+            }
+            date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+
+            pileBatteryRecordMapper.updateStatusByPrimaryKey(pileBatteryRecord.getId(),StatusEnum.InOutStatus.Output.getIndex()+"");
+
+            GrantMaterialRecord newGrantMaterialRecord = new GrantMaterialRecord();
+            newGrantMaterialRecord.setBatterytype(pileBatteryRecord.getMaterialid());
+            newGrantMaterialRecord.setGranttime(date);
+            newGrantMaterialRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+            newGrantMaterialRecord.setNumber(pileBatteryRecord.getProductionnumber().intValue());
+            newGrantMaterialRecord.setOperator(operator);
+            newGrantMaterialRecord.setOrderid(orderSplitID);
+            newGrantMaterialRecord.setOrdername(pileBatteryRecord.getId());
+            newGrantMaterialRecord.setPlantid(pileBatteryRecord.getPlantid());
+            newGrantMaterialRecord.setProcessid(pileBatteryRecord.getProcessid());
+            newGrantMaterialRecord.setStatus("1");
+            grantMaterialRecordMapper.insert(newGrantMaterialRecord);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("发放失败！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    private TNPYResponse pileBatteryGrantByBatch( String orderIDList,String operator ,String orderType,String processID)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = " where id in ('" + orderIDList.replaceAll("###","','") + "' )";
+            List<PileBatteryRecord> pileBatteryRecordList =pileBatteryRecordMapper.selectByFilter(filter);
+            List<Map<String, String>> grantResult = new  ArrayList<Map<String, String>>();
+            String[] orderArray = orderIDList.split("###");
+            String orderSplitID = "";
+            PileBatteryRecord orderSplit ;
+            for(int i =0;i<orderArray.length;i++)
+            {
+                Map<String, String> mapResult = new HashMap<String, String>();
+                mapResult.put("orderID",orderArray[i]);
+                mapResult.put("status","失败");
+                mapResult.put("returnMessage","未获取到订单信息!");
+                for(int j =0;j<pileBatteryRecordList.size();j++)
+                {
+
+                    if(!orderArray[i].equals(pileBatteryRecordList.get(j).getId()))
+                    {
+                        continue;
+                    }
+                   orderSplit = pileBatteryRecordList.get(j);
+                    orderSplitID = orderSplit.getId();
+
+                    if((StatusEnum.InOutStatus.Output.getIndex()+"").equals(orderSplit.getStatus()))
+                    {
+                        mapResult.put("returnMessage","该订单已经发料！" +orderSplitID );
+                        break;
+                    }
+
+                    Date date = new Date();//取时间
+
+                    Calendar calendar = new GregorianCalendar();
+                    calendar.setTime(date);
+                    if("2".equals(orderType))
+                    {
+                        calendar.add(Calendar.DATE, 1);
+                    }
+                    date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+
+                    GrantMaterialRecord newGrantMaterialRecord = new GrantMaterialRecord();
+                    newGrantMaterialRecord.setBatterytype(orderSplit.getMaterialid());
+                    newGrantMaterialRecord.setGranttime(date);
+                    newGrantMaterialRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                    newGrantMaterialRecord.setNumber(orderSplit.getProductionnumber().intValue());
+                    newGrantMaterialRecord.setOperator(operator);
+                    newGrantMaterialRecord.setOrderid(orderSplitID);
+                    newGrantMaterialRecord.setOrdername(orderSplit.getId());
+                    newGrantMaterialRecord.setPlantid(orderSplit.getPlantid());
+                    newGrantMaterialRecord.setProcessid(orderSplit.getProcessid());
+                    newGrantMaterialRecord.setStatus("1");
+                    grantMaterialRecordMapper.insert(newGrantMaterialRecord);
+
+                    pileBatteryRecordMapper.updateStatusByPrimaryKey(orderSplit.getId(),StatusEnum.InOutStatus.Output.getIndex()+"");
+                    mapResult.put("status","成功");
+                    mapResult.put("returnMessage","");
+                }
+                grantResult.add(mapResult);
+            }
+            result.setData(JSONObject.toJSON(grantResult).toString());
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("发放失败！" + ex.getMessage());
+            return  result;
+        }
+    }
     public TNPYResponse grantAndExpendStatistics(  String startTime,String endTime,String plantID,String processID )
     {
         TNPYResponse result = new TNPYResponse();

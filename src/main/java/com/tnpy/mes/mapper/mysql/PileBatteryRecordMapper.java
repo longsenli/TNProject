@@ -4,6 +4,7 @@ import com.tnpy.mes.model.mysql.PileBatteryRecord;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,4 +26,7 @@ public interface PileBatteryRecordMapper {
 
     @Select("select * from tb_pilebatteryrecord ${filter} ")
     List<PileBatteryRecord> selectByFilter(@Param("filter") String filter);
+
+    @Update(" update tb_pilebatteryrecord set status = #{status} where id = #{id}")
+    int updateStatusByPrimaryKey(String id,String status);
 }

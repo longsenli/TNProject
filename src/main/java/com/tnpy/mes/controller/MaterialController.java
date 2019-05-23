@@ -5,6 +5,7 @@ import com.tnpy.mes.service.materialService.IMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -63,13 +64,13 @@ public class MaterialController {
     }
 
     @RequestMapping(value = "/addgrantmaterialrecord")
-    public TNPYResponse addGrantMaterialRecord( String orderSplitID,String operator ,int orderType ) {
-        return  materialService.addGrantMaterialRecord( orderSplitID, operator,orderType);
+    public TNPYResponse addGrantMaterialRecord( String orderSplitID,String operator ,int orderType,@RequestParam(defaultValue = "-1")String processID ) {
+        return  materialService.addGrantMaterialRecord( orderSplitID, operator,orderType, processID);
     }
     @RequestMapping(value = "/addgrantmaterialrecordbybatch")
-    public TNPYResponse addGrantMaterialRecordByBatch( String orderIDList,String operator ,String orderType)
+    public TNPYResponse addGrantMaterialRecordByBatch( String orderIDList,String operator ,String orderType,@RequestParam(defaultValue = "-1")String processID)
     {
-        return  materialService.addGrantMaterialRecordByBatch( orderIDList, operator,orderType);
+        return  materialService.addGrantMaterialRecordByBatch( orderIDList, operator,orderType, processID);
     }
     @RequestMapping(value = "/grantdndexpendstatistics")
     public TNPYResponse grantAndExpendStatistics(  String startTime,String endTime,String plantID,String processID ) {
