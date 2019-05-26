@@ -15,11 +15,12 @@
     <result column="outNum" jdbcType="INTEGER" property="outnum" />
     <result column="operator" jdbcType="VARCHAR" property="operator" />
     <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="onlineStorageInNum" jdbcType="INTEGER" property="onlinestorageinnum" />
   </resultMap>
   <sql id="Base_Column_List">
     id, materialID, plantID, processID, currentNum, lastStorage, updateTime, productionNum,
-    inNum, expendNum, outNum, operator, status, onlineStorageInNum
+    inNum, expendNum, outNum, operator, status,remark, onlineStorageInNum
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
@@ -36,12 +37,12 @@
       processID, currentNum, lastStorage,
       updateTime, productionNum, inNum,
       expendNum, outNum, operator,
-      status, onlineStorageInNum)
+      status, remark,onlineStorageInNum)
     values (#{id,jdbcType=VARCHAR}, #{materialid,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR},
       #{processid,jdbcType=VARCHAR}, #{currentnum,jdbcType=INTEGER}, #{laststorage,jdbcType=INTEGER},
       #{updatetime,jdbcType=TIMESTAMP}, #{productionnum,jdbcType=INTEGER}, #{innum,jdbcType=INTEGER},
       #{expendnum,jdbcType=INTEGER}, #{outnum,jdbcType=INTEGER}, #{operator,jdbcType=VARCHAR},
-      #{status,jdbcType=VARCHAR}, #{onlinestorageinnum,jdbcType=INTEGER})
+      #{status,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR}, #{onlinestorageinnum,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.MaterialInventoryRecord">
     insert into tb_materialinventoryrecord
@@ -84,6 +85,9 @@
       </if>
       <if test="status != null">
         status,
+      </if>
+      <if test="remark != null">
+        remark,
       </if>
       <if test="onlinestorageinnum != null">
         onlineStorageInNum,
@@ -129,6 +133,9 @@
       <if test="status != null">
         #{status,jdbcType=VARCHAR},
       </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
       <if test="onlinestorageinnum != null">
         #{onlinestorageinnum,jdbcType=INTEGER},
       </if>
@@ -173,6 +180,9 @@
       <if test="status != null">
         status = #{status,jdbcType=VARCHAR},
       </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
       <if test="onlinestorageinnum != null">
         onlineStorageInNum = #{onlinestorageinnum,jdbcType=INTEGER},
       </if>
@@ -193,6 +203,7 @@
       outNum = #{outnum,jdbcType=INTEGER},
       operator = #{operator,jdbcType=VARCHAR},
       status = #{status,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
       onlineStorageInNum = #{onlinestorageinnum,jdbcType=INTEGER}
     where id = #{id,jdbcType=VARCHAR}
   </update>

@@ -87,6 +87,11 @@ public class MaterialController {
         return  materialService.getSecondaryMaterialInventoryStatistics(plantID,processID,startTime,endTime);
     }
 
+    @RequestMapping(value = "/changematerialinventorydata")
+    public TNPYResponse changeMaterialInventoryData( String id,String currentNum,String remark,String type ) {
+        return  materialService.changeMaterialInventoryData(id,currentNum,remark,type);
+    }
+
     @RequestMapping(value = "/getgrantmaterialrecord")
     public TNPYResponse getGrantMaterialRecord( String plantID,String processID,String startTime,String endTime ) {
         return  materialService.getGrantMaterialRecord(plantID,processID,startTime,endTime);

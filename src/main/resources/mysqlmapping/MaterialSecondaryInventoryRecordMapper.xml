@@ -15,12 +15,13 @@
     <result column="outNum" jdbcType="INTEGER" property="outnum" />
     <result column="operator" jdbcType="VARCHAR" property="operator" />
     <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="onlineNum" jdbcType="INTEGER" property="onlinenum" />
     <result column="todayRepair" jdbcType="INTEGER" property="todayrepair" />
   </resultMap>
   <sql id="Base_Column_List">
     id, materialID, plantID, processID, currentNum, lastStorage, updateTime, gainNum, 
-    inNum, expendNum, outNum, operator, status, onlineNum, todayRepair
+    inNum, expendNum, outNum, operator, status, onlineNum, todayRepair,remark
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -37,13 +38,13 @@
       processID, currentNum, lastStorage, 
       updateTime, gainNum, inNum, 
       expendNum, outNum, operator, 
-      status, onlineNum, todayRepair
+      status, onlineNum, todayRepair,remark
       )
     values (#{id,jdbcType=VARCHAR}, #{materialid,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, 
       #{processid,jdbcType=VARCHAR}, #{currentnum,jdbcType=INTEGER}, #{laststorage,jdbcType=INTEGER}, 
       #{updatetime,jdbcType=TIMESTAMP}, #{gainnum,jdbcType=INTEGER}, #{innum,jdbcType=INTEGER}, 
       #{expendnum,jdbcType=INTEGER}, #{outnum,jdbcType=INTEGER}, #{operator,jdbcType=VARCHAR}, 
-      #{status,jdbcType=VARCHAR}, #{onlinenum,jdbcType=INTEGER}, #{todayrepair,jdbcType=INTEGER}
+      #{status,jdbcType=VARCHAR}, #{onlinenum,jdbcType=INTEGER}, #{todayrepair,jdbcType=INTEGER},#{remark,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.MaterialSecondaryInventoryRecord">
@@ -94,6 +95,9 @@
       <if test="todayrepair != null">
         todayRepair,
       </if>
+      <if test="remark != null">
+        remark,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -140,6 +144,9 @@
       </if>
       <if test="todayrepair != null">
         #{todayrepair,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -188,6 +195,9 @@
       <if test="todayrepair != null">
         todayRepair = #{todayrepair,jdbcType=INTEGER},
       </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -206,7 +216,8 @@
       operator = #{operator,jdbcType=VARCHAR},
       status = #{status,jdbcType=VARCHAR},
       onlineNum = #{onlinenum,jdbcType=INTEGER},
-      todayRepair = #{todayrepair,jdbcType=INTEGER}
+      todayRepair = #{todayrepair,jdbcType=INTEGER},
+       remark = #{remark,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

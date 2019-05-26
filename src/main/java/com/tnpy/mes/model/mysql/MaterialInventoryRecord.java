@@ -31,6 +31,16 @@ public class MaterialInventoryRecord {
 
     private String status;
 
+    private String remark;
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
+    }
+
     public Integer getOnlineStorageInNum() {
         return onlineStorageInNum;
     }

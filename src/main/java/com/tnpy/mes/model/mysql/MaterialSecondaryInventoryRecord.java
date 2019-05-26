@@ -35,6 +35,16 @@ public class MaterialSecondaryInventoryRecord {
 
     private Integer todayrepair;
 
+    private String remark;
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
+    }
+
     public String getId() {
         return id;
     }

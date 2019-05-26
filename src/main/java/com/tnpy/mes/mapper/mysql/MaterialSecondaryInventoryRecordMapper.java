@@ -22,7 +22,7 @@ public interface MaterialSecondaryInventoryRecordMapper {
 
     @Insert("insert into tb_materialsecondaryinventoryrecord \n" +
             "select UUID(),g.id,#{plantID},#{processID},(ifnull(currentNum,0) +ifnull(grantNum,0)  -ifnull(expendNum,0)   +ifnull(todayAdd,0) + ifnull(mergeNum,0)  - ifnull(repairNum,0) ) as newNum,ifnull(currentNum,0),now(),ifnull(grantNum,0) ,0," +
-            "ifnull(expendNum,0),ifnull(repairNum,0) ,'system','1',ifnull(onlineNum,0),ifnull(mergeNum,0)  from (\n" +
+            "ifnull(expendNum,0),ifnull(repairNum,0) ,'system','1',ifnull(onlineNum,0),ifnull(mergeNum,0),''  from (\n" +
             "select e.*,f.currentNum from ( select c.id,c.name,c.grantNum,d.expendNum from ( select a.id,a.name,b.grantNum from (\n" +
             "select id,name from sys_material where typeID in ( select materialTypeID from sys_processmaterial where processID = #{processID} and inOrout = '1') )  a\n" +
             "left join ( select batteryType,sum(number) as grantNum from tb_grantmaterialrecord where plantID =#{plantID} and processID = #{lastProcessID} \n" +

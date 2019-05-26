@@ -912,4 +912,31 @@ public class MaterialServiceImpl implements IMaterialService {
             return  result;
         }
     }
+//MaterialInventoryStatistics 一级库存  SecondaryMaterialInventoryStatistics 二级库存
+    public TNPYResponse changeMaterialInventoryData( String id,String currentNum,String remark,String type )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String tableName = "";
+            String updateStr = " currentNum = " + currentNum + ",remark = '" + remark + "' ";
+            if("MaterialInventoryStatistics".equals(type))
+            {
+                tableName ="tb_materialinventoryrecord" ;
+            }
+            if("SecondaryMaterialInventoryStatistics".equals(type))
+            {
+                tableName = "tb_materialsecondaryinventoryrecord";
+            }
+            System.out.println(updateStr + "====" + id + "====" + tableName);
+            materialRecordMapper.updateMaterialInventoryData(tableName,updateStr,id);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("更新出错！" + ex.getMessage());
+            return  result;
+        }
+    }
 }

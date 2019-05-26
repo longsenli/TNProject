@@ -23,6 +23,7 @@ public interface IMaterialService {
 
     public TNPYResponse getMaterialInventoryStatistics( String plantID,String processID,String startTime,String endTime );
     public TNPYResponse getSecondaryMaterialInventoryStatistics( String plantID,String processID,String startTime,String endTime );
+    public TNPYResponse changeMaterialInventoryData( String id,String currentNum,String remark,String type );
 
     public TNPYResponse getGrantMaterialRecord( String plantID,String processID,String startTime,String endTime );
 
