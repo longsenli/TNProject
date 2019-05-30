@@ -928,7 +928,6 @@ public class MaterialServiceImpl implements IMaterialService {
             {
                 tableName = "tb_materialsecondaryinventoryrecord";
             }
-            System.out.println(updateStr + "====" + id + "====" + tableName);
             materialRecordMapper.updateMaterialInventoryData(tableName,updateStr,id);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;

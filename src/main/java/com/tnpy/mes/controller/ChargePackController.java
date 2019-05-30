@@ -57,4 +57,19 @@ public class ChargePackController {
     public TNPYResponse getPileTidyBatteryRecord(String plantID, String processID,String lineID,String startTime,String endTime,String selectType) {
         return  chargePackService.getPileTidyBatteryRecord(plantID,processID,lineID, startTime, endTime,selectType);
     }
+
+    @RequestMapping(value = "/getbatterygearlineinfo")
+    public TNPYResponse getBatteryGearLineInfo(String plantID, String startTime) {
+        return  chargePackService.getBatteryGearLineInfo(plantID, startTime);
+    }
+
+    @RequestMapping(value = "/getbatterygearlinelocationinfo")
+    public TNPYResponse getBatteryGearLineLocationInfo(String plantID,String lineID, String startTime) {
+        return  chargePackService.getBatteryGearLineLocationInfo(plantID, lineID,startTime);
+    }
+
+    @RequestMapping(value = "/getbatterygearrecordinfo")
+    public TNPYResponse getBatteryGearRecordInfo(String plantID, String lineID,String workLocation,String altitude,String startTime) {
+        return  chargePackService.getBatteryGearRecordInfo(plantID,lineID,workLocation,altitude, startTime);
+    }
 }

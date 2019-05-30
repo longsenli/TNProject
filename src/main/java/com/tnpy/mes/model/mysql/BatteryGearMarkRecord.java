@@ -1,5 +1,7 @@
 package com.tnpy.mes.model.mysql;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.Date;
 
 public class BatteryGearMarkRecord {
@@ -26,12 +28,16 @@ public class BatteryGearMarkRecord {
     private Integer dischargetimegroup;
 
     private Integer packagegroup;
-
+    @JSONField(format ="yyyy-MM-dd")
     private Date daytime;
 
     private String status;
 
     private String remark;
+
+    private Integer loopnumber;
+
+    private String dischargetimestring;
 
     public String getId() {
         return id;
@@ -151,5 +157,21 @@ public class BatteryGearMarkRecord {
 
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
+    }
+
+    public Integer getLoopnumber() {
+        return loopnumber;
+    }
+
+    public void setLoopnumber(Integer loopnumber) {
+        this.loopnumber = loopnumber;
+    }
+
+    public String getDischargetimestring() {
+        return dischargetimestring;
+    }
+
+    public void setDischargetimestring(String dischargetimestring) {
+        this.dischargetimestring = dischargetimestring == null ? null : dischargetimestring.trim();
     }
 }

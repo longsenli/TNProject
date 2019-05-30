@@ -19,4 +19,8 @@ public interface IChargePackService {
 
     public TNPYResponse addPileTidyBatteryRecord( String jsonTidyRecord,String pileNum,String perPileMaterialNum,String storeLocation);
     public TNPYResponse getPileTidyBatteryRecord(String plantID, String processID,String lineID,String startTime,String endTime,String selectType);
+
+    public TNPYResponse getBatteryGearLineInfo(String plantID, String startTime);
+    public TNPYResponse getBatteryGearLineLocationInfo(String plantID,String lineID, String startTime);
+    public TNPYResponse getBatteryGearRecordInfo(String plantID, String lineID,String workLocation,String altitude,String startTime);
 }

@@ -4,10 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
-import com.tnpy.mes.mapper.mysql.ChargingRackRecordMapper;
-import com.tnpy.mes.mapper.mysql.ObjectRelationDictMapper;
-import com.tnpy.mes.mapper.mysql.PileBatteryRecordMapper;
-import com.tnpy.mes.mapper.mysql.TidyBatteryRecordMapper;
+import com.tnpy.mes.mapper.mysql.*;
+import com.tnpy.mes.model.mysql.BatteryGearMarkRecord;
 import com.tnpy.mes.model.mysql.ChargingRackRecord;
 import com.tnpy.mes.model.mysql.PileBatteryRecord;
 import com.tnpy.mes.model.mysql.TidyBatteryRecord;
@@ -19,6 +17,7 @@ import org.thymeleaf.util.StringUtils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -38,6 +37,9 @@ public class ChargePackServiceImpl implements IChargePackService {
 
     @Autowired
     private PileBatteryRecordMapper pileBatteryRecordMapper;
+
+    @Autowired
+    private BatteryGearMarkRecordMapper batteryGearMarkRecordMapper;
     //onRack 在架数据 pulloffhistory 下架历史数据 putonhistory 上架历史数据
     public TNPYResponse getChargingRackRecord(String plantID, String processID,String lineID,String locationID,String startTime,String endTime,String selectType)
     {
@@ -374,4 +376,69 @@ public class ChargePackServiceImpl implements IChargePackService {
         }
     }
 
+    public TNPYResponse getBatteryGearLineInfo(String plantID, String startTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = " where plantID ='" + plantID + "' and dayTime >= '" + startTime + "' order by loopNumber,sequenceNumbers";
+
+            // System.out.println(plantID + " 参数 " +processID);
+            List<Map<Object, Object>> batteryGearLineInfo = batteryGearMarkRecordMapper.selectLineInfo(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+            result.setData(JSONObject.toJSON(batteryGearLineInfo).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+
+    public TNPYResponse getBatteryGearLineLocationInfo(String plantID,String lineID, String startTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+
+            String filter = " where plantID ='" + plantID + "' and lineID = '" + lineID+ "' and dayTime  >=  '" + startTime + "' order by loopNumber,sequenceNumbers";
+
+            // System.out.println(plantID + " 参数 " +processID);
+            List<Map<Object, Object>> batteryGearLineInfo = batteryGearMarkRecordMapper.selectLineLocationInfo(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+            result.setData(JSONObject.toJSON(batteryGearLineInfo).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    public TNPYResponse getBatteryGearRecordInfo(String plantID, String lineID,String workLocation,String altitude,String startTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = " where plantID ='" + plantID + "' and lineID = '" + lineID+ "' and locationID ='" +workLocation + "' and altitude = '" + altitude
+                    +"' and dayTime  =  '" + startTime + "' order by loopNumber,sequenceNumbers";
+
+            // System.out.println(plantID + " 参数 " +processID);
+            List<BatteryGearMarkRecord> batteryGearMarkRecordList = batteryGearMarkRecordMapper.selectBatteryGearRecordInfo(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+            result.setData(JSONObject.toJSON(batteryGearMarkRecordList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
 }
