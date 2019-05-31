@@ -57,6 +57,9 @@ public class AutomaticSchedulingTimer {
 
     @Autowired
     private  WageDetailMapper wageDetailMapper;
+
+    @Autowired
+    private  PlanProductionRecordMapper planProductionRecordMapper;
     /**
      * 每天晚上21:50:30运行
      */
@@ -326,7 +329,8 @@ public class AutomaticSchedulingTimer {
                     }
                 }
             }
-
+            SimpleDateFormat dateFormatMonth = new SimpleDateFormat("yyyy-MM");
+            planProductionRecordMapper.updateFinishRate(dateFormatMonth.format(date));
         } catch (Exception ex) {
         }
     }

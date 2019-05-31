@@ -4,6 +4,7 @@ import com.tnpy.mes.model.mysql.PlanProductionRecord;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -28,4 +29,8 @@ public interface PlanProductionRecordMapper {
 
     @Select("select sum(planDailyProduction)/2 as num from tb_planproductionrecord where plantID = #{plantID} and processID = #{processID} and planMonth = #{planMonth}")
     String getplanNumber(String plantID,String processID,String planMonth);
+
+    @Update(" update tb_planproductionrecord a inner join ( select materialID,sum(number) as totalNumber,inputPlantID from tb_materialrecord where inputTime > '2019-05' group by inputPlantID,materialID ) b " +
+            "  on a.plantID = b.inputPlantID and a.materialID = b.materialID  set a.realProduction =ifnull( b.totalNumber,0),a.accomplishmentRatio = format(ifnull( b.totalNumber,0)/a.planProduction * 100,2) where planMonth >= '2019-05' ")
+    int updateFinishRate(String month);
 }
