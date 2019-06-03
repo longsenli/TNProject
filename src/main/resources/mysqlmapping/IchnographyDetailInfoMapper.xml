@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.IchnographyDetailInfoMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.IchnographyDetailInfo">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="mainRegionID" jdbcType="VARCHAR" property="mainregionid" />
+    <result column="mainRegionName" jdbcType="VARCHAR" property="mainregionname" />
+    <result column="regionID" jdbcType="VARCHAR" property="regionid" />
+    <result column="regionName" jdbcType="VARCHAR" property="regionname" />
+    <result column="showName" jdbcType="VARCHAR" property="showname" />
+    <result column="drawNumber" jdbcType="INTEGER" property="drawnumber" />
+    <result column="fillColor" jdbcType="VARCHAR" property="fillcolor" />
+    <result column="outlineColor" jdbcType="VARCHAR" property="outlinecolor" />
+    <result column="shapeType" jdbcType="VARCHAR" property="shapetype" />
+    <result column="shapeDrawParam" jdbcType="VARCHAR" property="shapedrawparam" />
+    <result column="updater" jdbcType="VARCHAR" property="updater" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, mainRegionID, mainRegionName, regionID, regionName, showName, drawNumber, fillColor, 
+    outlineColor, shapeType, shapeDrawParam, updater, updateTime, status, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_ichnographydetailinfo
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_ichnographydetailinfo
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.IchnographyDetailInfo">
+    insert into tb_ichnographydetailinfo (id, mainRegionID, mainRegionName, 
+      regionID, regionName, showName, 
+      drawNumber, fillColor, outlineColor, 
+      shapeType, shapeDrawParam, updater, 
+      updateTime, status, remark
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mainregionid,jdbcType=VARCHAR}, #{mainregionname,jdbcType=VARCHAR}, 
+      #{regionid,jdbcType=VARCHAR}, #{regionname,jdbcType=VARCHAR}, #{showname,jdbcType=VARCHAR}, 
+      #{drawnumber,jdbcType=INTEGER}, #{fillcolor,jdbcType=VARCHAR}, #{outlinecolor,jdbcType=VARCHAR}, 
+      #{shapetype,jdbcType=VARCHAR}, #{shapedrawparam,jdbcType=VARCHAR}, #{updater,jdbcType=VARCHAR}, 
+      #{updatetime,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.IchnographyDetailInfo">
+    insert into tb_ichnographydetailinfo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="mainregionid != null">
+        mainRegionID,
+      </if>
+      <if test="mainregionname != null">
+        mainRegionName,
+      </if>
+      <if test="regionid != null">
+        regionID,
+      </if>
+      <if test="regionname != null">
+        regionName,
+      </if>
+      <if test="showname != null">
+        showName,
+      </if>
+      <if test="drawnumber != null">
+        drawNumber,
+      </if>
+      <if test="fillcolor != null">
+        fillColor,
+      </if>
+      <if test="outlinecolor != null">
+        outlineColor,
+      </if>
+      <if test="shapetype != null">
+        shapeType,
+      </if>
+      <if test="shapedrawparam != null">
+        shapeDrawParam,
+      </if>
+      <if test="updater != null">
+        updater,
+      </if>
+      <if test="updatetime != null">
+        updateTime,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainregionid != null">
+        #{mainregionid,jdbcType=VARCHAR},
+      </if>
+      <if test="mainregionname != null">
+        #{mainregionname,jdbcType=VARCHAR},
+      </if>
+      <if test="regionid != null">
+        #{regionid,jdbcType=VARCHAR},
+      </if>
+      <if test="regionname != null">
+        #{regionname,jdbcType=VARCHAR},
+      </if>
+      <if test="showname != null">
+        #{showname,jdbcType=VARCHAR},
+      </if>
+      <if test="drawnumber != null">
+        #{drawnumber,jdbcType=INTEGER},
+      </if>
+      <if test="fillcolor != null">
+        #{fillcolor,jdbcType=VARCHAR},
+      </if>
+      <if test="outlinecolor != null">
+        #{outlinecolor,jdbcType=VARCHAR},
+      </if>
+      <if test="shapetype != null">
+        #{shapetype,jdbcType=VARCHAR},
+      </if>
+      <if test="shapedrawparam != null">
+        #{shapedrawparam,jdbcType=VARCHAR},
+      </if>
+      <if test="updater != null">
+        #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.IchnographyDetailInfo">
+    update tb_ichnographydetailinfo
+    <set>
+      <if test="mainregionid != null">
+        mainRegionID = #{mainregionid,jdbcType=VARCHAR},
+      </if>
+      <if test="mainregionname != null">
+        mainRegionName = #{mainregionname,jdbcType=VARCHAR},
+      </if>
+      <if test="regionid != null">
+        regionID = #{regionid,jdbcType=VARCHAR},
+      </if>
+      <if test="regionname != null">
+        regionName = #{regionname,jdbcType=VARCHAR},
+      </if>
+      <if test="showname != null">
+        showName = #{showname,jdbcType=VARCHAR},
+      </if>
+      <if test="drawnumber != null">
+        drawNumber = #{drawnumber,jdbcType=INTEGER},
+      </if>
+      <if test="fillcolor != null">
+        fillColor = #{fillcolor,jdbcType=VARCHAR},
+      </if>
+      <if test="outlinecolor != null">
+        outlineColor = #{outlinecolor,jdbcType=VARCHAR},
+      </if>
+      <if test="shapetype != null">
+        shapeType = #{shapetype,jdbcType=VARCHAR},
+      </if>
+      <if test="shapedrawparam != null">
+        shapeDrawParam = #{shapedrawparam,jdbcType=VARCHAR},
+      </if>
+      <if test="updater != null">
+        updater = #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.IchnographyDetailInfo">
+    update tb_ichnographydetailinfo
+    set mainRegionID = #{mainregionid,jdbcType=VARCHAR},
+      mainRegionName = #{mainregionname,jdbcType=VARCHAR},
+      regionID = #{regionid,jdbcType=VARCHAR},
+      regionName = #{regionname,jdbcType=VARCHAR},
+      showName = #{showname,jdbcType=VARCHAR},
+      drawNumber = #{drawnumber,jdbcType=INTEGER},
+      fillColor = #{fillcolor,jdbcType=VARCHAR},
+      outlineColor = #{outlinecolor,jdbcType=VARCHAR},
+      shapeType = #{shapetype,jdbcType=VARCHAR},
+      shapeDrawParam = #{shapedrawparam,jdbcType=VARCHAR},
+      updater = #{updater,jdbcType=VARCHAR},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
