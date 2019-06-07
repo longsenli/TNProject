@@ -15,6 +15,10 @@ public class IndustrialPlant {
 
     private String shortname;
 
+    private String type;
+
+    private String remark;
+
     public String getId() {
         return id;
     }
@@ -69,5 +73,21 @@ public class IndustrialPlant {
 
     public void setShortname(String shortname) {
         this.shortname = shortname == null ? null : shortname.trim();
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type == null ? null : type.trim();
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
     }
 }

@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-
 @Mapper
 @Component
 public interface IndustrialPlantMapper {
@@ -22,6 +21,6 @@ public interface IndustrialPlantMapper {
 
     int updateByPrimaryKey(IndustrialPlant record);
 
-    @Select("select * from sys_industrialPlant")
+    @Select("select * from sys_industrialPlant where type = '1'")
     List<IndustrialPlant> selectAll();
 }
