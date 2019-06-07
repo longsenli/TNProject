@@ -3,14 +3,13 @@ package com.tnpy.mes.service.dataProvenanceService.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
+import com.tnpy.mes.mapper.mysql.DataProvenanceRelationMapper;
 import com.tnpy.mes.mapper.mysql.MaterialRecordMapper;
-import com.tnpy.mes.model.customize.CustomMaterialRecord;
 import com.tnpy.mes.service.dataProvenanceService.IDataProvenanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Description: TODO
@@ -22,32 +21,59 @@ public class dataProvenanceServiceImpl implements IDataProvenanceService {
 
     @Autowired
     private MaterialRecordMapper materialRecordMapper;
-
+    @Autowired
+    private DataProvenanceRelationMapper dataProvenanceRelationMapper;
     public TNPYResponse getProvenanceByOrderID(String orderID )
     {
         TNPYResponse result = new TNPYResponse();
-        List<String> expendOrderList = new ArrayList<>();
-        expendOrderList.add(orderID);
+
+        Set<String> orderList = new HashSet<>();
+        orderList.add(orderID);
         try
         {
             List<String> tmpOrderList = new ArrayList<>();
-            for(int i =0 ;i< expendOrderList.size();i++)
+            String orderFilter = "'" + orderID +"'";
+            while(true)
             {
-                tmpOrderList = materialRecordMapper.getOrderIDByExpendID(expendOrderList.get(i));
-
-                if(tmpOrderList.isEmpty())
-                    continue;
-                for(int j =0 ;j<tmpOrderList.size();j++)
+                tmpOrderList.clear();
+                tmpOrderList = dataProvenanceRelationMapper.selectInOrderIDByOutOrderID(orderFilter);
+                if(tmpOrderList.size() < 1)
                 {
-                    expendOrderList.add(tmpOrderList.get(j));
+                    break;
                 }
+                orderFilter = "";
+                for(int i = 0;i<tmpOrderList.size();i++)
+                {
+                    orderList.add(tmpOrderList.get(i));
+                    orderFilter += "'" + tmpOrderList.get(i) +"',";
+                }
+                orderFilter = orderFilter.substring(0,orderFilter.length()-1);
             }
-            if(expendOrderList.size() == 1)
+            orderFilter = "'" + orderID +"'";
+            while(true)
             {
-                expendOrderList.add("-1");
+                tmpOrderList.clear();
+                tmpOrderList = dataProvenanceRelationMapper.selectOutOrderIDByInOrderID(orderFilter);
+                if(tmpOrderList.size() < 1)
+                {
+                    break;
+                }
+                orderFilter = "'";
+                for(int i = 0;i<tmpOrderList.size();i++)
+                {
+                    orderList.add(tmpOrderList.get(i));
+                    orderFilter +=   "'" + tmpOrderList.get(i) +"',";
+                }
+                orderFilter = orderFilter.substring(0,orderFilter.length()-1);
             }
+            orderFilter = "";
+            Iterator<String> iterator=orderList.iterator();
+            while(iterator.hasNext()){
+                orderFilter +=  "'" + iterator.next()+"',";
+            }
+            orderFilter = orderFilter.substring(0,orderFilter.length()-1);
 
-            List<CustomMaterialRecord> materialRecordList = materialRecordMapper.selectByExpendIDList(expendOrderList);
+            List<Map<Object, Object>> materialRecordList = materialRecordMapper.selectByOrderIDList(orderFilter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(materialRecordList).toString());
             return  result;

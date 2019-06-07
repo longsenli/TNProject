@@ -25,4 +25,10 @@ public interface DataProvenanceRelationMapper {
 
     @Select(" select * from tb_dataprovenancerelation ${filter} ")
     List<DataProvenanceRelation> selectByFilter(@Param("filter") String filter);
+
+    @Select(" select inSubOrderID from tb_dataprovenancerelation where outSubOrderID  in ( ${outOrderIDList} ) ")
+    List<String> selectInOrderIDByOutOrderID(@Param("outOrderIDList") String outOrderIDList);
+
+    @Select(" select outSubOrderID from tb_dataprovenancerelation where inSubOrderID  in ( ${inOrderIDList} ) ")
+    List<String> selectOutOrderIDByInOrderID(@Param("inOrderIDList") String inOrderIDList);
 }
