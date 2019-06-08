@@ -21,6 +21,8 @@ public class NotificationGroup {
 
     private String remark;
 
+    private Integer sortnum;
+
     public String getId() {
         return id;
     }
@@ -91,5 +93,13 @@ public class NotificationGroup {
 
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
+    }
+
+    public Integer getSortnum() {
+        return sortnum;
+    }
+
+    public void setSortnum(Integer sortnum) {
+        this.sortnum = sortnum;
     }
 }
