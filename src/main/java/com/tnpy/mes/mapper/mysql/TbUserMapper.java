@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 @Component
@@ -34,4 +35,7 @@ public interface TbUserMapper {
 	int updateByPrimaryKeySelective(TbUser record);
 
 	int updateByPrimaryKey(TbUser record);
+
+	@Select("select userID,name,mobilephone,industrialplant_name,productionprocess_name from tb_user where state = '1' order by name ")
+	List<Map<Object, Object>> selectAllBasicUserInfo();
 }

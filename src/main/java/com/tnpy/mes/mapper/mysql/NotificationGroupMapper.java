@@ -23,4 +23,7 @@ public interface NotificationGroupMapper {
 
     @Select("select * from tb_notificationgroup where status != '-1' order by sortNum")
     List<NotificationGroup> selectAllGroup();
+
+    @Select("select name from tb_notificationgroup where id = #{id}")
+    String selectGroupNameByID(String id);
 }
