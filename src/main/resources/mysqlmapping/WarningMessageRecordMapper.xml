@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.WarningMessageRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.WarningMessageRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="notificationtypeID" jdbcType="VARCHAR" property="notificationtypeid" />
+    <result column="paramID" jdbcType="VARCHAR" property="paramid" />
+    <result column="equipmentID" jdbcType="VARCHAR" property="equipmentid" />
+    <result column="level" jdbcType="VARCHAR" property="level" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="message" jdbcType="VARCHAR" property="message" />
+    <result column="updater" jdbcType="VARCHAR" property="updater" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, notificationtypeID, paramID, equipmentID, level, type, message, updater, updateTime, 
+    status, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_warningmessagerecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_warningmessagerecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.WarningMessageRecord">
+    insert into tb_warningmessagerecord (id, notificationtypeID, paramID, 
+      equipmentID, level, type, 
+      message, updater, updateTime, 
+      status, remark)
+    values (#{id,jdbcType=VARCHAR}, #{notificationtypeid,jdbcType=VARCHAR}, #{paramid,jdbcType=VARCHAR}, 
+      #{equipmentid,jdbcType=VARCHAR}, #{level,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
+      #{message,jdbcType=VARCHAR}, #{updater,jdbcType=VARCHAR}, #{updatetime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.WarningMessageRecord">
+    insert into tb_warningmessagerecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="notificationtypeid != null">
+        notificationtypeID,
+      </if>
+      <if test="paramid != null">
+        paramID,
+      </if>
+      <if test="equipmentid != null">
+        equipmentID,
+      </if>
+      <if test="level != null">
+        level,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="message != null">
+        message,
+      </if>
+      <if test="updater != null">
+        updater,
+      </if>
+      <if test="updatetime != null">
+        updateTime,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="notificationtypeid != null">
+        #{notificationtypeid,jdbcType=VARCHAR},
+      </if>
+      <if test="paramid != null">
+        #{paramid,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentid != null">
+        #{equipmentid,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="message != null">
+        #{message,jdbcType=VARCHAR},
+      </if>
+      <if test="updater != null">
+        #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.WarningMessageRecord">
+    update tb_warningmessagerecord
+    <set>
+      <if test="notificationtypeid != null">
+        notificationtypeID = #{notificationtypeid,jdbcType=VARCHAR},
+      </if>
+      <if test="paramid != null">
+        paramID = #{paramid,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentid != null">
+        equipmentID = #{equipmentid,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="message != null">
+        message = #{message,jdbcType=VARCHAR},
+      </if>
+      <if test="updater != null">
+        updater = #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.WarningMessageRecord">
+    update tb_warningmessagerecord
+    set notificationtypeID = #{notificationtypeid,jdbcType=VARCHAR},
+      paramID = #{paramid,jdbcType=VARCHAR},
+      equipmentID = #{equipmentid,jdbcType=VARCHAR},
+      level = #{level,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      message = #{message,jdbcType=VARCHAR},
+      updater = #{updater,jdbcType=VARCHAR},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

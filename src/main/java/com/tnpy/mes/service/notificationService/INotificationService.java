@@ -29,4 +29,6 @@ public interface INotificationService {
     public TNPYResponse deleteNotificationGroupDetailByParam(  String groupID,String typeParamID);
 
     public TNPYResponse getBasicUserInfo();
+
+    public TNPYResponse getWaringMessageRecord(String startTime,String endTime);
 }

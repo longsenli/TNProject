@@ -1,5 +1,7 @@
 package com.tnpy.mes.model.mysql;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.Date;
 
 public class NotificationStaffDetail {
@@ -14,7 +16,7 @@ public class NotificationStaffDetail {
     private String staffname;
 
     private String operatorid;
-
+    @JSONField(format ="yyyy-MM-dd HH:mm:ss")
     private Date updatetime;
 
     private String operatorname;

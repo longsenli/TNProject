@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.*;
-import com.tnpy.mes.model.mysql.NotificationGroup;
-import com.tnpy.mes.model.mysql.NotificationGroupDetail;
-import com.tnpy.mes.model.mysql.NotificationStaffDetail;
-import com.tnpy.mes.model.mysql.NotificationTypeDetail;
+import com.tnpy.mes.model.mysql.*;
 import com.tnpy.mes.service.notificationService.INotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +30,9 @@ public class NotificationServiceImpl implements INotificationService {
     private NotificationStaffDetailMapper notificationStaffDetailMapper;
     @Autowired
     private NotificationTypeDetailMapper notificationTypeDetailMapper;
+
+    @Autowired
+    private  WarningMessageRecordMapper warningMessageRecordMapper;
 
     @Autowired
     private TbUserMapper tbUserMapper;
@@ -407,6 +407,25 @@ public class NotificationServiceImpl implements INotificationService {
         catch (Exception ex)
         {
             result.setMessage("删除失败！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    public TNPYResponse getWaringMessageRecord(String startTime,String endTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = " where updateTime >= '" + startTime + "' and updateTime < '" + endTime + "' order by updateTime desc ";
+            List<WarningMessageRecord> warningMessageRecordList = warningMessageRecordMapper.selectByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+            result.setData(JSONObject.toJSON(warningMessageRecordList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
             return  result;
         }
     }

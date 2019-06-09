@@ -109,4 +109,10 @@ public class NotificationController {
     {
         return notificationService.getBasicUserInfo();
     }
+
+    @RequestMapping(value = "/getwaringmessagerecord")
+    public TNPYResponse getWaringMessageRecord(String startTime,String endTime)
+    {
+        return notificationService.getWaringMessageRecord(startTime,endTime);
+    }
 }
