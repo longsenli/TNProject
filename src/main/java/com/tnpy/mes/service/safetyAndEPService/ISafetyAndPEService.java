@@ -9,4 +9,8 @@ import com.tnpy.common.utils.web.TNPYResponse;
  */
 public interface ISafetyAndPEService {
     public TNPYResponse getIchnographyDetailInfo(String mainRegionID);
+
+    public TNPYResponse getHiddenDangerManageRecord(String plantID,String selectLevel,String startTime,String endTime);
+    public TNPYResponse deteteHiddenDangerManageRecord(String id);
+    public TNPYResponse changeHiddenDangerManageRecord( String jsonStr);
 }

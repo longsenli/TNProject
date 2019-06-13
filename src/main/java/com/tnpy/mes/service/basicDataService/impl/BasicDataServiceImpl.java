@@ -67,6 +67,28 @@ public class BasicDataServiceImpl implements IBasicDataService {
             return  result;
         }
     }
+    public TNPYResponse getIndustrialPlantByFilter(String type)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = " where status != '-1'";
+            if(!"-1".equals(type))
+            {
+                filter += " and type = '" + type + "'";
+            }
+            filter += " order by id ";
+            List<IndustrialPlant> industrialPlantList = industrialPlantMapper.selectByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(industrialPlantList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
     @Override
     public TNPYResponse getProductionProcess() {
         TNPYResponse result = new TNPYResponse();

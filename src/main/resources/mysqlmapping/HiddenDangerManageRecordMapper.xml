@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.HiddenDangerManageRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.HiddenDangerManageRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="areaID" jdbcType="VARCHAR" property="areaid" />
+    <result column="equipmentID" jdbcType="VARCHAR" property="equipmentid" />
+    <result column="dangerLevel" jdbcType="VARCHAR" property="dangerlevel" />
+    <result column="equipmentType" jdbcType="VARCHAR" property="equipmenttype" />
+    <result column="hiddendanger" jdbcType="VARCHAR" property="hiddendanger" />
+    <result column="hiddenDangerType" jdbcType="VARCHAR" property="hiddendangertype" />
+    <result column="hiddenDangerPicture" jdbcType="VARCHAR" property="hiddendangerpicture" />
+    <result column="reporter" jdbcType="VARCHAR" property="reporter" />
+    <result column="reportTime" jdbcType="TIMESTAMP" property="reporttime" />
+    <result column="dealInfo" jdbcType="VARCHAR" property="dealinfo" />
+    <result column="dealStaff" jdbcType="VARCHAR" property="dealstaff" />
+    <result column="dealTime" jdbcType="TIMESTAMP" property="dealtime" />
+    <result column="dealPicture" jdbcType="VARCHAR" property="dealpicture" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, plantID, areaID, equipmentID, dangerLevel, equipmentType, hiddendanger, hiddenDangerType, 
+    hiddenDangerPicture, reporter, reportTime, dealInfo, dealStaff, dealTime, dealPicture, 
+    status, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_hiddendangermanagerecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_hiddendangermanagerecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.HiddenDangerManageRecord">
+    insert into tb_hiddendangermanagerecord (id, plantID, areaID, 
+      equipmentID, dangerLevel, equipmentType, 
+      hiddendanger, hiddenDangerType, hiddenDangerPicture, 
+      reporter, reportTime, dealInfo, 
+      dealStaff, dealTime, dealPicture, 
+      status, remark)
+    values (#{id,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{areaid,jdbcType=VARCHAR}, 
+      #{equipmentid,jdbcType=VARCHAR}, #{dangerlevel,jdbcType=VARCHAR}, #{equipmenttype,jdbcType=VARCHAR}, 
+      #{hiddendanger,jdbcType=VARCHAR}, #{hiddendangertype,jdbcType=VARCHAR}, #{hiddendangerpicture,jdbcType=VARCHAR}, 
+      #{reporter,jdbcType=VARCHAR}, #{reporttime,jdbcType=TIMESTAMP}, #{dealinfo,jdbcType=VARCHAR}, 
+      #{dealstaff,jdbcType=VARCHAR}, #{dealtime,jdbcType=TIMESTAMP}, #{dealpicture,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.HiddenDangerManageRecord">
+    insert into tb_hiddendangermanagerecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="areaid != null">
+        areaID,
+      </if>
+      <if test="equipmentid != null">
+        equipmentID,
+      </if>
+      <if test="dangerlevel != null">
+        dangerLevel,
+      </if>
+      <if test="equipmenttype != null">
+        equipmentType,
+      </if>
+      <if test="hiddendanger != null">
+        hiddendanger,
+      </if>
+      <if test="hiddendangertype != null">
+        hiddenDangerType,
+      </if>
+      <if test="hiddendangerpicture != null">
+        hiddenDangerPicture,
+      </if>
+      <if test="reporter != null">
+        reporter,
+      </if>
+      <if test="reporttime != null">
+        reportTime,
+      </if>
+      <if test="dealinfo != null">
+        dealInfo,
+      </if>
+      <if test="dealstaff != null">
+        dealStaff,
+      </if>
+      <if test="dealtime != null">
+        dealTime,
+      </if>
+      <if test="dealpicture != null">
+        dealPicture,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="areaid != null">
+        #{areaid,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentid != null">
+        #{equipmentid,jdbcType=VARCHAR},
+      </if>
+      <if test="dangerlevel != null">
+        #{dangerlevel,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmenttype != null">
+        #{equipmenttype,jdbcType=VARCHAR},
+      </if>
+      <if test="hiddendanger != null">
+        #{hiddendanger,jdbcType=VARCHAR},
+      </if>
+      <if test="hiddendangertype != null">
+        #{hiddendangertype,jdbcType=VARCHAR},
+      </if>
+      <if test="hiddendangerpicture != null">
+        #{hiddendangerpicture,jdbcType=VARCHAR},
+      </if>
+      <if test="reporter != null">
+        #{reporter,jdbcType=VARCHAR},
+      </if>
+      <if test="reporttime != null">
+        #{reporttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dealinfo != null">
+        #{dealinfo,jdbcType=VARCHAR},
+      </if>
+      <if test="dealstaff != null">
+        #{dealstaff,jdbcType=VARCHAR},
+      </if>
+      <if test="dealtime != null">
+        #{dealtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dealpicture != null">
+        #{dealpicture,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.HiddenDangerManageRecord">
+    update tb_hiddendangermanagerecord
+    <set>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="areaid != null">
+        areaID = #{areaid,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentid != null">
+        equipmentID = #{equipmentid,jdbcType=VARCHAR},
+      </if>
+      <if test="dangerlevel != null">
+        dangerLevel = #{dangerlevel,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmenttype != null">
+        equipmentType = #{equipmenttype,jdbcType=VARCHAR},
+      </if>
+      <if test="hiddendanger != null">
+        hiddendanger = #{hiddendanger,jdbcType=VARCHAR},
+      </if>
+      <if test="hiddendangertype != null">
+        hiddenDangerType = #{hiddendangertype,jdbcType=VARCHAR},
+      </if>
+      <if test="hiddendangerpicture != null">
+        hiddenDangerPicture = #{hiddendangerpicture,jdbcType=VARCHAR},
+      </if>
+      <if test="reporter != null">
+        reporter = #{reporter,jdbcType=VARCHAR},
+      </if>
+      <if test="reporttime != null">
+        reportTime = #{reporttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dealinfo != null">
+        dealInfo = #{dealinfo,jdbcType=VARCHAR},
+      </if>
+      <if test="dealstaff != null">
+        dealStaff = #{dealstaff,jdbcType=VARCHAR},
+      </if>
+      <if test="dealtime != null">
+        dealTime = #{dealtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dealpicture != null">
+        dealPicture = #{dealpicture,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.HiddenDangerManageRecord">
+    update tb_hiddendangermanagerecord
+    set plantID = #{plantid,jdbcType=VARCHAR},
+      areaID = #{areaid,jdbcType=VARCHAR},
+      equipmentID = #{equipmentid,jdbcType=VARCHAR},
+      dangerLevel = #{dangerlevel,jdbcType=VARCHAR},
+      equipmentType = #{equipmenttype,jdbcType=VARCHAR},
+      hiddendanger = #{hiddendanger,jdbcType=VARCHAR},
+      hiddenDangerType = #{hiddendangertype,jdbcType=VARCHAR},
+      hiddenDangerPicture = #{hiddendangerpicture,jdbcType=VARCHAR},
+      reporter = #{reporter,jdbcType=VARCHAR},
+      reportTime = #{reporttime,jdbcType=TIMESTAMP},
+      dealInfo = #{dealinfo,jdbcType=VARCHAR},
+      dealStaff = #{dealstaff,jdbcType=VARCHAR},
+      dealTime = #{dealtime,jdbcType=TIMESTAMP},
+      dealPicture = #{dealpicture,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

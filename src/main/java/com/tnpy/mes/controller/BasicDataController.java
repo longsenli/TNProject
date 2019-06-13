@@ -23,6 +23,12 @@ public class BasicDataController {
        return  basicDataService.getIndustrialPlant();
     }
 
+    @RequestMapping(value = "/getindustrialplantbyfilter")
+    public TNPYResponse getIndustrialPlantByFilter(String type) {
+        return  basicDataService.getIndustrialPlantByFilter(type);
+    }
+
+
     @RequestMapping(value = "/getproductionprocess")
     public TNPYResponse getProductionProcess() {
         return  basicDataService.getProductionProcess();
