@@ -78,7 +78,7 @@ public class ChargePackServiceImpl implements IChargePackService {
             {
                 filter += " and workLocation = '" + locationID + "' ";
             }
-            filter += " order by putonDate asc ";
+            filter += " order by workLocation, putonDate asc ";
             // System.out.println(plantID + " 参数 " +processID);
             List<ChargingRackRecord> workLocationList = chargingRackRecordMapper.selectByFilter(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
