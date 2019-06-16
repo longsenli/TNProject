@@ -48,6 +48,18 @@ public class ChargePackController {
         return  chargePackService.changeTidyBatteryRecord(jsonStr);
     }
 
+
+    @RequestMapping(value = "/getpilerecordbypileid")
+    public TNPYResponse getPileRecordByPileID( String id) {
+        return  chargePackService.getPileRecordByPileID(id);
+    }
+
+    @RequestMapping(value = "/expendpilebatterybypackage")
+    public TNPYResponse expendPileBatteryByPackage( String id,int packageNum,int totalNum) {
+        return  chargePackService.expendPileBatteryByPackage(id,packageNum,totalNum);
+    }
+
+
     @RequestMapping(value = "/addpiletidybatteryrecord")
     public TNPYResponse addPileTidyBatteryRecord( String jsonTidyRecord,String pileNum,String perPileMaterialNum,String storeLocation) {
         return  chargePackService.addPileTidyBatteryRecord(jsonTidyRecord,pileNum,perPileMaterialNum,storeLocation);

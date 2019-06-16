@@ -336,6 +336,63 @@ public class ChargePackServiceImpl implements IChargePackService {
         return  result;
     }
 
+    public TNPYResponse getPileRecordByPileID( String id)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = " where id = '" + id +"' ";
+            // System.out.println(plantID + " 参数 " +processID);
+            List<PileBatteryRecord> pileBatteryRecordList = pileBatteryRecordMapper.selectByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+            result.setData(JSONObject.toJSON(pileBatteryRecordList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+    public TNPYResponse expendPileBatteryByPackage( String id,int packageNum,int totalNum)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            if(packageNum == totalNum)
+            {
+                pileBatteryRecordMapper.updateStatusByPrimaryKey(id,StatusEnum.InOutStatus.Output.getIndex() + "");
+            }
+            else
+            {
+                String filter = " where id = '" + id +"' ";
+                // System.out.println(plantID + " 参数 " +processID);
+                List<PileBatteryRecord> pileBatteryRecordList1 = pileBatteryRecordMapper.selectByFilter(filter);
+                List<PileBatteryRecord> pileBatteryRecordList2 = pileBatteryRecordMapper.selectByFilter(filter);
+                pileBatteryRecordList1.get(0).setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                pileBatteryRecordList1.get(0).setProductionnumber((float)totalNum - packageNum );
+                pileBatteryRecordMapper.insertSelective(pileBatteryRecordList1.get(0));
+
+                pileBatteryRecordList2.get(0).setProductionnumber((float)packageNum);
+                pileBatteryRecordList2.get(0).setStatus(StatusEnum.InOutStatus.Output.getIndex() + "");
+                pileBatteryRecordMapper.updateByPrimaryKey(pileBatteryRecordList2.get(0));
+            }
+           // String filter = " where id = '" + id +"' ";
+            // System.out.println(plantID + " 参数 " +processID);
+            //List<PileBatteryRecord> pileBatteryRecordList = pileBatteryRecordMapper.selectByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+           // result.setData(JSONObject.toJSON(pileBatteryRecordList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("包装消耗出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
     //onWorkbench 在工作台数据  workbenchHistory 工作台历史数据
     public TNPYResponse getPileTidyBatteryRecord(String plantID, String processID,String lineID,String startTime,String endTime,String selectType)
     {
