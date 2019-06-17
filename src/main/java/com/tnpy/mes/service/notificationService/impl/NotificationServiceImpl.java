@@ -36,6 +36,8 @@ public class NotificationServiceImpl implements INotificationService {
 
     @Autowired
     private TbUserMapper tbUserMapper;
+
+
     public TNPYResponse getBasicUserInfo()
     {
         TNPYResponse result = new TNPYResponse();

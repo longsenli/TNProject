@@ -1,7 +1,6 @@
 package com.tnpy.mes.service.emailSendService.impl;
 
 import com.tnpy.mes.service.emailSendService.IEmailSendService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Service;
  */
 @Service("emailSendService")
 public class EmailSendServiceImpl implements IEmailSendService {
-    @Autowired
+  //  @Autowired
     private JavaMailSender jms;
 
     public String send()

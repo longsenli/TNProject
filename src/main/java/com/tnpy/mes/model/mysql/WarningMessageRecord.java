@@ -27,6 +27,10 @@ public class WarningMessageRecord {
 
     private String remark;
 
+    private String plantid;
+
+    private String processid;
+
     public String getId() {
         return id;
     }
@@ -113,5 +117,21 @@ public class WarningMessageRecord {
 
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
+    }
+
+    public String getPlantid() {
+        return plantid;
+    }
+
+    public void setPlantid(String plantid) {
+        this.plantid = plantid == null ? null : plantid.trim();
+    }
+
+    public String getProcessid() {
+        return processid;
+    }
+
+    public void setProcessid(String processid) {
+        this.processid = processid == null ? null : processid.trim();
     }
 }

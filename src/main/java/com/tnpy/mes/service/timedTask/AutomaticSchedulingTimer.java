@@ -5,6 +5,8 @@ import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.mes.mapper.mysql.*;
 import com.tnpy.mes.model.mysql.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -60,6 +62,9 @@ public class AutomaticSchedulingTimer {
 
     @Autowired
     private  PlanProductionRecordMapper planProductionRecordMapper;
+
+    @Autowired
+    private  WarningMessageRecordMapper warningMessageRecordMapper;
     /**
      * 每天晚上21:50:30运行
      */
@@ -334,4 +339,42 @@ public class AutomaticSchedulingTimer {
         } catch (Exception ex) {
         }
     }
+    @Autowired
+    private JavaMailSender jms;
+
+    @Scheduled(cron = "0 54 6 * * ?")
+    public void automaticPushSafetyNotification() {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            Date date = new Date();//取时间
+
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(date);
+            calendar.add(Calendar.MINUTE, -5);
+            date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+
+            String filter =" where notificationtypeID = '100001' and updateTime > '" + dateFormat.format(date) +"'";
+           List<WarningMessageRecord> warningMessageRecordList = warningMessageRecordMapper.selectByFilter(filter);
+
+           String messageDetail = "";
+          // List<> 根据消息类型寻找推送的人
+           for(int i =0;i<warningMessageRecordList.size();i++)
+           {
+               messageDetail +=  warningMessageRecordList.get(i).getMessage() +".\r\n ";
+           }
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            //谁发的
+            mailMessage.setFrom("llsbenign@163.com");
+            //发给谁
+            mailMessage.setTo("631620498@qq.com");
+            //标题
+            mailMessage.setSubject("安全隐患");
+            //内容
+            mailMessage.setText(messageDetail);
+            jms.send(mailMessage);
+
+        } catch (Exception ex) {
+        }
+    }
+
 }

@@ -5,8 +5,10 @@ import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.HiddenDangerManageRecordMapper;
 import com.tnpy.mes.mapper.mysql.IchnographyDetailInfoMapper;
+import com.tnpy.mes.mapper.mysql.WarningMessageRecordMapper;
 import com.tnpy.mes.model.mysql.HiddenDangerManageRecord;
 import com.tnpy.mes.model.mysql.IchnographyDetailInfo;
+import com.tnpy.mes.model.mysql.WarningMessageRecord;
 import com.tnpy.mes.service.safetyAndEPService.ISafetyAndPEService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +32,8 @@ public class SafetyAndPEService implements ISafetyAndPEService {
 
     @Autowired
     private HiddenDangerManageRecordMapper hiddenDangerManageRecordMapper;
-
+    @Autowired
+    private WarningMessageRecordMapper warningMessageRecordMapper;
     public TNPYResponse getIchnographyDetailInfo(String mainRegionID){
         TNPYResponse result = new TNPYResponse();
         try
@@ -99,6 +102,20 @@ public class SafetyAndPEService implements ISafetyAndPEService {
             {
                 hiddenDangerManageRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 hiddenDangerManageRecord.setStatus("1");
+                if(hiddenDangerManageRecord.getDangerlevel().equals("Ⅱ级") || hiddenDangerManageRecord.getDangerlevel().equals("Ⅰ级"))
+                {
+                    WarningMessageRecord warningMessageRecord = new WarningMessageRecord();
+                    warningMessageRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                    warningMessageRecord.setNotificationtypeid("100001");
+                    warningMessageRecord.setPlantid(hiddenDangerManageRecord.getPlantid());
+                    warningMessageRecord.setMessage(hiddenDangerManageRecord.getHiddendanger());
+                    warningMessageRecord.setUpdater(hiddenDangerManageRecord.getReporter());
+                    warningMessageRecord.setType("安全隐患");
+                    warningMessageRecord.setLevel("1");
+                    warningMessageRecord.setStatus("1");
+                    warningMessageRecord.setUpdatetime(new Date());
+                    warningMessageRecordMapper.insertSelective(warningMessageRecord);
+                }
                 hiddenDangerManageRecordMapper.insertSelective(hiddenDangerManageRecord);
             }
             else
