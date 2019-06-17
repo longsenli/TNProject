@@ -14,6 +14,7 @@ import org.thymeleaf.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -115,5 +116,31 @@ public class SafetyAndPEService implements ISafetyAndPEService {
             result.setMessage("插入失败！" + ex.getMessage());
         }
         return  result;
+    }
+
+    public TNPYResponse getHiddenDangerManageCharts(String plantID,String selectLevel,String startTime,String endTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            String filter = " where status != '-1' and  reportTime >='" + startTime + "' and reportTime <'" + endTime + "' ";
+
+            if (!"-1".equals(plantID)) {
+                filter += " and plantID = '" + plantID + "' ";
+            }
+            if (!"-1".equals(selectLevel)) {
+                filter += " and dangerLevel = '" + selectLevel + "' ";
+            }
+
+            filter += " group by plantID,status  ";
+            // System.out.println(plantID + " 参数 " +processID);
+            List<Map<Object, Object>> hiddenDangerManageRecordList = hiddenDangerManageRecordMapper.selectRecordSummaryByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+            result.setData(JSONObject.toJSON(hiddenDangerManageRecordList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
     }
 }

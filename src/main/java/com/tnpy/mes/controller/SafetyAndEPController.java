@@ -39,6 +39,11 @@ public class SafetyAndEPController {
         return  safetyAndPEService.getHiddenDangerManageRecord(plantID,selectLevel, startTime, endTime);
     }
 
+    @RequestMapping(value = "/gethiddendangermanagecharts")
+    public TNPYResponse getHiddenDangerManageCharts(String plantID,String selectLevel,String startTime,String endTime) {
+        return  safetyAndPEService.getHiddenDangerManageCharts(plantID,selectLevel, startTime, endTime);
+    }
+
     @RequestMapping(value = "/detetehiddendangermanagerecord")
     public TNPYResponse deteteHiddenDangerManageRecord(String id) {
         return  safetyAndPEService.deteteHiddenDangerManageRecord(id);

@@ -13,4 +13,5 @@ public interface ISafetyAndPEService {
     public TNPYResponse getHiddenDangerManageRecord(String plantID,String selectLevel,String startTime,String endTime);
     public TNPYResponse deteteHiddenDangerManageRecord(String id);
     public TNPYResponse changeHiddenDangerManageRecord( String jsonStr);
+    public TNPYResponse getHiddenDangerManageCharts(String plantID,String selectLevel,String startTime,String endTime);
 }
