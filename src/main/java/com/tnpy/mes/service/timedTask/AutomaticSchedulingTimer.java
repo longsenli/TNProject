@@ -342,7 +342,8 @@ public class AutomaticSchedulingTimer {
     @Autowired
     private JavaMailSender jms;
 
-    @Scheduled(cron = "0 54 6 * * ?")
+    @Scheduled(fixedRate = 1000 * 60 * 5)
+   // @Scheduled(fixedRate = 1000 *60)
     public void automaticPushSafetyNotification() {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -351,29 +352,50 @@ public class AutomaticSchedulingTimer {
             Calendar calendar = new GregorianCalendar();
             calendar.setTime(date);
             calendar.add(Calendar.MINUTE, -5);
+            String nowDate = dateFormat.format(date);
             date = calendar.getTime();   //这个时间就是日期往后推一天的结果
 
-            String filter =" where notificationtypeID = '100001' and updateTime > '" + dateFormat.format(date) +"'";
+            String filter =" where notificationtypeID = '100001' and updateTime >= '" + dateFormat.format(date) +"' and updateTime < '" +nowDate + "'" ;
            List<WarningMessageRecord> warningMessageRecordList = warningMessageRecordMapper.selectByFilter(filter);
 
            String messageDetail = "";
+           String plantID = "###";
           // List<> 根据消息类型寻找推送的人
            for(int i =0;i<warningMessageRecordList.size();i++)
            {
                messageDetail +=  warningMessageRecordList.get(i).getMessage() +".\r\n ";
+               plantID += warningMessageRecordList.get(i).getPlantid() +"###";
            }
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            //谁发的
-            mailMessage.setFrom("llsbenign@163.com");
-            //发给谁
-            mailMessage.setTo("631620498@qq.com");
-            //标题
-            mailMessage.setSubject("安全隐患");
-            //内容
-            mailMessage.setText(messageDetail);
-            jms.send(mailMessage);
+           if(warningMessageRecordList.size() <1)
+           {
+               return;
+           }
+           List<Map<Object,Object>> userInfoList = warningMessageRecordMapper.selectUserInfoByWarning("100001");
+
+
+            for(int i =0;i<userInfoList.size();i++)
+            {
+                if(!plantID.contains(userInfoList.get(i).get("industrialplant_id").toString()))
+                {
+                    continue;
+                }
+                SimpleMailMessage mailMessage = new SimpleMailMessage();
+                //谁发的
+                mailMessage.setFrom("llsbenign@163.com");
+                //发给谁
+                mailMessage.setTo(userInfoList.get(i).get("email").toString());
+               // mailMessage.setTo("631620498@qq.com");
+
+                //标题
+                mailMessage.setSubject("安全隐患");
+                //内容
+                mailMessage.setText(messageDetail);
+
+                jms.send(mailMessage);
+            }
 
         } catch (Exception ex) {
+            System.out.println("fail======" +ex.getMessage());
         }
     }
 
