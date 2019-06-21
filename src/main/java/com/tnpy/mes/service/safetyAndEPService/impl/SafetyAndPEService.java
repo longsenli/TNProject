@@ -7,7 +7,6 @@ import com.tnpy.mes.mapper.mysql.HiddenDangerManageRecordMapper;
 import com.tnpy.mes.mapper.mysql.IchnographyDetailInfoMapper;
 import com.tnpy.mes.mapper.mysql.WarningMessageRecordMapper;
 import com.tnpy.mes.model.mysql.HiddenDangerManageRecord;
-import com.tnpy.mes.model.mysql.IchnographyDetailInfo;
 import com.tnpy.mes.model.mysql.WarningMessageRecord;
 import com.tnpy.mes.service.safetyAndEPService.ISafetyAndPEService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,7 @@ public class SafetyAndPEService implements ISafetyAndPEService {
         TNPYResponse result = new TNPYResponse();
         try
         {
-           List<IchnographyDetailInfo> ichnographyDetailInfoList = ichnographyDetailInfoMapper.selectByMinRegionID(mainRegionID);
+           List<Map<Object,Object>> ichnographyDetailInfoList = ichnographyDetailInfoMapper.selectSSTByMinRegionID(mainRegionID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
 
             result.setData(JSONObject.toJSON(ichnographyDetailInfoList).toString());
