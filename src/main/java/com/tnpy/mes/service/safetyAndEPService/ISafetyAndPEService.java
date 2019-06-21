@@ -8,6 +8,7 @@ import com.tnpy.common.utils.web.TNPYResponse;
  * @Date: 2019-06-03 16:31
  */
 public interface ISafetyAndPEService {
+    public TNPYResponse getIchnographyDetailInfoSST(String mainRegionID,String startTime,String endTime);
     public TNPYResponse getIchnographyDetailInfo(String mainRegionID);
 
     public TNPYResponse getHiddenDangerManageRecord(String plantID,String selectLevel,String startTime,String endTime);

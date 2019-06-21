@@ -34,6 +34,12 @@ public class SafetyAndEPController {
         return  safetyAndPEService.getIchnographyDetailInfo(mainRegionID);
     }
 
+    @RequestMapping(value = "/getsalesorderdetailsst")
+    public TNPYResponse getIchnographyDetailInfoSST(String mainRegionID,String startTime,String endTime)
+    {
+        return  safetyAndPEService.getIchnographyDetailInfoSST(mainRegionID,startTime,endTime);
+    }
+
     @RequestMapping(value = "/gethiddendangermanagerecord")
     public TNPYResponse getHiddenDangerManageRecord(String plantID,String selectLevel,String startTime,String endTime) {
         return  safetyAndPEService.getHiddenDangerManageRecord(plantID,selectLevel, startTime, endTime);
