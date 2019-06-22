@@ -425,8 +425,8 @@ public class ChargePackServiceImpl implements IChargePackService {
         {
             String filter = " where status != '-1' ";
 
-                filter += " and batteryDate >= '" + startTime + "' ";
-                filter += " and batteryDate <= '" + endTime + "' ";
+                filter += " and pileTime >= '" + startTime + "' ";
+                filter += " and pileTime <= '" + endTime + "' ";
 
 
             if(!"-1".equals(plantID))
@@ -442,7 +442,7 @@ public class ChargePackServiceImpl implements IChargePackService {
                 filter += " and lineID = '" + lineID + "' ";
             }
 
-            filter += " order by batteryDate asc ";
+            filter += " order by pileTime asc ";
             // System.out.println(plantID + " 参数 " +processID);
             List<PileBatteryRecord> pileBatteryRecordList = pileBatteryRecordMapper.selectByFilter(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
