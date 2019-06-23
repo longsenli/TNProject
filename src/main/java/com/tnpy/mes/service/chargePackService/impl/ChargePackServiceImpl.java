@@ -287,6 +287,16 @@ public class ChargePackServiceImpl implements IChargePackService {
             {
 
                 TidyBatteryRecord tidyBatteryRecord1 = tidyBatteryRecordMapper.selectByPrimaryKey(tidyBatteryRecord.getId());
+
+                if(tidyBatteryRecord.getBacktochargenum() == null)
+                {
+                    tidyBatteryRecord.setBacktochargenum(tidyBatteryRecord1.getBacktochargenum());
+                }
+                if(tidyBatteryRecord.getRepairnumber() == null)
+                {
+                    tidyBatteryRecord.setRepairnumber(tidyBatteryRecord1.getRepairnumber());
+                }
+
                 if((tidyBatteryRecord1.getBacktochargenum() +tidyBatteryRecord1.getRepairnumber() -tidyBatteryRecord.getBacktochargenum() - tidyBatteryRecord.getRepairnumber() ) < 0)
                 {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -305,15 +315,17 @@ public class ChargePackServiceImpl implements IChargePackService {
                     {
                         TidyPackageBatteryInventory tidyPackageBatteryInventory = new TidyPackageBatteryInventory();
                         tidyPackageBatteryInventory.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-                        tidyPackageBatteryInventory.setPlantid(tidyBatteryRecord.getPlantid());
-                        tidyPackageBatteryInventory.setMaterialid(tidyBatteryRecord.getMaterialid());
-                        tidyPackageBatteryInventory.setBackchargenewnum( tidyBatteryRecord.getBacktochargenum().intValue()- tidyBatteryRecord1.getBacktochargenum().intValue() );
-                        tidyPackageBatteryInventory.setRepairnewnum(tidyBatteryRecord.getBacktochargenum().intValue()- tidyBatteryRecord1.getBacktochargenum().intValue() );
-tidyPackageBatteryInventoryMapper.insert(tidyPackageBatteryInventory);
+                        tidyPackageBatteryInventory.setPlantid(tidyBatteryRecord1.getPlantid());
+                        tidyPackageBatteryInventory.setMaterialid(tidyBatteryRecord1.getMaterialid());
+                        tidyPackageBatteryInventory.setBackchargenewnum( tidyPackageBatteryInventory.getBackchargenewnum() + tidyBatteryRecord.getBacktochargenum().intValue()- tidyBatteryRecord1.getBacktochargenum().intValue() );
+                        tidyPackageBatteryInventory.setRepairnewnum(tidyPackageBatteryInventory.getRepairnewnum() + tidyBatteryRecord.getBacktochargenum().intValue()- tidyBatteryRecord1.getBacktochargenum().intValue() );
+                        tidyPackageBatteryInventory.setChecktime(new Date());
+                        tidyPackageBatteryInventory.setRemark("-1");
+                        tidyPackageBatteryInventoryMapper.insert(tidyPackageBatteryInventory);
                     }
                     else
                     {
-                        tidyPackageBatteryInventoryList.get(0).setBackchargenewnum( tidyPackageBatteryInventoryList.get(0).getBackchargenum() + tidyBatteryRecord.getBacktochargenum().intValue()- tidyBatteryRecord1.getBacktochargenum().intValue() );
+                        tidyPackageBatteryInventoryList.get(0).setBackchargenewnum( tidyPackageBatteryInventoryList.get(0).getBackchargenewnum() + tidyBatteryRecord.getBacktochargenum().intValue()- tidyBatteryRecord1.getBacktochargenum().intValue() );
                         tidyPackageBatteryInventoryList.get(0).setRepairnewnum( tidyPackageBatteryInventoryList.get(0).getRepairnewnum() + tidyBatteryRecord.getBacktochargenum().intValue()- tidyBatteryRecord1.getBacktochargenum().intValue() );
                         tidyPackageBatteryInventoryMapper.updateByPrimaryKey(tidyPackageBatteryInventoryList.get(0));
                     }

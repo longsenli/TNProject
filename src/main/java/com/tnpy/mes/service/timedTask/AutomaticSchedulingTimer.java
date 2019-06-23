@@ -65,6 +65,9 @@ public class AutomaticSchedulingTimer {
 
     @Autowired
     private  WarningMessageRecordMapper warningMessageRecordMapper;
+
+    @Autowired
+    private  TidyPackageBatteryInventoryMapper tidyPackageBatteryInventoryMapper;
     /**
      * 每天晚上21:50:30运行
      */
@@ -311,8 +314,11 @@ public class AutomaticSchedulingTimer {
             calendar.add(Calendar.DATE, -1);
             date = calendar.getTime();   //这个时间就是日期往后推一天的结果
             timeStart =dateFormat.format(date) + " 07:00:00";
+
             List<IndustrialPlant> industrialPlantList = industrialPlantMapper.selectAll();
             List<ProductionProcess> productionProcessList = productionProcessMapper.selectAll();
+
+
             for(int i = 0;i<industrialPlantList.size();i++) {
 
                 for (int j = 0; j < productionProcessList.size(); j++) {
@@ -335,9 +341,23 @@ public class AutomaticSchedulingTimer {
                     }
                 }
             }
+
             SimpleDateFormat dateFormatMonth = new SimpleDateFormat("yyyy-MM");
             planProductionRecordMapper.updateFinishRate(dateFormatMonth.format(date));
+
+            date = new Date();
+            String endTime = dateFormat.format(date);
+            calendar.setTime(date);
+            calendar.add(Calendar.DATE, -1);
+            date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+            String startTime = dateFormat.format(date);
+            calendar.add(Calendar.DATE, -8);
+            date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+            String onTidyingTime = dateFormat.format(date);
+            tidyPackageBatteryInventoryMapper.insertInventoryRecord(startTime,endTime,onTidyingTime);
+            tidyPackageBatteryInventoryMapper.deleteRemark();
         } catch (Exception ex) {
+            System.out.println("盘点出错" + ex.getMessage());
         }
     }
     @Autowired
