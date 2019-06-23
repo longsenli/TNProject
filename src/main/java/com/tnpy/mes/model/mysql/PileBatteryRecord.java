@@ -36,6 +36,8 @@ public class PileBatteryRecord {
     private String remark;
 
     private String tidyrecordid;
+    @JSONField(format ="yyyy-MM-dd HH:mm:ss")
+    private Date packagetime;
 
     public String getId() {
         return id;
@@ -163,5 +165,13 @@ public class PileBatteryRecord {
 
     public void setTidyrecordid(String tidyrecordid) {
         this.tidyrecordid = tidyrecordid == null ? null : tidyrecordid.trim();
+    }
+
+    public Date getPackagetime() {
+        return packagetime;
+    }
+
+    public void setPackagetime(Date packagetime) {
+        this.packagetime = packagetime;
     }
 }

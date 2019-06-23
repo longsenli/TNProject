@@ -5,20 +5,14 @@ import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.*;
-import com.tnpy.mes.model.mysql.BatteryGearMarkRecord;
-import com.tnpy.mes.model.mysql.ChargingRackRecord;
-import com.tnpy.mes.model.mysql.PileBatteryRecord;
-import com.tnpy.mes.model.mysql.TidyBatteryRecord;
+import com.tnpy.mes.model.mysql.*;
 import com.tnpy.mes.service.chargePackService.IChargePackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @Description: TODO
@@ -40,6 +34,9 @@ public class ChargePackServiceImpl implements IChargePackService {
 
     @Autowired
     private BatteryGearMarkRecordMapper batteryGearMarkRecordMapper;
+
+    @Autowired
+    private  TidyPackageBatteryInventoryMapper tidyPackageBatteryInventoryMapper;
     //onRack 在架数据 pulloffhistory 下架历史数据 putonhistory 上架历史数据
     public TNPYResponse getChargingRackRecord(String plantID, String processID,String lineID,String locationID,String startTime,String endTime,String selectType)
     {
@@ -288,6 +285,39 @@ public class ChargePackServiceImpl implements IChargePackService {
             }
             else
             {
+
+                TidyBatteryRecord tidyBatteryRecord1 = tidyBatteryRecordMapper.selectByPrimaryKey(tidyBatteryRecord.getId());
+                if((tidyBatteryRecord1.getBacktochargenum() +tidyBatteryRecord1.getRepairnumber() -tidyBatteryRecord.getBacktochargenum() - tidyBatteryRecord.getRepairnumber() ) < 0)
+                {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    Date date = new Date();//取时间
+
+                    Calendar calendar = new GregorianCalendar();
+                    calendar.setTime(date);
+                    if(calendar.get(Calendar.HOUR_OF_DAY ) >= 7)
+                    {
+                        calendar.add(Calendar.DATE, 1);
+                    }
+                    date = calendar.getTime();
+                    String filter = " where plantID = '" + tidyBatteryRecord.getPlantid() + "' and materialID = '" + tidyBatteryRecord.getMaterialid() + "' and checkTime >'" +dateFormat.format(date) + "'";
+                    List<TidyPackageBatteryInventory> tidyPackageBatteryInventoryList = tidyPackageBatteryInventoryMapper.selectByFilter(filter);
+                    if(tidyPackageBatteryInventoryList.size() < 1)
+                    {
+                        TidyPackageBatteryInventory tidyPackageBatteryInventory = new TidyPackageBatteryInventory();
+                        tidyPackageBatteryInventory.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                        tidyPackageBatteryInventory.setPlantid(tidyBatteryRecord.getPlantid());
+                        tidyPackageBatteryInventory.setMaterialid(tidyBatteryRecord.getMaterialid());
+                        tidyPackageBatteryInventory.setBackchargenewnum( tidyBatteryRecord.getBacktochargenum().intValue()- tidyBatteryRecord1.getBacktochargenum().intValue() );
+                        tidyPackageBatteryInventory.setRepairnewnum(tidyBatteryRecord.getBacktochargenum().intValue()- tidyBatteryRecord1.getBacktochargenum().intValue() );
+tidyPackageBatteryInventoryMapper.insert(tidyPackageBatteryInventory);
+                    }
+                    else
+                    {
+                        tidyPackageBatteryInventoryList.get(0).setBackchargenewnum( tidyPackageBatteryInventoryList.get(0).getBackchargenum() + tidyBatteryRecord.getBacktochargenum().intValue()- tidyBatteryRecord1.getBacktochargenum().intValue() );
+                        tidyPackageBatteryInventoryList.get(0).setRepairnewnum( tidyPackageBatteryInventoryList.get(0).getRepairnewnum() + tidyBatteryRecord.getBacktochargenum().intValue()- tidyBatteryRecord1.getBacktochargenum().intValue() );
+                        tidyPackageBatteryInventoryMapper.updateByPrimaryKey(tidyPackageBatteryInventoryList.get(0));
+                    }
+                }
                 tidyBatteryRecordMapper.updateByPrimaryKeySelective(tidyBatteryRecord);
             }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -321,9 +351,9 @@ public class ChargePackServiceImpl implements IChargePackService {
             TidyBatteryRecord tidyBatteryRecordNew = tidyBatteryRecordMapper.selectByPrimaryKey(tidyBatteryRecord.getId());
             int pileNumInt = Integer.parseInt(pileNum);
             int perPileMaterialNumInt = Integer.parseInt(perPileMaterialNum);
-            tidyBatteryRecord.setCurrentnum(tidyBatteryRecordNew.getCurrentnum() -pileNumInt*perPileMaterialNumInt);
-            tidyBatteryRecord.setPilenum((float)pileNumInt*perPileMaterialNumInt);
-            tidyBatteryRecordMapper.updateByPrimaryKeySelective(tidyBatteryRecord);
+            tidyBatteryRecordNew.setCurrentnum(tidyBatteryRecordNew.getCurrentnum() -pileNumInt*perPileMaterialNumInt);
+            tidyBatteryRecordNew.setPilenum((float)pileNumInt*perPileMaterialNumInt);
+            tidyBatteryRecordMapper.updateByPrimaryKeySelective(tidyBatteryRecordNew);
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSSS");
             Date now = new Date();
@@ -345,7 +375,7 @@ public class ChargePackServiceImpl implements IChargePackService {
             pileBatteryRecord.setLocation(storeLocation);
             for(int i =0 ;i<pileNumInt;i++)
             {
-                pileBatteryRecord.setId(formatter.format(now) + getNumberString(i));
+                pileBatteryRecord.setId(formatter.format(now) + getNumberString(i+1));
                 pileBatteryRecordMapper.insert(pileBatteryRecord);
             }
 
@@ -384,9 +414,11 @@ public class ChargePackServiceImpl implements IChargePackService {
         TNPYResponse result = new TNPYResponse();
         try
         {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
             if(packageNum == totalNum)
             {
-                pileBatteryRecordMapper.updateStatusByPrimaryKey(id,StatusEnum.InOutStatus.Output.getIndex() + "");
+                pileBatteryRecordMapper.updateStatusByPrimaryKey(id,StatusEnum.InOutStatus.Output.getIndex() + "",dateFormat.format(new Date()));
             }
             else
             {
@@ -400,6 +432,7 @@ public class ChargePackServiceImpl implements IChargePackService {
 
                 pileBatteryRecordList2.get(0).setProductionnumber((float)packageNum);
                 pileBatteryRecordList2.get(0).setStatus(StatusEnum.InOutStatus.Output.getIndex() + "");
+                pileBatteryRecordList2.get(0).setPackagetime(new Date());
                 pileBatteryRecordMapper.updateByPrimaryKey(pileBatteryRecordList2.get(0));
             }
            // String filter = " where id = '" + id +"' ";

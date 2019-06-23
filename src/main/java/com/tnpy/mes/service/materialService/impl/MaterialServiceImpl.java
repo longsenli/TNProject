@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -662,8 +663,8 @@ public class MaterialServiceImpl implements IMaterialService {
                 calendar.add(Calendar.DATE, 1);
             }
             date = calendar.getTime();   //这个时间就是日期往后推一天的结果
-
-            pileBatteryRecordMapper.updateStatusByPrimaryKey(pileBatteryRecord.getId(),StatusEnum.InOutStatus.Output.getIndex()+"");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            pileBatteryRecordMapper.updateStatusByPrimaryKey(pileBatteryRecord.getId(),StatusEnum.InOutStatus.Output.getIndex()+"",dateFormat.format(new Date()));
 
             GrantMaterialRecord newGrantMaterialRecord = new GrantMaterialRecord();
             newGrantMaterialRecord.setBatterytype(pileBatteryRecord.getMaterialid());
@@ -743,7 +744,8 @@ public class MaterialServiceImpl implements IMaterialService {
                     newGrantMaterialRecord.setStatus("1");
                     grantMaterialRecordMapper.insert(newGrantMaterialRecord);
 
-                    pileBatteryRecordMapper.updateStatusByPrimaryKey(orderSplit.getId(),StatusEnum.InOutStatus.Output.getIndex()+"");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    pileBatteryRecordMapper.updateStatusByPrimaryKey(orderSplit.getId(),StatusEnum.InOutStatus.Output.getIndex()+"",dateFormat.format(new Date()));
                     mapResult.put("status","成功");
                     mapResult.put("returnMessage","");
                 }

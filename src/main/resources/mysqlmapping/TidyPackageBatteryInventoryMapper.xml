@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.TidyPackageBatteryInventoryMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.TidyPackageBatteryInventory">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="lineID" jdbcType="VARCHAR" property="lineid" />
+    <result column="materialID" jdbcType="VARCHAR" property="materialid" />
+    <result column="materialName" jdbcType="VARCHAR" property="materialname" />
+    <result column="currentTotalNum" jdbcType="INTEGER" property="currenttotalnum" />
+    <result column="onTidyingNum" jdbcType="INTEGER" property="ontidyingnum" />
+    <result column="backChargeNum" jdbcType="INTEGER" property="backchargenum" />
+    <result column="pileTotalNum" jdbcType="INTEGER" property="piletotalnum" />
+    <result column="pulloffNum" jdbcType="INTEGER" property="pulloffnum" />
+    <result column="repairBackNum" jdbcType="INTEGER" property="repairbacknum" />
+    <result column="repairNewNum" jdbcType="INTEGER" property="repairnewnum" />
+    <result column="backChargeNewNum" jdbcType="INTEGER" property="backchargenewnum" />
+    <result column="pipeNewNum" jdbcType="INTEGER" property="pipenewnum" />
+    <result column="putonNum" jdbcType="INTEGER" property="putonnum" />
+    <result column="packageNewNum" jdbcType="INTEGER" property="packagenewnum" />
+    <result column="checkTime" jdbcType="TIMESTAMP" property="checktime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, plantID, lineID, materialID, materialName, currentTotalNum, onTidyingNum, backChargeNum, 
+    pileTotalNum, pulloffNum, repairBackNum, repairNewNum, backChargeNewNum, pipeNewNum, 
+    putonNum, packageNewNum, checkTime, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_tidypackagebatteryinventory
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_tidypackagebatteryinventory
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.TidyPackageBatteryInventory">
+    insert into tb_tidypackagebatteryinventory (id, plantID, lineID, 
+      materialID, materialName, currentTotalNum, 
+      onTidyingNum, backChargeNum, pileTotalNum, 
+      pulloffNum, repairBackNum, repairNewNum, 
+      backChargeNewNum, pipeNewNum, putonNum, 
+      packageNewNum, checkTime, remark
+      )
+    values (#{id,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{lineid,jdbcType=VARCHAR}, 
+      #{materialid,jdbcType=VARCHAR}, #{materialname,jdbcType=VARCHAR}, #{currenttotalnum,jdbcType=INTEGER}, 
+      #{ontidyingnum,jdbcType=INTEGER}, #{backchargenum,jdbcType=INTEGER}, #{piletotalnum,jdbcType=INTEGER}, 
+      #{pulloffnum,jdbcType=INTEGER}, #{repairbacknum,jdbcType=INTEGER}, #{repairnewnum,jdbcType=INTEGER}, 
+      #{backchargenewnum,jdbcType=INTEGER}, #{pipenewnum,jdbcType=INTEGER}, #{putonnum,jdbcType=INTEGER}, 
+      #{packagenewnum,jdbcType=INTEGER}, #{checktime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.TidyPackageBatteryInventory">
+    insert into tb_tidypackagebatteryinventory
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="lineid != null">
+        lineID,
+      </if>
+      <if test="materialid != null">
+        materialID,
+      </if>
+      <if test="materialname != null">
+        materialName,
+      </if>
+      <if test="currenttotalnum != null">
+        currentTotalNum,
+      </if>
+      <if test="ontidyingnum != null">
+        onTidyingNum,
+      </if>
+      <if test="backchargenum != null">
+        backChargeNum,
+      </if>
+      <if test="piletotalnum != null">
+        pileTotalNum,
+      </if>
+      <if test="pulloffnum != null">
+        pulloffNum,
+      </if>
+      <if test="repairbacknum != null">
+        repairBackNum,
+      </if>
+      <if test="repairnewnum != null">
+        repairNewNum,
+      </if>
+      <if test="backchargenewnum != null">
+        backChargeNewNum,
+      </if>
+      <if test="pipenewnum != null">
+        pipeNewNum,
+      </if>
+      <if test="putonnum != null">
+        putonNum,
+      </if>
+      <if test="packagenewnum != null">
+        packageNewNum,
+      </if>
+      <if test="checktime != null">
+        checkTime,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="currenttotalnum != null">
+        #{currenttotalnum,jdbcType=INTEGER},
+      </if>
+      <if test="ontidyingnum != null">
+        #{ontidyingnum,jdbcType=INTEGER},
+      </if>
+      <if test="backchargenum != null">
+        #{backchargenum,jdbcType=INTEGER},
+      </if>
+      <if test="piletotalnum != null">
+        #{piletotalnum,jdbcType=INTEGER},
+      </if>
+      <if test="pulloffnum != null">
+        #{pulloffnum,jdbcType=INTEGER},
+      </if>
+      <if test="repairbacknum != null">
+        #{repairbacknum,jdbcType=INTEGER},
+      </if>
+      <if test="repairnewnum != null">
+        #{repairnewnum,jdbcType=INTEGER},
+      </if>
+      <if test="backchargenewnum != null">
+        #{backchargenewnum,jdbcType=INTEGER},
+      </if>
+      <if test="pipenewnum != null">
+        #{pipenewnum,jdbcType=INTEGER},
+      </if>
+      <if test="putonnum != null">
+        #{putonnum,jdbcType=INTEGER},
+      </if>
+      <if test="packagenewnum != null">
+        #{packagenewnum,jdbcType=INTEGER},
+      </if>
+      <if test="checktime != null">
+        #{checktime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.TidyPackageBatteryInventory">
+    update tb_tidypackagebatteryinventory
+    <set>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        lineID = #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        materialID = #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        materialName = #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="currenttotalnum != null">
+        currentTotalNum = #{currenttotalnum,jdbcType=INTEGER},
+      </if>
+      <if test="ontidyingnum != null">
+        onTidyingNum = #{ontidyingnum,jdbcType=INTEGER},
+      </if>
+      <if test="backchargenum != null">
+        backChargeNum = #{backchargenum,jdbcType=INTEGER},
+      </if>
+      <if test="piletotalnum != null">
+        pileTotalNum = #{piletotalnum,jdbcType=INTEGER},
+      </if>
+      <if test="pulloffnum != null">
+        pulloffNum = #{pulloffnum,jdbcType=INTEGER},
+      </if>
+      <if test="repairbacknum != null">
+        repairBackNum = #{repairbacknum,jdbcType=INTEGER},
+      </if>
+      <if test="repairnewnum != null">
+        repairNewNum = #{repairnewnum,jdbcType=INTEGER},
+      </if>
+      <if test="backchargenewnum != null">
+        backChargeNewNum = #{backchargenewnum,jdbcType=INTEGER},
+      </if>
+      <if test="pipenewnum != null">
+        pipeNewNum = #{pipenewnum,jdbcType=INTEGER},
+      </if>
+      <if test="putonnum != null">
+        putonNum = #{putonnum,jdbcType=INTEGER},
+      </if>
+      <if test="packagenewnum != null">
+        packageNewNum = #{packagenewnum,jdbcType=INTEGER},
+      </if>
+      <if test="checktime != null">
+        checkTime = #{checktime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.TidyPackageBatteryInventory">
+    update tb_tidypackagebatteryinventory
+    set plantID = #{plantid,jdbcType=VARCHAR},
+      lineID = #{lineid,jdbcType=VARCHAR},
+      materialID = #{materialid,jdbcType=VARCHAR},
+      materialName = #{materialname,jdbcType=VARCHAR},
+      currentTotalNum = #{currenttotalnum,jdbcType=INTEGER},
+      onTidyingNum = #{ontidyingnum,jdbcType=INTEGER},
+      backChargeNum = #{backchargenum,jdbcType=INTEGER},
+      pileTotalNum = #{piletotalnum,jdbcType=INTEGER},
+      pulloffNum = #{pulloffnum,jdbcType=INTEGER},
+      repairBackNum = #{repairbacknum,jdbcType=INTEGER},
+      repairNewNum = #{repairnewnum,jdbcType=INTEGER},
+      backChargeNewNum = #{backchargenewnum,jdbcType=INTEGER},
+      pipeNewNum = #{pipenewnum,jdbcType=INTEGER},
+      putonNum = #{putonnum,jdbcType=INTEGER},
+      packageNewNum = #{packagenewnum,jdbcType=INTEGER},
+      checkTime = #{checktime,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

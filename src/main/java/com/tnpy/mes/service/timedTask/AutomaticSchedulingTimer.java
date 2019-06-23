@@ -129,7 +129,8 @@ public class AutomaticSchedulingTimer {
     @Scheduled(cron = "0 50 23 * * ?")
     public void automaticBatteryStatisInventory() {
         try {
-
+               if(true)
+                   return;
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date date = new Date();//取时间
             String startTime = dateFormat.format(date) ;
