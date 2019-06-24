@@ -567,4 +567,32 @@ public class ChargePackServiceImpl implements IChargePackService {
             return  result;
         }
     }
+
+    public TNPYResponse getBatteryInventoryRecord(String plantID,String startTime,String endTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = " where  ";
+            filter += "  checkTime >= '" + startTime + "' ";
+            filter += " and checkTime <= '" + endTime + "' ";
+            if(!"-1".equals(plantID))
+            {
+                filter += " and plantID = '" + plantID + "' ";
+            }
+
+            filter += " order by checkTime desc ";
+            // System.out.println(plantID + " 参数 " +processID);
+            List<TidyPackageBatteryInventory> tidyPackageBatteryInventoryList = tidyPackageBatteryInventoryMapper.selectByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+            result.setData(JSONObject.toJSON(tidyPackageBatteryInventoryList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
 }

@@ -84,4 +84,9 @@ public class ChargePackController {
     public TNPYResponse getBatteryGearRecordInfo(String plantID, String lineID,String workLocation,String altitude,String startTime) {
         return  chargePackService.getBatteryGearRecordInfo(plantID,lineID,workLocation,altitude, startTime);
     }
+
+    @RequestMapping(value = "/getbatteryinventoryrecord")
+    public TNPYResponse getBatteryInventoryRecord(String plantID,String startTime,String endTime) {
+        return  chargePackService.getBatteryInventoryRecord(plantID, startTime,endTime);
+    }
 }
