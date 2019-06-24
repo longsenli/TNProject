@@ -36,12 +36,13 @@ public class websocketManageService {
       //  System.out.println(JSONObject.toJSON(session).toString());
         webSocketSet.add(this);     //加入set中
         addOnlineCount();           //在线数加1
+        /*
         System.out.println("有新连接加入！当前在线人数为" + getOnlineCount());
         try {
             sendMessage("当前在线人数为" + getOnlineCount());
         } catch (IOException e) {
             System.out.println("IO异常");
-        }
+        }*/
     }
 
     /**
@@ -90,8 +91,10 @@ public class websocketManageService {
     public static void sendInfo(String message) throws IOException {
         for (websocketManageService item : webSocketSet) {
             try {
+
                 item.sendMessage(message);
             } catch (IOException e) {
+                System.out.println("============Wrong" + e.getMessage());
                 continue;
             }
         }
