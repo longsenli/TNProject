@@ -4,12 +4,14 @@ import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.mes.mapper.mysql.*;
 import com.tnpy.mes.model.mysql.*;
+import com.tnpy.mes.service.pushNotification.impl.websocketManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -376,14 +378,30 @@ public class AutomaticSchedulingTimer {
             String nowDate = dateFormat.format(date);
             date = calendar.getTime();   //这个时间就是日期往后推一天的结果
 
-            String filter =" where notificationtypeID = '100001' and updateTime >= '" + dateFormat.format(date) +"' and updateTime < '" +nowDate + "'" ;
+            HashSet<String> notificationtypeIDSet = new HashSet<>();
+            String filter =" where  updateTime >= '" + dateFormat.format(date) +"' and updateTime < '" +nowDate + "'" ;
            List<WarningMessageRecord> warningMessageRecordList = warningMessageRecordMapper.selectByFilter(filter);
 
+           while(true)
+           {
+               String notificationtypeIDStr = "";
            String messageDetail = "";
            String plantID = "###";
+           for(int i =0;i<warningMessageRecordList.size();i++)
+           {
+               if(notificationtypeIDSet.contains(warningMessageRecordList.get(i).getNotificationtypeid()))
+                   continue;
+               notificationtypeIDStr = warningMessageRecordList.get(i).getNotificationtypeid();
+               notificationtypeIDSet.add(notificationtypeIDStr);
+               break;
+           }
+           if(notificationtypeIDStr.length() < 2)
+               break;
           // List<> 根据消息类型寻找推送的人
            for(int i =0;i<warningMessageRecordList.size();i++)
            {
+               if(!notificationtypeIDStr.equals(warningMessageRecordList.get(i).getNotificationtypeid()))
+                   continue;
                messageDetail +=  warningMessageRecordList.get(i).getMessage() +".\r\n ";
                plantID += warningMessageRecordList.get(i).getPlantid() +"###";
            }
@@ -391,15 +409,18 @@ public class AutomaticSchedulingTimer {
            {
                return;
            }
-           List<Map<Object,Object>> userInfoList = warningMessageRecordMapper.selectUserInfoByWarning("100001");
-
+           List<Map<Object,Object>> userInfoList = warningMessageRecordMapper.selectUserInfoByWarning(notificationtypeIDStr);
+            HashSet<String> userSet = new HashSet<>();
 
             for(int i =0;i<userInfoList.size();i++)
             {
-                if(!plantID.contains(userInfoList.get(i).get("industrialplant_id").toString()))
+                if(!plantID.contains(userInfoList.get(i).get("industrialplant_id").toString()) && userInfoList.get(i).get("industrialplant_id").toString().length() > 2 )
                 {
                     continue;
                 }
+                if(StringUtils.isEmpty( userInfoList.get(i).get("email").toString()))
+                    continue;
+                userSet.add(userInfoList.get(i).get("userID").toString());
                 SimpleMailMessage mailMessage = new SimpleMailMessage();
                 //谁发的
                 mailMessage.setFrom("llsbenign@163.com");
@@ -408,12 +429,15 @@ public class AutomaticSchedulingTimer {
                // mailMessage.setTo("631620498@qq.com");
 
                 //标题
-                mailMessage.setSubject("安全隐患");
+                mailMessage.setSubject("MES系统预警提醒");
                 //内容
                 mailMessage.setText(messageDetail);
 
                 jms.send(mailMessage);
             }
+            if(userSet.size() > 0)
+               websocketManageService.sendInfoToUserList(messageDetail,userSet);
+           }
 
         } catch (Exception ex) {
             System.out.println("fail======" +ex.getMessage());

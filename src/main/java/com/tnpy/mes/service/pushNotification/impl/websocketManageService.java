@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 
@@ -92,6 +93,21 @@ public class websocketManageService {
         for (websocketManageService item : webSocketSet) {
             try {
 
+                item.sendMessage(message);
+            } catch (IOException e) {
+                System.out.println("============Wrong" + e.getMessage());
+                continue;
+            }
+        }
+    }
+
+    /**
+     * 群发自定义消息
+     * */
+    public static void sendInfoToUserList(String message, HashSet<String> userSet) throws IOException {
+        for (websocketManageService item : webSocketSet) {
+            try {
+if(userSet.contains(item.token.getUserid()))
                 item.sendMessage(message);
             } catch (IOException e) {
                 System.out.println("============Wrong" + e.getMessage());
