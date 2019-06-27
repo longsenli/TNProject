@@ -11,6 +11,7 @@ import com.tnpy.mes.model.mysql.*;
 import com.tnpy.mes.service.materialService.IMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
@@ -542,14 +543,19 @@ public class MaterialServiceImpl implements IMaterialService {
        }
     }
     //1 当天工单ID 2第二天工单ID
-    public TNPYResponse addGrantMaterialRecordByBatch( String orderIDList,String operator ,String orderType,String processID)
+    public TNPYResponse addGrantMaterialRecordByBatch( String orderIDList,String operator ,String grantType,String processID)
     {
         TNPYResponse result = new TNPYResponse();
         try
         {
+            if("3".equals(grantType))
+            {
+                return  cancelGrantMaterial(orderIDList,operator);
+            }
+
             if(ConfigParamEnum.BasicProcessEnum.ZLProcessID.getName().equals(processID))
             {
-                return pileBatteryGrantByBatch(orderIDList,operator,orderType,processID);
+                return pileBatteryGrantByBatch(orderIDList,operator,grantType,processID);
             }
 
             String filter = " where id in ('" + orderIDList.replaceAll("###","','") + "' )";
@@ -600,7 +606,7 @@ public class MaterialServiceImpl implements IMaterialService {
 
                     Calendar calendar = new GregorianCalendar();
                     calendar.setTime(date);
-                    if("2".equals(orderType))
+                    if("2".equals(grantType))
                     {
                         calendar.add(Calendar.DATE, 1);
                     }
@@ -633,13 +639,89 @@ public class MaterialServiceImpl implements IMaterialService {
             return  result;
         }
     }
-    private TNPYResponse pileBatteryGrantOneByOne( String orderSplitID,String operator ,int orderType,String processID)
+
+
+    private TNPYResponse cancelGrantMaterial(String orderIDList,String operator )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+
+            String filter = " where subOrderID in ('" + orderIDList.replaceAll("###","','") + "' )";
+            String columnList = " subOrderID,expendOrderID,inOrOut ,outputTime,outputer ";
+            List<Map<Object, Object>>orderInfoList =materialRecordMapper.selectByFilter(columnList,filter);
+            List<Map<String, String>> grantResult = new  ArrayList<Map<String, String>>();
+            String[] orderArray = orderIDList.split("###");
+            String orderSplitID = "";
+            Map<Object, Object> orderSplit ;
+            for(int i =0;i<orderArray.length;i++)
+            {
+                Map<String, String> mapResult = new HashMap<String, String>();
+                mapResult.put("orderID",orderArray[i]);
+                mapResult.put("status","失败");
+                mapResult.put("returnMessage","未获取到订单信息!");
+                for(int j =0;j<orderInfoList.size();j++)
+                {
+                    if(!orderArray[i].equals(orderInfoList.get(j).get("subOrderID")))
+                    {
+                        continue;
+                    }
+                    orderSplit = orderInfoList.get(j);
+                    orderSplitID = orderSplit.get("subOrderID").toString();
+
+                    if(!ObjectUtils.isEmpty(orderSplit.get("outputTime")) )
+                    {
+                        mapResult.put("returnMessage","该订单已使用，不能取消！使用时间：" +orderSplit.get("outputTime") + ",使用人：" + orderSplit.get("outputer") );
+                        break;
+                    }
+                    GrantMaterialRecord grantMaterialRecord = grantMaterialRecordMapper.selectByOrderID(orderSplitID);
+                    if(grantMaterialRecord == null)
+                    {
+                        mapResult.put("returnMessage","未找到该工单的发料信息！" +orderSplitID );
+                        break;
+                    }
+                    if(!grantMaterialRecord.getOperator().equals(operator))
+                    {
+                        mapResult.put("returnMessage",operator +"无权限退回，该物料不是此人发料！"  );
+                        break;
+                    }
+                    Date date = new Date();//取时间
+                    Calendar calendar = new GregorianCalendar();
+                    calendar.setTime(date);
+                    if(calendar.HOUR_OF_DAY < 7)
+                        calendar.add(Calendar.DATE,-1);
+
+                    date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    if(dateFormat.format(date).compareTo(dateFormat.format(grantMaterialRecord.getGranttime())) > 0)
+                    {
+                        mapResult.put("returnMessage","该物料不是当天发放，不能取消"  );
+                        break;
+                    }
+                    grantMaterialRecordMapper.deleteByPrimaryKey(grantMaterialRecord.getId());
+                    mapResult.put("status","成功");
+                    mapResult.put("returnMessage","");
+                }
+                grantResult.add(mapResult);
+            }
+            result.setData(JSONObject.toJSON(grantResult).toString());
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("取消发料失败！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    private TNPYResponse pileBatteryGrantOneByOne( String orderSplitID,String operator ,int grantType,String processID)
     {
         TNPYResponse result = new TNPYResponse();
         try
         {
             PileBatteryRecord pileBatteryRecord = null;
-            if(orderType < 3)
+            if(grantType < 3)
             {
                 pileBatteryRecord = pileBatteryRecordMapper.selectByPrimaryKey(orderSplitID);
             }
@@ -658,7 +740,7 @@ public class MaterialServiceImpl implements IMaterialService {
             Date date = new Date();//取时间
             Calendar calendar = new GregorianCalendar();
             calendar.setTime(date);
-            if(orderType%2 == 0)
+            if(grantType%2 == 0)
             {
                 calendar.add(Calendar.DATE, 1);
             }

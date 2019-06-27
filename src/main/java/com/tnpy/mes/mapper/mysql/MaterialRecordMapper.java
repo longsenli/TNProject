@@ -188,4 +188,11 @@ public interface MaterialRecordMapper {
 
     @Select("select subOrderID,inputer,inputTime,materialNameInfo from tb_materialrecord where subOrderID in ( ${orderList} ) order by inputTime")
     List<Map<Object, Object>>  selectByOrderIDList(@Param("orderList") String orderList);
+
+    @Select("select ${columnList} from tb_materialrecord ${filter}")
+    List<Map<Object, Object>>  selectByFilter(@Param("columnList") String columnList,@Param("filter") String filter);
 }
+
+
+
+

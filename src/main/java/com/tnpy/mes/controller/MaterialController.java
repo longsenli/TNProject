@@ -68,9 +68,9 @@ public class MaterialController {
         return  materialService.addGrantMaterialRecord( orderSplitID, operator,orderType, processID);
     }
     @RequestMapping(value = "/addgrantmaterialrecordbybatch")
-    public TNPYResponse addGrantMaterialRecordByBatch( String orderIDList,String operator ,String orderType,@RequestParam(defaultValue = "-1")String processID)
+    public TNPYResponse addGrantMaterialRecordByBatch( String orderIDList,String operator ,String grantType,@RequestParam(defaultValue = "-1")String processID)
     {
-        return  materialService.addGrantMaterialRecordByBatch( orderIDList, operator,orderType, processID);
+        return  materialService.addGrantMaterialRecordByBatch( orderIDList, operator,grantType, processID);
     }
     @RequestMapping(value = "/grantdndexpendstatistics")
     public TNPYResponse grantAndExpendStatistics(  String startTime,String endTime,String plantID,String processID ) {
