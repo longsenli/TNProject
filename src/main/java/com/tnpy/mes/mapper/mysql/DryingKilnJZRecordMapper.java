@@ -1,16 +1,11 @@
 package com.tnpy.mes.mapper.mysql;
 
 import com.tnpy.mes.model.mysql.DryingKilnJZRecord;
+import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
-
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-import org.springframework.stereotype.Component;
 
 @Mapper
 @Component
@@ -51,4 +46,6 @@ public interface DryingKilnJZRecordMapper {
    @Delete("delete from tb_dryingkilnjzrecord\r\n" + 
    		"    where suborderID = #{suborderID} ")
    int deleteBySubOrderId(@Param("suborderID") String suborderID);
+
+
 }

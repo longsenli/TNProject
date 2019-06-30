@@ -190,7 +190,7 @@ public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordSer
             return result;
         }
     }
-    public TNPYResponse getRecentAllParamPecord( String plantID,String equipType)
+    public TNPYResponse getRecentAllParamPecord( String plantID,String equipType,String processID)
     {
         TNPYResponse result = new TNPYResponse();
         try {
@@ -211,7 +211,12 @@ public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordSer
                 SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
                 timeStr =  dateFormat2.format(now);
             }
-            List<Map<Object,Object>> parameterInfoList = equipmentParaRecordMapper.selectRecentAllParamPecord(plantID,equipType,timeStr, ConfigParamEnum.EquipmentTypeEnum.getName(equipType));
+            String processFilter = "";
+            if(!"-1".equals(processID))
+            {
+                processFilter += " and  processID = '" + processID +"' ";
+            }
+            List<Map<Object,Object>> parameterInfoList = equipmentParaRecordMapper.selectRecentAllParamPecord(plantID,equipType,timeStr, ConfigParamEnum.EquipmentTypeEnum.getName(equipType),processFilter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(parameterInfoList).toString());
             return result;

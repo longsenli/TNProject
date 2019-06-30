@@ -5,10 +5,7 @@ import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.service.equipmentParamRecordService.IEquipmentParamRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -97,9 +94,9 @@ public class EquipmentParamController {
     }
 
     @RequestMapping(value = "/getrecentallparamrecord")
-    public TNPYResponse getRecentAllParamPecord( String plantID,String equipType) {
+    public TNPYResponse getRecentAllParamPecord( String plantID,String equipType,@RequestParam(defaultValue = "-1")String processID ) {
 
-        return  equipmentParamService.getRecentAllParamPecord(plantID, equipType);
+        return  equipmentParamService.getRecentAllParamPecord(plantID, equipType,processID);
     }
 
     @RequestMapping(value = "/getoneequipparamrecord")

@@ -17,5 +17,5 @@ public interface IEquipmentParamRecordService {
     public TNPYResponse getOneEquipParamRecord( String startTime,String endTime,String equipID,String paramID);
     public TNPYResponse getEquipParamRecordByTime(String startTime,String endTime, String equipID);
     public TNPYResponse updateEquipmentParam(String params,String equipmentTypeID);
-    public TNPYResponse getRecentAllParamPecord( String plantID,String equipType);
+    public TNPYResponse getRecentAllParamPecord( String plantID,String equipType,String processID);
 }
