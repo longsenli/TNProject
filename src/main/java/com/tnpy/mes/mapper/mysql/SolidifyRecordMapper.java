@@ -37,4 +37,7 @@ public interface SolidifyRecordMapper {
 
     @Update(" update tb_solidifyrecord  ${value} where ${filter} ")
     int changeSolidifyStatus(@Param("value") String value,@Param("filter") String filter);
+
+    @Select("select * from tb_solidifyrecord  where orderID = #{orderID} ")
+    List<SolidifyRecord>  selectByOrderID(String orderID);
 }
