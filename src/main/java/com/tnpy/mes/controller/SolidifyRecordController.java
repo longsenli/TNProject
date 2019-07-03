@@ -28,4 +28,30 @@ public class SolidifyRecordController {
     {
         return  solidifyRecordService.addSolidifyRecord(id,status,recorder, roomID);
     }
+
+    @RequestMapping(value = "/getsolidifyrecordbyparam")
+    public TNPYResponse getSolidifyRecordByParam(String plantID,String roomID,String solidifyStepID,String startTime,String endTime)
+    {
+        return  solidifyRecordService.getSolidifyRecordByParam(plantID,roomID,solidifyStepID,startTime,endTime);
+    }
+
+    @RequestMapping(value = "/getinsolidifyroombyparam")
+    public TNPYResponse getInSolidifyRoomByParam(String plantID,String roomID)
+    {
+        return  solidifyRecordService.getInSolidifyRoomByParam(plantID,roomID);
+    }
+
+    @RequestMapping(value = "/putinsolidifyroom")
+    public TNPYResponse putinSolidifyRoom(String roomID,String orderIDList,String operatorName,String roomName)
+    {
+        return  solidifyRecordService.putinSolidifyRoom(roomID,orderIDList,operatorName,roomName);
+    }
+
+    @RequestMapping(value = "/changesolidifystatus")
+    public TNPYResponse changeSolidifyStatus(String roomID,String orderIDList,String operatorName,String status)
+    {
+        return  solidifyRecordService.changeSolidifyStatus(roomID,orderIDList,operatorName,status);
+    }
+
 }
+

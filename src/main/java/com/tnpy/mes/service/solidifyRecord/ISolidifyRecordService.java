@@ -10,4 +10,9 @@ import com.tnpy.common.utils.web.TNPYResponse;
 public interface ISolidifyRecordService {
     public TNPYResponse getSolidifyRecordByRoom(String plantID,String roomID);
     public TNPYResponse addSolidifyRecord(String id,String status,String recorder,String roomID);
+
+    public TNPYResponse getSolidifyRecordByParam(String plantID,String roomID,String solidifyStepID,String startTime,String endTime);
+    public TNPYResponse getInSolidifyRoomByParam(String plantID,String roomID);
+    public TNPYResponse putinSolidifyRoom(String roomID,String orderIDList,String operatorName,String roomName);
+    public TNPYResponse changeSolidifyStatus(String roomID,String orderIDList,String operatorName,String status);
 }

@@ -474,6 +474,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             }
             materialRecordMapper.insert(materialRecord);
             boolean blTB = ConfigParamEnum.BasicProcessEnum.TBProcessID.getName().equals(workOrderMapper.getProcessIDByOrder(orderSplit.getOrderid()));
+         /*
             try
             {
                 if(blTB)
@@ -490,7 +491,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             {
                 result.setMessage(result.getMessage() + " " +ex.getMessage() );
             }
-
+*/
             try
             {
                 if(blTB)

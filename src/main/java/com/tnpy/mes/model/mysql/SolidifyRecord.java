@@ -9,9 +9,13 @@ public class SolidifyRecord {
 
     private String orderid;
 
-    private String ordersplitid;
+    private Integer productionnum;
+
+    private String plantid;
 
     private String materialid;
+
+    private String materialname;
 
     private String solidifyroomid;
 
@@ -35,7 +39,11 @@ public class SolidifyRecord {
 
     private String status;
 
-    private String ordersplitname;
+    private String remark;
+
+    private String solidifyroomname;
+
+    private String outoperator;
 
     public String getId() {
         return id;
@@ -53,12 +61,20 @@ public class SolidifyRecord {
         this.orderid = orderid == null ? null : orderid.trim();
     }
 
-    public String getOrdersplitid() {
-        return ordersplitid;
+    public Integer getProductionnum() {
+        return productionnum;
     }
 
-    public void setOrdersplitid(String ordersplitid) {
-        this.ordersplitid = ordersplitid == null ? null : ordersplitid.trim();
+    public void setProductionnum(Integer productionnum) {
+        this.productionnum = productionnum;
+    }
+
+    public String getPlantid() {
+        return plantid;
+    }
+
+    public void setPlantid(String plantid) {
+        this.plantid = plantid == null ? null : plantid.trim();
     }
 
     public String getMaterialid() {
@@ -67,6 +83,14 @@ public class SolidifyRecord {
 
     public void setMaterialid(String materialid) {
         this.materialid = materialid == null ? null : materialid.trim();
+    }
+
+    public String getMaterialname() {
+        return materialname;
+    }
+
+    public void setMaterialname(String materialname) {
+        this.materialname = materialname == null ? null : materialname.trim();
     }
 
     public String getSolidifyroomid() {
@@ -157,11 +181,27 @@ public class SolidifyRecord {
         this.status = status == null ? null : status.trim();
     }
 
-    public String getOrdersplitname() {
-        return ordersplitname;
+    public String getRemark() {
+        return remark;
     }
 
-    public void setOrdersplitname(String ordersplitname) {
-        this.ordersplitname = ordersplitname == null ? null : ordersplitname.trim();
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
+    }
+
+    public String getSolidifyroomname() {
+        return solidifyroomname;
+    }
+
+    public void setSolidifyroomname(String solidifyroomname) {
+        this.solidifyroomname = solidifyroomname == null ? null : solidifyroomname.trim();
+    }
+
+    public String getOutoperator() {
+        return outoperator;
+    }
+
+    public void setOutoperator(String outoperator) {
+        this.outoperator = outoperator == null ? null : outoperator.trim();
     }
 }

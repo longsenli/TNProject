@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
 @Mapper
 @Component
 public interface SolidifyRecordMapper {
@@ -26,8 +27,14 @@ public interface SolidifyRecordMapper {
 
     @Select("select a.* from (select * from tb_solidifyrecord where solidifyRoomID = #{roomID} or solidifyRoomID is null) a" +
             " left join tb_workorder b on a.orderID = b.id  where b.plantID =  #{plantID} order by starttime1 desc limit 1000")
-    List<SolidifyRecord> selectByRoomID(String plantID,String roomID);
+    List<SolidifyRecord> selectByRoomID(String plantID, String roomID);
 
     @Update("update tb_solidifyrecord set  ${value} where id = #{id}")
     int addSolidifyRecord(String id,@Param("value") String value);
+
+    @Select("select * from tb_solidifyrecord  ${filter} limit 1000")
+    List<SolidifyRecord> getSolidifyRecordByFilter(@Param("filter") String filter);
+
+    @Update(" update tb_solidifyrecord  ${value} where ${filter} ")
+    int changeSolidifyStatus(@Param("value") String value,@Param("filter") String filter);
 }
