@@ -79,7 +79,7 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
             } else {
                 solidifyFilter += " and plantID = '" + plantID + "' ";
             }
-            List<SolidifyRecord> solidifyRecordList = solidifyRecordMapper.getSolidifyRecordByFilter(solidifyFilter);
+            List<SolidifyRecord> solidifyRecordList = solidifyRecordMapper.selectInSolidifyRecord(solidifyFilter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSONString(solidifyRecordList, SerializerFeature.WriteMapNullValue).toString());
             return result;
