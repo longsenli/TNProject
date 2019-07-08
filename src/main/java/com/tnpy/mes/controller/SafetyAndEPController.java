@@ -83,7 +83,7 @@ public class SafetyAndEPController {
             {
                 dir.mkdirs();
             }
-            System.out.println(filePath+fileName);
+            //System.out.println(filePath+fileName);
             //将图片保存到static文件夹里
             pictureName.transferTo(new File(filePath+fileName));
             response.setStatus(StatusEnum.ResponseStatus.Success.getIndex());

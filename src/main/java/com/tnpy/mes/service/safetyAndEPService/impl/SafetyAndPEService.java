@@ -120,8 +120,7 @@ public class SafetyAndPEService implements ISafetyAndPEService {
             {
                 hiddenDangerManageRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 hiddenDangerManageRecord.setStatus("1");
-                if(hiddenDangerManageRecord.getDangerlevel().equals("Ⅱ级") || hiddenDangerManageRecord.getDangerlevel().equals("Ⅰ级"))
-                {
+
                     WarningMessageRecord warningMessageRecord = new WarningMessageRecord();
                     warningMessageRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                     warningMessageRecord.setNotificationtypeid("100001");
@@ -133,7 +132,7 @@ public class SafetyAndPEService implements ISafetyAndPEService {
                     warningMessageRecord.setStatus("1");
                     warningMessageRecord.setUpdatetime(new Date());
                     warningMessageRecordMapper.insertSelective(warningMessageRecord);
-                }
+
                 hiddenDangerManageRecordMapper.insertSelective(hiddenDangerManageRecord);
             }
             else

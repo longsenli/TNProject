@@ -7,7 +7,7 @@ package com.tnpy.common.Enum;
  */
 public class DirectoryEnum {
     public static  enum FileStoreLocation {
-        UploadDocument("D:/TNFile/UploadDocument/", 1), EquipInfoPicture("D:/TNFile/EquipInfoPicture/", 2), SafetyAndEPPicture("D:/TNFile/SafetyAndEPPicture/", 3);
+        UploadDocument("D:/FTPFile/TNFile/UploadDocument/", 1), EquipInfoPicture("D:/FTPFile/TNFile/EquipInfoPicture/", 2), SafetyAndEPPicture("D:/FTPFile/TNFile/SafetyAndEPPicture/", 3);
         // 成员变量
         private String name;
         private int index;
