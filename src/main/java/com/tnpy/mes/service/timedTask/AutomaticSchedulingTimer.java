@@ -6,7 +6,6 @@ import com.tnpy.mes.mapper.mysql.*;
 import com.tnpy.mes.model.mysql.*;
 import com.tnpy.mes.service.pushNotification.impl.websocketManageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -412,15 +411,20 @@ public class AutomaticSchedulingTimer {
            List<Map<Object,Object>> userInfoList = warningMessageRecordMapper.selectUserInfoByWarning(notificationtypeIDStr);
             HashSet<String> userSet = new HashSet<>();
 
+            if(notificationtypeIDStr.equals("100001"))
+            {
+                plantID += "3002###";
+            }
             for(int i =0;i<userInfoList.size();i++)
             {
                 if(!plantID.contains(userInfoList.get(i).get("industrialplant_id").toString()) && userInfoList.get(i).get("industrialplant_id").toString().length() > 2 )
                 {
                     continue;
                 }
+                userSet.add(userInfoList.get(i).get("userID").toString());
                 if(StringUtils.isEmpty( userInfoList.get(i).get("email").toString()))
                     continue;
-                userSet.add(userInfoList.get(i).get("userID").toString());
+                /*  //发送邮件
                 SimpleMailMessage mailMessage = new SimpleMailMessage();
                 //谁发的
                 mailMessage.setFrom("llsbenign@163.com");
@@ -434,6 +438,7 @@ public class AutomaticSchedulingTimer {
                 mailMessage.setText(messageDetail);
 
                 jms.send(mailMessage);
+                */
             }
             if(userSet.size() > 0)
                websocketManageService.sendInfoToUserList(messageDetail,userSet);
