@@ -60,7 +60,7 @@ public class ContentServiceImpl implements IContentService {
                 str = " where " + str.substring(4);
             }
             str += " " + "order by createTime desc";
-            List<Content> contentList = contentMapper.selectByFilter(str);
+            List<Content> contentList = contentMapper.selectContentByFilter(str);
             response.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             response.setData(JSONObject.toJSON(contentList).toString());
             return response;
