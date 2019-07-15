@@ -29,12 +29,14 @@ public class websocketManageService {
     private Session session;
 
     private Token token;
+
     /**
-     * 连接建立成功调用的方法*/
+     * 连接建立成功调用的方法
+     */
     @OnOpen
     public void onOpen(Session session) {
         this.session = session;
-      //  System.out.println(JSONObject.toJSON(session).toString());
+        //  System.out.println(JSONObject.toJSON(session).toString());
         webSocketSet.add(this);     //加入set中
         addOnlineCount();           //在线数加1
         /*
@@ -59,19 +61,21 @@ public class websocketManageService {
     /**
      * 收到客户端消息后调用的方法
      *
-     * @param message 客户端发送过来的消息*/
+     * @param message 客户端发送过来的消息
+     */
     @OnMessage
     public void onMessage(String message, Session session) {
         System.out.println("来自客户端的消息:" + message);
         this.token = (Token) JSONObject.toJavaObject(JSONObject.parseObject(message), Token.class);
         //群发消息
+      /*
         for (websocketManageService item : webSocketSet) {
             try {
                 item.sendMessage(message);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     @OnError
@@ -88,7 +92,7 @@ public class websocketManageService {
 
     /**
      * 群发自定义消息
-     * */
+     */
     public static void sendInfo(String message) throws IOException {
         for (websocketManageService item : webSocketSet) {
             try {
@@ -103,12 +107,18 @@ public class websocketManageService {
 
     /**
      * 群发自定义消息
-     * */
+     */
     public static void sendInfoToUserList(String message, HashSet<String> userSet) throws IOException {
+      //  System.out.println(userSet.toString());
         for (websocketManageService item : webSocketSet) {
             try {
-if(userSet.contains(item.token.getUserid()))
-                item.sendMessage(message);
+               // System.out.println(item.token.getUserid() + "============");
+                if (userSet.contains(item.token.getUserid()))
+                {
+                   // System.out.println(item.token.getUserid() + "============sended");
+                    item.sendMessage(message);
+                }
+
             } catch (IOException e) {
                 System.out.println("============Wrong" + e.getMessage());
                 continue;
@@ -118,12 +128,12 @@ if(userSet.contains(item.token.getUserid()))
 
     /**
      * 群发自定义消息
-     * */
-    public static void sendInfoPortion(String role,String message) throws IOException {
+     */
+    public static void sendInfoPortion(String role, String message) throws IOException {
         for (websocketManageService item : webSocketSet) {
             try {
-                if(item.token.getUserid().equals(role))
-                item.sendMessage(message);
+                if (item.token.getUserid().equals(role))
+                    item.sendMessage(message);
             } catch (IOException e) {
                 continue;
             }
