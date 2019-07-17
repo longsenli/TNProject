@@ -233,6 +233,82 @@ public class DashboardServiceImpl implements IDashboardService {
         return  result;
     }
 	}
+    // 1 在窑数据查询  2入窑记录查询 3 出窑记录查询
+    @Override
+    public TNPYResponse getDryingKilnInfo( String plantID ,String equipmentID,String queryTypeID,String startTime,String endTime) {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String sql ="(\r\n" +
+                    "	SELECT\r\n" +
+                    "		d.id,\r\n" +
+                    "		d.dryingKilnID,\r\n" +
+                    "		d.dryingKilnName,\r\n" +
+                    "		d.suborderID,\r\n" +
+                    "		d.plantID,\r\n" +
+                    "		p.`name` AS plantname,\r\n" +
+                    "		d.lineID,\r\n" +
+                    "		o.`name` AS linename,\r\n" +
+                    "		d.workLocationID,\r\n" +
+                    "		d.workLocationName,\r\n" +
+                    "		d.inputerName,\r\n" +
+                    "		d.inputTime,\r\n" +
+                    "		d.inputerID,\r\n" +
+                    "		d.materialID,\r\n" +
+                    "		d.materialName,\r\n" +
+                    "		d.materialQuantity\r\n" +
+                    "	FROM\r\n" +
+                    "		tb_dryingkilnjzrecord d,\r\n" +
+                    "		sys_industrialplant p,\r\n" +
+                    "		sys_productionline o\r\n" +
+                    "	WHERE\r\n" +
+                    "		d.plantID = p.id\r\n" +
+                    "	AND d.lineID = o.id\r\n" +
+                    "	AND d.plantID = '"+plantID+"'" +
+                    "	AND d.outputerID IS NULL\r\n" +
+                    ")\r\n" +
+                    "UNION ALL\r\n" +
+                    "	(\r\n" +
+                    "		SELECT\r\n" +
+                    "			a.id,\r\n" +
+                    "			'总计' AS dryingKilnID,\r\n" +
+                    "			a.dryingKilnName,\r\n" +
+                    "			'',\r\n" +
+                    "			'',\r\n" +
+                    "			'',\r\n" +
+                    "			'',\r\n" +
+                    "			'',\r\n" +
+                    "			'',\r\n" +
+                    "			'',\r\n" +
+                    "			'',\r\n" +
+                    "			'',\r\n" +
+                    "			'片数共计',\r\n" +
+                    "			sum(a.materialQuantity),\r\n" +
+                    "			'拖数共计: ',\r\n" +
+                    "			COUNT(a.id) AS num\r\n" +
+                    "		FROM\r\n" +
+                    "			tb_dryingkilnjzrecord a\r\n" +
+                    "		WHERE\r\n" +
+                    "	     a.plantID = '"+plantID+"'" +
+                    "		AND a.outputerID IS NULL\r\n" +
+                    "		GROUP BY\r\n" +
+                    "			a.dryingKilnID\r\n" +
+                    "	)\r\n" +
+                    "ORDER BY\r\n" +
+                    "	dryingKilnID DESC";
+//		System.out.println(sql);
+            List<Map<Object, Object>> mapList = dashboardMapper.getNowInDryingKilnjz(sql);
+            result.setStatus(1);
+            result.setData(JSONObject.toJSON(mapList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            ex.printStackTrace();
+            return  result;
+        }
+    }
 
     public TNPYResponse getWageDetail(String plantID ,String processID,String startTime,String endTime)
     {

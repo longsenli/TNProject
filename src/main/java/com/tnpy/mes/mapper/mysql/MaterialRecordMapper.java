@@ -28,6 +28,9 @@ public interface MaterialRecordMapper {
     @Select("select * from tb_materialrecord where subOrderID = #{id} and inOrOut = 1 limit 1")
     MaterialRecord selectBySuborderID(String id);
 
+    @Select("select * from tb_materialrecord where subOrderID = #{id} and inOrOut = #{inoutStatus} limit 1")
+    MaterialRecord selectBySuborderIDAndInOut(String id,String inoutStatus);
+
     // @Select("select * from tb_materialrecord where expendOrderID = #{expendOrder}")
     @Select("select c.*,d.name as materialName from ( \n" +
             "SELECT a.*,b.orderSplitID as inSubOrderName,left(b.orderSplitID, length(b.orderSplitID)-3)  as inOrderName \n" +

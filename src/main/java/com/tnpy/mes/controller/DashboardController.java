@@ -29,6 +29,13 @@ public class DashboardController {
     public TNPYResponse nowInDryingKilnjz( String plantID ,String processID,String queryTypeID,String startTime,String endTime) {
        return dashboardService.nowInDryingKilnjz(plantID, processID, queryTypeID, startTime, endTime);
     }
+
+    // 1 在窑数据查询  2入窑记录查询 3 出窑记录查询
+    @RequestMapping(value = "/getDryingKilnInfo")
+    public TNPYResponse getDryingKilnInfo( String plantID ,String equipmentID,String queryTypeID,String startTime,String endTime) {
+        return dashboardService.getDryingKilnInfo(plantID, equipmentID, queryTypeID, startTime, endTime);
+    }
+
     @RequestMapping(value = "/getinventoryinfo")
     public TNPYResponse getInventoryInfo(String plantID ,String processID,String dayTime)
     {

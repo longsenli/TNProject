@@ -1,14 +1,7 @@
 package com.tnpy.mes.controller;
 
 import com.tnpy.common.utils.web.TNPYResponse;
-import com.tnpy.mes.model.mysql.DryingKilnJZRecord;
 import com.tnpy.mes.service.workOrderService.IWorkOrderService;
-
-import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.Random;
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -155,7 +148,13 @@ public class OrderController {
     public TNPYResponse pushInDryingKilnjzsuborder( String jsonStr,String name ) {
         return  workOrderService.pushInDryingKilnjzsuborder( jsonStr, name);
     }
-    
+
+    //浇铸批量单独入窑入窑
+    @RequestMapping(value = "/pushindryingkilnjzbybatch")
+    public TNPYResponse pushinDryingKilnJZByBatch( String orderIDList ,String name ,String equipmentID ) {
+        return  workOrderService.pushinDryingKilnJZByBatch( orderIDList, name,equipmentID);
+    }
+
   //浇铸固化室批次出窑入库
     @RequestMapping(value = "/pushOutDryingKilnjzsuborder")
     public TNPYResponse pushOutDryingKilnjzsuborder( String jsonStr,String name ) {

@@ -1,11 +1,15 @@
 package com.tnpy.common.Enum;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @Description: TODO
  * @Author: LLS
  * @Date: 2018/12/19 14:41
  */
 public class StatusEnum {
+
     public static  enum ResponseStatus {
         Success("成功", 1), Fail("失败", 2);
         // 成员变量

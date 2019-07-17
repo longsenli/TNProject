@@ -1000,7 +1000,99 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             return  result;
         }
     }
-	
+
+    public TNPYResponse pushinDryingKilnJZByBatch( String orderIDList ,String name,String equipmentID )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            EquipmentInfo equipmentInfo = equipmentInfoMapper.selectByPrimaryKey(equipmentID);
+            if(equipmentInfo==null) {
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setMessage("不是正确的干燥窑二维码" );
+                return  result;
+            }
+            //判断是否是浇铸干燥窑二维码结束
+            //判断浇铸干燥窑是否已满
+            int exitsIndry = dryingKilnJZRecordMapper.selectExitsInDryRecord(equipmentID);
+            //Integer capacity = ConfigParamEnum.EquipmentCapacity.DRYKILNZY.getNum();
+            //如果窑满了
+            if(exitsIndry + orderIDList.split("###").length > (int)(ConfigParamEnum.DryFilnCapacityMap.get(equipmentID))) {
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setMessage(equipmentInfo.getName() + "已有"+ exitsIndry+"拖，最多能够入!"  + ConfigParamEnum.DryFilnCapacityMap.get(equipmentID) + "拖！");
+                return  result;
+            }
+
+            String filter = " where id in ('" + orderIDList.replaceAll("###","','") + "' )";
+            List<OrderSplit> orderInfoList =orderSplitMapper.selectByFilter(filter);
+            List<Map<String, String>> grantResult = new  ArrayList<Map<String, String>>();
+            String[] orderArray = orderIDList.split("###");
+            String orderSplitID = "";
+            OrderSplit orderSplit ;
+            for(int i =0;i<orderArray.length;i++)
+            {
+                Map<String, String> mapResult = new HashMap<String, String>();
+                mapResult.put("orderID",orderArray[i]);
+                mapResult.put("status","失败");
+                mapResult.put("returnMessage","未获取到订单信息!");
+                for(int j =0;j<orderInfoList.size();j++)
+                {
+                    if(!orderArray[i].equals(orderInfoList.get(j).getId()))
+                    {
+                        continue;
+                    }
+                    orderSplit = orderInfoList.get(j);
+                    orderSplitID = orderSplit.getId();
+
+                    if(!(StatusEnum.WorkOrderStatus.finished.getIndex()+"").equals(orderSplit.getStatus()))
+                    {
+                        mapResult.put("returnMessage","该订单尚未完成！" +orderSplitID );
+                        break;
+                    }
+
+                    MaterialRecord materialRecord = materialRecordMapper.selectBySuborderIDAndInOut(orderSplit.getId(),StatusEnum.InOutStatus.PreInput.getIndex() + "");
+                    if(materialRecord ==null)
+                    {
+                        mapResult.put("returnMessage","未获取到入库信息！请重试或者重新入库！" +orderSplitID );
+                        break;
+                    }
+                    List<DryingKilnJZRecord> existsRecord = dryingKilnJZRecordMapper.selectBySuborderid(orderSplit.getOrdersplitid());
+                    if(existsRecord !=null && existsRecord.size()>0) { //判断改子工单是否取消完成后存在表中记录, 若存在则修改记录
+
+                        mapResult.put("returnMessage","发生错误,出现工单已入窑" + existsRecord.get(0).getInputername() + existsRecord.get(0).getInputtime() );
+                        break;
+                        }
+                    DryingKilnJZRecord dryingKilnJZRecord = new DryingKilnJZRecord();
+                    dryingKilnJZRecord.setId( UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                    dryingKilnJZRecord.setDryingkilnid(equipmentInfo.getId());
+                    dryingKilnJZRecord.setDryingkilnname(equipmentInfo.getName());
+                   // dryingKilnJZRecord.setInputerid(name);
+                    dryingKilnJZRecord.setInputername(name);
+                    dryingKilnJZRecord.setInputtime(new Date());
+                    dryingKilnJZRecord.setLineid(materialRecord.getInputlineid());
+                    dryingKilnJZRecord.setMaterialid(materialRecord.getMaterialid());
+                    dryingKilnJZRecord.setMaterialname(materialRecord.getMaterialnameinfo());
+                    dryingKilnJZRecord.setMaterialquantity(materialRecord.getNumber().intValue());
+                    dryingKilnJZRecord.setPlantid(materialRecord.getInputplantid());
+                    dryingKilnJZRecord.setStatus(StatusEnum.InOutStatus.Input.getIndex() + "");
+                    dryingKilnJZRecord.setSuborderid(materialRecord.getSuborderid());
+                    dryingKilnJZRecord.setWorklocationid(materialRecord.getInputworklocationid());
+                  dryingKilnJZRecordMapper.insert(dryingKilnJZRecord);
+                    mapResult.put("status","成功");
+                    mapResult.put("returnMessage","");
+                }
+                grantResult.add(mapResult);
+            }
+            result.setData(JSONObject.toJSON(grantResult).toString());
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("发放失败！" + ex.getMessage());
+            return  result;
+        }
+    }
 	//浇铸入窑记录
 	@Override
 	public TNPYResponse pushInDryingKilnjzsuborder( String jsonStr ,String name) {

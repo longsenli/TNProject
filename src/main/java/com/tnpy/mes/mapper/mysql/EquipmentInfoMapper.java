@@ -1,11 +1,14 @@
 package com.tnpy.mes.mapper.mysql;
 
 import com.tnpy.mes.model.mysql.EquipmentInfo;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-
+@Mapper
+@Component
 public interface EquipmentInfoMapper {
     int deleteByPrimaryKey(String id);
 

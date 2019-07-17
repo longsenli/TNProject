@@ -1,7 +1,6 @@
 package com.tnpy.mes.service.workOrderService;
 
 import com.tnpy.common.utils.web.TNPYResponse;
-import com.tnpy.mes.model.mysql.DryingKilnJZRecord;
 
 /**
  * @Description: TODO
@@ -42,7 +41,10 @@ public interface IWorkOrderService {
     
     //浇铸干燥窑入窑
     public TNPYResponse pushInDryingKilnjzsuborder( String jsonStr ,String name );
-    
+
+    //浇铸批量入窑
+    public TNPYResponse pushinDryingKilnJZByBatch( String orderIDList ,String name ,String equipmentID);
+
     //浇铸干燥窑出窑
     public TNPYResponse pushOutDryingKilnjzsuborder( String jsonStr ,String name );
     
