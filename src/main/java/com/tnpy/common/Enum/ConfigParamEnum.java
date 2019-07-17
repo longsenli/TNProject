@@ -11,10 +11,10 @@ import java.util.Map;
 public class ConfigParamEnum {
 
     public  static Map  DryFilnCapacityMap = new HashMap() {{
-        put("10011001", 90);
-        put("10011002", 90);
-        put("10011003", 90);
-        put("10011004", 90);
+        put("10011-1002-001", 90);
+        put("10011-1002-002", 90);
+        put("10011-1002-003", 90);
+        put("10011-1002-004", 90);
 
     }};
 

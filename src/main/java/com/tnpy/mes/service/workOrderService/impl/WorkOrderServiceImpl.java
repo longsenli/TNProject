@@ -1089,7 +1089,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         }
         catch (Exception ex)
         {
-            result.setMessage("发放失败！" + ex.getMessage());
+            result.setMessage("入窑失败！" + ex.getMessage());
             return  result;
         }
     }
