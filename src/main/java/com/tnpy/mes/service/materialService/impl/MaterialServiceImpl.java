@@ -1022,4 +1022,21 @@ public class MaterialServiceImpl implements IMaterialService {
             return  result;
         }
     }
+
+    public TNPYResponse getShelfProductionRecord( String staffID,String startTime,String endTime )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<Map<Object, Object>> record =  materialRecordMapper.selectSelfProductionRecord(staffID,startTime,endTime);
+            result.setData(JSONObject.toJSON(record).toString());
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("更新出错！" + ex.getMessage());
+            return  result;
+        }
+    }
 }

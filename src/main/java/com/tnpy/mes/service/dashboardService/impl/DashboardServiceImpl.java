@@ -239,6 +239,11 @@ public class DashboardServiceImpl implements IDashboardService {
         TNPYResponse result = new TNPYResponse();
         try
         {
+            String equipmentIDFilter = "";
+            if(!"-1".equals(equipmentID))
+            {
+                equipmentIDFilter = " and d.dryingKilnID = '" + equipmentID + "' ";
+            }
             String sql ="(\r\n" +
                     "	SELECT\r\n" +
                     "		d.id,\r\n" +
@@ -262,7 +267,7 @@ public class DashboardServiceImpl implements IDashboardService {
                     "		sys_industrialplant p,\r\n" +
                     "		sys_productionline o\r\n" +
                     "	WHERE\r\n" +
-                    "		d.plantID = p.id\r\n" +
+                    "		d.plantID = p.id\r\n" + equipmentIDFilter +
                     "	AND d.lineID = o.id\r\n" +
                     "	AND d.plantID = '"+plantID+"'" +
                     "	AND d.outputerID IS NULL\r\n" +
@@ -270,9 +275,9 @@ public class DashboardServiceImpl implements IDashboardService {
                     "UNION ALL\r\n" +
                     "	(\r\n" +
                     "		SELECT\r\n" +
-                    "			a.id,\r\n" +
+                    "			d.id,\r\n" +
                     "			'总计' AS dryingKilnID,\r\n" +
-                    "			a.dryingKilnName,\r\n" +
+                    "			d.dryingKilnName,\r\n" +
                     "			'',\r\n" +
                     "			'',\r\n" +
                     "			'',\r\n" +
@@ -283,16 +288,16 @@ public class DashboardServiceImpl implements IDashboardService {
                     "			'',\r\n" +
                     "			'',\r\n" +
                     "			'片数共计',\r\n" +
-                    "			sum(a.materialQuantity),\r\n" +
+                    "			sum(d.materialQuantity),\r\n" +
                     "			'拖数共计: ',\r\n" +
-                    "			COUNT(a.id) AS num\r\n" +
+                    "			COUNT(d.id) AS num\r\n" +
                     "		FROM\r\n" +
-                    "			tb_dryingkilnjzrecord a\r\n" +
+                    "			tb_dryingkilnjzrecord d\r\n" +
                     "		WHERE\r\n" +
-                    "	     a.plantID = '"+plantID+"'" +
-                    "		AND a.outputerID IS NULL\r\n" +
+                    "	     d.plantID = '"+plantID+"'" +  equipmentIDFilter +
+                    "		AND d.outputerID IS NULL\r\n" +
                     "		GROUP BY\r\n" +
-                    "			a.dryingKilnID\r\n" +
+                    "			d.dryingKilnID\r\n" +
                     "	)\r\n" +
                     "ORDER BY\r\n" +
                     "	dryingKilnID DESC";
