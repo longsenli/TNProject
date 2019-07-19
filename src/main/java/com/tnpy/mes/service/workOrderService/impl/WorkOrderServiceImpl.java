@@ -433,6 +433,10 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 result.setMessage("该工单已完成！" );
                 return  result;
             }
+            if( orderSplit.getProductionnum() == null )
+            {
+                orderSplit.setProductionnum(orderSplitTMP.getProductionnum());
+            }
             TNPYResponse judgeResult = judgeEnoughMaterial(orderSplit.getMaterialid(),orderSplit.getOrderid(),orderSplit.getProductionnum());
             if(judgeResult.getStatus() != StatusEnum.ResponseStatus.Success.getIndex())
             {
@@ -520,6 +524,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         }
         catch (Exception ex)
         {
+          //  System.out.println("====finish====" + jsonStr + "====" + name);
             result.setMessage("查询出错！" + ex.getMessage());
             return  result;
         }
