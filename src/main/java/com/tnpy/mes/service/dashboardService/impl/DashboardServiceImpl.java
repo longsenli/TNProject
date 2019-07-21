@@ -38,9 +38,26 @@ public class DashboardServiceImpl implements IDashboardService {
 		<option value='byWage'>人员工资</option>
 		<option value='byOrderDetail'>工单详情</option>
          */
+
         TNPYResponse result = new TNPYResponse();
         try
         {
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//            //String->Date
+//            Date newStartTime = sdf.parse(startTime); //new Date(startTime);
+//            Date newEndTime = sdf.parse(endTime); // new Date(endTime);
+//            String newStartTimeStr = sdf.format(newStartTime) + " 07:00:00";
+//            //Date->Calendar
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.setTime(newEndTime);
+//            //计算过期日
+//            calendar.add(Calendar.DATE, 1);
+//
+//            //Calendar->Date
+//            newEndTime = calendar.getTime();
+//
+//            String newEndTimeStr =sdf.format(newEndTime) + " 07:00:00";
+
             String querySQL = "";
             if("byWage".equals(queryTypeID))
             {
@@ -244,63 +261,191 @@ public class DashboardServiceImpl implements IDashboardService {
             {
                 equipmentIDFilter = " and d.dryingKilnID = '" + equipmentID + "' ";
             }
-            String sql ="(\r\n" +
-                    "	SELECT\r\n" +
-                    "		d.id,\r\n" +
-                    "		d.dryingKilnID,\r\n" +
-                    "		d.dryingKilnName,\r\n" +
-                    "		d.suborderID,\r\n" +
-                    "		d.plantID,\r\n" +
-                    "		p.`name` AS plantname,\r\n" +
-                    "		d.lineID,\r\n" +
-                    "		o.`name` AS linename,\r\n" +
-                    "		d.workLocationID,\r\n" +
-                    "		d.workLocationName,\r\n" +
-                    "		d.inputerName,\r\n" +
-                    "		d.inputTime,\r\n" +
-                    "		d.inputerID,\r\n" +
-                    "		d.materialID,\r\n" +
-                    "		d.materialName,\r\n" +
-                    "		d.materialQuantity\r\n" +
-                    "	FROM\r\n" +
-                    "		tb_dryingkilnjzrecord d,\r\n" +
-                    "		sys_industrialplant p,\r\n" +
-                    "		sys_productionline o\r\n" +
-                    "	WHERE\r\n" +
-                    "		d.plantID = p.id\r\n" + equipmentIDFilter +
-                    "	AND d.lineID = o.id\r\n" +
-                    "	AND d.plantID = '"+plantID+"'" +
-                    "	AND d.outputerID IS NULL\r\n" +
-                    ")\r\n" +
-                    "UNION ALL\r\n" +
-                    "	(\r\n" +
-                    "		SELECT\r\n" +
-                    "			d.id,\r\n" +
-                    "			'总计' AS dryingKilnID,\r\n" +
-                    "			d.dryingKilnName,\r\n" +
-                    "			'',\r\n" +
-                    "			'',\r\n" +
-                    "			'',\r\n" +
-                    "			'',\r\n" +
-                    "			'',\r\n" +
-                    "			'',\r\n" +
-                    "			'',\r\n" +
-                    "			'',\r\n" +
-                    "			'',\r\n" +
-                    "			'片数共计',\r\n" +
-                    "			sum(d.materialQuantity),\r\n" +
-                    "			'拖数共计: ',\r\n" +
-                    "			COUNT(d.id) AS num\r\n" +
-                    "		FROM\r\n" +
-                    "			tb_dryingkilnjzrecord d\r\n" +
-                    "		WHERE\r\n" +
-                    "	     d.plantID = '"+plantID+"'" +  equipmentIDFilter +
-                    "		AND d.outputerID IS NULL\r\n" +
-                    "		GROUP BY\r\n" +
-                    "			d.dryingKilnID\r\n" +
-                    "	)\r\n" +
-                    "ORDER BY\r\n" +
-                    "	dryingKilnID DESC";
+            String sql = "";
+            if("1".equals(queryTypeID))
+            {
+                sql =   "(\r\n" +
+                        "	SELECT\r\n" +
+                        "		d.id,\r\n" +
+                        "		d.dryingKilnID,\r\n" +
+                        "		d.dryingKilnName,\r\n" +
+                        "		d.suborderID,\r\n" +
+                        "		d.plantID,\r\n" +
+                        "		p.`name` AS plantname,\r\n" +
+                        "		d.lineID,\r\n" +
+                        "		o.`name` AS linename,\r\n" +
+                        "		d.workLocationID,\r\n" +
+                        "		d.workLocationName,\r\n" +
+                        "		d.inputerName,\r\n" +
+                        "		d.inputTime,\r\n" +
+                        "		d.inputerID,\r\n" +
+                        "		d.materialID,\r\n" +
+                        "		d.materialName,\r\n" +
+                        "		d.materialQuantity\r\n" +
+                        "	FROM\r\n" +
+                        "		tb_dryingkilnjzrecord d,\r\n" +
+                        "		sys_industrialplant p,\r\n" +
+                        "		sys_productionline o\r\n" +
+                        "	WHERE\r\n" +
+                        "		d.plantID = p.id\r\n" + equipmentIDFilter +
+                        "	AND d.lineID = o.id\r\n" +
+                        "	AND d.plantID = '"+plantID+"'" +
+                        "	AND d.outputerID IS NULL\r\n" +
+                        ")\r\n" +
+                        "UNION ALL\r\n" +
+                        "	(\r\n" +
+                        "		SELECT\r\n" +
+                        "			d.id,\r\n" +
+                        "			'总计' AS dryingKilnID,\r\n" +
+                        "			d.dryingKilnName,\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'片数共计',\r\n" +
+                        "			sum(d.materialQuantity),\r\n" +
+                        "			'拖数共计: ',\r\n" +
+                        "			COUNT(d.id) AS num\r\n" +
+                        "		FROM\r\n" +
+                        "			tb_dryingkilnjzrecord d\r\n" +
+                        "		WHERE\r\n" +
+                        "	     d.plantID = '"+plantID+"'" +  equipmentIDFilter +
+                        "		AND d.outputerID IS NULL\r\n" +
+                        "		GROUP BY\r\n" +
+                        "			d.dryingKilnID\r\n" +
+                        "	)\r\n" +
+                        "ORDER BY\r\n" +
+                        "	dryingKilnID DESC,inputTime";
+            }
+
+            if("2".equals(queryTypeID))
+            {
+                sql =   "(\r\n" +
+                        "	SELECT\r\n" +
+                        "		d.id,\r\n" +
+                        "		d.dryingKilnID,\r\n" +
+                        "		d.dryingKilnName,\r\n" +
+                        "		d.suborderID,\r\n" +
+                        "		d.plantID,\r\n" +
+                        "		p.`name` AS plantname,\r\n" +
+                        "		d.lineID,\r\n" +
+                        "		o.`name` AS linename,\r\n" +
+                        "		d.workLocationID,\r\n" +
+                        "		d.workLocationName,\r\n" +
+                        "		d.inputerName,\r\n" +
+                        "		d.inputTime,\r\n" +
+                        "		d.inputerID,\r\n" +
+                        "		d.materialID,\r\n" +
+                        "		d.materialName,\r\n" +
+                        "		d.materialQuantity\r\n" +
+                        "	FROM\r\n" +
+                        "		tb_dryingkilnjzrecord d,\r\n" +
+                        "		sys_industrialplant p,\r\n" +
+                        "		sys_productionline o\r\n" +
+                        "	WHERE\r\n" +
+                        "		d.plantID = p.id\r\n" + equipmentIDFilter +
+                        "	AND d.lineID = o.id\r\n" +
+                        "	AND d.plantID = '"+plantID+"'" +
+                        "	AND d.inputTime  >= '"  + startTime+ "' AND d.inputTime  < '"  + endTime+ "'\r\n" +
+                        ")\r\n" +
+                        "UNION ALL\r\n" +
+                        "	(\r\n" +
+                        "		SELECT\r\n" +
+                        "			d.id,\r\n" +
+                        "			'总计' AS dryingKilnID,\r\n" +
+                        "			d.dryingKilnName,\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'片数共计',\r\n" +
+                        "			sum(d.materialQuantity),\r\n" +
+                        "			'拖数共计: ',\r\n" +
+                        "			COUNT(d.id) AS num\r\n" +
+                        "		FROM\r\n" +
+                        "			tb_dryingkilnjzrecord d\r\n" +
+                        "		WHERE\r\n" +
+                        "	     d.plantID = '"+plantID+"'" +  equipmentIDFilter +
+                        "	AND d.inputTime  >= '"  + startTime+ "' AND d.inputTime  < '"  + endTime+ "'\r\n" +
+
+                        "		GROUP BY\r\n" +
+                        "			d.dryingKilnID\r\n" +
+                        "	)\r\n" +
+                        "ORDER BY\r\n" +
+                        "	dryingKilnID DESC,inputTime";
+            }
+
+            if("3".equals(queryTypeID))
+            {
+                sql =   "(\r\n" +
+                        "	SELECT\r\n" +
+                        "		d.id,\r\n" +
+                        "		d.dryingKilnID,\r\n" +
+                        "		d.dryingKilnName,\r\n" +
+                        "		d.suborderID,\r\n" +
+                        "		d.plantID,\r\n" +
+                        "		p.`name` AS plantname,\r\n" +
+                        "		d.lineID,\r\n" +
+                        "		o.`name` AS linename,\r\n" +
+                        "		d.workLocationID,\r\n" +
+                        "		d.workLocationName,\r\n" +
+                        "		d.inputerName,\r\n" +
+                        "		d.inputTime,\r\n" +
+                        "		d.inputerID,\r\n" +
+                        "		d.materialID,\r\n" +
+                        "		d.materialName,\r\n" +
+                        "		d.materialQuantity\r\n" +
+                        "	FROM\r\n" +
+                        "		tb_dryingkilnjzrecord d,\r\n" +
+                        "		sys_industrialplant p,\r\n" +
+                        "		sys_productionline o\r\n" +
+                        "	WHERE\r\n" +
+                        "		d.plantID = p.id\r\n" + equipmentIDFilter +
+                        "	AND d.lineID = o.id\r\n" +
+                        "	AND d.plantID = '"+plantID+"'" +
+                        "	AND d.outputTime  >= '"  + startTime+ "' AND d.outputTime  < '"  + endTime+ "'\r\n" +
+                        ")\r\n" +
+                        "UNION ALL\r\n" +
+                        "	(\r\n" +
+                        "		SELECT\r\n" +
+                        "			d.id,\r\n" +
+                        "			'总计' AS dryingKilnID,\r\n" +
+                        "			d.dryingKilnName,\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'片数共计',\r\n" +
+                        "			sum(d.materialQuantity),\r\n" +
+                        "			'拖数共计: ',\r\n" +
+                        "			COUNT(d.id) AS num\r\n" +
+                        "		FROM\r\n" +
+                        "			tb_dryingkilnjzrecord d\r\n" +
+                        "		WHERE\r\n" +
+                        "	     d.plantID = '"+plantID+"'" +  equipmentIDFilter +
+                        "	AND d.outputTime  >= '"  + startTime+ "' AND d.outputTime  < '"  + endTime+ "'\r\n" +
+                        "		GROUP BY\r\n" +
+                        "			d.dryingKilnID\r\n" +
+                        "	)\r\n" +
+                        "ORDER BY\r\n" +
+                        "	dryingKilnID DESC,inputTime";
+            }
+
 //		System.out.println(sql);
             List<Map<Object, Object>> mapList = dashboardMapper.getNowInDryingKilnjz(sql);
             result.setStatus(1);
