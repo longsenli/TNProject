@@ -206,7 +206,7 @@ public class DashboardServiceImpl implements IDashboardService {
 				"		d.plantID = p.id\r\n" + 
 				"	AND d.lineID = o.id\r\n" + 
 				"	AND d.plantID = '"+plantID+"'" + 
-				"	AND d.outputerID IS NULL\r\n" + 
+				"	AND d.outputerName IS NULL\r\n" +
 				")\r\n" + 
 				"UNION ALL\r\n" + 
 				"	(\r\n" + 
@@ -231,7 +231,7 @@ public class DashboardServiceImpl implements IDashboardService {
 				"			tb_dryingkilnjzrecord a\r\n" + 
 				"		WHERE\r\n" + 
 				"	     a.plantID = '"+plantID+"'" + 
-				"		AND a.outputerID IS NULL\r\n" + 
+				"		AND a.outputerName IS NULL\r\n" +
 				"		GROUP BY\r\n" + 
 				"			a.dryingKilnID\r\n" + 
 				"	)\r\n" + 
@@ -290,7 +290,7 @@ public class DashboardServiceImpl implements IDashboardService {
                         "		d.plantID = p.id\r\n" + equipmentIDFilter +
                         "	AND d.lineID = o.id\r\n" +
                         "	AND d.plantID = '"+plantID+"'" +
-                        "	AND d.outputerID IS NULL\r\n" +
+                        "	AND d.outputerName IS NULL\r\n" +
                         ")\r\n" +
                         "UNION ALL\r\n" +
                         "	(\r\n" +
@@ -315,7 +315,7 @@ public class DashboardServiceImpl implements IDashboardService {
                         "			tb_dryingkilnjzrecord d\r\n" +
                         "		WHERE\r\n" +
                         "	     d.plantID = '"+plantID+"'" +  equipmentIDFilter +
-                        "		AND d.outputerID IS NULL\r\n" +
+                        "		AND d.outputerName IS NULL\r\n" +
                         "		GROUP BY\r\n" +
                         "			d.dryingKilnID\r\n" +
                         "	)\r\n" +
