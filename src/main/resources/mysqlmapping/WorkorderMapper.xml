@@ -65,7 +65,7 @@ select a.*,b.name as lineName from
     when '4' then '已完成' when '5' then '已关闭' when '6' then '已删除' else '状态不详' end as statusName FROM tb_workorder ${filter} ) a
 left join sys_productionline b on a.lineID = b.id
 )
-) c left join sys_material d on c.materialID = d.id order by scheduledStartTime desc,materialName asc
+) c left join sys_material d on c.materialID = d.id order by scheduledStartTime desc,orderID asc
 
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">

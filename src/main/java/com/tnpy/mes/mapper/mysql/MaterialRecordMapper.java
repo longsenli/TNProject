@@ -201,6 +201,9 @@ public interface MaterialRecordMapper {
             " ( select inputer,subOrderID,number,inputTime,materialNameInfo from tb_materialrecord " +
             "where inputerID = #{staffID} and inputTime >= #{startTime} and inputTime <  #{endTime} order by inputTime desc )")
     List<Map<Object, Object>>  selectSelfProductionRecord( String staffID,  String startTime,String endTime);
+
+    @Select("select subOrderID from tb_materialrecord where inputTime > '2019-07-23'  and orderID like '%BB20190723'")
+    List<String> selectByID();
 }
 
 

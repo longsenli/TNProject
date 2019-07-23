@@ -214,7 +214,8 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             {
                 filter += " and lineID = '" + lineID + "' ";
             }
-            filter += " order by createTime desc limit 1000 ";
+          //  filter += " order by scheduledStartTime desc,lineID asc  limit 1000 ";
+           // System.out.println("============");
             List<CustomWorkOrderRecord> workOrderList = workOrderMapper.selectCustomResultByFilter(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(workOrderList).toString());

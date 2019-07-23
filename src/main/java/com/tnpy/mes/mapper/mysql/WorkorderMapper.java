@@ -2,10 +2,7 @@ package com.tnpy.mes.mapper.mysql;
 
 import com.tnpy.mes.model.customize.CustomWorkOrderRecord;
 import com.tnpy.mes.model.mysql.Workorder;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -63,4 +60,21 @@ public interface WorkorderMapper {
 
     @Select("select count(1) from tb_workorder where lineID = #{lineID}  and scheduledStartTime =  #{startDate}")
     int selectOrderNumber(String lineID,String startDate);
+
+    @Select("select count(1) from tb_workorder where plantID = #{plantID} and processID = #{processID} and scheduledStartTime =  #{time}")
+    int selectOrderInfo(String plantID,String processID,String time);
+
+    @Insert("\n" +
+            "insert into tb_workorder (id,orderID,plantID,processID,lineID,status,batchNum,totalProduction,materialID,createTime,scheduledStartTime) \n" +
+            "select id ,id ,plantID,processID,lineID,'1',batchNum,totalProduction,materialID,now(),${endOrderTime} from (\n" +
+            "select replace(orderID,${timeStartString},${timeEndString}) as id ,plantID,processID,lineID,'1',batchNum,totalProduction,materialID \n" +
+            "from tb_workorder where scheduledStartTime = #{startOrderTime}  and status != '5' and plantID = #{plantID} and processID = #{processID} ) a")
+    int insertAutoMainOrder(String startOrderTime,@Param("endOrderTime") String endOrderTime,@Param("timeStartString")String timeStartString,@Param("timeEndString")String timeEndString,String plantID,String processID);
+
+    @Insert("insert into tb_ordersplit (id,orderID,orderSplitID,productionNum,status,materialID) \n" +
+            "select replace(b.id,${timeStartString},${timeEndString}) as id,replace(b.orderID,${timeStartString},${timeEndString}) as orderID,\n" +
+            "replace(b.orderSplitID,${timeStartString},${timeEndString}) as orderSplitID,b.productionNum,'1',b.materialID\n" +
+            " from  ( select id from tb_workorder where scheduledStartTime  = #{startOrderTime}   and status != '5' and plantID = #{plantID} and" +
+            " processID = #{processID} ) a left join  tb_ordersplit b on a.id = b.orderID ")
+    int insertAutoSubOrder(String startOrderTime,@Param("timeStartString")String timeStartString,@Param("timeEndString")String timeEndString,String plantID,String processID);
 }

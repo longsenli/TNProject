@@ -44,6 +44,9 @@ public class AutomaticSchedulingTimer {
     private IndustrialPlantMapper industrialPlantMapper;
 
     @Autowired
+    private OrderSplitMapper orderSplitMapper;
+
+    @Autowired
     private MaterialRecordMapper materialRecordMapper;
 
     @Autowired
@@ -397,13 +400,102 @@ public class AutomaticSchedulingTimer {
                 jms.send(mailMessage);
                 */
                 }
-              //  System.out.println("===========sendMessage");
+                //  System.out.println("===========sendMessage");
                 if (userSet.size() > 0)
                     websocketManageService.sendInfoToUserList(messageDetail, userSet);
             }
 
         } catch (Exception ex) {
             System.out.println("fail======" + ex.getMessage());
+        }
+    }
+
+
+    @Scheduled(cron = "0 23 11,23 * * ?")
+    public void automaticInsertWorkOrder() {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();//取时间
+
+            String timeOrderFinish = "";
+            String timeOrderStart = "";
+            String timeStartString = "";
+            String timeEndString = "";
+            String timeEndTMP = "";
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(date);
+            if (calendar.HOUR_OF_DAY < 16) {
+                timeEndTMP = dateFormat.format(date) + " 19:00:00";
+                timeOrderFinish = "'" +  dateFormat.format(date) + " 19:00:00" + "'";
+                timeEndString ="'" +  dateFormat.format(date).replaceAll("-", "") + "'";
+                calendar.add(Calendar.DATE, -1);
+                date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+                timeOrderStart = dateFormat.format(date) + " 19:00:00";
+                timeStartString = "'" +  dateFormat.format(date).replaceAll("-", "") + "'";
+            } else {
+                timeOrderStart = dateFormat.format(date) + " 7:00:00";
+                timeStartString = "'" +  dateFormat.format(date).replaceAll("-", "") + "'";
+                calendar.add(Calendar.DATE, 1);
+                date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+                timeEndTMP = dateFormat.format(date) + " 7:00:00";
+                timeOrderFinish =  "'" + dateFormat.format(date) + " 7:00:00"+ "'";
+                timeEndString = "'" +  dateFormat.format(date).replaceAll("-", "") + "'";
+            }
+
+            List<IndustrialPlant> industrialPlantList = industrialPlantMapper.selectAll();
+            List<ProductionProcess> productionProcessList = productionProcessMapper.selectAll();
+            /*
+            List<String> materialRecordList = materialRecordMapper.selectByID();
+            for(int i =0;i<materialRecordList.size();i++)
+            {
+                orderSplitMapper.updateStatus(materialRecordList.get(i),"4");
+            }
+            */
+/*
+          List<Workorder> workorderList =           workorderMapper.selectByFilter(" where id like '%20190723'");
+          String tmpint = "";
+            for (int i = 0;i<workorderList.size();i++)
+            {
+                for(int j =0;j<workorderList.get(i).getBatchnum();j++)
+                {
+                    OrderSplit orderSplit = new OrderSplit();
+                    if(j+1< 10)
+                    {
+                        tmpint = "00" + (j+1);
+                    }
+                    else
+                    {
+                        tmpint = "0" + (j+1);
+
+                    }
+                    orderSplit.setId(workorderList.get(i).getOrderid() +tmpint);
+                    orderSplit.setProductionnum((workorderList.get(i).getTotalproduction()/workorderList.get(i).getBatchnum()) * 1.0);
+                    orderSplit.setOrderid(workorderList.get(i).getOrderid());
+                    orderSplit.setStatus("1");
+                    orderSplit.setMaterialid(workorderList.get(i).getMaterialid());
+                    orderSplit.setOrdersplitid(workorderList.get(i).getOrderid() +tmpint);
+                    orderSplitMapper.insert(orderSplit);
+                }
+            }*/
+
+            for (int i = 0; i < industrialPlantList.size(); i++) {
+
+                for (int j = 0; j < productionProcessList.size(); j++) {
+                    try {
+                        if (workorderMapper.selectOrderInfo(industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), timeOrderStart) != 0 &&
+                                workorderMapper.selectOrderInfo(industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), timeEndTMP) == 0) {
+                            workorderMapper.insertAutoMainOrder(timeOrderStart, timeOrderFinish, timeStartString, timeEndString, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId());
+                            workorderMapper.insertAutoSubOrder(timeOrderStart, timeStartString, timeEndString, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId());
+                          // System.out.println(timeOrderStart + tmp + "====" + iii+ industrialPlantList.get(i).getName() + " " + productionProcessList.get(j).getName());
+                        }
+
+                    } catch (Exception ex) {
+                        System.out.println("自动添加工单失败===============" + ex.getMessage() + "  " + industrialPlantList.get(i).getName() + " " + productionProcessList.get(j).getName());
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println("盘点出错" + ex.getMessage());
         }
     }
 
