@@ -58,10 +58,10 @@ public interface WorkorderMapper {
     @Update("update tb_workorder set status= #{status} where id = #{id}")
     int updateWorkOrderStatus(String id,String status);
 
-    @Select("select count(1) from tb_workorder where lineID = #{lineID}  and scheduledStartTime =  #{startDate}")
+    @Select("select count(1) from tb_workorder where status !='5' and lineID = #{lineID}  and scheduledStartTime =  #{startDate}")
     int selectOrderNumber(String lineID,String startDate);
 
-    @Select("select count(1) from tb_workorder where plantID = #{plantID} and processID = #{processID} and scheduledStartTime =  #{time}")
+    @Select("select count(1) from tb_workorder where status !='5' and  plantID = #{plantID} and processID = #{processID} and scheduledStartTime =  #{time}")
     int selectOrderInfo(String plantID,String processID,String time);
 
     @Insert("\n" +
