@@ -525,7 +525,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         }
         catch (Exception ex)
         {
-          //  System.out.println("====finish====" + jsonStr + "====" + name);
+            System.out.println("====完成工单失败！====" + jsonStr + "====" + name);
             result.setMessage("查询出错！" + ex.getMessage());
             return  result;
         }
