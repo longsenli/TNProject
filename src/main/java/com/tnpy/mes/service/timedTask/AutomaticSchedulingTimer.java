@@ -415,8 +415,11 @@ public class AutomaticSchedulingTimer {
     public void automaticInsertWorkOrder() {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = new Date();//取时间
 
+            //SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+           // Date date = ft.parse("2019-07-25 23:20:00");
+            Date date = new Date();//取时间
+//System.out.println("=======" + ft.format(date) );
             String timeOrderFinish = "";
             String timeOrderStart = "";
             String timeStartString = "";
@@ -424,7 +427,8 @@ public class AutomaticSchedulingTimer {
             String timeEndTMP = "";
             Calendar calendar = new GregorianCalendar();
             calendar.setTime(date);
-            if (calendar.HOUR_OF_DAY < 16) {
+           // System.out.println("=======" + calendar.HOUR +"===" +calendar.get(Calendar.HOUR_OF_DAY));
+            if (calendar.get(Calendar.HOUR_OF_DAY) < 16) {
                 timeEndTMP = dateFormat.format(date) + " 19:00:00";
                 timeOrderFinish = "'" +  dateFormat.format(date) + " 19:00:00" + "'";
                 timeEndString ="'" +  dateFormat.format(date).replaceAll("-", "") + "'";
@@ -441,7 +445,6 @@ public class AutomaticSchedulingTimer {
                 timeOrderFinish =  "'" + dateFormat.format(date) + " 7:00:00"+ "'";
                 timeEndString = "'" +  dateFormat.format(date).replaceAll("-", "") + "'";
             }
-
             List<IndustrialPlant> industrialPlantList = industrialPlantMapper.selectAll();
             List<ProductionProcess> productionProcessList = productionProcessMapper.selectAll();
             /*
@@ -482,8 +485,13 @@ public class AutomaticSchedulingTimer {
 
                 for (int j = 0; j < productionProcessList.size(); j++) {
                     try {
+/*
+                        if(!"1011".equals(productionProcessList.get(j).getId()))
+                            continue;
+                        System.out.println("=========OK" + timeOrderStart + "===" + timeEndTMP);*/
                         if (workorderMapper.selectOrderInfo(industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), timeOrderStart) != 0 &&
                                 workorderMapper.selectOrderInfo(industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), timeEndTMP) == 0) {
+                            //System.out.println("=========="  );
                             workorderMapper.insertAutoMainOrder(timeOrderStart, timeOrderFinish, timeStartString, timeEndString, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId());
                             workorderMapper.insertAutoSubOrder(timeOrderStart, timeStartString, timeEndString, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId());
                           // System.out.println(timeOrderStart + tmp + "====" + iii+ industrialPlantList.get(i).getName() + " " + productionProcessList.get(j).getName());

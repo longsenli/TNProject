@@ -58,7 +58,7 @@ public interface WorkorderMapper {
     @Update("update tb_workorder set status= #{status} where id = #{id}")
     int updateWorkOrderStatus(String id,String status);
 
-    @Select("select count(1) from tb_workorder where status !='5' and lineID = #{lineID}  and scheduledStartTime =  #{startDate}")
+    @Select("select count(1) from tb_workorder where lineID = #{lineID}  and scheduledStartTime =  #{startDate}")
     int selectOrderNumber(String lineID,String startDate);
 
     @Select("select count(1) from tb_workorder where status !='5' and  plantID = #{plantID} and processID = #{processID} and scheduledStartTime =  #{time}")
@@ -73,8 +73,8 @@ public interface WorkorderMapper {
 
     @Insert("insert into tb_ordersplit (id,orderID,orderSplitID,productionNum,status,materialID) \n" +
             "select replace(b.id,${timeStartString},${timeEndString}) as id,replace(b.orderID,${timeStartString},${timeEndString}) as orderID,\n" +
-            "replace(b.orderSplitID,${timeStartString},${timeEndString}) as orderSplitID,b.productionNum,'1',b.materialID\n" +
-            " from  ( select id from tb_workorder where scheduledStartTime  = #{startOrderTime}   and status != '5' and plantID = #{plantID} and" +
+            "replace(b.orderSplitID,${timeStartString},${timeEndString}) as orderSplitID,a.totalProduction/a.batchNum,'1',b.materialID\n" +
+            " from  ( select id,totalProduction,batchNum from tb_workorder where scheduledStartTime  = #{startOrderTime}   and status != '5' and plantID = #{plantID} and" +
             " processID = #{processID} ) a left join  tb_ordersplit b on a.id = b.orderID ")
     int insertAutoSubOrder(String startOrderTime,@Param("timeStartString")String timeStartString,@Param("timeEndString")String timeEndString,String plantID,String processID);
 }
