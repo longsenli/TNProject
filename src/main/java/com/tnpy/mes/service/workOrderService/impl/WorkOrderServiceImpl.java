@@ -1033,6 +1033,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         TNPYResponse result = new TNPYResponse();
         try
         {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             EquipmentInfo equipmentInfo = equipmentInfoMapper.selectByPrimaryKey(equipmentID);
             if(equipmentInfo==null) {
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -1077,18 +1078,28 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                         break;
                     }
 
+                    List<DryingKilnJZRecord> existsRecord = dryingKilnJZRecordMapper.selectBySuborderid(orderSplit.getOrdersplitid());
+                    if(existsRecord !=null && existsRecord.size()>0) { //判断改子工单是否取消完成后存在表中记录, 若存在则修改记录
+
+                        if("2".equals(existsRecord.get(0).getStatus()))
+                        {
+                            mapResult.put("returnMessage","发生错误,出现工单已出窑,入窑人" + existsRecord.get(0).getInputername() + dateFormat.format(existsRecord.get(0).getInputtime())  +
+                                    ",出窑人"+  existsRecord.get(0).getOutputername() + dateFormat.format(existsRecord.get(0).getOutputtime()));
+                        }
+                        else
+                        {
+                            mapResult.put("returnMessage","发生错误,出现工单已入窑" + existsRecord.get(0).getInputername() + dateFormat.format(existsRecord.get(0).getInputtime()) );
+                        }
+                         break;
+                    }
+
                     MaterialRecord materialRecord = materialRecordMapper.selectBySuborderIDAndInOut(orderSplit.getId(),StatusEnum.InOutStatus.PreInput.getIndex() + "");
                     if(materialRecord ==null)
                     {
                         mapResult.put("returnMessage","未获取到入库信息！请重试或者重新入库！" +orderSplitID );
                         break;
                     }
-                    List<DryingKilnJZRecord> existsRecord = dryingKilnJZRecordMapper.selectBySuborderid(orderSplit.getOrdersplitid());
-                    if(existsRecord !=null && existsRecord.size()>0) { //判断改子工单是否取消完成后存在表中记录, 若存在则修改记录
 
-                        mapResult.put("returnMessage","发生错误,出现工单已入窑" + existsRecord.get(0).getInputername() + existsRecord.get(0).getInputtime() );
-                        break;
-                        }
                     DryingKilnJZRecord dryingKilnJZRecord = new DryingKilnJZRecord();
                     dryingKilnJZRecord.setId( UUID.randomUUID().toString().replace("-", "").toLowerCase());
                     dryingKilnJZRecord.setDryingkilnid(equipmentInfo.getId());
