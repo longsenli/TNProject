@@ -61,6 +61,9 @@ public interface WorkorderMapper {
     @Select("select count(1) from tb_workorder where lineID = #{lineID}  and scheduledStartTime =  #{startDate}")
     int selectOrderNumber(String lineID,String startDate);
 
+    @Select("select id from tb_workorder where lineID = #{lineID}  and scheduledStartTime =  #{startDate}")
+    List<String> selectOrderIDList(String lineID,String startDate);
+
     @Select("select count(1) from tb_workorder where status !='5' and  plantID = #{plantID} and processID = #{processID} and scheduledStartTime =  #{time}")
     int selectOrderInfo(String plantID,String processID,String time);
 
@@ -68,7 +71,7 @@ public interface WorkorderMapper {
             "insert into tb_workorder (id,orderID,plantID,processID,lineID,status,batchNum,totalProduction,materialID,createTime,scheduledStartTime) \n" +
             "select id ,id ,plantID,processID,lineID,'1',batchNum,totalProduction,materialID,now(),${endOrderTime} from (\n" +
             "select replace(orderID,${timeStartString},${timeEndString}) as id ,plantID,processID,lineID,'1',batchNum,totalProduction,materialID \n" +
-            "from tb_workorder where scheduledStartTime = #{startOrderTime}  and status != '5' and plantID = #{plantID} and processID = #{processID} ) a")
+            "from tb_workorder where scheduledStartTime = #{startOrderTime}  and status != '5' and plantID = #{plantID} and processID = #{processID}  ) a")
     int insertAutoMainOrder(String startOrderTime,@Param("endOrderTime") String endOrderTime,@Param("timeStartString")String timeStartString,@Param("timeEndString")String timeEndString,String plantID,String processID);
 
     @Insert("insert into tb_ordersplit (id,orderID,orderSplitID,productionNum,status,materialID) \n" +

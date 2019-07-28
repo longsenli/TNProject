@@ -9,7 +9,7 @@ import java.util.Map;
  * @Date: 2019/1/15 13:34
  */
 public class ConfigParamEnum {
-
+    public  static String serviceIP = "192.168.80.228;10.0.0.151";
     public  static Map  DryFilnCapacityMap = new HashMap() {{
         put("10011-1002-001", 81);
         put("10011-1002-002", 81);
@@ -17,6 +17,7 @@ public class ConfigParamEnum {
         put("10011-1002-004", 40);
 
     }};
+
 
     public static  enum BasicProcessEnum {
         TBProcessID("1003", 1), GHProcessID("1004", 2),CDProcessID("1009",3),JSProcessID("1008",4),

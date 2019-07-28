@@ -3,7 +3,9 @@ package com.tnpy.mes.service.timedTask;
 import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.mes.mapper.mysql.*;
-import com.tnpy.mes.model.mysql.*;
+import com.tnpy.mes.model.mysql.IndustrialPlant;
+import com.tnpy.mes.model.mysql.ProductionProcess;
+import com.tnpy.mes.model.mysql.WarningMessageRecord;
 import com.tnpy.mes.service.pushNotification.impl.websocketManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,6 +14,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.util.StringUtils;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -79,6 +84,8 @@ public class AutomaticSchedulingTimer {
     @Scheduled(cron = "00 45 23 * * ?")
     public void automaticScheduling() {
         try {
+            if(!serviceIPJudge())
+                return;
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date date = new Date();//取时间
 
@@ -107,6 +114,8 @@ public class AutomaticSchedulingTimer {
     @Scheduled(cron = "0 58 6,18 * * ?")
     public void automaticOrderStatus() {
         try {
+            if(!serviceIPJudge())
+                return;
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date date = new Date();//取时间
             dateFormat.format(date);
@@ -131,10 +140,12 @@ public class AutomaticSchedulingTimer {
         }
     }
 
+    /*
+    //电池库存盘点，根据借入借出等盘点
     @Scheduled(cron = "0 50 23 * * ?")
     public void automaticBatteryStatisInventory() {
         try {
-            if (true)
+            if(!serviceIPJudge())
                 return;
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date date = new Date();//取时间
@@ -238,10 +249,12 @@ public class AutomaticSchedulingTimer {
         } catch (Exception ex) {
         }
     }
-
+*/
     @Scheduled(cron = "0 50 6 * * ?")
     public void automaticSecondaryInventoryStatistics() {
         try {
+            if(!serviceIPJudge())
+                return;
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date date = new Date();//取时间
             dateFormat.format(date);
@@ -274,6 +287,8 @@ public class AutomaticSchedulingTimer {
     @Scheduled(cron = "0 54 6 * * ?")
     public void automaticInventoryStatistics() {
         try {
+            if(!serviceIPJudge())
+                return;
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date date = new Date();//取时间
             dateFormat.format(date);
@@ -334,6 +349,8 @@ public class AutomaticSchedulingTimer {
     // @Scheduled(fixedRate = 1000 *60)
     public void automaticPushSafetyNotification() {
         try {
+            if(!serviceIPJudge())
+                return;
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             Date date = new Date();//取时间
 
@@ -414,6 +431,8 @@ public class AutomaticSchedulingTimer {
     @Scheduled(cron = "0 23 11,23 * * ?")
     public void automaticInsertWorkOrder() {
         try {
+            if(!serviceIPJudge())
+                return;
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
             //SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
@@ -505,6 +524,43 @@ public class AutomaticSchedulingTimer {
         } catch (Exception ex) {
             System.out.println("盘点出错" + ex.getMessage());
         }
+    }
+
+
+    public boolean serviceIPJudge()   {
+        try
+        {
+            Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+            NetworkInterface networkInterface;
+            Enumeration<InetAddress> inetAddresses;
+            InetAddress inetAddress;
+
+            boolean bl = false;
+            while (networkInterfaces.hasMoreElements()) {
+                networkInterface = networkInterfaces.nextElement();
+                inetAddresses = networkInterface.getInetAddresses();
+                while (inetAddresses.hasMoreElements()) {
+                    inetAddress = inetAddresses.nextElement();
+                    if (inetAddress != null && inetAddress instanceof Inet4Address) { // IPV4
+                      if( ConfigParamEnum.serviceIP.contains( inetAddress.getHostAddress()))
+                      {
+
+                          bl = true;
+                          break;
+                      }
+                    }
+                }
+            }
+            return bl;
+            //InetAddress addr = InetAddress.getLocalHost().getHostAddress();
+           // System.out.println("Local HostAddress:"+InetAddress.getLocalHost().getHostAddress());
+           // String hostname = addr.getHostName();
+           // System.out.println("Local host name: "+InetAddress.getLocalHost().getHostName());
+        }
+       catch (Exception ex)
+       {
+            return true;
+       }
     }
 
 }

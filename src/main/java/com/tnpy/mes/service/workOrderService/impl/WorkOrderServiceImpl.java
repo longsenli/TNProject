@@ -252,9 +252,30 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 workorder.setCreatetime(new Date());
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                // System.out.println(dateFormat.format(workorder.getScheduledstarttime()));
-                int orderNum = workOrderMapper.selectOrderNumber(workorder.getLineid(),dateFormat.format(workorder.getScheduledstarttime()));
-                String numStr = workorder.getOrderid().substring(0,workorder.getOrderid().length() - 10) + String.valueOf(orderNum+1)
-                        + workorder.getOrderid().substring(workorder.getOrderid().length() - 10,workorder.getOrderid().length() );
+              //  int orderNum = workOrderMapper.selectOrderNumber(workorder.getLineid(),dateFormat.format(workorder.getScheduledstarttime()));
+
+                List<String> idList = workOrderMapper.selectOrderIDList(workorder.getLineid(),dateFormat.format(workorder.getScheduledstarttime()));
+               // int orderNum = 0;
+                String numStr = "";
+                for(int i=0;;i++)
+                {
+                    numStr = workorder.getOrderid().substring(0,workorder.getOrderid().length() - 10) + String.valueOf(i+1)
+                            + workorder.getOrderid().substring(workorder.getOrderid().length() - 10,workorder.getOrderid().length() );
+                    if(idList.contains(numStr))
+                    {
+                        continue;
+                    }
+                    else
+                        break;
+                }
+                if(numStr.length() < 3)
+                {
+                    result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                    result.setMessage("自定义工单失败！");
+                    return  result;
+                }
+              //  String numStr = workorder.getOrderid().substring(0,workorder.getOrderid().length() - 10) + String.valueOf(orderNum+1)
+              //          + workorder.getOrderid().substring(workorder.getOrderid().length() - 10,workorder.getOrderid().length() );
                 workorder.setOrderid(numStr);
                 workorder.setId(numStr);
                 workOrderMapper.insertSelective(workorder);
