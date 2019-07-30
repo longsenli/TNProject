@@ -202,9 +202,9 @@ public class DashboardServiceImpl implements IDashboardService {
 				"		d.dryingKilnName,\r\n" + 
 				"		d.suborderID,\r\n" + 
 				"		d.plantID,\r\n" + 
-				"		p.`name` AS plantname,\r\n" + 
+				"		p.'name' AS plantname,\r\n" +
 				"		d.lineID,\r\n" + 
-				"		o.`name` AS linename,\r\n" + 
+				"		o.'name' AS linename,\r\n" +
 				"		d.workLocationID,\r\n" + 
 				"		d.workLocationName,\r\n" + 
 				"		d.inputerName,\r\n" + 
@@ -271,6 +271,16 @@ public class DashboardServiceImpl implements IDashboardService {
         TNPYResponse result = new TNPYResponse();
         try
         {
+            if(startTime.length() > 20 && startTime.split(" ").length ==2 )
+            {
+                startTime = startTime.split(" ")[0];
+                endTime = endTime.split(" ")[0];
+            }
+            else if(startTime.split(" ").length ==3 )
+            {
+                startTime = startTime.split(" ")[0] + " " +  startTime.split(" ")[1];
+                endTime = endTime.split(" ")[0] + " " +  endTime.split(" ")[1];
+            }
             String equipmentIDFilter = "";
             if(!"-1".equals(equipmentID))
             {
@@ -285,16 +295,11 @@ public class DashboardServiceImpl implements IDashboardService {
                         "		d.dryingKilnID,\r\n" +
                         "		d.dryingKilnName,\r\n" +
                         "		d.suborderID,\r\n" +
-                        "		d.plantID,\r\n" +
-                        "		p.`name` AS plantname,\r\n" +
-                        "		d.lineID,\r\n" +
-                        "		o.`name` AS linename,\r\n" +
-                        "		d.workLocationID,\r\n" +
+                        "		o.name AS linename,\r\n" +
                         "		d.workLocationName,\r\n" +
                         "		d.inputerName,\r\n" +
                         "		d.inputTime,\r\n" +
                         "		d.inputerID,\r\n" +
-                        "		d.materialID,\r\n" +
                         "		d.materialName,\r\n" +
                         "		d.materialQuantity\r\n" +
                         "	FROM\r\n" +
@@ -313,17 +318,12 @@ public class DashboardServiceImpl implements IDashboardService {
                         "			d.id,\r\n" +
                         "			'总计' AS dryingKilnID,\r\n" +
                         "			d.dryingKilnName,\r\n" +
+                        "			d.materialName,\r\n" +
+                        "			'产量总计：',\r\n" +
                         "			'',\r\n" +
-                        "			'',\r\n" +
-                        "			'',\r\n" +
-                        "			'',\r\n" +
-                        "			'',\r\n" +
-                        "			'',\r\n" +
-                        "			'',\r\n" +
-                        "			'',\r\n" +
-                        "			'',\r\n" +
-                        "			'片数共计',\r\n" +
                         "			sum(d.materialQuantity),\r\n" +
+                        "		'',\r\n" +
+                        "			'',\r\n" +
                         "			'拖数共计: ',\r\n" +
                         "			COUNT(d.id) AS num\r\n" +
                         "		FROM\r\n" +
@@ -332,7 +332,7 @@ public class DashboardServiceImpl implements IDashboardService {
                         "	     d.plantID = '"+plantID+"'" +  equipmentIDFilter +
                         "		AND d.outputerName IS NULL\r\n" +
                         "		GROUP BY\r\n" +
-                        "			d.dryingKilnID\r\n" +
+                        "			d.dryingKilnID,d.materialName\r\n" +
                         "	)\r\n" +
                         "ORDER BY\r\n" +
                         "	dryingKilnID DESC,inputTime";
@@ -347,9 +347,9 @@ public class DashboardServiceImpl implements IDashboardService {
                         "		d.dryingKilnName,\r\n" +
                         "		d.suborderID,\r\n" +
                         "		d.plantID,\r\n" +
-                        "		p.`name` AS plantname,\r\n" +
+                        "		p.name AS plantname,\r\n" +
                         "		d.lineID,\r\n" +
-                        "		o.`name` AS linename,\r\n" +
+                        "		o.name AS linename,\r\n" +
                         "		d.workLocationID,\r\n" +
                         "		d.workLocationName,\r\n" +
                         "		d.inputerName,\r\n" +
@@ -374,16 +374,16 @@ public class DashboardServiceImpl implements IDashboardService {
                         "			d.id,\r\n" +
                         "			'总计' AS dryingKilnID,\r\n" +
                         "			d.dryingKilnName,\r\n" +
+                        "			d.materialName,\r\n" +
                         "			'',\r\n" +
                         "			'',\r\n" +
                         "			'',\r\n" +
+                        "			'产量总计',\r\n" +
                         "			'',\r\n" +
                         "			'',\r\n" +
+                        "			sum(d.materialQuantity),\r\n" +
                         "			'',\r\n" +
                         "			'',\r\n" +
-                        "			'',\r\n" +
-                        "			'',\r\n" +
-                        "			'片数共计',\r\n" +
                         "			sum(d.materialQuantity),\r\n" +
                         "			'拖数共计: ',\r\n" +
                         "			COUNT(d.id) AS num\r\n" +
@@ -394,7 +394,7 @@ public class DashboardServiceImpl implements IDashboardService {
                         "	AND d.inputTime  >= '"  + startTime+ "' AND d.inputTime  < '"  + endTime+ "'\r\n" +
 
                         "		GROUP BY\r\n" +
-                        "			d.dryingKilnID\r\n" +
+                        "			d.dryingKilnID,d.materialName\r\n" +
                         "	)\r\n" +
                         "ORDER BY\r\n" +
                         "	dryingKilnID DESC,inputTime";
@@ -409,15 +409,15 @@ public class DashboardServiceImpl implements IDashboardService {
                         "		d.dryingKilnName,\r\n" +
                         "		d.suborderID,\r\n" +
                         "		d.plantID,\r\n" +
-                        "		p.`name` AS plantname,\r\n" +
-                        "		d.lineID,\r\n" +
-                        "		o.`name` AS linename,\r\n" +
+                        "		p.name AS plantname,\r\n" +
+                        "		d.lineID, \r\n" +
+                        "		o.name AS linename,\r\n" +
                         "		d.workLocationID,\r\n" +
                         "		d.workLocationName,\r\n" +
                         "		d.inputerName,\r\n" +
                         "		d.inputTime,\r\n" +
                         "		d.inputerID,\r\n" +
-                        "		d.materialID,\r\n" +
+                        "		d.materialID, \r\n" +
                         "		d.materialName,\r\n" +
                         "		d.materialQuantity\r\n" +
                         "	FROM\r\n" +
@@ -436,17 +436,17 @@ public class DashboardServiceImpl implements IDashboardService {
                         "			d.id,\r\n" +
                         "			'总计' AS dryingKilnID,\r\n" +
                         "			d.dryingKilnName,\r\n" +
+                        "			d.materialName,\r\n" +
                         "			'',\r\n" +
                         "			'',\r\n" +
                         "			'',\r\n" +
+                        "			'产量总计',\r\n" +
                         "			'',\r\n" +
                         "			'',\r\n" +
-                        "			'',\r\n" +
-                        "			'',\r\n" +
-                        "			'',\r\n" +
-                        "			'',\r\n" +
-                        "			'片数共计',\r\n" +
                         "			sum(d.materialQuantity),\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
+                        "			'',\r\n" +
                         "			'拖数共计: ',\r\n" +
                         "			COUNT(d.id) AS num\r\n" +
                         "		FROM\r\n" +
@@ -455,13 +455,13 @@ public class DashboardServiceImpl implements IDashboardService {
                         "	     d.plantID = '"+plantID+"'" +  equipmentIDFilter +
                         "	AND d.outputTime  >= '"  + startTime+ "' AND d.outputTime  < '"  + endTime+ "'\r\n" +
                         "		GROUP BY\r\n" +
-                        "			d.dryingKilnID\r\n" +
+                        "			d.dryingKilnID,d.materialName\r\n" +
                         "	)\r\n" +
                         "ORDER BY\r\n" +
                         "	dryingKilnID DESC,inputTime";
             }
 
-//		System.out.println(sql);
+		//System.out.println(sql);
             List<Map<Object, Object>> mapList = dashboardMapper.getNowInDryingKilnjz(sql);
             result.setStatus(1);
             result.setData(JSONObject.toJSON(mapList).toString());
