@@ -9,7 +9,7 @@ public class PackageDetailRecord {
 
     private String plantid;
 
-    private String processid;
+    private String equipmentid;
 
     private String lineid;
 
@@ -33,6 +33,16 @@ public class PackageDetailRecord {
 
     private String remark;
 
+    private Integer packagingboxnumber;
+
+    private String linename;
+
+    private String materialnumber;
+    @JSONField(format ="yyyy-MM-dd HH:mm:ss")
+    private Date updatetime;
+
+    private Integer plannumber;
+
     public String getId() {
         return id;
     }
@@ -49,12 +59,12 @@ public class PackageDetailRecord {
         this.plantid = plantid == null ? null : plantid.trim();
     }
 
-    public String getProcessid() {
-        return processid;
+    public String getEquipmentid() {
+        return equipmentid;
     }
 
-    public void setProcessid(String processid) {
-        this.processid = processid == null ? null : processid.trim();
+    public void setEquipmentid(String equipmentid) {
+        this.equipmentid = equipmentid == null ? null : equipmentid.trim();
     }
 
     public String getLineid() {
@@ -143,5 +153,45 @@ public class PackageDetailRecord {
 
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
+    }
+
+    public Integer getPackagingboxnumber() {
+        return packagingboxnumber;
+    }
+
+    public void setPackagingboxnumber(Integer packagingboxnumber) {
+        this.packagingboxnumber = packagingboxnumber;
+    }
+
+    public String getLinename() {
+        return linename;
+    }
+
+    public void setLinename(String linename) {
+        this.linename = linename == null ? null : linename.trim();
+    }
+
+    public String getMaterialnumber() {
+        return materialnumber;
+    }
+
+    public void setMaterialnumber(String materialnumber) {
+        this.materialnumber = materialnumber == null ? null : materialnumber.trim();
+    }
+
+    public Date getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
+    }
+
+    public Integer getPlannumber() {
+        return plannumber;
+    }
+
+    public void setPlannumber(Integer plannumber) {
+        this.plannumber = plannumber;
     }
 }

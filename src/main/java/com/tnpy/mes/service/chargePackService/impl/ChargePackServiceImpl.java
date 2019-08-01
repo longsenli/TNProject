@@ -37,6 +37,9 @@ public class ChargePackServiceImpl implements IChargePackService {
 
     @Autowired
     private  TidyPackageBatteryInventoryMapper tidyPackageBatteryInventoryMapper;
+
+    @Autowired
+    private  PackageDetailRecordMapper packageDetailRecordMapper;
     //onRack 在架数据 pulloffhistory 下架历史数据 putonhistory 上架历史数据
     public TNPYResponse getChargingRackRecord(String plantID, String processID,String lineID,String locationID,String startTime,String endTime,String selectType)
     {
@@ -529,7 +532,6 @@ public class ChargePackServiceImpl implements IChargePackService {
         TNPYResponse result = new TNPYResponse();
         try
         {
-
             String filter = " where plantID ='" + plantID + "' and lineID = '" + lineID+ "' and dayTime  >=  '" + startTime + "' order by loopNumber,sequenceNumbers";
 
             // System.out.println(plantID + " 参数 " +processID);
@@ -553,7 +555,6 @@ public class ChargePackServiceImpl implements IChargePackService {
         {
             String filter = " where plantID ='" + plantID + "' and lineID = '" + lineID+ "' and locationID ='" +workLocation + "' and altitude = '" + altitude
                     +"' and dayTime  =  '" + startTime + "' order by loopNumber,sequenceNumbers";
-
             // System.out.println(plantID + " 参数 " +processID);
             List<BatteryGearMarkRecord> batteryGearMarkRecordList = batteryGearMarkRecordMapper.selectBatteryGearRecordInfo(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -587,6 +588,39 @@ public class ChargePackServiceImpl implements IChargePackService {
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
 
             result.setData(JSONObject.toJSON(tidyPackageBatteryInventoryList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+    public TNPYResponse getPackageRecordDetail(String plantID,String lineID,String startTime,String endTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String groupFilter = " ";
+            String filter = " where  ";
+            filter += "  dayTime >= '" + startTime + "' ";
+            filter += " and dayTime < '" + endTime + "' ";
+            if(!"-1".equals(plantID))
+            {
+                filter += " and plantID = '" + plantID + "' ";
+            }
+            if(!"-1".equals(lineID))
+            {
+                filter += " and lineID = '" + lineID + "' ";
+            }
+            groupFilter = filter + " group by plantID,lineID,dayTime,materialName order by dayTime desc,lineID,materialName  ";
+            filter += " order by dayTime desc,lineID,materialName  ";
+            // System.out.println(plantID + " 参数 " +processID);
+            List<Map<Object, Object>>  packageRecordList = packageDetailRecordMapper.selectRecordWithSum(groupFilter,filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+            result.setData(JSONObject.toJSON(packageRecordList).toString());
             return  result;
         }
         catch (Exception ex)
