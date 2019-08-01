@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.PackageDetailRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.PackageDetailRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="equipmentID" jdbcType="VARCHAR" property="equipmentid" />
+    <result column="lineID" jdbcType="VARCHAR" property="lineid" />
+    <result column="materialID" jdbcType="VARCHAR" property="materialid" />
+    <result column="materialName" jdbcType="VARCHAR" property="materialname" />
+    <result column="materialType" jdbcType="VARCHAR" property="materialtype" />
+    <result column="packageName" jdbcType="VARCHAR" property="packagename" />
+    <result column="brandName" jdbcType="VARCHAR" property="brandname" />
+    <result column="packNumber" jdbcType="INTEGER" property="packnumber" />
+    <result column="totalNumber" jdbcType="INTEGER" property="totalnumber" />
+    <result column="dayTime" jdbcType="TIMESTAMP" property="daytime" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="packagingBoxNumber" jdbcType="INTEGER" property="packagingboxnumber" />
+    <result column="lineName" jdbcType="VARCHAR" property="linename" />
+    <result column="materialNumber" jdbcType="VARCHAR" property="materialnumber" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="planNumber" jdbcType="INTEGER" property="plannumber" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, plantID, equipmentID, lineID, materialID, materialName, materialType, packageName, 
+    brandName, packNumber, totalNumber, dayTime, status, remark, packagingBoxNumber, 
+    lineName, materialNumber, updateTime, planNumber
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_packagedetailrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_packagedetailrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.PackageDetailRecord">
+    insert into tb_packagedetailrecord (id, plantID, equipmentID, 
+      lineID, materialID, materialName, 
+      materialType, packageName, brandName, 
+      packNumber, totalNumber, dayTime, 
+      status, remark, packagingBoxNumber, 
+      lineName, materialNumber, updateTime, 
+      planNumber)
+    values (#{id,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{equipmentid,jdbcType=VARCHAR}, 
+      #{lineid,jdbcType=VARCHAR}, #{materialid,jdbcType=VARCHAR}, #{materialname,jdbcType=VARCHAR}, 
+      #{materialtype,jdbcType=VARCHAR}, #{packagename,jdbcType=VARCHAR}, #{brandname,jdbcType=VARCHAR}, 
+      #{packnumber,jdbcType=INTEGER}, #{totalnumber,jdbcType=INTEGER}, #{daytime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{packagingboxnumber,jdbcType=INTEGER}, 
+      #{linename,jdbcType=VARCHAR}, #{materialnumber,jdbcType=VARCHAR}, #{updatetime,jdbcType=TIMESTAMP}, 
+      #{plannumber,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.PackageDetailRecord">
+    insert into tb_packagedetailrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="equipmentid != null">
+        equipmentID,
+      </if>
+      <if test="lineid != null">
+        lineID,
+      </if>
+      <if test="materialid != null">
+        materialID,
+      </if>
+      <if test="materialname != null">
+        materialName,
+      </if>
+      <if test="materialtype != null">
+        materialType,
+      </if>
+      <if test="packagename != null">
+        packageName,
+      </if>
+      <if test="brandname != null">
+        brandName,
+      </if>
+      <if test="packnumber != null">
+        packNumber,
+      </if>
+      <if test="totalnumber != null">
+        totalNumber,
+      </if>
+      <if test="daytime != null">
+        dayTime,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="packagingboxnumber != null">
+        packagingBoxNumber,
+      </if>
+      <if test="linename != null">
+        lineName,
+      </if>
+      <if test="materialnumber != null">
+        materialNumber,
+      </if>
+      <if test="updatetime != null">
+        updateTime,
+      </if>
+      <if test="plannumber != null">
+        planNumber,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentid != null">
+        #{equipmentid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="materialtype != null">
+        #{materialtype,jdbcType=VARCHAR},
+      </if>
+      <if test="packagename != null">
+        #{packagename,jdbcType=VARCHAR},
+      </if>
+      <if test="brandname != null">
+        #{brandname,jdbcType=VARCHAR},
+      </if>
+      <if test="packnumber != null">
+        #{packnumber,jdbcType=INTEGER},
+      </if>
+      <if test="totalnumber != null">
+        #{totalnumber,jdbcType=INTEGER},
+      </if>
+      <if test="daytime != null">
+        #{daytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="packagingboxnumber != null">
+        #{packagingboxnumber,jdbcType=INTEGER},
+      </if>
+      <if test="linename != null">
+        #{linename,jdbcType=VARCHAR},
+      </if>
+      <if test="materialnumber != null">
+        #{materialnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="plannumber != null">
+        #{plannumber,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.PackageDetailRecord">
+    update tb_packagedetailrecord
+    <set>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentid != null">
+        equipmentID = #{equipmentid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        lineID = #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        materialID = #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        materialName = #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="materialtype != null">
+        materialType = #{materialtype,jdbcType=VARCHAR},
+      </if>
+      <if test="packagename != null">
+        packageName = #{packagename,jdbcType=VARCHAR},
+      </if>
+      <if test="brandname != null">
+        brandName = #{brandname,jdbcType=VARCHAR},
+      </if>
+      <if test="packnumber != null">
+        packNumber = #{packnumber,jdbcType=INTEGER},
+      </if>
+      <if test="totalnumber != null">
+        totalNumber = #{totalnumber,jdbcType=INTEGER},
+      </if>
+      <if test="daytime != null">
+        dayTime = #{daytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="packagingboxnumber != null">
+        packagingBoxNumber = #{packagingboxnumber,jdbcType=INTEGER},
+      </if>
+      <if test="linename != null">
+        lineName = #{linename,jdbcType=VARCHAR},
+      </if>
+      <if test="materialnumber != null">
+        materialNumber = #{materialnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="plannumber != null">
+        planNumber = #{plannumber,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.PackageDetailRecord">
+    update tb_packagedetailrecord
+    set plantID = #{plantid,jdbcType=VARCHAR},
+      equipmentID = #{equipmentid,jdbcType=VARCHAR},
+      lineID = #{lineid,jdbcType=VARCHAR},
+      materialID = #{materialid,jdbcType=VARCHAR},
+      materialName = #{materialname,jdbcType=VARCHAR},
+      materialType = #{materialtype,jdbcType=VARCHAR},
+      packageName = #{packagename,jdbcType=VARCHAR},
+      brandName = #{brandname,jdbcType=VARCHAR},
+      packNumber = #{packnumber,jdbcType=INTEGER},
+      totalNumber = #{totalnumber,jdbcType=INTEGER},
+      dayTime = #{daytime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      packagingBoxNumber = #{packagingboxnumber,jdbcType=INTEGER},
+      lineName = #{linename,jdbcType=VARCHAR},
+      materialNumber = #{materialnumber,jdbcType=VARCHAR},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      planNumber = #{plannumber,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
