@@ -23,7 +23,7 @@ public interface ProductionProcessMapper {
     int updateByPrimaryKey(ProductionProcess record);
 
 
-    @Select("select * from sys_productionProcess order by ordinal")
+    @Select("select * from sys_productionProcess where status != '-1' order by ordinal")
     List<ProductionProcess> selectAll();
 
 }

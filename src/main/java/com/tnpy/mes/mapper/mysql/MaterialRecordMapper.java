@@ -25,7 +25,7 @@ public interface MaterialRecordMapper {
 
     int updateByPrimaryKey(MaterialRecord record);
 
-    @Select("select * from tb_materialrecord where subOrderID = #{id} and inOrOut = 1 limit 1")
+    @Select("select * from tb_materialrecord where subOrderID = #{id} limit 1")
     MaterialRecord selectBySuborderID(String id);
 
     @Select("select * from tb_materialrecord where subOrderID = #{id} and inOrOut = #{inoutStatus} limit 1")
