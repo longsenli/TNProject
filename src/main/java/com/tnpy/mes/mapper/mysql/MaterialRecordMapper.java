@@ -196,10 +196,10 @@ public interface MaterialRecordMapper {
     List<Map<Object, Object>>  selectByFilter(@Param("columnList") String columnList,@Param("filter") String filter);
 
     @Select(" ( select inputer,'' as subOrderID ,sum(number) as number ,'-' as inputTime,materialNameInfo from tb_materialrecord " +
-            "where inputerID = #{staffID} and inputTime >= #{startTime} and inputTime <  #{endTime} group by materialNameInfo )" +
+            "where inputerID = #{staffID} and inputTime >= #{startTime} and inputTime <  #{endTime} group by materialNameInfo  limit 100)" +
             " union all " +
             " ( select inputer,subOrderID,number,inputTime,materialNameInfo from tb_materialrecord " +
-            "where inputerID = #{staffID} and inputTime >= #{startTime} and inputTime <  #{endTime} order by inputTime desc )")
+            "where inputerID = #{staffID} and inputTime >= #{startTime} and inputTime <  #{endTime} order by subOrderID   limit 1000)")
     List<Map<Object, Object>>  selectSelfProductionRecord( String staffID,  String startTime,String endTime);
 
     @Select("select subOrderID from tb_materialrecord where inputTime > '2019-07-23'  and orderID like '%BB20190723'")
