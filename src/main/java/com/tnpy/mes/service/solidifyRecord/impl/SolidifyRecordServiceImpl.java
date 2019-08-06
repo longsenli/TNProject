@@ -88,7 +88,33 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
             return result;
         }
     }
-
+    public TNPYResponse getInSolidifyRoomByParamNew(String plantID,String roomID,String status)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            String solidifyFilter = " where  ";
+if("-1".equals(status))
+{
+    solidifyFilter += "  status != '9'  " ;
+}
+else
+{
+    solidifyFilter += " status = '" + status + "' ";
+}
+            if (!"-1".equals(roomID)) {
+                solidifyFilter += " and solidifyRoomID = '" + roomID + "' ";
+            } else {
+                solidifyFilter += " and plantID = '" + plantID + "' ";
+            }
+            List<SolidifyRecord> solidifyRecordList = solidifyRecordMapper.selectInSolidifyRecord(solidifyFilter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSONString(solidifyRecordList, SerializerFeature.WriteMapNullValue).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
     public TNPYResponse addSolidifyRecord(String id, String status, String recorder, String roomID) {
         TNPYResponse result = new TNPYResponse();
         try {

@@ -41,6 +41,12 @@ public class SolidifyRecordController {
         return  solidifyRecordService.getInSolidifyRoomByParam(plantID,roomID);
     }
 
+    @RequestMapping(value = "/getInSolidifyRoomByParamNew")
+    public TNPYResponse getInSolidifyRoomByParamNew(String plantID,String roomID,String status)
+    {
+        return  solidifyRecordService.getInSolidifyRoomByParamNew(plantID,roomID,status);
+    }
+
     @RequestMapping(value = "/putinsolidifyroom")
     public TNPYResponse putinSolidifyRoom(String roomID,String orderIDList,String operatorName,String roomName)
     {

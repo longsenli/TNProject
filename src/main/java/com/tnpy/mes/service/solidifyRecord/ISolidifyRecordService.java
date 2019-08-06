@@ -15,4 +15,6 @@ public interface ISolidifyRecordService {
     public TNPYResponse getInSolidifyRoomByParam(String plantID,String roomID);
     public TNPYResponse putinSolidifyRoom(String roomID,String orderIDList,String operatorName,String roomName);
     public TNPYResponse changeSolidifyStatus(String roomID,String orderIDList,String operatorName,String status);
+
+    public TNPYResponse getInSolidifyRoomByParamNew(String plantID,String roomID,String status);
 }
