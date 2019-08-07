@@ -24,7 +24,7 @@ public interface MaterialMapper {
     int updateByPrimaryKey(Material record);
 
 
-    @Select("select * from sys_material where typeID = #{typeID} order by name ")
+    @Select("select * from sys_material where typeID = #{typeID}  and status != '-1' order by name ")
     List<Material> selectByType(String typeID);
 
     @Select("select * from sys_material order by typeID,name ")

@@ -22,9 +22,9 @@ public interface MaterialTypeMapper {
 
     int updateByPrimaryKey(MaterialType record);
 
-    @Select("select * from sys_materialtype order by id asc")
+    @Select("select * from sys_materialtype where status != '-1' order by id asc")
     List<MaterialType> selectAll();
 
-    @Select("select name from sys_materialtype where id = #{id}")
+    @Select("select name from sys_materialtype where  id = #{id}")
     String getTypeNameByID(String id);
 }

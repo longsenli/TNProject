@@ -133,11 +133,19 @@ public class MaterialServiceImpl implements IMaterialService {
             }
             List<String> materialIDList = JSON.parseArray(materialRecordIDListStr, String.class);
             MaterialRecord materialRecord = materialRecordMapper.selectByPrimaryKey(materialIDList.get(0));
+
+            if(materialRecord.getInorout() == StatusEnum.InOutStatus.Output.getIndex())
+            {
+                result.setMessage("该订单已经被使用！" + materialRecord.getOutputer() + "  " + materialRecord.getOutputtime());
+                return result;
+            }
             TNPYResponse resultGrant = judgeZHGrantStatus(materialRecord.getSuborderid());
             if(resultGrant.getStatus() != StatusEnum.ResponseStatus.Success.getIndex())
             {
                 return  resultGrant;
             }
+
+
 
             materialRecord.setInorout(StatusEnum.InOutStatus.Output.getIndex());
             materialRecord.setOutputer(outputter);
