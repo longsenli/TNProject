@@ -10,12 +10,25 @@ import java.util.Map;
  */
 public class ConfigParamEnum {
     public  static String serviceIP = "192.168.80.228;10.0.0.151";
-    public  static Map  DryFilnCapacityMap = new HashMap() {{
+    public  static Map  DryFilnCapacityMap = new HashMap<String,Integer>() {{
         put("10011-1002-001", 81);
         put("10011-1002-002", 81);
         put("10011-1002-003", 40);
         put("10011-1002-004", 40);
-
+        put("1001-2BGH-F1", 48);
+        put("1002-2BGH-F2", 48);
+        put("1003-2BGH-F3", 48);
+        put("1004-2BGH-F4", 48);
+        put("1005-2BGH-F5", 48);
+        put("1006-2BGH-F6", 48);
+        put("1007-2BGH-Z7", 48);
+        put("1008-2BGH-Z8", 48);
+        put("1009-2BGH-Z9", 48);
+        put("1010-2BGH-Z10", 48);
+        put("1011-2BGH-Z11", 48);
+        put("1012-2BGH-Z12", 48);
+        put("1013-2BGH-Z13", 48);
+        put("1014-2BGH-Z14", 48);
     }};
 
 

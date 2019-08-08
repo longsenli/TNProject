@@ -59,5 +59,11 @@ public class SolidifyRecordController {
         return  solidifyRecordService.changeSolidifyStatus(roomID,orderIDList,operatorName,status);
     }
 
+    @RequestMapping(value = "/changeAllSolidifyStatusAuto")
+    public TNPYResponse changeAllSolidifyStatusAuto(String roomID,String operatorName)
+    {
+        return  solidifyRecordService.changeAllSolidifyStatusAuto(roomID,operatorName);
+    }
+
 }
 

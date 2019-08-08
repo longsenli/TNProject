@@ -79,4 +79,9 @@ public interface OrderSplitMapper {
 
     @Update("update tb_ordersplit set status = '4' where id = #{id}")
     int updateStatus(String id ,String status);
+
+    @Select("select a.id,a.orderID,b.name as orderSplitID,a.productionNum,a.status,a.materialID from ( select * from tb_ordersplit ${filter} ) " +
+            "a left join sys_material b on a.materialID = b.id ")
+    List<OrderSplit> selectByFilterWithMaterialName(@Param("filter") String filter);
+
 }

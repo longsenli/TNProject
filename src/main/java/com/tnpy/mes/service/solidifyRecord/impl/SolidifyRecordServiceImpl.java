@@ -5,12 +5,8 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
-import com.tnpy.mes.mapper.mysql.MaterialRecordMapper;
-import com.tnpy.mes.mapper.mysql.OrderSplitMapper;
-import com.tnpy.mes.mapper.mysql.SolidifyRecordMapper;
-import com.tnpy.mes.model.mysql.MaterialRecord;
-import com.tnpy.mes.model.mysql.OrderSplit;
-import com.tnpy.mes.model.mysql.SolidifyRecord;
+import com.tnpy.mes.mapper.mysql.*;
+import com.tnpy.mes.model.mysql.*;
 import com.tnpy.mes.service.solidifyRecord.ISolidifyRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +29,12 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
 
     @Autowired
     private OrderSplitMapper orderSplitMapper;
+
+    @Autowired
+    private WorkorderMapper workorderMapper;
+
+    @Autowired
+    private BatchrelationcontrolMapper batchrelationcontrolMapper;
 
     public TNPYResponse getSolidifyRecordByRoom(String plantID, String roomID) {
         TNPYResponse result = new TNPYResponse();
@@ -145,9 +147,16 @@ else
         TNPYResponse result = new TNPYResponse();
         try {
             String filter = " where id in ('" + orderIDList.replaceAll("###", "','") + "' )";
-            List<OrderSplit> orderInfoList = orderSplitMapper.selectByFilter(filter);
+            List<OrderSplit> orderInfoList = orderSplitMapper.selectByFilterWithMaterialName(filter);
             List<Map<String, String>> putinResult = new ArrayList<Map<String, String>>();
             String[] orderArray = orderIDList.split("###");
+
+           int nowInNumber = solidifyRecordMapper.selectInNumber(roomID,"1") ;
+           if( (nowInNumber +orderArray.length )> (int)ConfigParamEnum.DryFilnCapacityMap.get(roomID))
+           {
+               result.setData(roomName + "固化室已有" + nowInNumber + "架，不能再入" + orderArray.length + "架！");
+               return result;
+           }
             String orderSplitID = "";
             OrderSplit orderSplit;
             for (int i = 0; i < orderArray.length; i++) {
@@ -163,9 +172,67 @@ else
                     orderSplitID = orderSplit.getId();
 
                     if (!(StatusEnum.WorkOrderStatus.finished.getIndex() + "").equals(orderSplit.getStatus())) {
-                        mapResult.put("returnMessage", "该订单尚未入库！" + orderSplitID);
-                        break;
+
+                        MaterialRecord materialRecord = new MaterialRecord();
+                        materialRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                        materialRecord.setInorout(StatusEnum.InOutStatus.Input.getIndex());
+                        materialRecord.setMaterialid(orderSplit.getMaterialid());
+                        materialRecord.setNumber(orderSplit.getProductionnum());
+                        materialRecord.setOrderid(orderSplit.getOrderid());
+                        materialRecord.setSuborderid(orderSplit.getId());
+                        materialRecord.setStatus(StatusEnum.StatusFlag.using.getIndex());
+                        materialRecord.setInputtime(new Date());
+                        materialRecord.setInputer(operatorName);
+                        materialRecord.setInputer(operatorName);
+                        materialRecord.setInputerid(operatorName);
+                        if(operatorName.split("###").length > 1)
+                        {
+                            materialRecord.setInputer(operatorName.split("###")[0]);
+                            materialRecord.setInputerid(operatorName.split("###")[1]);
+                            materialRecord.setMaterialnameinfo(orderSplit.getOrdersplitid());
+                        }
+                        Workorder workorder = workorderMapper.selectByPrimaryKey(orderSplit.getOrderid());
+                        if (workorder != null) {
+                            materialRecord.setInputplantid(workorder.getPlantid());
+                            materialRecord.setInputprocessid(workorder.getProcessid());
+                            materialRecord.setInputlineid(workorder.getLineid());
+                            if (!materialRecord.getInputprocessid().equals(ConfigParamEnum.BasicProcessEnum.TBProcessID.getName())) {
+                                mapResult.put("returnMessage", "只有涂板工序的工单才能入窑！" + orderSplitID);
+                                break;
+                            }
+                        }
+
+                        orderSplit.setStatus(StatusEnum.WorkOrderStatus.finished.getIndex() + "");
+                        orderSplitMapper.updateByPrimaryKeySelective(orderSplit);
+
+                        materialRecordMapper.insert(materialRecord);
+
+                        try
+                        {
+
+                                String batchID = batchrelationcontrolMapper.selectTBBatchByOrderID(orderSplit.getOrderid());
+                                if(org.springframework.util.StringUtils.isEmpty(batchID) || "null".equals(batchID.trim()) || batchID.length() < 6)
+                                {
+                                    Batchrelationcontrol batchrelationcontrol = new Batchrelationcontrol();
+                                    batchrelationcontrol.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                                    batchrelationcontrol.setRelationorderid(orderSplit.getOrderid());
+                                    batchrelationcontrol.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
+                                    batchrelationcontrol.setRelationtime(new Date());
+                                    String batch = orderSplit.getOrdersplitid().substring(0,orderSplit.getOrdersplitid().length() - 13)
+                                            + orderSplit.getOrdersplitid().substring(orderSplit.getOrdersplitid().length() - 11,orderSplit.getOrdersplitid().length() - 3);
+                                    batchrelationcontrol.setTbbatch(batch);
+                                    batchrelationcontrolMapper.insert(batchrelationcontrol);
+                            }
+                        }catch (Exception ex)
+                        {
+                            result.setMessage(result.getMessage() + " " +ex.getMessage() );
+                        }
                     }
+
+//                    if (!(StatusEnum.WorkOrderStatus.finished.getIndex() + "").equals(orderSplit.getStatus())) {
+//                        mapResult.put("returnMessage", "该订单尚未入库！" + orderSplitID);
+//                        break;
+//                    }
 
                     MaterialRecord materialRecord = materialRecordMapper.selectBySuborderID(orderSplit.getId());
                     if (materialRecord == null) {
@@ -191,7 +258,7 @@ else
                     solidifyRecord.setPlantid(materialRecord.getInputplantid());
                     solidifyRecord.setSolidifyroomname(roomName);
                     solidifyRecord.setSolidifyroomid(roomID);
-                    solidifyRecord.setRecorder1(operatorName);
+                    solidifyRecord.setRecorder1(operatorName.split("###")[0]);
                     solidifyRecord.setStarttime1(new Date());
                     solidifyRecord.setStatus("1");
                     solidifyRecordMapper.insertSelective(solidifyRecord);
@@ -231,6 +298,47 @@ else
             }
 
             solidifyRecordMapper.changeSolidifyStatus(valueUpdate, solidifyUpdate);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+
+    public TNPYResponse changeAllSolidifyStatusAuto(String roomID,  String operatorName) {
+
+        TNPYResponse result = new TNPYResponse();
+        try {
+            String solidifyUpdate = "  status = '" + 3 + "'  and solidifyRoomID = '" + roomID + "'";
+            String valueUpdate = "";
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = new Date();//取时间
+            String dateStr = dateFormat.format(date);
+            valueUpdate = " set status = '9',endtime3 = '" + dateStr + "'  ,outOperator = '" + operatorName + "' ";
+            solidifyRecordMapper.changeSolidifyStatus(valueUpdate, solidifyUpdate);
+
+            solidifyUpdate = "  status = '" + 2 + "'  and solidifyRoomID = '" + roomID + "'";
+            valueUpdate = " set status = '3',endtime2 = '" + dateStr + "' ,starttime3 = '" + dateStr + "' ,recorder3 = '" + operatorName + "' ";
+            solidifyRecordMapper.changeSolidifyStatus(valueUpdate, solidifyUpdate);
+            solidifyUpdate = "  status = '" + 1 + "'  and solidifyRoomID = '" + roomID + "'";
+            valueUpdate = " set status = '2',endtime1 = '" + dateStr + "' ,starttime2 = '" + dateStr + "' ,recorder2 = '" + operatorName + "' ";
+            solidifyRecordMapper.changeSolidifyStatus(valueUpdate, solidifyUpdate);
+//
+//            if ("1".equals(status)) {
+//                valueUpdate = " set status = '2',endtime1 = '" + dateStr + "' ,starttime2 = '" + dateStr + "' ,recorder2 = '" + operatorName + "' ";
+//            }
+//
+//            if ("2".equals(status)) {
+//                valueUpdate = " set status = '3',endtime2 = '" + dateStr + "' ,starttime3 = '" + dateStr + "' ,recorder3 = '" + operatorName + "' ";
+//            }
+//
+//            if ("3".equals(status)) {
+//                valueUpdate = " set status = '9',endtime3 = '" + dateStr + "'  ,outOperator = '" + operatorName + "' ";
+//            }
+//
+//            solidifyRecordMapper.changeSolidifyStatus(valueUpdate, solidifyUpdate);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return result;
         } catch (Exception ex) {

@@ -42,8 +42,11 @@ public interface SolidifyRecordMapper {
     List<SolidifyRecord>  selectByOrderID(String orderID);
 
 
-    @Select(" (select '' as id,'' as orderID,sum( productionNum) as productionNum,'' as  plantID,'' as  materialID, materialName,'' as  solidifyRoomID, '' as recorder1, \n" +
+    @Select(" (select '' as id,count(1) as orderID,sum( productionNum) as productionNum,'' as  plantID,'' as  materialID, materialName,'' as  solidifyRoomID, '' as recorder1, \n" +
             "    '' as starttime1,'' as  endtime1, '' as recorder2, '' as starttime2,'' as  endtime2,'' as  recorder3, '' as starttime3, '' as endtime3, \n" +
             "   '' as  status,'' as  remark, solidifyRoomName,'' as  outOperator from tb_solidifyrecord  ${filter} group by solidifyRoomID,materialName order by solidifyRoomID limit 1000) union all ( select * from tb_solidifyrecord  ${filter} order by solidifyRoomID limit 1000 ) ")
     List<SolidifyRecord>  selectInSolidifyRecord(@Param("filter") String filter);
+
+    @Select("select count(1) from tb_solidifyrecord where solidifyRoomID = #{roomID} and status =#{status} ")
+    int selectInNumber(String roomID,String status);
 }

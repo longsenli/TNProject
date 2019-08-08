@@ -17,4 +17,5 @@ public interface ISolidifyRecordService {
     public TNPYResponse changeSolidifyStatus(String roomID,String orderIDList,String operatorName,String status);
 
     public TNPYResponse getInSolidifyRoomByParamNew(String plantID,String roomID,String status);
+    public TNPYResponse changeAllSolidifyStatusAuto(String roomID,String operatorName);
 }
