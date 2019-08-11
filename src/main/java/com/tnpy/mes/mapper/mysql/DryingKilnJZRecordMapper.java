@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 @Component
@@ -47,5 +48,8 @@ public interface DryingKilnJZRecordMapper {
    		"    where suborderID = #{suborderID} ")
    int deleteBySubOrderId(@Param("suborderID") String suborderID);
 
-
+    @Select(" select a.suborderID as orderID,a.inputer as status,date_format(a.inputTime, '%Y-%m-%d %H:%i:%s') as returnMessage  from ( select * from tb_materialrecord where inputPlantID = #{plantID} " +
+            " and inputProcessID = #{processID} and  inputTime > #{startTime} and inputTime < #{endTime} and inOrOut = '0' ) a left join\n" +
+            " tb_dryingkilnjzrecord b on a.subOrderID = b.suborderID where b.suborderID is  null")
+    List<Map<Object, Object>>  orderOutOfDryingKiln( String plantID ,String processID,String startTime,String endTime );
 }

@@ -77,7 +77,7 @@ public interface OrderSplitMapper {
     		+ "( SELECT d.suborderID FROM tb_dryingkilnjzrecord d WHERE d.dryingKilnID = #{dryingkilnid} ) ) AS a )")
     int updateByDryingkilnid(@Param("dryingkilnid")  String dryingkilnid, String status);
 
-    @Update("update tb_ordersplit set status = '4' where id = #{id}")
+    @Update("update tb_ordersplit set status = #{status} where id = #{id}")
     int updateStatus(String id ,String status);
 
     @Select("select a.id,a.orderID,b.name as orderSplitID,a.productionNum,a.status,a.materialID from ( select * from tb_ordersplit ${filter} ) " +

@@ -90,19 +90,16 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
             return result;
         }
     }
-    public TNPYResponse getInSolidifyRoomByParamNew(String plantID,String roomID,String status)
-    {
+
+    public TNPYResponse getInSolidifyRoomByParamNew(String plantID, String roomID, String status) {
         TNPYResponse result = new TNPYResponse();
         try {
             String solidifyFilter = " where  ";
-if("-1".equals(status))
-{
-    solidifyFilter += "  status != '9'  " ;
-}
-else
-{
-    solidifyFilter += " status = '" + status + "' ";
-}
+            if ("-1".equals(status)) {
+                solidifyFilter += "  status != '9'  ";
+            } else {
+                solidifyFilter += " status = '" + status + "' ";
+            }
             if (!"-1".equals(roomID)) {
                 solidifyFilter += " and solidifyRoomID = '" + roomID + "' ";
             } else {
@@ -117,6 +114,7 @@ else
             return result;
         }
     }
+
     public TNPYResponse addSolidifyRecord(String id, String status, String recorder, String roomID) {
         TNPYResponse result = new TNPYResponse();
         try {
@@ -151,12 +149,11 @@ else
             List<Map<String, String>> putinResult = new ArrayList<Map<String, String>>();
             String[] orderArray = orderIDList.split("###");
 
-           int nowInNumber = solidifyRecordMapper.selectInNumber(roomID,"1") ;
-           if( (nowInNumber +orderArray.length )> (int)ConfigParamEnum.DryFilnCapacityMap.get(roomID))
-           {
-               result.setData(roomName + "固化室已有" + nowInNumber + "架，不能再入" + orderArray.length + "架！");
-               return result;
-           }
+            int nowInNumber = solidifyRecordMapper.selectInNumber(roomID, "1");
+            if ((nowInNumber + orderArray.length) > (int) ConfigParamEnum.DryFilnCapacityMap.get(roomID)) {
+                result.setData(roomName + "固化室已有" + nowInNumber + "架，不能再入" + orderArray.length + "架！");
+                return result;
+            }
             String orderSplitID = "";
             OrderSplit orderSplit;
             for (int i = 0; i < orderArray.length; i++) {
@@ -185,8 +182,7 @@ else
                         materialRecord.setInputer(operatorName);
                         materialRecord.setInputer(operatorName);
                         materialRecord.setInputerid(operatorName);
-                        if(operatorName.split("###").length > 1)
-                        {
+                        if (operatorName.split("###").length > 1) {
                             materialRecord.setInputer(operatorName.split("###")[0]);
                             materialRecord.setInputerid(operatorName.split("###")[1]);
                             materialRecord.setMaterialnameinfo(orderSplit.getOrdersplitid());
@@ -202,30 +198,27 @@ else
                             }
                         }
 
-                        orderSplit.setStatus(StatusEnum.WorkOrderStatus.finished.getIndex() + "");
-                        orderSplitMapper.updateByPrimaryKeySelective(orderSplit);
+                        // orderSplit.setStatus(StatusEnum.WorkOrderStatus.finished.getIndex() + "");
+                        // System.out.println(  "==============" +JSONObject.toJSON(orderSplit).toString());
+                        orderSplitMapper.updateStatus(orderSplit.getId(), StatusEnum.WorkOrderStatus.finished.getIndex() + "");
 
                         materialRecordMapper.insert(materialRecord);
 
-                        try
-                        {
-
-                                String batchID = batchrelationcontrolMapper.selectTBBatchByOrderID(orderSplit.getOrderid());
-                                if(org.springframework.util.StringUtils.isEmpty(batchID) || "null".equals(batchID.trim()) || batchID.length() < 6)
-                                {
-                                    Batchrelationcontrol batchrelationcontrol = new Batchrelationcontrol();
-                                    batchrelationcontrol.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-                                    batchrelationcontrol.setRelationorderid(orderSplit.getOrderid());
-                                    batchrelationcontrol.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
-                                    batchrelationcontrol.setRelationtime(new Date());
-                                    String batch = orderSplit.getOrdersplitid().substring(0,orderSplit.getOrdersplitid().length() - 13)
-                                            + orderSplit.getOrdersplitid().substring(orderSplit.getOrdersplitid().length() - 11,orderSplit.getOrdersplitid().length() - 3);
-                                    batchrelationcontrol.setTbbatch(batch);
-                                    batchrelationcontrolMapper.insert(batchrelationcontrol);
+                        try {
+                            String batchID = batchrelationcontrolMapper.selectTBBatchByOrderID(orderSplit.getOrderid());
+                            if (org.springframework.util.StringUtils.isEmpty(batchID) || "null".equals(batchID.trim()) || batchID.length() < 6) {
+                                Batchrelationcontrol batchrelationcontrol = new Batchrelationcontrol();
+                                batchrelationcontrol.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                                batchrelationcontrol.setRelationorderid(orderSplit.getOrderid());
+                                batchrelationcontrol.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
+                                batchrelationcontrol.setRelationtime(new Date());
+                                String batch = orderSplit.getOrdersplitid().substring(0, orderSplit.getOrdersplitid().length() - 13)
+                                        + orderSplit.getOrdersplitid().substring(orderSplit.getOrdersplitid().length() - 11, orderSplit.getOrdersplitid().length() - 3);
+                                batchrelationcontrol.setTbbatch(batch);
+                                batchrelationcontrolMapper.insert(batchrelationcontrol);
                             }
-                        }catch (Exception ex)
-                        {
-                            result.setMessage(result.getMessage() + " " +ex.getMessage() );
+                        } catch (Exception ex) {
+                            result.setMessage(result.getMessage() + " " + ex.getMessage());
                         }
                     }
 
@@ -307,7 +300,7 @@ else
     }
 
 
-    public TNPYResponse changeAllSolidifyStatusAuto(String roomID,  String operatorName) {
+    public TNPYResponse changeAllSolidifyStatusAuto(String roomID, String operatorName) {
 
         TNPYResponse result = new TNPYResponse();
         try {

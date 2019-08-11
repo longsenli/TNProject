@@ -108,11 +108,12 @@ public class MaterialServiceImpl implements IMaterialService {
             {
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             }
-            else
-            {
-                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
-                result.setMessage("当前工单所用涂板批次号为：" + expendTBBatch + "所投物料所用涂板批次号为：" + materialTBBatch);
-            }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+//            else
+//            {
+//                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+//                result.setMessage("当前工单所用涂板批次号为：" + expendTBBatch + "所投物料所用涂板批次号为：" + materialTBBatch);
+//            }
             return  result;
         }
         catch (Exception ex)

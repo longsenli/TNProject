@@ -160,4 +160,10 @@ public class OrderController {
     public TNPYResponse pushOutDryingKilnjzsuborder( String jsonStr,String name ) {
         return  workOrderService.pushOutDryingKilnjzsuborder( jsonStr, name);
     }
+
+    //浇铸固化室批次出窑入库
+    @RequestMapping(value = "/orderOutOfDryingKiln")
+    public TNPYResponse orderOutOfDryingKiln( String plantID,String processID,String startTime,String endTime ) {
+        return  workOrderService.orderOutOfDryingKiln( plantID,processID,startTime, endTime);
+    }
 }

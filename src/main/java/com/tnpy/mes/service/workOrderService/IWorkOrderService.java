@@ -47,5 +47,6 @@ public interface IWorkOrderService {
 
     //浇铸干燥窑出窑
     public TNPYResponse pushOutDryingKilnjzsuborder( String jsonStr ,String name );
-    
+    //未入窑记录
+    public TNPYResponse  orderOutOfDryingKiln( String plantID,String processID,String startTime,String endTime );
 }

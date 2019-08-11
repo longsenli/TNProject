@@ -175,6 +175,66 @@ public class DashboardServiceImpl implements IDashboardService {
                         "left join tb_materialrecord  b on a.id = b.orderID where inputLineID is not null group by inputLineID,orderDay,orderHour ,materialNameInfo order by inputLineID,orderDay,orderHour desc limit 1000)" ;
 
             }
+
+            if("byLineExpend".equals(queryTypeID))
+            {
+
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            //String->Date
+            Date newStartTime = sdf.parse(startTime); //new Date(startTime);
+            Date newEndTime = sdf.parse(endTime); // new Date(endTime);
+            String newStartTimeStr = sdf.format(newStartTime) + " 07:00:00";
+            //Date->Calendar
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(newEndTime);
+            //计算过期日
+            calendar.add(Calendar.DATE, 1);
+
+            //Calendar->Date
+            newEndTime = calendar.getTime();
+
+            String newEndTimeStr =sdf.format(newEndTime) + " 07:00:00";
+
+
+                querySQL =
+                        "(\n" +
+                        " select '总计' as banci,'' as dayTime, outputLineID,materialNameInfo,sum(number) as number  from tb_materialrecord where outputPlantID = '"+plantID+"' \n" +
+                        " and outputProcessID = '"+processID+"' and outputTime > '" +newStartTimeStr +"' and outputTime < '"+newEndTimeStr+"'   group by outputLineID,materialNameInfo order by outputLineID limit 1000)\n" +
+                        " union all \n" +
+                        "( \n" +
+                         "select case  when left(timeStr,2) = 'BB' then '白班'  else '夜班' end as banci ,right(timeStr,8) as dayTime ,outputLineID,materialNameInfo,number from (\n" +
+                        "select outputLineID,sum(number) as number,right(expendOrderID,10) as timeStr,materialNameInfo  from tb_materialrecord where outputPlantID = '"+plantID+"' \n" +
+                        "and outputProcessID = '"+processID+"' and outputTime > '" +newStartTimeStr +"' and outputTime < '"+newEndTimeStr+"'  group by outputLineID,materialNameInfo,timeStr ) a  order by timeStr desc,outputLineID limit 1000 ) " ;
+            }
+
+            if("byStaffExpend".equals(queryTypeID))
+            {
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                //String->Date
+                Date newStartTime = sdf.parse(startTime); //new Date(startTime);
+                Date newEndTime = sdf.parse(endTime); // new Date(endTime);
+                String newStartTimeStr = sdf.format(newStartTime) + " 07:00:00";
+                //Date->Calendar
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(newEndTime);
+                //计算过期日
+                calendar.add(Calendar.DATE, 1);
+
+                //Calendar->Date
+                newEndTime = calendar.getTime();
+
+                String newEndTimeStr =sdf.format(newEndTime) + " 07:00:00";
+                querySQL = "(\n" +
+                        " select '总计' as banci,'' as dayTime, outputer,materialNameInfo,sum(number) as number  from tb_materialrecord where outputPlantID = '"+plantID+"' \n" +
+                        "and outputProcessID = '"+processID+"' and outputTime > '" +newStartTimeStr +"' and outputTime < '"+newEndTimeStr+"'  group by outputer,materialNameInfo order by outputer limit 1000)\n" +
+                        " union all \n" +
+                        "( \n" +
+                        "select case  when left(timeStr,2) = 'BB' then '白班'  else '夜班' end as banci ,right(timeStr,8) as dayTime ,outputer,materialNameInfo,number from (\n" +
+                        "select outputer,sum(number) as number,right(expendOrderID,10) as timeStr,materialNameInfo  from tb_materialrecord where outputPlantID = '"+plantID+"' \n" +
+                        "and outputProcessID = '"+processID+"' and outputTime > '" +newStartTimeStr +"' and outputTime < '" +newEndTimeStr +"'  group by outputer,materialNameInfo,timeStr ) a  order by timeStr desc, outputer  limit 1000)" ;
+            }
+
            // System.out.println(querySQL);
             List<Map<Object, Object>> mapList = dashboardMapper.getDailyProduction(querySQL);
             result.setStatus(1);
