@@ -266,7 +266,25 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             return result;
         }
     }
-
+    public TNPYResponse deleteWorkOrder( String orderID )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            String productionOrder = materialRecordMapper.getProductionByOrderID(orderID);
+            if (!org.springframework.util.StringUtils.isEmpty(productionOrder)) {
+                result.setMessage("该工单已有入库记录不能删除！");
+                return result;
+            }
+            orderSplitMapper.deleteByOrderID(orderID);
+            workOrderMapper.deleteByPrimaryKey(orderID);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            //  result.setData(JSONObject.toJSONString(equipmentTypeList, SerializerFeature.WriteMapNullValue).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("删除失败！" + ex.getMessage());
+            return result;
+        }
+    }
 
     public TNPYResponse getOrderSplit(String orderID) {
         TNPYResponse result = new TNPYResponse();

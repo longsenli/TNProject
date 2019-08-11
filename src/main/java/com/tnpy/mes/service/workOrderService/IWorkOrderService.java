@@ -18,6 +18,7 @@ public interface IWorkOrderService {
     public TNPYResponse getCustomWorkOrderByParam(String plantID,String processID,String lineID );
     public TNPYResponse getOrderSplitAfterMap(String orderID );
     public TNPYResponse getSubOrderByID( String id ,String type);
+    public TNPYResponse deleteWorkOrder( String orderID );
 
     public TNPYResponse getOrderSplitToMap(String orderID );
     public TNPYResponse getSubOrderByIDToMap( String id ,String type,String plantID,String processID);

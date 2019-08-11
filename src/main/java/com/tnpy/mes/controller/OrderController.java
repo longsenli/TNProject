@@ -45,6 +45,11 @@ public class OrderController {
         return  workOrderService.changeWorkOrder(jsonStr);
     }
 
+    @RequestMapping(value = "/deleteWorkOrder")
+    public TNPYResponse deleteWorkOrder( String orderID ) {
+        return  workOrderService.deleteWorkOrder(orderID);
+    }
+
     @RequestMapping(value = "/changeworkorderstatus")
     public TNPYResponse changeWorkOrderStatus( String ID,String status ) {
         return  workOrderService.changeWorkOrderStatus(ID,status);
