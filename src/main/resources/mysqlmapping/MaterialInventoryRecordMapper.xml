@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.MaterialInventoryRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.MaterialInventoryRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="materialID" jdbcType="VARCHAR" property="materialid" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="currentNum" jdbcType="INTEGER" property="currentnum" />
+    <result column="lastStorage" jdbcType="INTEGER" property="laststorage" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="productionNum" jdbcType="INTEGER" property="productionnum" />
+    <result column="inNum" jdbcType="INTEGER" property="innum" />
+    <result column="expendNum" jdbcType="INTEGER" property="expendnum" />
+    <result column="outNum" jdbcType="INTEGER" property="outnum" />
+    <result column="operator" jdbcType="VARCHAR" property="operator" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="onlineStorageInNum" jdbcType="INTEGER" property="onlinestorageinnum" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="extend1" jdbcType="INTEGER" property="extend1" />
+    <result column="extend2" jdbcType="INTEGER" property="extend2" />
+    <result column="extend3" jdbcType="INTEGER" property="extend3" />
+    <result column="extend4" jdbcType="INTEGER" property="extend4" />
+    <result column="extend5" jdbcType="VARCHAR" property="extend5" />
+    <result column="extend6" jdbcType="VARCHAR" property="extend6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, materialID, plantID, processID, currentNum, lastStorage, updateTime, productionNum, 
+    inNum, expendNum, outNum, operator, status, onlineStorageInNum, remark, extend1, 
+    extend2, extend3, extend4, extend5, extend6
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_materialinventoryrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_materialinventoryrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.MaterialInventoryRecord">
+    insert into tb_materialinventoryrecord (id, materialID, plantID, 
+      processID, currentNum, lastStorage, 
+      updateTime, productionNum, inNum, 
+      expendNum, outNum, operator, 
+      status, onlineStorageInNum, remark, 
+      extend1, extend2, extend3, 
+      extend4, extend5, extend6
+      )
+    values (#{id,jdbcType=VARCHAR}, #{materialid,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, 
+      #{processid,jdbcType=VARCHAR}, #{currentnum,jdbcType=INTEGER}, #{laststorage,jdbcType=INTEGER}, 
+      #{updatetime,jdbcType=TIMESTAMP}, #{productionnum,jdbcType=INTEGER}, #{innum,jdbcType=INTEGER}, 
+      #{expendnum,jdbcType=INTEGER}, #{outnum,jdbcType=INTEGER}, #{operator,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{onlinestorageinnum,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
+      #{extend1,jdbcType=INTEGER}, #{extend2,jdbcType=INTEGER}, #{extend3,jdbcType=INTEGER}, 
+      #{extend4,jdbcType=INTEGER}, #{extend5,jdbcType=VARCHAR}, #{extend6,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.MaterialInventoryRecord">
+    insert into tb_materialinventoryrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="materialid != null">
+        materialID,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="processid != null">
+        processID,
+      </if>
+      <if test="currentnum != null">
+        currentNum,
+      </if>
+      <if test="laststorage != null">
+        lastStorage,
+      </if>
+      <if test="updatetime != null">
+        updateTime,
+      </if>
+      <if test="productionnum != null">
+        productionNum,
+      </if>
+      <if test="innum != null">
+        inNum,
+      </if>
+      <if test="expendnum != null">
+        expendNum,
+      </if>
+      <if test="outnum != null">
+        outNum,
+      </if>
+      <if test="operator != null">
+        operator,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="onlinestorageinnum != null">
+        onlineStorageInNum,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="extend1 != null">
+        extend1,
+      </if>
+      <if test="extend2 != null">
+        extend2,
+      </if>
+      <if test="extend3 != null">
+        extend3,
+      </if>
+      <if test="extend4 != null">
+        extend4,
+      </if>
+      <if test="extend5 != null">
+        extend5,
+      </if>
+      <if test="extend6 != null">
+        extend6,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="currentnum != null">
+        #{currentnum,jdbcType=INTEGER},
+      </if>
+      <if test="laststorage != null">
+        #{laststorage,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productionnum != null">
+        #{productionnum,jdbcType=INTEGER},
+      </if>
+      <if test="innum != null">
+        #{innum,jdbcType=INTEGER},
+      </if>
+      <if test="expendnum != null">
+        #{expendnum,jdbcType=INTEGER},
+      </if>
+      <if test="outnum != null">
+        #{outnum,jdbcType=INTEGER},
+      </if>
+      <if test="operator != null">
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="onlinestorageinnum != null">
+        #{onlinestorageinnum,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="extend1 != null">
+        #{extend1,jdbcType=INTEGER},
+      </if>
+      <if test="extend2 != null">
+        #{extend2,jdbcType=INTEGER},
+      </if>
+      <if test="extend3 != null">
+        #{extend3,jdbcType=INTEGER},
+      </if>
+      <if test="extend4 != null">
+        #{extend4,jdbcType=INTEGER},
+      </if>
+      <if test="extend5 != null">
+        #{extend5,jdbcType=VARCHAR},
+      </if>
+      <if test="extend6 != null">
+        #{extend6,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.MaterialInventoryRecord">
+    update tb_materialinventoryrecord
+    <set>
+      <if test="materialid != null">
+        materialID = #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        processID = #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="currentnum != null">
+        currentNum = #{currentnum,jdbcType=INTEGER},
+      </if>
+      <if test="laststorage != null">
+        lastStorage = #{laststorage,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productionnum != null">
+        productionNum = #{productionnum,jdbcType=INTEGER},
+      </if>
+      <if test="innum != null">
+        inNum = #{innum,jdbcType=INTEGER},
+      </if>
+      <if test="expendnum != null">
+        expendNum = #{expendnum,jdbcType=INTEGER},
+      </if>
+      <if test="outnum != null">
+        outNum = #{outnum,jdbcType=INTEGER},
+      </if>
+      <if test="operator != null">
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="onlinestorageinnum != null">
+        onlineStorageInNum = #{onlinestorageinnum,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="extend1 != null">
+        extend1 = #{extend1,jdbcType=INTEGER},
+      </if>
+      <if test="extend2 != null">
+        extend2 = #{extend2,jdbcType=INTEGER},
+      </if>
+      <if test="extend3 != null">
+        extend3 = #{extend3,jdbcType=INTEGER},
+      </if>
+      <if test="extend4 != null">
+        extend4 = #{extend4,jdbcType=INTEGER},
+      </if>
+      <if test="extend5 != null">
+        extend5 = #{extend5,jdbcType=VARCHAR},
+      </if>
+      <if test="extend6 != null">
+        extend6 = #{extend6,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.MaterialInventoryRecord">
+    update tb_materialinventoryrecord
+    set materialID = #{materialid,jdbcType=VARCHAR},
+      plantID = #{plantid,jdbcType=VARCHAR},
+      processID = #{processid,jdbcType=VARCHAR},
+      currentNum = #{currentnum,jdbcType=INTEGER},
+      lastStorage = #{laststorage,jdbcType=INTEGER},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      productionNum = #{productionnum,jdbcType=INTEGER},
+      inNum = #{innum,jdbcType=INTEGER},
+      expendNum = #{expendnum,jdbcType=INTEGER},
+      outNum = #{outnum,jdbcType=INTEGER},
+      operator = #{operator,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      onlineStorageInNum = #{onlinestorageinnum,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      extend1 = #{extend1,jdbcType=INTEGER},
+      extend2 = #{extend2,jdbcType=INTEGER},
+      extend3 = #{extend3,jdbcType=INTEGER},
+      extend4 = #{extend4,jdbcType=INTEGER},
+      extend5 = #{extend5,jdbcType=VARCHAR},
+      extend6 = #{extend6,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
