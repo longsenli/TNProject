@@ -31,25 +31,21 @@ public class MaterialInventoryRecord {
 
     private String status;
 
+    private Integer onlinestorageinnum;
+
     private String remark;
 
-    public String getRemark() {
-        return remark;
-    }
+    private Integer extend1;
 
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
-    }
+    private Integer extend2;
 
-    public Integer getOnlineStorageInNum() {
-        return onlineStorageInNum;
-    }
+    private Integer extend3;
 
-    public void setOnlineStorageInNum(Integer onlineStorageInNum) {
-        this.onlineStorageInNum = onlineStorageInNum;
-    }
+    private Integer extend4;
 
-    private Integer onlineStorageInNum;
+    private String extend5;
+
+    private String extend6;
 
     public String getId() {
         return id;
@@ -153,5 +149,69 @@ public class MaterialInventoryRecord {
 
     public void setStatus(String status) {
         this.status = status == null ? null : status.trim();
+    }
+
+    public Integer getOnlinestorageinnum() {
+        return onlinestorageinnum;
+    }
+
+    public void setOnlinestorageinnum(Integer onlinestorageinnum) {
+        this.onlinestorageinnum = onlinestorageinnum;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
+    }
+
+    public Integer getExtend1() {
+        return extend1;
+    }
+
+    public void setExtend1(Integer extend1) {
+        this.extend1 = extend1;
+    }
+
+    public Integer getExtend2() {
+        return extend2;
+    }
+
+    public void setExtend2(Integer extend2) {
+        this.extend2 = extend2;
+    }
+
+    public Integer getExtend3() {
+        return extend3;
+    }
+
+    public void setExtend3(Integer extend3) {
+        this.extend3 = extend3;
+    }
+
+    public Integer getExtend4() {
+        return extend4;
+    }
+
+    public void setExtend4(Integer extend4) {
+        this.extend4 = extend4;
+    }
+
+    public String getExtend5() {
+        return extend5;
+    }
+
+    public void setExtend5(String extend5) {
+        this.extend5 = extend5 == null ? null : extend5.trim();
+    }
+
+    public String getExtend6() {
+        return extend6;
+    }
+
+    public void setExtend6(String extend6) {
+        this.extend6 = extend6 == null ? null : extend6.trim();
     }
 }

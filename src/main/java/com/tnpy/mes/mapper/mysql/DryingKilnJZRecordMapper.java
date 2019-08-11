@@ -48,8 +48,9 @@ public interface DryingKilnJZRecordMapper {
    		"    where suborderID = #{suborderID} ")
    int deleteBySubOrderId(@Param("suborderID") String suborderID);
 
-    @Select(" select a.suborderID as orderID,a.inputer as status,date_format(a.inputTime, '%Y-%m-%d %H:%i:%s') as returnMessage  from ( select * from tb_materialrecord where inputPlantID = #{plantID} " +
+    @Select(" select a.suborderID as orderID,a.materialNameInfo as status,CONCAT(a.inputer,' ',a.inputTime) as returnMessage  from ( select subOrderID,inputer, " +
+            " materialNameInfo,date_format(inputTime, '%Y-%m-%d %H:%i:%s') as inputTime from tb_materialrecord where inputPlantID = #{plantID} " +
             " and inputProcessID = #{processID} and  inputTime > #{startTime} and inputTime < #{endTime} and inOrOut = '0' ) a left join\n" +
-            " tb_dryingkilnjzrecord b on a.subOrderID = b.suborderID where b.suborderID is  null")
+            " tb_dryingkilnjzrecord b on a.subOrderID = b.suborderID where b.suborderID is  null order by a.suborderID ")
     List<Map<Object, Object>>  orderOutOfDryingKiln( String plantID ,String processID,String startTime,String endTime );
 }

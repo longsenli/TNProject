@@ -2,11 +2,7 @@ package com.tnpy.mes.mapper.mysql;
 
 import com.tnpy.mes.model.mysql.MaterialSecondaryInventoryRecord;
 import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Component;
 
-@Mapper
-@Component
 public interface MaterialSecondaryInventoryRecordMapper {
     int deleteByPrimaryKey(String id);
 
@@ -20,7 +16,8 @@ public interface MaterialSecondaryInventoryRecordMapper {
 
     int updateByPrimaryKey(MaterialSecondaryInventoryRecord record);
 
-    @Insert("insert into tb_materialsecondaryinventoryrecord \n" +
+    @Insert("insert into tb_materialsecondaryinventoryrecord (id, materialID, plantID, processID, currentNum, lastStorage, updateTime, gainNum, \n" +
+            "    inNum, expendNum, outNum, operator, status, onlineNum, todayRepair,remark ) \n" +
             "select UUID(),g.id,#{plantID},#{processID},(ifnull(currentNum,0) +ifnull(grantNum,0)  -ifnull(expendNum,0)   +ifnull(todayAdd,0) + ifnull(mergeNum,0)  - ifnull(repairNum,0) ) as newNum,ifnull(currentNum,0),now(),ifnull(grantNum,0) ,0," +
             "ifnull(expendNum,0),ifnull(repairNum,0) ,'system','1',ifnull(onlineNum,0),ifnull(mergeNum,0),''  from (\n" +
             "select e.*,f.currentNum from ( select c.id,c.name,c.grantNum,d.expendNum from ( select a.id,a.name,b.grantNum from (\n" +
@@ -35,4 +32,5 @@ public interface MaterialSecondaryInventoryRecordMapper {
             "union all ( select materialID,sum(materialNum) as sumNum,status from tb_onlinematerialrecord where  plantID = #{plantID} and processID = #{processID}  and status = '1' group by status,materialID  ) ) a GROUP BY materialID\n" +
             " ) h on g.id = h.materialID where (ifnull(currentNum,0) + ifnull(expendNum,0)  + ifnull(grantNum,0)   + + ifnull(onlineNum,0)  + ifnull(mergeNum,0)  + ifnull(repairNum,0)) != 0")
     int insertJSSecondaryInventory( String startTime,String endTime,String plantID,String processID,String lastProcessID ,String lastStatisTime);
+
 }
