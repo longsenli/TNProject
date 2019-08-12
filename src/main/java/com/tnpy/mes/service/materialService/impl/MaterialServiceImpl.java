@@ -724,6 +724,23 @@ public class MaterialServiceImpl implements IMaterialService {
         }
     }
 
+    public TNPYResponse notGrantMaterialDetail( String plantID,String processID,String startTime,String endTime  )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            List<Map<Object,Object>> notGrantList = grantMaterialRecordMapper.notGrantMaterialDetail(plantID,processID,startTime,endTime);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(notGrantList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
     private TNPYResponse pileBatteryGrantOneByOne( String orderSplitID,String operator ,int grantType,String processID)
     {
         TNPYResponse result = new TNPYResponse();

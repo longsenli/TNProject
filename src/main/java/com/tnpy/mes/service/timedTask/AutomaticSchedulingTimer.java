@@ -509,6 +509,10 @@ public class AutomaticSchedulingTimer {
 
                 for (int j = 0; j < productionProcessList.size(); j++) {
                     try {
+                        if(ConfigParamEnum.BasicProcessEnum.TBProcessID.getName().equals( productionProcessList.get(j).getId()))
+                        {
+                            continue;
+                        }
 /*
                         if(!"1011".equals(productionProcessList.get(j).getId()))
                             continue;

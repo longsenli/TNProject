@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.MaterialScrapRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.MaterialScrapRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="lineID" jdbcType="VARCHAR" property="lineid" />
+    <result column="locationID" jdbcType="VARCHAR" property="locationid" />
+    <result column="productDay" jdbcType="TIMESTAMP" property="productday" />
+    <result column="classType" jdbcType="VARCHAR" property="classtype" />
+    <result column="orderID" jdbcType="VARCHAR" property="orderid" />
+    <result column="materialID" jdbcType="VARCHAR" property="materialid" />
+    <result column="orderName" jdbcType="VARCHAR" property="ordername" />
+    <result column="materialName" jdbcType="VARCHAR" property="materialname" />
+    <result column="value" jdbcType="REAL" property="value" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="updateStaff" jdbcType="VARCHAR" property="updatestaff" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, plantID, processID, lineID, locationID, productDay, classType, orderID, materialID, 
+    orderName, materialName, value, updateTime, updateStaff, status, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_materialscraprecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_materialscraprecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.MaterialScrapRecord">
+    insert into tb_materialscraprecord (id, plantID, processID, 
+      lineID, locationID, productDay, 
+      classType, orderID, materialID, 
+      orderName, materialName, value, 
+      updateTime, updateStaff, status, 
+      remark)
+    values (#{id,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{processid,jdbcType=VARCHAR}, 
+      #{lineid,jdbcType=VARCHAR}, #{locationid,jdbcType=VARCHAR}, #{productday,jdbcType=TIMESTAMP}, 
+      #{classtype,jdbcType=VARCHAR}, #{orderid,jdbcType=VARCHAR}, #{materialid,jdbcType=VARCHAR}, 
+      #{ordername,jdbcType=VARCHAR}, #{materialname,jdbcType=VARCHAR}, #{value,jdbcType=REAL}, 
+      #{updatetime,jdbcType=TIMESTAMP}, #{updatestaff,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.MaterialScrapRecord">
+    insert into tb_materialscraprecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="processid != null">
+        processID,
+      </if>
+      <if test="lineid != null">
+        lineID,
+      </if>
+      <if test="locationid != null">
+        locationID,
+      </if>
+      <if test="productday != null">
+        productDay,
+      </if>
+      <if test="classtype != null">
+        classType,
+      </if>
+      <if test="orderid != null">
+        orderID,
+      </if>
+      <if test="materialid != null">
+        materialID,
+      </if>
+      <if test="ordername != null">
+        orderName,
+      </if>
+      <if test="materialname != null">
+        materialName,
+      </if>
+      <if test="value != null">
+        value,
+      </if>
+      <if test="updatetime != null">
+        updateTime,
+      </if>
+      <if test="updatestaff != null">
+        updateStaff,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="locationid != null">
+        #{locationid,jdbcType=VARCHAR},
+      </if>
+      <if test="productday != null">
+        #{productday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="classtype != null">
+        #{classtype,jdbcType=VARCHAR},
+      </if>
+      <if test="orderid != null">
+        #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="ordername != null">
+        #{ordername,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null">
+        #{value,jdbcType=REAL},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatestaff != null">
+        #{updatestaff,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.MaterialScrapRecord">
+    update tb_materialscraprecord
+    <set>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        processID = #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        lineID = #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="locationid != null">
+        locationID = #{locationid,jdbcType=VARCHAR},
+      </if>
+      <if test="productday != null">
+        productDay = #{productday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="classtype != null">
+        classType = #{classtype,jdbcType=VARCHAR},
+      </if>
+      <if test="orderid != null">
+        orderID = #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        materialID = #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="ordername != null">
+        orderName = #{ordername,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        materialName = #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null">
+        value = #{value,jdbcType=REAL},
+      </if>
+      <if test="updatetime != null">
+        updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatestaff != null">
+        updateStaff = #{updatestaff,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.MaterialScrapRecord">
+    update tb_materialscraprecord
+    set plantID = #{plantid,jdbcType=VARCHAR},
+      processID = #{processid,jdbcType=VARCHAR},
+      lineID = #{lineid,jdbcType=VARCHAR},
+      locationID = #{locationid,jdbcType=VARCHAR},
+      productDay = #{productday,jdbcType=TIMESTAMP},
+      classType = #{classtype,jdbcType=VARCHAR},
+      orderID = #{orderid,jdbcType=VARCHAR},
+      materialID = #{materialid,jdbcType=VARCHAR},
+      orderName = #{ordername,jdbcType=VARCHAR},
+      materialName = #{materialname,jdbcType=VARCHAR},
+      value = #{value,jdbcType=REAL},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      updateStaff = #{updatestaff,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
