@@ -32,4 +32,25 @@ public class ScrapInfoController {
     public TNPYResponse getMaterialScrapInfo( String materialID, String orderID ) {
         return scrapInfoService.getMaterialScrapInfo(materialID,orderID);
     }
+
+    @RequestMapping(value = "/getMaterialScrapRecord")
+    public TNPYResponse getMaterialScrapRecord(String plantID , String processID,String lineID, String startTime, String endTime ) {
+        return scrapInfoService.getMaterialScrapRecord(plantID,processID,lineID, startTime,endTime);
+    }
+    @RequestMapping(value = "/saveMaterialScrapRecord")
+    public TNPYResponse saveMaterialScrapRecord(@RequestBody String strJson ) {
+
+        return scrapInfoService.saveMaterialScrapRecord(strJson);
+    }
+
+    @RequestMapping(value = "/deleteMaterialScrapRecord")
+    public TNPYResponse deleteMaterialScrapRecord( String id ) {
+
+        return scrapInfoService.deleteMaterialScrapRecord(id);
+    }
+
+    @RequestMapping(value = "/getUsedMaterialInfo")
+    public TNPYResponse getUsedMaterialInfo(String plantID , String processID,String lineID, String productDate, String classType ) {
+        return scrapInfoService.getUsedMaterialInfo(plantID,processID,lineID, productDate,classType);
+    }
 }
