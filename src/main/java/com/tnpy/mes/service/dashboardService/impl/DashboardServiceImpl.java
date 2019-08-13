@@ -172,7 +172,7 @@ public class DashboardServiceImpl implements IDashboardService {
                         "(select b.inputLineID,a.orderDay,a.orderHour,sum(number) as sumProduction ,materialNameInfo from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
                         "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
-                        "left join tb_materialrecord  b on a.id = b.orderID where inputLineID is not null group by inputLineID,orderDay,orderHour ,materialNameInfo order by inputLineID,orderDay,orderHour desc limit 1000)" ;
+                        "left join tb_materialrecord  b on a.id = b.orderID where inputLineID is not null group by inputLineID,orderDay,orderHour ,materialNameInfo order by orderDay,orderHour desc,inputLineID limit 1000)" ;
 
             }
 
@@ -201,10 +201,10 @@ public class DashboardServiceImpl implements IDashboardService {
                         " select '总计' as banci,'' as dayTime, outputLineID,materialNameInfo,sum(number) as number  from tb_materialrecord where outputPlantID = '"+plantID+"' \n" +
                         " and outputProcessID = '"+processID+"' and outputTime > '" +newStartTimeStr +"' and outputTime < '"+newEndTimeStr+"'   group by outputLineID,materialNameInfo order by outputLineID limit 1000)\n" +
                         " union all \n" +
-                        "( \n" +
+                        "( " +
                          "select case  when left(timeStr,2) = 'BB' then '白班'  else '夜班' end as banci ,right(timeStr,8) as dayTime ,outputLineID,materialNameInfo,number from (\n" +
                         "select outputLineID,sum(number) as number,right(expendOrderID,10) as timeStr,materialNameInfo  from tb_materialrecord where outputPlantID = '"+plantID+"' \n" +
-                        "and outputProcessID = '"+processID+"' and outputTime > '" +newStartTimeStr +"' and outputTime < '"+newEndTimeStr+"'  group by outputLineID,materialNameInfo,timeStr ) a  order by timeStr desc,outputLineID limit 1000 ) " ;
+                        "and outputProcessID = '"+processID+"' and outputTime > '" +newStartTimeStr +"' and outputTime < '"+newEndTimeStr+"'  group by outputLineID,materialNameInfo,timeStr ) a  order by dayTime desc,banci,outputLineID limit 1000 ) " ;
             }
 
             if("byStaffExpend".equals(queryTypeID))
@@ -232,7 +232,7 @@ public class DashboardServiceImpl implements IDashboardService {
                         "( \n" +
                         "select case  when left(timeStr,2) = 'BB' then '白班'  else '夜班' end as banci ,right(timeStr,8) as dayTime ,outputer,materialNameInfo,number from (\n" +
                         "select outputer,sum(number) as number,right(expendOrderID,10) as timeStr,materialNameInfo  from tb_materialrecord where outputPlantID = '"+plantID+"' \n" +
-                        "and outputProcessID = '"+processID+"' and outputTime > '" +newStartTimeStr +"' and outputTime < '" +newEndTimeStr +"'  group by outputer,materialNameInfo,timeStr ) a  order by timeStr desc, outputer  limit 1000)" ;
+                        "and outputProcessID = '"+processID+"' and outputTime > '" +newStartTimeStr +"' and outputTime < '" +newEndTimeStr +"'  group by outputer,materialNameInfo,timeStr ) a  order by dayTime desc,banci, outputer  limit 1000)" ;
             }
 
            // System.out.println(querySQL);
