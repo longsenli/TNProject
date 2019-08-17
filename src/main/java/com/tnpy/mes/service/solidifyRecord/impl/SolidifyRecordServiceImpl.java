@@ -150,8 +150,8 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
             String[] orderArray = orderIDList.split("###");
 
             int nowInNumber = solidifyRecordMapper.selectInNumber(roomID, "1");
-            if ((nowInNumber + orderArray.length) > (int) ConfigParamEnum.DryFilnCapacityMap.get(roomID)) {
-                result.setData(roomName + "固化室已有" + nowInNumber + "架，不能再入" + orderArray.length + "架！");
+            if ((nowInNumber + orderArray.length) > (int) ConfigParamEnum.DryFilnCapacityMap.get(roomID)  ) {
+                result.setMessage(roomName + "固化室已有" + nowInNumber + "架，不能再入" + orderArray.length + "架！");
                 return result;
             }
             String orderSplitID = "";

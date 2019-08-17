@@ -174,8 +174,6 @@ public class ChargePackServiceImpl implements IChargePackService {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
            String tidyRecordFilter = " where status != '-1' and plantID = '" + chargingRackRecord.getPlantid()+ "' and lineID ='" + nextLineID
                    +"' and materialID = '" + chargingRackRecord.getMaterialid() +"'  and materialType ='" + chargingRackRecord.getMaterialtype()+ "' order by dayTime desc limit 1"  ;
-
-
             TidyBatteryRecord tidyBatteryRecord = tidyBatteryRecordMapper.selectLatestRecordByFilter(tidyRecordFilter);
             if(tidyBatteryRecord == null)
             {

@@ -308,22 +308,37 @@ public class MaterialServiceImpl implements IMaterialService {
             String msgStr = "";
             if(orderSplit != null)
             {
-                msgStr = "工单批次码： " + orderSplit.getOrdersplitid();
+                msgStr = "工单号： " + orderSplit.getOrdersplitid();
             }
             else
             {
-                msgStr = "该批次码未找到，二维码数据为：" +  qrCode;
+                msgStr = "该工单号未找到，二维码数据为：" +  qrCode;
             }
 
-            int count1 = materialRecordMapper.checkMaterialRecordUsed(qrCode,StatusEnum.InOutStatus.Input.getIndex());
+
+            MaterialRecord materialRecord = materialRecordMapper.selectBySuborderID(qrCode);
+           // int count1 = materialRecordMapper.checkMaterialRecordUsed(qrCode,StatusEnum.InOutStatus.Input.getIndex());
             int count2 = materialRecordMapper.checkMaterialRelation(qrCode,expendOrderID);
 
-            if(count1 < 1)
+            if(materialRecord == null)
             {
                 result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
-                result.setMessage(msgStr + "， 该批次码不存在或已被领用！");
+                result.setMessage(msgStr + "， 未找到该工单的入库记录");
                 return  result;
             }
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            if(materialRecord.getInorout() ==StatusEnum.InOutStatus.Output.getIndex())
+            {
+                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                result.setMessage(msgStr + "， 该工单已被使用，" + materialRecord.getOutputer() + " "+dateFormat.format(materialRecord.getOutputtime()) );
+                return  result;
+            }
+//            if(count1 < 1)
+//            {
+//                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+//                result.setMessage(msgStr + "， 该批次码不存在或已被领用！");
+//                return  result;
+//            }
             if(count2 < 1)
             {
                 result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
@@ -362,20 +377,28 @@ public class MaterialServiceImpl implements IMaterialService {
             String msgStr = "";
             if(orderSplit != null)
             {
-                msgStr = "工单批次码： " + orderSplit.getOrdersplitid();
+                msgStr = "工单号： " + orderSplit.getOrdersplitid();
             }
             else
             {
-                msgStr = "该批次码未找到，二维码数据为：" +  qrCode;
+                msgStr = "该工单号未找到，二维码数据为：" +  qrCode;
             }
 
-            int count1 = materialRecordMapper.checkMaterialRecordUsed(qrCode,StatusEnum.InOutStatus.Input.getIndex());
+            MaterialRecord materialRecord = materialRecordMapper.selectBySuborderID(qrCode);
+            // int count1 = materialRecordMapper.checkMaterialRecordUsed(qrCode,StatusEnum.InOutStatus.Input.getIndex());
             int count2 = materialRecordMapper.checkMaterialRelation(qrCode,expendOrderID);
 
-            if(count1 < 1)
+            if(materialRecord == null)
             {
                 result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
-                result.setMessage(msgStr + "， 该批次码不存在或已被领用！");
+                result.setMessage(msgStr + "， 未找到该工单的入库记录");
+                return  result;
+            }
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            if(materialRecord.getInorout() ==StatusEnum.InOutStatus.Output.getIndex())
+            {
+                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                result.setMessage(msgStr + "， 该工单已被使用，" + materialRecord.getOutputer() + " "+dateFormat.format(materialRecord.getOutputtime()) );
                 return  result;
             }
             if(count2 < 1)
