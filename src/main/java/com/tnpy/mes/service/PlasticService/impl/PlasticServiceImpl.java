@@ -3,7 +3,9 @@ package com.tnpy.mes.service.PlasticService.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
+import com.tnpy.mes.mapper.mysql.MaterialRecordMapper;
 import com.tnpy.mes.mapper.mysql.PlasticUsedRecordMapper;
+import com.tnpy.mes.model.mysql.MaterialRecord;
 import com.tnpy.mes.model.mysql.PlasticUsedRecord;
 import com.tnpy.mes.service.PlasticService.IPlasticService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,10 @@ import java.util.*;
 public class PlasticServiceImpl  implements IPlasticService {
     @Autowired
     private PlasticUsedRecordMapper plasticUsedRecordMapper;
+
+    @Autowired
+    private MaterialRecordMapper materialRecordMapper;
+
     public TNPYResponse getPlasticUsedRecord(String plantID, String lineID, String locationID, String startTime, String endTime )
     {
         TNPYResponse result = new TNPYResponse();
@@ -47,14 +53,14 @@ public class PlasticServiceImpl  implements IPlasticService {
         }
     }
 
-    public TNPYResponse addPlasticUsedRecord(String listID,String userID,String userName,String plantID,String lineID,String locationID){
+    public TNPYResponse addPlasticUsedRecord(String listID,String userID,String userName,String plantID,String lineID,String locationID,String orderID){
         TNPYResponse result = new TNPYResponse();
         try
         {
             List<Map<String, String>> grantResult = new  ArrayList<Map<String, String>>();
             String[] orderArray = listID.split("###");
 
-
+            MaterialRecord materialRecord = materialRecordMapper.selectBySuborderID(orderID);
             for(int i =0;i<orderArray.length;i++)
             {
                 Map<String, String> mapResult = new HashMap<String, String>();
@@ -73,6 +79,12 @@ public class PlasticServiceImpl  implements IPlasticService {
                     plasticUsedRecord.setStaffname(userName);
                     plasticUsedRecord.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
                     plasticUsedRecord.setUsedtime(new Date());
+                    if(materialRecord != null)
+                    {
+                        plasticUsedRecord.setJqid(materialRecord.getSuborderid());
+                        plasticUsedRecord.setJqstaff(materialRecord.getInputer());
+                        plasticUsedRecord.setJqtime(materialRecord.getInputtime());
+                    }
                     plasticUsedRecordMapper.insert(plasticUsedRecord);
                     mapResult.put("status","成功");
                     mapResult.put("returnMessage","成功!");
@@ -93,6 +105,22 @@ public class PlasticServiceImpl  implements IPlasticService {
         {
             result.setMessage("发放失败！" + ex.getMessage());
             return  result;
+        }
+    }
+
+    public TNPYResponse plasticDataProvenance(String id)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            String filter = " where id ='" + id + "'  ";
+
+            List<PlasticUsedRecord> plasticUsedRecordList = plasticUsedRecordMapper.selectByParam(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(plasticUsedRecordList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
         }
     }
 }
