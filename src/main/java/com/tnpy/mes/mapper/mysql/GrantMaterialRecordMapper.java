@@ -28,7 +28,7 @@ public  interface GrantMaterialRecordMapper {
 
     int updateByPrimaryKey(GrantMaterialRecord record);
 
-    @Select("select * from tb_grantmaterialrecord where orderID = #{orderID}")
+    @Select("select * from tb_grantmaterialrecord where orderID = #{orderID} limit 1")
     GrantMaterialRecord selectByOrderID(String orderID);
 
     @Select(" select a.suborderID as orderID,a.materialNameInfo as status,CONCAT(a.inputer,' ',a.inputTime) as returnMessage from ( select subOrderID,inputer, materialNameInfo,date_format(inputTime, '%Y-%m-%d %H:%i:%s') as inputTime \n" +

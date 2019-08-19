@@ -631,6 +631,12 @@ public class MaterialServiceImpl implements IMaterialService {
 
                     if(!(StatusEnum.InOutStatus.Input.getIndex()+"").equals(materialRecord.getInorout().toString()))
                     {
+                        if((StatusEnum.InOutStatus.Output.getIndex()+"").equals(materialRecord.getInorout().toString()))
+                        {
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            mapResult.put("returnMessage","该订单已经被使用！" +materialRecord.getOutputer() + "  " + dateFormat.format(materialRecord.getOutputtime()) );
+                            break;
+                        }
                         mapResult.put("returnMessage","该订单未完成固化不能发料！" +orderSplitID );
                         break;
                     }
