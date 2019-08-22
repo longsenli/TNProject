@@ -212,8 +212,8 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
                                 batchrelationcontrol.setRelationorderid(orderSplit.getOrderid());
                                 batchrelationcontrol.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
                                 batchrelationcontrol.setRelationtime(new Date());
-                                String batch = orderSplit.getOrdersplitid().substring(0, orderSplit.getOrdersplitid().length() - 13)
-                                        + orderSplit.getOrdersplitid().substring(orderSplit.getOrdersplitid().length() - 11, orderSplit.getOrdersplitid().length() - 3);
+                                String batch = orderSplit.getId().substring(0, orderSplit.getId().length() - 13)
+                                        + orderSplit.getId().substring(orderSplit.getId().length() - 11, orderSplit.getId().length() - 3);
                                 batchrelationcontrol.setTbbatch(batch);
                                 batchrelationcontrolMapper.insert(batchrelationcontrol);
                             }
