@@ -127,6 +127,18 @@ public class ChargePackServiceImpl implements IChargePackService {
             {
                 chargingRackRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 chargingRackRecord.setStatus("1");
+                List<Map<Object,Object>> numberRight = chargingRackRecordMapper.selectOnRackNumber(chargingRackRecord.getWorklocation());
+                if(numberRight.size() ==1)
+                {
+                    int onRackNumber =Integer.parseInt(numberRight.get(0).get("onRackNumber").toString().split("\\.")[0]);
+                    int maxNumber = Integer.parseInt( numberRight.get(0).get("describeInfo").toString().split("\\.")[0]);
+
+                    if(onRackNumber + chargingRackRecord.getProductionnumber() > maxNumber)
+                    {
+                        result.setMessage("上架电池超出最大值，请先下架！最大上架数量为：" + maxNumber  + ",当前在架数量为：" +onRackNumber);
+                        return  result;
+                    }
+                }
                 chargingRackRecordMapper.insertSelective(chargingRackRecord);
             }
             else

@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 @Component
@@ -25,6 +26,10 @@ public interface ChargingRackRecordMapper {
 
     @Select("select * from tb_chargingrackrecord ${filter} ")
     List<ChargingRackRecord> selectByFilter(@Param("filter") String filter);
+
+    @Select("select a.onRackNumber,a.workLocation,b.name,b.describeInfo from ( select sum(productionNumber) as onRackNumber,workLocation FROM tb_chargingrackrecord where workLocation = #{workLocationID} and status = '1' and pulloffStaffName is null ) a \n" +
+            "left join tb_worklocation b on a.workLocation = b.id ")
+    List<Map<Object,Object>> selectOnRackNumber(String workLocationID);
 
     @Select(" ( select '' as  id, plantID, processID, lineID,'总计' as workLocation, staffID,'' as  staffName, materialID, materialName, \n" +
             "     sum(productionNumber) as productionNumber,'' as  putonDate,sum(repairNumber) as repairNumber, repairID,'' as  repairName,'' as  repairTime,'' as  reason, \n" +
