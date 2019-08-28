@@ -94,4 +94,9 @@ public class ChargePackController {
     public TNPYResponse getPackageRecordDetail(String plantID,String lineID,String startTime,String endTime) {
         return  chargePackService.getPackageRecordDetail(plantID, lineID,startTime,endTime);
     }
+    @RequestMapping(value = "/getPackageRecord")
+    public TNPYResponse getPackageRecord(String plantID, String processID,String lineID,String startTime,String endTime)
+    {
+        return  chargePackService.getPackageRecord(plantID,processID, lineID,startTime,endTime);
+    }
 }

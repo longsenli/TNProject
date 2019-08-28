@@ -275,6 +275,7 @@ public class ChargePackServiceImpl implements IChargePackService {
     public TNPYResponse changeTidyBatteryRecord(String jsonStr)
     {
         TidyBatteryRecord tidyBatteryRecord =(TidyBatteryRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), TidyBatteryRecord.class);
+
         TNPYResponse result = new TNPYResponse();
         try
         {
@@ -293,6 +294,7 @@ public class ChargePackServiceImpl implements IChargePackService {
                 {
                     tidyBatteryRecord.setBacktochargenum(tidyBatteryRecord1.getBacktochargenum());
                 }
+
                 if(tidyBatteryRecord.getRepairnumber() == null)
                 {
                     tidyBatteryRecord.setRepairnumber(tidyBatteryRecord1.getRepairnumber());
@@ -311,6 +313,8 @@ public class ChargePackServiceImpl implements IChargePackService {
                     }
                     date = calendar.getTime();
                     String filter = " where plantID = '" + tidyBatteryRecord.getPlantid() + "' and materialID = '" + tidyBatteryRecord.getMaterialid() + "' and checkTime >'" +dateFormat.format(date) + "'";
+
+
                     List<TidyPackageBatteryInventory> tidyPackageBatteryInventoryList = tidyPackageBatteryInventoryMapper.selectByFilter(filter);
                     if(tidyPackageBatteryInventoryList.size() < 1)
                     {
@@ -318,8 +322,9 @@ public class ChargePackServiceImpl implements IChargePackService {
                         tidyPackageBatteryInventory.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                         tidyPackageBatteryInventory.setPlantid(tidyBatteryRecord1.getPlantid());
                         tidyPackageBatteryInventory.setMaterialid(tidyBatteryRecord1.getMaterialid());
-                        tidyPackageBatteryInventory.setBackchargenewnum( tidyPackageBatteryInventory.getBackchargenewnum() + tidyBatteryRecord.getBacktochargenum().intValue()- tidyBatteryRecord1.getBacktochargenum().intValue() );
-                        tidyPackageBatteryInventory.setRepairnewnum(tidyPackageBatteryInventory.getRepairnewnum() + tidyBatteryRecord.getBacktochargenum().intValue()- tidyBatteryRecord1.getBacktochargenum().intValue() );
+
+                        tidyPackageBatteryInventory.setBackchargenewnum(  tidyBatteryRecord.getBacktochargenum().intValue()- tidyBatteryRecord1.getBacktochargenum().intValue() );
+                        tidyPackageBatteryInventory.setRepairnewnum(tidyBatteryRecord.getBacktochargenum().intValue()- tidyBatteryRecord1.getBacktochargenum().intValue() );
                         tidyPackageBatteryInventory.setChecktime(new Date());
                         tidyPackageBatteryInventory.setRemark("-1");
                         tidyPackageBatteryInventoryMapper.insert(tidyPackageBatteryInventory);
@@ -503,6 +508,45 @@ public class ChargePackServiceImpl implements IChargePackService {
         }
     }
 
+    //onWorkbench 在工作台数据  workbenchHistory 工作台历史数据
+    public TNPYResponse getPackageRecord(String plantID, String processID,String lineID,String startTime,String endTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = " where status != '-1' ";
+
+            filter += " and packageTime >= '" + startTime + "' ";
+            filter += " and packageTime <= '" + endTime + "' ";
+
+
+            if(!"-1".equals(plantID))
+            {
+                filter += " and plantID = '" + plantID + "' ";
+            }
+            if(!"-1".equals(processID))
+            {
+                filter += " and processID = '" + processID + "' ";
+            }
+            if(!"-1".equals(lineID))
+            {
+                filter += " and lineID = '" + lineID + "' ";
+            }
+
+            filter += " order by pileTime asc ";
+            // System.out.println(plantID + " 参数 " +processID);
+            List<PileBatteryRecord> pileBatteryRecordList = pileBatteryRecordMapper.selectByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+            result.setData(JSONObject.toJSON(pileBatteryRecordList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
     public TNPYResponse getBatteryGearLineInfo(String plantID, String startTime)
     {
         TNPYResponse result = new TNPYResponse();

@@ -39,10 +39,10 @@ public class PlasticServiceImpl  implements IPlasticService {
             {
                 filter += " and lineID = '" + lineID + "' ";
             }
-            if(!"-1".equals(locationID))
-            {
-                filter += " and workLocation = '" + locationID + "' ";
-            }
+//            if(!"-1".equals(locationID))
+//            {
+//                filter += " and workLocation = '" + locationID + "' ";
+//            }
             List<PlasticUsedRecord> plasticUsedRecordList = plasticUsedRecordMapper.selectByParam(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(plasticUsedRecordList).toString());
@@ -115,6 +115,7 @@ public class PlasticServiceImpl  implements IPlasticService {
             String filter = " where id ='" + id + "'  ";
 
             List<PlasticUsedRecord> plasticUsedRecordList = plasticUsedRecordMapper.selectByParam(filter);
+
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(plasticUsedRecordList).toString());
             return result;

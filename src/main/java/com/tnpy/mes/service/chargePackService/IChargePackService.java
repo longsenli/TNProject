@@ -29,4 +29,6 @@ public interface IChargePackService {
     public TNPYResponse getBatteryInventoryRecord(String plantID,String startTime,String endTime);
 
     public TNPYResponse getPackageRecordDetail(String plantID,String lineID,String startTime,String endTime);
+
+    public TNPYResponse getPackageRecord(String plantID, String processID,String lineID,String startTime,String endTime);
 }
