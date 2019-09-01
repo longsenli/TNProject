@@ -662,8 +662,8 @@ public class MaterialServiceImpl implements IMaterialService {
                     newGrantMaterialRecord.setProcessid(materialRecord.getInputprocessid());
                     newGrantMaterialRecord.setStatus("1");
                     grantMaterialRecordMapper.insert(newGrantMaterialRecord);
-                    mapResult.put("status","成功");
-                    mapResult.put("returnMessage","");
+                    mapResult.put("status","成功" );
+                    mapResult.put("returnMessage","" + orderSplit.getProductionnum().intValue());
                 }
                 grantResult.add(mapResult);
             }
@@ -686,7 +686,7 @@ public class MaterialServiceImpl implements IMaterialService {
         {
 
             String filter = " where subOrderID in ('" + orderIDList.replaceAll("###","','") + "' )";
-            String columnList = " subOrderID,expendOrderID,inOrOut ,outputTime,outputer ";
+            String columnList = " subOrderID,expendOrderID,inOrOut ,outputTime,outputer,materialNameInfo ";
             List<Map<Object, Object>>orderInfoList =materialRecordMapper.selectByFilter(columnList,filter);
             List<Map<String, String>> grantResult = new  ArrayList<Map<String, String>>();
             String[] orderArray = orderIDList.split("###");
@@ -738,7 +738,7 @@ public class MaterialServiceImpl implements IMaterialService {
                     }
                     grantMaterialRecordMapper.deleteByPrimaryKey(grantMaterialRecord.getId());
                     mapResult.put("status","成功");
-                    mapResult.put("returnMessage","");
+                    mapResult.put("returnMessage",orderInfoList.get(j).get("materialNameInfo")+"   " + grantMaterialRecord.getNumber());
                 }
                 grantResult.add(mapResult);
             }

@@ -128,8 +128,10 @@ public class ChargePackServiceImpl implements IChargePackService {
                 chargingRackRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 chargingRackRecord.setStatus("1");
                 List<Map<Object,Object>> numberRight = chargingRackRecordMapper.selectOnRackNumber(chargingRackRecord.getWorklocation());
-                if(numberRight.size() ==1)
+
+                if(numberRight != null && numberRight.size() ==1 && numberRight.get(0) != null)
                 {
+
                     int onRackNumber =Integer.parseInt(numberRight.get(0).get("onRackNumber").toString().split("\\.")[0]);
                     int maxNumber = Integer.parseInt( numberRight.get(0).get("describeInfo").toString().split("\\.")[0]);
 
