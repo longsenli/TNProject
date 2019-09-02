@@ -40,7 +40,7 @@ public interface MaterialRecordMapper {
 
     @Select("select c.*,d.name as materialName from ( \n" +
             "SELECT a.*,b.orderSplitID as inSubOrderName,left(b.orderSplitID, length(b.orderSplitID)-3)  as inOrderName \n" +
-            "FROM tb_materialrecord  a left join tb_ordersplit b on a.subOrderID = b.id where a.subOrderID = #{subOrderID} and a.inOrOut = 1 \n" +
+            "FROM tb_materialrecord  a left join tb_ordersplit b on a.subOrderID = b.id where a.subOrderID = #{subOrderID}  \n" +
             ") c left join sys_material d on c.materialID = d.id  order by outputTime desc")
     List<CustomMaterialRecord> selectBySubOrderID(String subOrderID);
 

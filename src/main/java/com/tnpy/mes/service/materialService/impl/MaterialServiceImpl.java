@@ -368,6 +368,8 @@ public class MaterialServiceImpl implements IMaterialService {
         TNPYResponse result = new TNPYResponse();
         try
         {
+
+            qrCode = qrCode.toUpperCase();
             TNPYResponse resultGrant = judgeZHGrantStatus(qrCode);
             if(resultGrant.getStatus() != StatusEnum.ResponseStatus.Success.getIndex())
             {
@@ -394,21 +396,19 @@ public class MaterialServiceImpl implements IMaterialService {
                 result.setMessage(msgStr + "， 未找到该工单的入库记录");
                 return  result;
             }
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            if(materialRecord.getInorout() ==StatusEnum.InOutStatus.Output.getIndex())
-            {
-                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
-                result.setMessage(msgStr + "， 该工单已被使用，" + materialRecord.getOutputer() + " "+dateFormat.format(materialRecord.getOutputtime()) );
-                return  result;
-            }
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            if(materialRecord.getInorout() ==StatusEnum.InOutStatus.Output.getIndex())
+//            {
+//                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+//                result.setMessage(msgStr + "， 该工单已被使用，" + materialRecord.getOutputer() + " "+dateFormat.format(materialRecord.getOutputtime()) );
+//                return  result;
+//            }
             if(count2 < 1)
             {
                 result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
                 result.setMessage("该工单不能够使用该物料！");
                 return  result;
             }
-
-
             TNPYResponse materialUseable = judgeAvailable(orderSplit.getOrderid(),expendOrderID);
             if(materialUseable.getStatus() != StatusEnum.ResponseStatus.Success.getIndex() )
             {
