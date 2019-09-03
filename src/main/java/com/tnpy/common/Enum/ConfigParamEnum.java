@@ -40,11 +40,14 @@ public class ConfigParamEnum {
         put("1003-1004-1007", 800);
         put("1003-1004-1008", 800);
         put("1003-1004-1009", 800);
-
-
     }};
 
+    public  static Map  PlateWeighDBMap = new HashMap<String,String>() {{
+        put("1001","tb_plateweighrecord_1b");
+       // put("1002","tb_plateweighrecord_2b");
+        put("1003","tb_plateweighrecord_3b");
 
+    }};
     public static  enum BasicProcessEnum {
         TBProcessID("1003", 1), GHProcessID("1004", 2),CDProcessID("1009",3),JSProcessID("1008",4),
         ZHProcessID("1007",5), JZProcessID("1011", 6), ZLProcessID("1012", 7);

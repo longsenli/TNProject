@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.PlateWeighRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.PlateWeighRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="time" jdbcType="TIMESTAMP" property="time" />
+    <result column="balanceID" jdbcType="VARCHAR" property="balanceid" />
+    <result column="lineID" jdbcType="VARCHAR" property="lineid" />
+    <result column="materialName" jdbcType="VARCHAR" property="materialname" />
+    <result column="className" jdbcType="VARCHAR" property="classname" />
+    <result column="Operator" jdbcType="VARCHAR" property="operator" />
+    <result column="weight" jdbcType="REAL" property="weight" />
+    <result column="centerWeight" jdbcType="REAL" property="centerweight" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, time, balanceID, lineID, materialName, className, Operator, weight, centerWeight, 
+    remark, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_plateweighrecord_3b
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_plateweighrecord_3b
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.PlateWeighRecord">
+    insert into tb_plateweighrecord_3b (id, time, balanceID, 
+      lineID, materialName, className, 
+      Operator, weight, centerWeight, 
+      remark, status)
+    values (#{id,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP}, #{balanceid,jdbcType=VARCHAR}, 
+      #{lineid,jdbcType=VARCHAR}, #{materialname,jdbcType=VARCHAR}, #{classname,jdbcType=VARCHAR}, 
+      #{operator,jdbcType=VARCHAR}, #{weight,jdbcType=REAL}, #{centerweight,jdbcType=REAL}, 
+      #{remark,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.PlateWeighRecord">
+    insert into tb_plateweighrecord_3b
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="time != null">
+        time,
+      </if>
+      <if test="balanceid != null">
+        balanceID,
+      </if>
+      <if test="lineid != null">
+        lineID,
+      </if>
+      <if test="materialname != null">
+        materialName,
+      </if>
+      <if test="classname != null">
+        className,
+      </if>
+      <if test="operator != null">
+        Operator,
+      </if>
+      <if test="weight != null">
+        weight,
+      </if>
+      <if test="centerweight != null">
+        centerWeight,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null">
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="balanceid != null">
+        #{balanceid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="classname != null">
+        #{classname,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null">
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null">
+        #{weight,jdbcType=REAL},
+      </if>
+      <if test="centerweight != null">
+        #{centerweight,jdbcType=REAL},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.PlateWeighRecord">
+    update tb_plateweighrecord_3b
+    <set>
+      <if test="time != null">
+        time = #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="balanceid != null">
+        balanceID = #{balanceid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        lineID = #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        materialName = #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="classname != null">
+        className = #{classname,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null">
+        Operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null">
+        weight = #{weight,jdbcType=REAL},
+      </if>
+      <if test="centerweight != null">
+        centerWeight = #{centerweight,jdbcType=REAL},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.PlateWeighRecord">
+    update tb_plateweighrecord_3b
+    set time = #{time,jdbcType=TIMESTAMP},
+      balanceID = #{balanceid,jdbcType=VARCHAR},
+      lineID = #{lineid,jdbcType=VARCHAR},
+      materialName = #{materialname,jdbcType=VARCHAR},
+      className = #{classname,jdbcType=VARCHAR},
+      Operator = #{operator,jdbcType=VARCHAR},
+      weight = #{weight,jdbcType=REAL},
+      centerWeight = #{centerweight,jdbcType=REAL},
+      remark = #{remark,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -49,7 +49,7 @@ public class ChargePackServiceImpl implements IChargePackService {
             String filter = " where status != '-1' ";
             if("onRack".equals(selectType))
             {
-                filter += " and pulloffDate is null ";
+                filter += " and ifnull(pulloffStaffName,1) = 1  ";
             }
             if("pulloffhistory".equals(selectType))
             {
