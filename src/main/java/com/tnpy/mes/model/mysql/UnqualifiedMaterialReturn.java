@@ -41,6 +41,10 @@ public class UnqualifiedMaterialReturn {
 
     private String status;
 
+    private Float repairnumber;
+    @JSONField(format ="yyyy-MM-dd HH:mm:ss")
+    private Date repairtime;
+
     public String getId() {
         return id;
     }
@@ -183,5 +187,21 @@ public class UnqualifiedMaterialReturn {
 
     public void setStatus(String status) {
         this.status = status == null ? null : status.trim();
+    }
+
+    public Float getRepairnumber() {
+        return repairnumber;
+    }
+
+    public void setRepairnumber(Float repairnumber) {
+        this.repairnumber = repairnumber;
+    }
+
+    public Date getRepairtime() {
+        return repairtime;
+    }
+
+    public void setRepairtime(Date repairtime) {
+        this.repairtime = repairtime;
     }
 }

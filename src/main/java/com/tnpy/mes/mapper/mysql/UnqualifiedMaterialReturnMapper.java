@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
-
 @Mapper
 @Component
 public interface UnqualifiedMaterialReturnMapper {
@@ -25,5 +24,5 @@ public interface UnqualifiedMaterialReturnMapper {
     int updateByPrimaryKey(UnqualifiedMaterialReturn record);
 
     @Select("select * from tb_unqualifiedmaterialreturn where returnTime >= #{startTime} and returnTime < #{endTime} and inputPlantID = #{plantID} and inputProcessID = #{processID} ${lineFilter} ")
-    List<Map<String, String>> getByFilter( String startTime,String endTime,String plantID,String processID,@Param("lineFilter") String lineFilter);
+    List<Map<String, String>> getByFilter(String startTime, String endTime, String plantID, String processID, @Param("lineFilter") String lineFilter);
 }

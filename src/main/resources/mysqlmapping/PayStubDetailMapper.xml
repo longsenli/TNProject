@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.PayStubDetailMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.PayStubDetail">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="staffID" jdbcType="VARCHAR" property="staffid" />
+    <result column="staffName" jdbcType="VARCHAR" property="staffname" />
+    <result column="finalWage" jdbcType="REAL" property="finalwage" />
+    <result column="productionWage" jdbcType="REAL" property="productionwage" />
+    <result column="rewardingWage" jdbcType="REAL" property="rewardingwage" />
+    <result column="punishmentWage" jdbcType="REAL" property="punishmentwage" />
+    <result column="extdWage1" jdbcType="REAL" property="extdwage1" />
+    <result column="extdWage2" jdbcType="REAL" property="extdwage2" />
+    <result column="extdWage3" jdbcType="REAL" property="extdwage3" />
+    <result column="extdWage4" jdbcType="REAL" property="extdwage4" />
+    <result column="extdWage5" jdbcType="VARCHAR" property="extdwage5" />
+    <result column="extdWage6" jdbcType="VARCHAR" property="extdwage6" />
+    <result column="closingDate" jdbcType="TIMESTAMP" property="closingdate" />
+    <result column="updaterID" jdbcType="VARCHAR" property="updaterid" />
+    <result column="updaterName" jdbcType="VARCHAR" property="updatername" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, plantID, processID, staffID, staffName, finalWage, productionWage, rewardingWage, 
+    punishmentWage, extdWage1, extdWage2, extdWage3, extdWage4, extdWage5, extdWage6, 
+    closingDate, updaterID, updaterName, updateTime, status, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_paystubdetail
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_paystubdetail
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.PayStubDetail">
+    insert into tb_paystubdetail (id, plantID, processID, 
+      staffID, staffName, finalWage, 
+      productionWage, rewardingWage, punishmentWage, 
+      extdWage1, extdWage2, extdWage3, 
+      extdWage4, extdWage5, extdWage6, 
+      closingDate, updaterID, updaterName, 
+      updateTime, status, remark
+      )
+    values (#{id,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{processid,jdbcType=VARCHAR}, 
+      #{staffid,jdbcType=VARCHAR}, #{staffname,jdbcType=VARCHAR}, #{finalwage,jdbcType=REAL}, 
+      #{productionwage,jdbcType=REAL}, #{rewardingwage,jdbcType=REAL}, #{punishmentwage,jdbcType=REAL}, 
+      #{extdwage1,jdbcType=REAL}, #{extdwage2,jdbcType=REAL}, #{extdwage3,jdbcType=REAL}, 
+      #{extdwage4,jdbcType=REAL}, #{extdwage5,jdbcType=VARCHAR}, #{extdwage6,jdbcType=VARCHAR}, 
+      #{closingdate,jdbcType=TIMESTAMP}, #{updaterid,jdbcType=VARCHAR}, #{updatername,jdbcType=VARCHAR}, 
+      #{updatetime,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.PayStubDetail">
+    insert into tb_paystubdetail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="processid != null">
+        processID,
+      </if>
+      <if test="staffid != null">
+        staffID,
+      </if>
+      <if test="staffname != null">
+        staffName,
+      </if>
+      <if test="finalwage != null">
+        finalWage,
+      </if>
+      <if test="productionwage != null">
+        productionWage,
+      </if>
+      <if test="rewardingwage != null">
+        rewardingWage,
+      </if>
+      <if test="punishmentwage != null">
+        punishmentWage,
+      </if>
+      <if test="extdwage1 != null">
+        extdWage1,
+      </if>
+      <if test="extdwage2 != null">
+        extdWage2,
+      </if>
+      <if test="extdwage3 != null">
+        extdWage3,
+      </if>
+      <if test="extdwage4 != null">
+        extdWage4,
+      </if>
+      <if test="extdwage5 != null">
+        extdWage5,
+      </if>
+      <if test="extdwage6 != null">
+        extdWage6,
+      </if>
+      <if test="closingdate != null">
+        closingDate,
+      </if>
+      <if test="updaterid != null">
+        updaterID,
+      </if>
+      <if test="updatername != null">
+        updaterName,
+      </if>
+      <if test="updatetime != null">
+        updateTime,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="staffid != null">
+        #{staffid,jdbcType=VARCHAR},
+      </if>
+      <if test="staffname != null">
+        #{staffname,jdbcType=VARCHAR},
+      </if>
+      <if test="finalwage != null">
+        #{finalwage,jdbcType=REAL},
+      </if>
+      <if test="productionwage != null">
+        #{productionwage,jdbcType=REAL},
+      </if>
+      <if test="rewardingwage != null">
+        #{rewardingwage,jdbcType=REAL},
+      </if>
+      <if test="punishmentwage != null">
+        #{punishmentwage,jdbcType=REAL},
+      </if>
+      <if test="extdwage1 != null">
+        #{extdwage1,jdbcType=REAL},
+      </if>
+      <if test="extdwage2 != null">
+        #{extdwage2,jdbcType=REAL},
+      </if>
+      <if test="extdwage3 != null">
+        #{extdwage3,jdbcType=REAL},
+      </if>
+      <if test="extdwage4 != null">
+        #{extdwage4,jdbcType=REAL},
+      </if>
+      <if test="extdwage5 != null">
+        #{extdwage5,jdbcType=VARCHAR},
+      </if>
+      <if test="extdwage6 != null">
+        #{extdwage6,jdbcType=VARCHAR},
+      </if>
+      <if test="closingdate != null">
+        #{closingdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updaterid != null">
+        #{updaterid,jdbcType=VARCHAR},
+      </if>
+      <if test="updatername != null">
+        #{updatername,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.PayStubDetail">
+    update tb_paystubdetail
+    <set>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        processID = #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="staffid != null">
+        staffID = #{staffid,jdbcType=VARCHAR},
+      </if>
+      <if test="staffname != null">
+        staffName = #{staffname,jdbcType=VARCHAR},
+      </if>
+      <if test="finalwage != null">
+        finalWage = #{finalwage,jdbcType=REAL},
+      </if>
+      <if test="productionwage != null">
+        productionWage = #{productionwage,jdbcType=REAL},
+      </if>
+      <if test="rewardingwage != null">
+        rewardingWage = #{rewardingwage,jdbcType=REAL},
+      </if>
+      <if test="punishmentwage != null">
+        punishmentWage = #{punishmentwage,jdbcType=REAL},
+      </if>
+      <if test="extdwage1 != null">
+        extdWage1 = #{extdwage1,jdbcType=REAL},
+      </if>
+      <if test="extdwage2 != null">
+        extdWage2 = #{extdwage2,jdbcType=REAL},
+      </if>
+      <if test="extdwage3 != null">
+        extdWage3 = #{extdwage3,jdbcType=REAL},
+      </if>
+      <if test="extdwage4 != null">
+        extdWage4 = #{extdwage4,jdbcType=REAL},
+      </if>
+      <if test="extdwage5 != null">
+        extdWage5 = #{extdwage5,jdbcType=VARCHAR},
+      </if>
+      <if test="extdwage6 != null">
+        extdWage6 = #{extdwage6,jdbcType=VARCHAR},
+      </if>
+      <if test="closingdate != null">
+        closingDate = #{closingdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updaterid != null">
+        updaterID = #{updaterid,jdbcType=VARCHAR},
+      </if>
+      <if test="updatername != null">
+        updaterName = #{updatername,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.PayStubDetail">
+    update tb_paystubdetail
+    set plantID = #{plantid,jdbcType=VARCHAR},
+      processID = #{processid,jdbcType=VARCHAR},
+      staffID = #{staffid,jdbcType=VARCHAR},
+      staffName = #{staffname,jdbcType=VARCHAR},
+      finalWage = #{finalwage,jdbcType=REAL},
+      productionWage = #{productionwage,jdbcType=REAL},
+      rewardingWage = #{rewardingwage,jdbcType=REAL},
+      punishmentWage = #{punishmentwage,jdbcType=REAL},
+      extdWage1 = #{extdwage1,jdbcType=REAL},
+      extdWage2 = #{extdwage2,jdbcType=REAL},
+      extdWage3 = #{extdwage3,jdbcType=REAL},
+      extdWage4 = #{extdwage4,jdbcType=REAL},
+      extdWage5 = #{extdwage5,jdbcType=VARCHAR},
+      extdWage6 = #{extdwage6,jdbcType=VARCHAR},
+      closingDate = #{closingdate,jdbcType=TIMESTAMP},
+      updaterID = #{updaterid,jdbcType=VARCHAR},
+      updaterName = #{updatername,jdbcType=VARCHAR},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

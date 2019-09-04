@@ -1,12 +1,11 @@
 package com.tnpy.mes.mapper.mysql;
 
+import com.tnpy.common.utils.token.Token;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
-
-import com.tnpy.common.utils.token.Token;
 
 @Mapper
 @Component
