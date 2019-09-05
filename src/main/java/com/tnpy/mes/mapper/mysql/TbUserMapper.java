@@ -38,4 +38,7 @@ public interface TbUserMapper {
 
 	@Select("select userID,name,mobilephone,industrialplant_name,productionprocess_name from tb_user where state = '1' order by name ")
 	List<Map<Object, Object>> selectAllBasicUserInfo();
+
+	@Select("select ${columnList} from tb_user ${filter} ")
+	List<Map<Object, Object>> selecUserInfoByfilter(@Param("columnList") String columnList,@Param("filter")String filter);
 }

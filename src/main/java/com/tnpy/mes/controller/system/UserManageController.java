@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 //import com.tnpy.mes.mapper.mysql.TbUserMapper;
 //import com.tnpy.mes.model.mysql.TbUser;
@@ -69,12 +70,41 @@ public class UserManageController {
 //	     }
 //		return rs;
 //  }
-  
-  
-  
-  
-  
-  @RequestMapping(value = "/pageInfo")
+
+
+    @RequestMapping(value = "/getUserInfoByParam")
+    public TNPYResponse getUserInfoByParam(String plantID,String processID) {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = " where state = '1'  ";
+            String columnList = " userID,name ";
+            if(!"-1".equals(plantID))
+            {
+                filter += " and industrialplant_id ='" + plantID + "'";
+            }
+            if(!"-1".equals(processID))
+            {
+                filter += " and productionprocess_id ='" + processID + "'";
+            }
+
+            filter += " order by  name" ;
+            List<Map<Object,Object>> users =userService.selecUserInfoByfilter(columnList,filter);
+            result.setStatus(1);
+            result.setData(JSONObject.toJSONString(users, SerializerFeature.WriteMapNullValue).toString());
+            // System.out.println(result);
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
+
+
+    @RequestMapping(value = "/pageInfo")
   public TNPYResponse getEquipmentInfo(String typeID,String plantID) {
       TNPYResponse result = new TNPYResponse();
      try

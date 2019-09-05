@@ -3,6 +3,7 @@ package com.tnpy.mes.mapper.mysql;
 import com.tnpy.mes.model.mysql.WageDetail;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
@@ -37,4 +38,11 @@ public interface WageDetailMapper {
             " ( select staffName,wage,materialName,productionNumber,CONCAT(unitPrice,'') as unitPrice,CONCAT(closingDate,'') as closingDate  from tb_wagedetail where plantID = #{plantID} and processID = #{processID} " +
             "and closingDate >= #{startTime} and closingDate <= #{endTime} order by closingDate,staffName limit 3000)")
     List<Map<Object, Object>> selectByFilter(String plantID,String processID,String startTime,String endTime);
+
+    @Select(" ( select staffName,round(sum(wage),2) as wage ,'' as materialName,'' as productionNumber ,'' as unitPrice,'总计' as closingDate from tb_wagedetail where plantID = #{plantID} and processID = #{processID} and " +
+            "closingDate >= #{startTime} and closingDate <= #{endTime} ${staffFilter}   group by staffName order by staffName limit 1000 ) " +
+            "union all" +
+            " ( select staffName,round(wage,2) as wage ,materialName,productionNumber,CONCAT(unitPrice,'') as unitPrice,CONCAT(closingDate,'') as closingDate  from tb_wagedetail where plantID = #{plantID} and processID = #{processID} " +
+            "and closingDate >= #{startTime} and closingDate <= #{endTime} ${staffFilter}  order by closingDate,staffName limit 3000)")
+    List<Map<Object, Object>> selectByFilterWithName(String plantID,String processID,String startTime,String endTime,@Param("staffFilter") String staffFilter);
 }

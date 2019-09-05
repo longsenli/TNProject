@@ -2,6 +2,7 @@ package com.tnpy.mes.mapper.mysql;
 
 import com.tnpy.mes.model.mysql.RewardingPunishmentDetail;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
@@ -23,10 +24,10 @@ public interface RewardingPunishmentDetailMapper {
 
     int updateByPrimaryKey(RewardingPunishmentDetail record);
 
-    @Select(" ( select staffName,round(sum(wage),2) as wage ,'' as reason,'' as closingDate from tb_rewardingpunishmentdetail where plantID = #{plantID} and processID = #{processID} and " +
-            "closingDate >= #{startTime} and closingDate <= #{endTime} group by staffName order by staffName limit 1000 ) " +
+    @Select(" ( select '' as id,staffName,round(sum(wage),2) as wage ,'' as reason,'' as closingDate,'' as updaterName from tb_rewardingpunishmentdetail where plantID = #{plantID} and processID = #{processID} and " +
+            "closingDate >= #{startTime} and closingDate <= #{endTime} ${staffFilter} group by staffName order by staffName limit 1000 ) " +
             "union all" +
-            " ( select staffName,wage,reason,CONCAT(closingDate,'') as closingDate  from tb_rewardingpunishmentdetail where plantID = #{plantID} and processID = #{processID} " +
-            "and closingDate >= #{startTime} and closingDate <= #{endTime} order by closingDate,staffName limit 3000)")
-    List<Map<Object, Object>> selectByFilter(String plantID, String processID, String startTime, String endTime);
+            " ( select id,staffName,wage,reason,CONCAT(closingDate,'') as closingDate,updaterName  from tb_rewardingpunishmentdetail where plantID = #{plantID} and processID = #{processID} " +
+            "and closingDate >= #{startTime} and closingDate <= #{endTime}  ${staffFilter} order by closingDate,staffName limit 3000)")
+    List<Map<Object, Object>> selectByFilter(String plantID, String processID, String startTime, String endTime,@Param("staffFilter") String staffFilter);
 }
