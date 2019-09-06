@@ -1094,4 +1094,25 @@ public class MaterialServiceImpl implements IMaterialService {
             return  result;
         }
     }
+
+    @Override
+    public TNPYResponse unqualifiedMaterialRepair(String id, String repairNumber) {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            Date date = new Date();//取时间
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String updateSql = " repairNumber = " + repairNumber + ", repairTime = '" + dateFormat.format(date) +"' ";
+           unqualifiedMaterialReturnMapper.updateRepairNum( id,updateSql);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("修改出错！" + ex.getMessage());
+            return  result;
+        }
+    }
+
 }

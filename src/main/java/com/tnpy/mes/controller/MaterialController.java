@@ -125,6 +125,11 @@ public class MaterialController {
         return  materialService.getUnqualifiedMaterialReturn( plantID, processID, lineID, startTime, endTime );
     }
 
+    @RequestMapping(value = "/unqualifiedMaterialRepair")
+    public TNPYResponse unqualifiedMaterialRepair( String id,String repairNumber) {
+        return  materialService.unqualifiedMaterialRepair(id,repairNumber);
+    }
+
     @RequestMapping(value = "/getShelfProductionRecord")
     public TNPYResponse getShelfProductionRecord( String staffID,String startTime,String endTime ) {
         return  materialService.getShelfProductionRecord( staffID,  startTime, endTime );

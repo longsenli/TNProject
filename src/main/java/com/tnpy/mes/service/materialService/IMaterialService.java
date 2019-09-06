@@ -36,6 +36,7 @@ public interface IMaterialService {
     public TNPYResponse deteteUnqualifiedMaterialReturn(String id);
     public TNPYResponse changeUnqualifiedMaterialReturn( String jsonStr);
     public TNPYResponse getUnqualifiedMaterialReturn(String plantID,String processID,String lineID,String startTime,String endTime );
+    public TNPYResponse unqualifiedMaterialRepair( String id,String repairNumber);
 
     public TNPYResponse getShelfProductionRecord( String staffID,String startTime,String endTime );
 }
