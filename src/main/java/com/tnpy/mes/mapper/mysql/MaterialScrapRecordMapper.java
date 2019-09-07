@@ -24,8 +24,9 @@ public interface MaterialScrapRecordMapper {
 
     int updateByPrimaryKey(MaterialScrapRecord record);
 
-    @Select("SELECT id,name FROM sys_material where id in ( SELECT distinct inMaterialID FROM sys_materialrelation where outMaterialID in \n" +
-            "(SELECT materialID FROM ilpsdb.tb_workorder where  lineID = #{lineID} and  scheduledStartTime = #{productTime} and status != '5'))")
+    @Select("SELECT id,name FROM sys_material where id in ( ( SELECT distinct inMaterialID as materialID FROM sys_materialrelation where outMaterialID in \n" +
+            "(SELECT materialID FROM tb_workorder where  lineID = #{lineID} and  scheduledStartTime = #{productTime} and status != '5') ) union all " +
+            " (SELECT distinct materialID as materialID FROM tb_workorder where  lineID = #{lineID} and  scheduledStartTime = #{productTime} and status != '5') )")
     List<Map<Object, Object>> getUsedMaterialInfo(String lineID, String productTime);
 
 

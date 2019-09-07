@@ -630,4 +630,26 @@ public class DashboardServiceImpl implements IDashboardService {
             return  result;
         }
     }
+    public TNPYResponse getCXCDetailInfo(String plantID ,String processID,String startTime,String endTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String sqlFilter = "  select c.*,d.name from (  select a.materialID,a.sumProductionNum,a.sumGrantNum,b.currentNum from " +
+                    "( select materialID,sum(productionNum) as sumProductionNum ,sum(expendNum)  as sumGrantNum from tb_materialinventoryrecord  where plantID = '"+plantID+"' and processID = '"+processID+"' " +
+                    " and  updateTime > '"+startTime+"' and updateTime < '"+endTime+"' group by materialID ) a left join ( " +
+                    "select materialID,currentNum from tb_materialinventoryrecord  where plantID = '"+plantID+"' and processID = '"+processID+"' and updateTime > '"+endTime.split(" ")[0]
+                    +"' and updateTime < '"+endTime+"'  group by materialID ) b  " + " on a.materialID = b.materialID ) c left join sys_material d on c.materialID = d.id order by name" ;
+
+            List<Map<Object, Object>> mapList = dashboardMapper.getInventoryInfo(sqlFilter);
+            result.setStatus(1);
+            result.setData(JSONObject.toJSON(mapList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
 }

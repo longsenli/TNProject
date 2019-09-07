@@ -47,4 +47,10 @@ public class DashboardController {
     {
         return dashboardService.getProductionAndGrantInfo(plantID, processID, dayTime);
     }
+
+    @RequestMapping(value = "/getCXCDetailInfo")
+    public TNPYResponse getCXCDetailInfo(String plantID ,String processID,String startTime,String endTime)
+    {
+        return dashboardService.getCXCDetailInfo(plantID, processID, startTime,endTime);
+    }
 }

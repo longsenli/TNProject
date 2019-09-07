@@ -14,6 +14,7 @@ public interface IDashboardService {
 
     public TNPYResponse getInventoryInfo(String plantID ,String processID,String dayTime);
     public TNPYResponse getProductionAndGrantInfo(String plantID ,String processID,String dayTime);
+    public TNPYResponse getCXCDetailInfo(String plantID ,String processID,String startTime,String endTime);
 
     public TNPYResponse getDryingKilnInfo( String plantID ,String equipmentID,String queryTypeID,String startTime,String endTime);
 }
