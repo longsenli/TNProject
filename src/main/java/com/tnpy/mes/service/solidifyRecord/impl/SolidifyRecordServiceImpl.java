@@ -151,7 +151,7 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
             String[] orderArray = orderIDList.split("###");
 
             int nowInNumber = solidifyRecordMapper.selectInNumber(roomID, "1");
-            if ((nowInNumber + orderArray.length) > (int) ConfigParamEnum.DryFilnCapacityMap.get(roomID)  ) {
+            if ((nowInNumber + orderArray.length) > (int) ConfigParamEnum.DryFilnCapacityMap.get(roomID)) {
                 result.setMessage(roomName + "固化室已有" + nowInNumber + "架，不能再入" + orderArray.length + "架！");
                 return result;
             }
@@ -164,17 +164,15 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
                 mapResult.put("status", "失败");
                 mapResult.put("returnMessage", "未获取到订单信息!");
                 blAdded = false;
-                for(int m =0;m< i;m++)
-                {
-                    if(orderArray[i].trim().equals(orderArray[m].trim()))
-                    {
+                for (int m = 0; m < i; m++) {
+                    if (orderArray[i].trim().equals(orderArray[m].trim())) {
                         // mapResult.put("returnMessage","该订单已添加!");
                         // grantResult.add(mapResult);
                         blAdded = true;
                         break;
                     }
                 }
-                if(blAdded)
+                if (blAdded)
                     continue;
                 for (int j = 0; j < orderInfoList.size(); j++) {
                     if (!orderArray[i].equals(orderInfoList.get(j).getId())) {
@@ -231,8 +229,7 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
                                 batchrelationcontrol.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
                                 batchrelationcontrol.setRelationtime(new Date());
 
-                                if(!StringUtil.isEmpty(batchID))
-                                {
+                                if (!StringUtil.isEmpty(batchID)) {
                                     batchrelationcontrol.setTbbatch(batch);
                                     batchrelationcontrolMapper.insert(batchrelationcontrol);
                                 }
@@ -262,21 +259,26 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
                         mapResult.put("returnMessage", "该工单已入窑，入窑人：" + solidifyRecordList.get(0).getRecorder1() + "，入窑时间： " + solidifyRecordList.get(0).getStarttime1() + "！" + orderSplitID);
                         break;
                     }
-                    SolidifyRecord solidifyRecord = new SolidifyRecord();
-                    solidifyRecord.setOrderid(orderSplitID);
-                    solidifyRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-                    solidifyRecord.setMaterialid(materialRecord.getMaterialid());
-                    solidifyRecord.setMaterialname(materialRecord.getMaterialnameinfo());
-                    solidifyRecord.setProductionnum(materialRecord.getNumber().intValue());
-                    solidifyRecord.setPlantid(materialRecord.getInputplantid());
-                    solidifyRecord.setSolidifyroomname(roomName);
-                    solidifyRecord.setSolidifyroomid(roomID);
-                    solidifyRecord.setRecorder1(operatorName.split("###")[0]);
-                    solidifyRecord.setStarttime1(new Date());
-                    solidifyRecord.setStatus("1");
-                    solidifyRecordMapper.insertSelective(solidifyRecord);
-                    mapResult.put("status", "成功");
-                    mapResult.put("returnMessage", "");
+                    try {
+                        SolidifyRecord solidifyRecord = new SolidifyRecord();
+                        solidifyRecord.setOrderid(orderSplitID);
+                        solidifyRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                        solidifyRecord.setMaterialid(materialRecord.getMaterialid());
+                        solidifyRecord.setMaterialname(materialRecord.getMaterialnameinfo());
+                        solidifyRecord.setProductionnum(materialRecord.getNumber().intValue());
+                        solidifyRecord.setPlantid(materialRecord.getInputplantid());
+                        solidifyRecord.setSolidifyroomname(roomName);
+                        solidifyRecord.setSolidifyroomid(roomID);
+                        solidifyRecord.setRecorder1(operatorName.split("###")[0]);
+                        solidifyRecord.setStarttime1(new Date());
+                        solidifyRecord.setStatus("1");
+                        solidifyRecordMapper.insertSelective(solidifyRecord);
+                        mapResult.put("status", "成功");
+                        mapResult.put("returnMessage", "");
+                    } catch (Exception ex) {
+                        mapResult.put("status", "失败");
+                        mapResult.put("returnMessage", ex.getMessage());
+                    }
                 }
                 putinResult.add(mapResult);
             }

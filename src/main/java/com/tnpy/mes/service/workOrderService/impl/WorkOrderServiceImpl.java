@@ -266,8 +266,8 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             return result;
         }
     }
-    public TNPYResponse deleteWorkOrder( String orderID )
-    {
+
+    public TNPYResponse deleteWorkOrder(String orderID) {
         TNPYResponse result = new TNPYResponse();
         try {
             String productionOrder = materialRecordMapper.getProductionByOrderID(orderID);
@@ -483,7 +483,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return result;
         } catch (Exception ex) {
-           // System.out.println("====完成工单失败！====" + jsonStr + "====" + name);
+            // System.out.println("====完成工单失败！====" + jsonStr + "====" + name);
             result.setMessage("查询出错！" + ex.getMessage());
             return result;
         }
@@ -925,17 +925,15 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 mapResult.put("status", "失败");
                 mapResult.put("returnMessage", "未获取到订单信息!");
                 blAdded = false;
-                for(int m =0;m< i;m++)
-                {
-                    if(orderArray[i].trim().equals(orderArray[m].trim()))
-                    {
+                for (int m = 0; m < i; m++) {
+                    if (orderArray[i].trim().equals(orderArray[m].trim())) {
                         // mapResult.put("returnMessage","该订单已添加!");
                         // grantResult.add(mapResult);
                         blAdded = true;
                         break;
                     }
                 }
-                if(blAdded)
+                if (blAdded)
                     continue;
                 for (int j = 0; j < orderInfoList.size(); j++) {
                     if (!orderArray[i].equals(orderInfoList.get(j).getId())) {
@@ -966,25 +964,29 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                         mapResult.put("returnMessage", "未获取到入库信息！请重试或者重新入库！" + orderSplitID);
                         break;
                     }
-
-                    DryingKilnJZRecord dryingKilnJZRecord = new DryingKilnJZRecord();
-                    dryingKilnJZRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-                    dryingKilnJZRecord.setDryingkilnid(equipmentInfo.getId());
-                    dryingKilnJZRecord.setDryingkilnname(equipmentInfo.getName());
-                    // dryingKilnJZRecord.setInputerid(name);
-                    dryingKilnJZRecord.setInputername(name);
-                    dryingKilnJZRecord.setInputtime(new Date());
-                    dryingKilnJZRecord.setLineid(materialRecord.getInputlineid());
-                    dryingKilnJZRecord.setMaterialid(materialRecord.getMaterialid());
-                    dryingKilnJZRecord.setMaterialname(materialRecord.getMaterialnameinfo());
-                    dryingKilnJZRecord.setMaterialquantity(materialRecord.getNumber().intValue());
-                    dryingKilnJZRecord.setPlantid(materialRecord.getInputplantid());
-                    dryingKilnJZRecord.setStatus(StatusEnum.InOutStatus.Input.getIndex() + "");
-                    dryingKilnJZRecord.setSuborderid(materialRecord.getSuborderid());
-                    dryingKilnJZRecord.setWorklocationid(materialRecord.getInputworklocationid());
-                    dryingKilnJZRecordMapper.insert(dryingKilnJZRecord);
-                    mapResult.put("status", "成功");
-                    mapResult.put("returnMessage", "");
+                    try {
+                        DryingKilnJZRecord dryingKilnJZRecord = new DryingKilnJZRecord();
+                        dryingKilnJZRecord.setId(materialRecord.getSuborderid());
+                        dryingKilnJZRecord.setDryingkilnid(equipmentInfo.getId());
+                        dryingKilnJZRecord.setDryingkilnname(equipmentInfo.getName());
+                        // dryingKilnJZRecord.setInputerid(name);
+                        dryingKilnJZRecord.setInputername(name);
+                        dryingKilnJZRecord.setInputtime(new Date());
+                        dryingKilnJZRecord.setLineid(materialRecord.getInputlineid());
+                        dryingKilnJZRecord.setMaterialid(materialRecord.getMaterialid());
+                        dryingKilnJZRecord.setMaterialname(materialRecord.getMaterialnameinfo());
+                        dryingKilnJZRecord.setMaterialquantity(materialRecord.getNumber().intValue());
+                        dryingKilnJZRecord.setPlantid(materialRecord.getInputplantid());
+                        dryingKilnJZRecord.setStatus(StatusEnum.InOutStatus.Input.getIndex() + "");
+                        dryingKilnJZRecord.setSuborderid(materialRecord.getSuborderid());
+                        dryingKilnJZRecord.setWorklocationid(materialRecord.getInputworklocationid());
+                        dryingKilnJZRecordMapper.insert(dryingKilnJZRecord);
+                        mapResult.put("status", "成功");
+                        mapResult.put("returnMessage", "");
+                    } catch (Exception ex) {
+                        mapResult.put("status", "失败");
+                        mapResult.put("returnMessage", ex.getMessage());
+                    }
                 }
                 grantResult.add(mapResult);
             }
