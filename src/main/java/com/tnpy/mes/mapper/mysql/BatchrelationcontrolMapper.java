@@ -20,6 +20,6 @@ public interface BatchrelationcontrolMapper {
 
     int updateByPrimaryKey(Batchrelationcontrol record);
 
-    @Select("select tbBatch from tb_batchrelationcontrol where relationOrderID = #{orderID} limit 1")
+    @Select("select tbBatch from tb_batchrelationcontrol where relationOrderID = #{orderID}  and tbBatch is not null limit 1")
     String selectTBBatchByOrderID(String orderID);
 }

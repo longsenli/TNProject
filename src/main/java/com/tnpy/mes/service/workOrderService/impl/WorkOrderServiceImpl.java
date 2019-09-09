@@ -483,7 +483,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return result;
         } catch (Exception ex) {
-            System.out.println("====完成工单失败！====" + jsonStr + "====" + name);
+           // System.out.println("====完成工单失败！====" + jsonStr + "====" + name);
             result.setMessage("查询出错！" + ex.getMessage());
             return result;
         }
@@ -918,11 +918,25 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             String[] orderArray = orderIDList.split("###");
             String orderSplitID = "";
             OrderSplit orderSplit;
+            boolean blAdded = false;
             for (int i = 0; i < orderArray.length; i++) {
                 Map<String, String> mapResult = new HashMap<String, String>();
                 mapResult.put("orderID", orderArray[i]);
                 mapResult.put("status", "失败");
                 mapResult.put("returnMessage", "未获取到订单信息!");
+                blAdded = false;
+                for(int m =0;m< i;m++)
+                {
+                    if(orderArray[i].trim().equals(orderArray[m].trim()))
+                    {
+                        // mapResult.put("returnMessage","该订单已添加!");
+                        // grantResult.add(mapResult);
+                        blAdded = true;
+                        break;
+                    }
+                }
+                if(blAdded)
+                    continue;
                 for (int j = 0; j < orderInfoList.size(); j++) {
                     if (!orderArray[i].equals(orderInfoList.get(j).getId())) {
                         continue;

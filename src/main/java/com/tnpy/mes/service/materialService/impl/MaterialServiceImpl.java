@@ -91,7 +91,13 @@ public class MaterialServiceImpl implements IMaterialService {
         try
         {
             String materialTBBatch = batchrelationcontrolMapper.selectTBBatchByOrderID(materialOrderID);
+            if(StringUtils.isEmpty(materialTBBatch))
+            {
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                return  result;
+            }
             String expendTBBatch = batchrelationcontrolMapper.selectTBBatchByOrderID(expendOrderID);
+
             if(StringUtils.isEmpty(expendTBBatch))
             {
                 Batchrelationcontrol batchrelationcontrol = new Batchrelationcontrol();
@@ -596,21 +602,26 @@ public class MaterialServiceImpl implements IMaterialService {
             String[] orderArray = orderIDList.split("###");
             String orderSplitID = "";
             OrderSplit orderSplit ;
+            boolean blAdded = false;
             for(int i =0;i<orderArray.length;i++)
             {
                 Map<String, String> mapResult = new HashMap<String, String>();
                 mapResult.put("orderID",orderArray[i]);
                 mapResult.put("status","失败");
                 mapResult.put("returnMessage","未获取到订单信息!");
+                blAdded = false;
                 for(int m =0;m< i;m++)
                 {
-                    if(orderArray[i].equals(orderArray[m]))
+                    if(orderArray[i].trim().equals(orderArray[m].trim()))
                     {
-                        mapResult.put("returnMessage","该订单已添加!");
-                        grantResult.add(mapResult);
-                        continue;
+                       // mapResult.put("returnMessage","该订单已添加!");
+                       // grantResult.add(mapResult);
+                        blAdded = true;
+                        break;
                     }
                 }
+                if(blAdded)
+                    continue;
                 for(int j =0;j<orderInfoList.size();j++)
                 {
                     if(!orderArray[i].equals(orderInfoList.get(j).getId()))

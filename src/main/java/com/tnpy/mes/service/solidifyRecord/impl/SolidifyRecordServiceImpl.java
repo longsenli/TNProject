@@ -2,6 +2,7 @@ package com.tnpy.mes.service.solidifyRecord.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.github.pagehelper.util.StringUtil;
 import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
@@ -156,11 +157,25 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
             }
             String orderSplitID = "";
             OrderSplit orderSplit;
+            boolean blAdded = false;
             for (int i = 0; i < orderArray.length; i++) {
                 Map<String, String> mapResult = new HashMap<String, String>();
                 mapResult.put("orderID", orderArray[i]);
                 mapResult.put("status", "失败");
                 mapResult.put("returnMessage", "未获取到订单信息!");
+                blAdded = false;
+                for(int m =0;m< i;m++)
+                {
+                    if(orderArray[i].trim().equals(orderArray[m].trim()))
+                    {
+                        // mapResult.put("returnMessage","该订单已添加!");
+                        // grantResult.add(mapResult);
+                        blAdded = true;
+                        break;
+                    }
+                }
+                if(blAdded)
+                    continue;
                 for (int j = 0; j < orderInfoList.size(); j++) {
                     if (!orderArray[i].equals(orderInfoList.get(j).getId())) {
                         continue;
@@ -206,16 +221,21 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
 
                         try {
                             String batchID = batchrelationcontrolMapper.selectTBBatchByOrderID(orderSplit.getOrderid());
-                            if (org.springframework.util.StringUtils.isEmpty(batchID) || "null".equals(batchID.trim()) || batchID.length() < 6) {
+
+                            if (StringUtil.isEmpty(batchID) || batchID.length() < 6) {
+                                String batch = orderSplit.getId().substring(0, orderSplit.getId().length() - 14)
+                                        + orderSplit.getId().substring(orderSplit.getId().length() - 11, orderSplit.getId().length() - 3);
                                 Batchrelationcontrol batchrelationcontrol = new Batchrelationcontrol();
                                 batchrelationcontrol.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                                 batchrelationcontrol.setRelationorderid(orderSplit.getOrderid());
                                 batchrelationcontrol.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
                                 batchrelationcontrol.setRelationtime(new Date());
-                                String batch = orderSplit.getId().substring(0, orderSplit.getId().length() - 14)
-                                        + orderSplit.getId().substring(orderSplit.getId().length() - 11, orderSplit.getId().length() - 3);
-                                batchrelationcontrol.setTbbatch(batch);
-                                batchrelationcontrolMapper.insert(batchrelationcontrol);
+
+                                if(!StringUtil.isEmpty(batchID))
+                                {
+                                    batchrelationcontrol.setTbbatch(batch);
+                                    batchrelationcontrolMapper.insert(batchrelationcontrol);
+                                }
                             }
                         } catch (Exception ex) {
                             result.setMessage(result.getMessage() + " " + ex.getMessage());
