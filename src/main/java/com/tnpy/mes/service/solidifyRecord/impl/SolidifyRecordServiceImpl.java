@@ -264,7 +264,7 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return result;
         } catch (Exception ex) {
-            result.setMessage("发放失败！" + ex.getMessage());
+            result.setMessage("入固化室失败！" + ex.getMessage());
             return result;
         }
     }

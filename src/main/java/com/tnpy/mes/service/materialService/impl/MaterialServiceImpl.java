@@ -602,6 +602,15 @@ public class MaterialServiceImpl implements IMaterialService {
                 mapResult.put("orderID",orderArray[i]);
                 mapResult.put("status","失败");
                 mapResult.put("returnMessage","未获取到订单信息!");
+                for(int m =0;m< i;m++)
+                {
+                    if(orderArray[i].equals(orderArray[m]))
+                    {
+                        mapResult.put("returnMessage","该订单已添加!");
+                        grantResult.add(mapResult);
+                        continue;
+                    }
+                }
                 for(int j =0;j<orderInfoList.size();j++)
                 {
                     if(!orderArray[i].equals(orderInfoList.get(j).getId()))
@@ -631,14 +640,17 @@ public class MaterialServiceImpl implements IMaterialService {
 
                     if(!(StatusEnum.InOutStatus.Input.getIndex()+"").equals(materialRecord.getInorout().toString()))
                     {
-                        if((StatusEnum.InOutStatus.Output.getIndex()+"").equals(materialRecord.getInorout().toString()))
+//                        if((StatusEnum.InOutStatus.Output.getIndex()+"").equals(materialRecord.getInorout().toString()))
+//                        {
+//                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                            mapResult.put("returnMessage","该订单已经被使用！" +materialRecord.getOutputer() + "  " + dateFormat.format(materialRecord.getOutputtime()) );
+//                            break;
+//                        }
+                        if((StatusEnum.InOutStatus.PreInput.getIndex()+"").equals(materialRecord.getInorout().toString()))
                         {
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            mapResult.put("returnMessage","该订单已经被使用！" +materialRecord.getOutputer() + "  " + dateFormat.format(materialRecord.getOutputtime()) );
+                            mapResult.put("returnMessage","该订单未完成固化不能发料！" +orderSplitID );
                             break;
                         }
-                        mapResult.put("returnMessage","该订单未完成固化不能发料！" +orderSplitID );
-                        break;
                     }
                     Date date = new Date();//取时间
 
@@ -663,7 +675,7 @@ public class MaterialServiceImpl implements IMaterialService {
                     newGrantMaterialRecord.setStatus("1");
                     grantMaterialRecordMapper.insert(newGrantMaterialRecord);
                     mapResult.put("status","成功" );
-                    mapResult.put("returnMessage","" + orderSplit.getProductionnum().intValue());
+                    mapResult.put("returnMessage","" + orderSplit.getProductionnum().intValue() + " " +materialRecord.getMaterialnameinfo());
                 }
                 grantResult.add(mapResult);
             }
