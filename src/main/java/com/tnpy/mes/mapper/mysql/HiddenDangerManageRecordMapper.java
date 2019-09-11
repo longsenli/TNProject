@@ -38,4 +38,11 @@ public interface HiddenDangerManageRecordMapper {
     @Select("select a.status,a.number,b.name from (  select plantID,status,count(1) as number from tb_hiddendangermanagerecord ${filter}) a \n" +
             " left join sys_industrialplant b on a.plantID = b.id order by b.id")
     List<Map<Object, Object>> selectRecordSummaryByFilter(@Param("filter") String filter);
+
+    @Select("select id,name from tb_equipmentinfo ${filter} ")
+    List<Map<Object, Object>> selectLocationInfoByQR(@Param("filter") String filter);
+
+    @Select("select id,areaID,hiddendanger,hiddendangerpicture,reporter,reporttime,remark from tb_hiddendangermanagerecord ${filter}")
+    List<Map<Object, Object>> getRegularInspectRecord(@Param("filter") String filter);
+
 }

@@ -985,7 +985,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                         mapResult.put("returnMessage", "");
                     } catch (Exception ex) {
                         mapResult.put("status", "失败");
-                        mapResult.put("returnMessage", ex.getMessage());
+                        mapResult.put("returnMessage", "该工单已入窑!");
                     }
                 }
                 grantResult.add(mapResult);

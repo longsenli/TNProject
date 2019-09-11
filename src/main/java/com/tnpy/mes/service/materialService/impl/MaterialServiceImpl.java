@@ -597,7 +597,7 @@ public class MaterialServiceImpl implements IMaterialService {
                         mapResult.put("returnMessage", "" + orderSplit.getProductionnum().intValue() + " " + materialRecord.getMaterialnameinfo());
                     } catch (Exception ex) {
                         mapResult.put("status", "失败");
-                        mapResult.put("returnMessage", "" + ex.getMessage());
+                        mapResult.put("returnMessage", "该订单已发料" );
                     }
                 }
                 grantResult.add(mapResult);

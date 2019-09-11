@@ -14,10 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @Description: TODO
@@ -68,12 +66,36 @@ public class SafetyAndPEService implements ISafetyAndPEService {
         }
     }
 
+    public TNPYResponse getMyReprotDanger(String name,String type)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();//取时间
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(date);
+            calendar.add(Calendar.DATE, -7);
+            date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+
+            String filter = " where status != '-1' and  reportTime >='" + dateFormat.format(date)  + "' and  reporter='" + name + "' and hiddenDangerType ='" + type+"'";
+            filter += " order by reportTime desc ";
+            // System.out.println(plantID + " 参数 " +processID);
+            List<HiddenDangerManageRecord> hiddenDangerManageRecordList = hiddenDangerManageRecordMapper.selectByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+            result.setData(JSONObject.toJSON(hiddenDangerManageRecordList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
 
     public TNPYResponse getHiddenDangerManageRecord(String plantID,String selectLevel,String startTime,String endTime) {
         {
             TNPYResponse result = new TNPYResponse();
             try {
-                String filter = " where status != '-1' and  reportTime >='" + startTime + "' and reportTime <'" + endTime + "' ";
+                String filter = " where status != '-1' and  reportTime >='" + startTime + "' and reportTime <'" + endTime + "' "+ "' and hiddenDangerType ='隐患上报'";
 
                 if (!"-1".equals(plantID)) {
                     filter += " and plantID = '" + plantID + "' ";
@@ -95,6 +117,56 @@ public class SafetyAndPEService implements ISafetyAndPEService {
             }
         }
     }
+    public TNPYResponse getRegularInspectRecord(String staffName,String equipID,String startTime,String endTime)
+    {
+        {
+            TNPYResponse result = new TNPYResponse();
+            try {
+                String filter = " where status != '-1' and  reportTime >='" + startTime + "' and reportTime <'" + endTime + "' "+ "' and hiddenDangerType ='定点巡查'";
+
+                if (!"-1".equals(staffName)) {
+                    filter += " and reporter = '" + staffName + "' ";
+                }
+                if (!"-1".equals(equipID)) {
+                    filter += " and equipmentID = '" + equipID + "' ";
+                }
+                filter += " order by reportTime  ";
+                // System.out.println(plantID + " 参数 " +processID);
+                List<Map<Object, Object>> hiddenDangerManageRecordList = hiddenDangerManageRecordMapper.getRegularInspectRecord(filter);
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setData(JSONObject.toJSON(hiddenDangerManageRecordList).toString());
+                return result;
+            } catch (Exception ex) {
+                result.setMessage("查询出错！" + ex.getMessage());
+                return result;
+            }
+        }
+    }
+    public TNPYResponse getLocationInfoByQR(String qrCode)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+
+            String filter = "";
+            if("-1".equals(qrCode))
+            {
+                filter = " where typeID = '10050' order by ordernum ";
+            }
+            else
+            {
+                filter = " where id = '" +qrCode+"'  ";
+            }
+            List<Map<Object,Object>> locationInfo = hiddenDangerManageRecordMapper.selectLocationInfoByQR(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+            result.setData(JSONObject.toJSON(locationInfo).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
     public TNPYResponse deteteHiddenDangerManageRecord(String id)
     {
         TNPYResponse result = new TNPYResponse();
@@ -131,8 +203,10 @@ public class SafetyAndPEService implements ISafetyAndPEService {
                     warningMessageRecord.setLevel("1");
                     warningMessageRecord.setStatus("1");
                     warningMessageRecord.setUpdatetime(new Date());
-                    warningMessageRecordMapper.insertSelective(warningMessageRecord);
-
+                    if("隐患上报".equals(hiddenDangerManageRecord.getHiddendangertype()))
+                    {
+                        warningMessageRecordMapper.insertSelective(warningMessageRecord);
+                    }
                 hiddenDangerManageRecordMapper.insertSelective(hiddenDangerManageRecord);
             }
             else
@@ -156,7 +230,7 @@ public class SafetyAndPEService implements ISafetyAndPEService {
     {
         TNPYResponse result = new TNPYResponse();
         try {
-            String filter = " where status != '-1' and  reportTime >='" + startTime + "' and reportTime <'" + endTime + "' ";
+            String filter = " where status != '-1' and  reportTime >='" + startTime + "' and reportTime <'" + endTime + "' and hiddenDangerType ='隐患上报' ";
 
             if (!"-1".equals(plantID)) {
                 filter += " and plantID = '" + plantID + "' ";

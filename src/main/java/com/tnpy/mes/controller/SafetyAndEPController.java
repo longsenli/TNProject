@@ -59,7 +59,23 @@ public class SafetyAndEPController {
     public TNPYResponse changeHiddenDangerManageRecord(@RequestBody String jsonStr) {
         return  safetyAndPEService.changeHiddenDangerManageRecord(jsonStr);
     }
+    @RequestMapping(value = "/getMyReprotDanger")
+    public TNPYResponse getMyReprotDanger(String name,String type)
+    {
+        return  safetyAndPEService.getMyReprotDanger(name,type);
+    }
 
+    @RequestMapping(value = "/getLocationInfoByQR")
+    public TNPYResponse getLocationInfoByQR(String qrCode)
+    {
+        return  safetyAndPEService.getLocationInfoByQR(qrCode);
+    }
+
+    @RequestMapping(value = "/getRegularInspectRecord")
+    public TNPYResponse getRegularInspectRecord(String staffName,String equipID,String startTime,String endTime)
+    {
+        return  safetyAndPEService.getRegularInspectRecord(staffName,equipID,startTime,endTime);
+    }
 
     @PostMapping("/pictureupload")
     public TNPYResponse pictureUpload(MultipartFile pictureName){

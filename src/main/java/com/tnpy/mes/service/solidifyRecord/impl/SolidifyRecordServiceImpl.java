@@ -277,7 +277,7 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
                         mapResult.put("returnMessage", "");
                     } catch (Exception ex) {
                         mapResult.put("status", "失败");
-                        mapResult.put("returnMessage", ex.getMessage());
+                        mapResult.put("returnMessage", "该工单已入窑");
                     }
                 }
                 putinResult.add(mapResult);
