@@ -95,7 +95,7 @@ public class SafetyAndPEService implements ISafetyAndPEService {
         {
             TNPYResponse result = new TNPYResponse();
             try {
-                String filter = " where status != '-1' and  reportTime >='" + startTime + "' and reportTime <'" + endTime + "' "+ "' and hiddenDangerType ='隐患上报'";
+                String filter = " where status != '-1' and  reportTime >='" + startTime + "' and reportTime <'" + endTime +  "' and hiddenDangerType ='隐患上报'";
 
                 if (!"-1".equals(plantID)) {
                     filter += " and plantID = '" + plantID + "' ";
