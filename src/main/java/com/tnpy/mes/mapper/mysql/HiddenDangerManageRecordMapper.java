@@ -42,7 +42,12 @@ public interface HiddenDangerManageRecordMapper {
     @Select("select id,name from tb_equipmentinfo ${filter} ")
     List<Map<Object, Object>> selectLocationInfoByQR(@Param("filter") String filter);
 
-    @Select("select id,areaID,hiddendanger,hiddendangerpicture,reporter,reporttime,remark from tb_hiddendangermanagerecord ${filter}")
+    @Select("select id,areaID,hiddendanger,hiddenDangerPicture,reporter,reportTime,remark from tb_hiddendangermanagerecord  ${filter} ")
     List<Map<Object, Object>> getRegularInspectRecord(@Param("filter") String filter);
+
+    @Select(" select  a.name,ifnull(b.num,0) as num from (select id,name from tb_equipmentinfo where typeID = '10050' ) a left join ( " +
+            " select equipmentID,count(1) as num from tb_hiddendangermanagerecord where hiddenDangerType = '定点巡查' and reportTime > #{startTime}  and reportTime < #{endTime} group by equipmentID ) b " +
+            " on a.id = b.equipmentID order by  name")
+    List<Map<Object, Object>> getRegularLocationTimes(  String startTime,String endTime);
 
 }

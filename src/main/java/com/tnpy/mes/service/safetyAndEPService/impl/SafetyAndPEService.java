@@ -119,10 +119,10 @@ public class SafetyAndPEService implements ISafetyAndPEService {
     }
     public TNPYResponse getRegularInspectRecord(String staffName,String equipID,String startTime,String endTime)
     {
-        {
+
             TNPYResponse result = new TNPYResponse();
             try {
-                String filter = " where status != '-1' and  reportTime >='" + startTime + "' and reportTime <'" + endTime + "' "+ "' and hiddenDangerType ='定点巡查'";
+                String filter = " where status != '-1' and  reportTime >='" + startTime + "' and reportTime <'" + endTime +  "' and hiddenDangerType = '定点巡查' ";
 
                 if (!"-1".equals(staffName)) {
                     filter += " and reporter = '" + staffName + "' ";
@@ -140,6 +140,19 @@ public class SafetyAndPEService implements ISafetyAndPEService {
                 result.setMessage("查询出错！" + ex.getMessage());
                 return result;
             }
+
+    }
+    public TNPYResponse getRegularLocationTimes(String startTime,String endTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            List<Map<Object, Object>> hiddenDangerManageRecordList = hiddenDangerManageRecordMapper.getRegularLocationTimes(startTime,endTime);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(hiddenDangerManageRecordList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
         }
     }
     public TNPYResponse getLocationInfoByQR(String qrCode)

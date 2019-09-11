@@ -77,6 +77,13 @@ public class SafetyAndEPController {
         return  safetyAndPEService.getRegularInspectRecord(staffName,equipID,startTime,endTime);
     }
 
+    @RequestMapping(value = "/getRegularLocationTimes")
+    public TNPYResponse getRegularLocationTimes(String startTime,String endTime)
+    {
+        return  safetyAndPEService.getRegularLocationTimes(startTime,endTime);
+    }
+
+
     @PostMapping("/pictureupload")
     public TNPYResponse pictureUpload(MultipartFile pictureName){
 

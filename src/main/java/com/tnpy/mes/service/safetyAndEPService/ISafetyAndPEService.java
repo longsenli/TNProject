@@ -19,4 +19,5 @@ public interface ISafetyAndPEService {
     public TNPYResponse getMyReprotDanger(String name,String type);
     public TNPYResponse getLocationInfoByQR(String qrCode);
     public TNPYResponse getRegularInspectRecord(String staffName,String equipID,String startTime,String endTime);
+    public TNPYResponse getRegularLocationTimes(String startTime,String endTime);
 }
