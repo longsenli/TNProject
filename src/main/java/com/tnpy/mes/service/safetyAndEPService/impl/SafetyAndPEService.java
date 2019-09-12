@@ -119,7 +119,6 @@ public class SafetyAndPEService implements ISafetyAndPEService {
     }
     public TNPYResponse getRegularInspectRecord(String staffName,String equipID,String startTime,String endTime)
     {
-
             TNPYResponse result = new TNPYResponse();
             try {
                 String filter = " where status != '-1' and  reportTime >='" + startTime + "' and reportTime <'" + endTime +  "' and hiddenDangerType = '定点巡查' ";
