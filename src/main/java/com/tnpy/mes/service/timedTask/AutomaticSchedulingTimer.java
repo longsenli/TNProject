@@ -434,7 +434,7 @@ public class AutomaticSchedulingTimer {
                 {
                     String[] phoneList = {};
                     phoneList = userPhone.toArray(phoneList);
-                    SMSTN.sendMessage(phoneList,messageDetail);
+                   // SMSTN.sendMessage(phoneList,messageDetail);
                    // System.out.println("testOK ====" +phoneList);
                 }
                // System.out.println("testOK ====");

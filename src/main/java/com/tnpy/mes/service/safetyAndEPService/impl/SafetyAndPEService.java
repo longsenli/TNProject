@@ -105,7 +105,7 @@ public class SafetyAndPEService implements ISafetyAndPEService {
                     filter += " and dangerLevel = '" + selectLevel + "' ";
                 }
 
-                filter += " order by reportTime  ";
+                filter += " order by reportTime desc  ";
                 // System.out.println(plantID + " 参数 " +processID);
                 List<HiddenDangerManageRecord> hiddenDangerManageRecordList = hiddenDangerManageRecordMapper.selectByFilter(filter);
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -205,6 +205,8 @@ public class SafetyAndPEService implements ISafetyAndPEService {
             {
                 hiddenDangerManageRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 hiddenDangerManageRecord.setStatus("1");
+                hiddenDangerManageRecord.setReporttime(new Date());
+
                 if(StringUtil.isEmpty(hiddenDangerManageRecord.getHiddendangertype()))
                 {
                     hiddenDangerManageRecord.setHiddendangertype("隐患上报");

@@ -185,9 +185,11 @@ public interface MaterialRecordMapper {
      * @param dryingkilnid
      * @return
      */
-    @Update("UPDATE tb_materialrecord t1 SET t1.inOrOut = #{inOrOut} WHERE t1.id IN ( SELECT a.id FROM ( SELECT id FROM tb_materialrecord t WHERE t.suborderID IN "
-    		+ "( SELECT d.suborderID FROM tb_dryingkilnjzrecord d WHERE d.dryingKilnID = #{dryingkilnid} ) ) AS a )")
-    int updateByDryingkilnid(@Param("dryingkilnid")  String dryingkilnid, @Param("inOrOut") int inOrOut);
+//    @Update("UPDATE tb_materialrecord t1 SET t1.inOrOut = #{inOrOut} WHERE t1.id IN ( SELECT a.id FROM ( SELECT id FROM tb_materialrecord t WHERE t.suborderID IN "
+//            + "( SELECT d.suborderID FROM tb_dryingkilnjzrecord d WHERE d.dryingKilnID = #{dryingkilnid} ) ) AS a )")
+//    int updateByDryingkilnid(@Param("dryingkilnid")  String dryingkilnid, @Param("inOrOut") int inOrOut);
+    @Update("update tb_materialrecord set  inOrOut = #{inOrOut}  where  inOrOut = '0' and  subOrderID in ( select id from tb_dryingkilnjzrecord where dryingKilnID =  #{dryingkilnid} and status = '1' )" )
+    int updateByDryingkilnid(  String dryingkilnid,  int inOrOut);
 
     @Select("select subOrderID,inputer,inputTime,materialNameInfo from tb_materialrecord where subOrderID in ( ${orderList} ) order by inputTime")
     List<Map<Object, Object>>  selectByOrderIDList(@Param("orderList") String orderList);
