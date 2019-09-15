@@ -2,6 +2,7 @@ package com.tnpy.mes.service.timedTask;
 
 import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
+import com.tnpy.common.utils.SMSManage.SMSTN;
 import com.tnpy.mes.mapper.mysql.*;
 import com.tnpy.mes.model.mysql.IndustrialPlant;
 import com.tnpy.mes.model.mysql.ProductionProcess;
@@ -394,7 +395,7 @@ public class AutomaticSchedulingTimer {
                 }
                 List<Map<Object, Object>> userInfoList = warningMessageRecordMapper.selectUserInfoByWarning(notificationtypeIDStr);
                 HashSet<String> userSet = new HashSet<>();
-
+                HashSet<String> userPhone = new HashSet<>();
                 if (notificationtypeIDStr.equals("100001")) {
                     plantID += "3002###";
                 }
@@ -404,6 +405,10 @@ public class AutomaticSchedulingTimer {
                     }
 
                     userSet.add(userInfoList.get(i).get("userID").toString());
+                    if (!StringUtils.isEmpty(userInfoList.get(i).get("telephone").toString()) && userInfoList.get(i).get("telephone").toString().length() > 10)
+                    {
+                        userPhone.add(userInfoList.get(i).get("telephone").toString());
+                    }
                     if (StringUtils.isEmpty(userInfoList.get(i).get("email").toString()))
                         continue;
                 /*  //发送邮件
@@ -425,6 +430,14 @@ public class AutomaticSchedulingTimer {
                 //  System.out.println("===========sendMessage");
                 if (userSet.size() > 0)
                     websocketManageService.sendInfoToUserList(messageDetail, userSet);
+                if(userPhone.size() > 0 )
+                {
+                    String[] phoneList = {};
+                    phoneList = userPhone.toArray(phoneList);
+                    SMSTN.sendMessage(phoneList,messageDetail);
+                   // System.out.println("testOK ====" +phoneList);
+                }
+               // System.out.println("testOK ====");
             }
 
         } catch (Exception ex) {
@@ -570,6 +583,29 @@ public class AutomaticSchedulingTimer {
        {
             return true;
        }
+    }
+  //  @Scheduled(cron = "0 24 9 * * ?")
+    public void testFunction() {
+        String[] numPhone = new String[] {"15539392921"};
+        SMSTN.sendMessage(numPhone,"消息提醒！有隐患排查");
+//        try {
+//            final Client client =  Client.getInstance();
+//            // 正式环境IP，登录验证URL，用户名，密码，集团客户名称
+//            //client.login("http://mas.ecloud.10086.cn/app/sdk/login", "SDK账号名称（不是页面端账号）", "密码","集团客户名称");
+//            client.login("http://mas.ecloud.10086.cn/app/sdk/login", "masadmin", "masadmin","天能集团（河南）能源科技有限公司");
+//            // 测试环境IP
+//            //client.login("http://112.33.1.13/app/sdk/login", "sdk2", "123","光谷信息");
+//            int sendResult = client. sendDSMS (new String[] {"15539392921"},
+//                    "sdk短信发送内容测试", "",  1,"LgMVurUH", UUID.randomUUID().toString(),true);
+//
+//            System.out.println("推送结果: " + sendResult);
+//            client.logout();
+//
+//        }
+//       catch (Exception ex)
+//       {
+//           System.out.println(ex.getMessage() + "============");
+//       }
     }
 
 }

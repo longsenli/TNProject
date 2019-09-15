@@ -1,6 +1,7 @@
 package com.tnpy.mes.service.safetyAndEPService.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.util.StringUtil;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.HiddenDangerManageRecordMapper;
@@ -204,7 +205,10 @@ public class SafetyAndPEService implements ISafetyAndPEService {
             {
                 hiddenDangerManageRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 hiddenDangerManageRecord.setStatus("1");
-
+                if(StringUtil.isEmpty(hiddenDangerManageRecord.getHiddendangertype()))
+                {
+                    hiddenDangerManageRecord.setHiddendangertype("隐患上报");
+                }
                     WarningMessageRecord warningMessageRecord = new WarningMessageRecord();
                     warningMessageRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                     warningMessageRecord.setNotificationtypeid("100001");

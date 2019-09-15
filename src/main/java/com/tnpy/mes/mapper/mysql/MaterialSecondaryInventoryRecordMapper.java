@@ -2,7 +2,11 @@ package com.tnpy.mes.mapper.mysql;
 
 import com.tnpy.mes.model.mysql.MaterialSecondaryInventoryRecord;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Component;
 
+@Mapper
+@Component
 public interface MaterialSecondaryInventoryRecordMapper {
     int deleteByPrimaryKey(String id);
 
