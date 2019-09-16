@@ -33,7 +33,7 @@ public interface WorkorderMapper {
     String getProcessIDByOrder(String orderID);
     List<CustomWorkOrderRecord> selectCustomResultByFilter(@Param("filter") String filter);
 
-    @Update("UPDATE tb_workOrder set status = #{status} where scheduledStartTime = #{time} and status < '5'")
+    @Update("UPDATE tb_workOrder set status = #{status} where scheduledStartTime = #{time} and status < '5' and processID !='1008'")
     int finishOrder(String time,String status);
 
     @Update("UPDATE tb_workOrder set status = #{status} where scheduledStartTime = #{time}  and status < '5'")

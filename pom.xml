@@ -107,48 +107,87 @@
 		</dependency>
 
         <!--短信发送需要引入-->
+        <dependency>
+            <groupId>smsMainFunction1</groupId>  <!--自定义-->
+            <artifactId>smsMainFunction1</artifactId>    <!--自定义-->
+            <version>1.0</version> <!--自定义-->
+            <scope>system</scope> <!--system，类似provided，需要显式提供依赖的jar以后，Maven就不会在Repository中查找它-->
+            <systemPath>${basedir}/lib/sms.jar</systemPath> <!--项目根目录下的lib文件夹下-->
+        </dependency>
+        <!--ActiveMQ-->
         <!--<dependency>-->
-            <!--<groupId>smsMainFunction1</groupId>  &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<artifactId>smsMainFunction1</artifactId>    &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<version>1.0</version> &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<scope>system</scope> &lt;!&ndash;system，类似provided，需要显式提供依赖的jar以后，Maven就不会在Repository中查找它&ndash;&gt;-->
-            <!--<systemPath>${basedir}/lib/sms.jar</systemPath> &lt;!&ndash;项目根目录下的lib文件夹下&ndash;&gt;-->
+            <!--<groupId>org.apache.activemq</groupId>-->
+            <!--<artifactId>activemq-broker</artifactId>-->
+            <!--<version>5.14.5</version>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>smsMainFunction2</groupId>  &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<artifactId>smsMainFunction2</artifactId>    &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<version>1.0</version> &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<scope>system</scope> &lt;!&ndash;system，类似provided，需要显式提供依赖的jar以后，Maven就不会在Repository中查找它&ndash;&gt;-->
-            <!--<systemPath>${basedir}/lib/activemq-all-5.9.1.jar</systemPath> &lt;!&ndash;项目根目录下的lib文件夹下&ndash;&gt;-->
+            <!--<groupId>org.apache.activemq</groupId>-->
+            <!--<artifactId>activemq-pool</artifactId>-->
+            <!--<version>5.14.5</version>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>smsMainFunction3</groupId>  &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<artifactId>smsMainFunction3</artifactId>    &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<version>1.0</version> &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<scope>system</scope> &lt;!&ndash;system，类似provided，需要显式提供依赖的jar以后，Maven就不会在Repository中查找它&ndash;&gt;-->
-            <!--<systemPath>${basedir}/lib/commons-logging-1.1.1.jar</systemPath> &lt;!&ndash;项目根目录下的lib文件夹下&ndash;&gt;-->
+            <!--<groupId>org.apache.activemq</groupId>-->
+            <!--<artifactId>activemq-spring</artifactId>-->
+            <!--<version>5.14.5</version>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>smsMainFunction4</groupId>  &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<artifactId>smsMainFunction4</artifactId>    &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<version>1.0</version> &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<scope>system</scope> &lt;!&ndash;system，类似provided，需要显式提供依赖的jar以后，Maven就不会在Repository中查找它&ndash;&gt;-->
-            <!--<systemPath>${basedir}/lib/commons-pool-1.6.jar</systemPath> &lt;!&ndash;项目根目录下的lib文件夹下&ndash;&gt;-->
+            <!--<groupId>org.apache.activemq</groupId>-->
+            <!--<artifactId>artemis-jms-client</artifactId>-->
+            <!--<version>2.3.0</version>-->
         <!--</dependency>-->
+
         <!--<dependency>-->
-            <!--<groupId>smsMainFunction5</groupId>  &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<artifactId>smsMainFunction5</artifactId>    &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<version>1.0</version> &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<scope>system</scope> &lt;!&ndash;system，类似provided，需要显式提供依赖的jar以后，Maven就不会在Repository中查找它&ndash;&gt;-->
-            <!--<systemPath>${basedir}/lib/httpclient-4.3.3.jar</systemPath> &lt;!&ndash;项目根目录下的lib文件夹下&ndash;&gt;-->
+            <!--<groupId>org.apache.activemq</groupId>-->
+            <!--<artifactId>artemis-all</artifactId>-->
         <!--</dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
         <!--<dependency>-->
-            <!--<groupId>smsMainFunction6</groupId>  &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<artifactId>smsMainFunction6</artifactId>    &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<version>1.0</version> &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<scope>system</scope> &lt;!&ndash;system，类似provided，需要显式提供依赖的jar以后，Maven就不会在Repository中查找它&ndash;&gt;-->
-            <!--<systemPath>${basedir}/lib/httpcore-4.3.2.jar</systemPath> &lt;!&ndash;项目根目录下的lib文件夹下&ndash;&gt;-->
+            <!--<groupId>org.apache.httpcomponents</groupId>-->
+            <!--<artifactId>httpcore</artifactId>-->
+            <!--<version>4.4.10</version>-->
         <!--</dependency>-->
+
+        <!--&lt;!&ndash; https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.httpcomponents</groupId>-->
+            <!--<artifactId>httpclient</artifactId>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>smsMainFunction2</groupId>  <!--自定义-->
+            <artifactId>smsMainFunction2</artifactId>    <!--自定义-->
+            <version>1.0</version> <!--自定义-->
+            <scope>system</scope> <!--system，类似provided，需要显式提供依赖的jar以后，Maven就不会在Repository中查找它-->
+            <systemPath>${basedir}/lib/activemq-all-5.9.1.jar</systemPath> <!--项目根目录下的lib文件夹下-->
+        </dependency>
+        <dependency>
+            <groupId>smsMainFunction3</groupId>  <!--自定义-->
+            <artifactId>smsMainFunction3</artifactId>    <!--自定义-->
+            <version>1.0</version> <!--自定义-->
+            <scope>system</scope> <!--system，类似provided，需要显式提供依赖的jar以后，Maven就不会在Repository中查找它-->
+            <systemPath>${basedir}/lib/commons-logging-1.1.1.jar</systemPath> <!--项目根目录下的lib文件夹下-->
+        </dependency>
+        <dependency>
+            <groupId>smsMainFunction4</groupId>  <!--自定义-->
+            <artifactId>smsMainFunction4</artifactId>    <!--自定义-->
+            <version>1.0</version> <!--自定义-->
+            <scope>system</scope> <!--system，类似provided，需要显式提供依赖的jar以后，Maven就不会在Repository中查找它-->
+            <systemPath>${basedir}/lib/commons-pool-1.6.jar</systemPath> <!--项目根目录下的lib文件夹下-->
+        </dependency>
+        <dependency>
+            <groupId>smsMainFunction5</groupId>  <!--自定义-->
+            <artifactId>smsMainFunction5</artifactId>    <!--自定义-->
+            <version>1.0</version> <!--自定义-->
+            <scope>system</scope> <!--system，类似provided，需要显式提供依赖的jar以后，Maven就不会在Repository中查找它-->
+            <systemPath>${basedir}/lib/httpclient-4.3.3.jar</systemPath> <!--项目根目录下的lib文件夹下-->
+        </dependency>
+        <dependency>
+            <groupId>smsMainFunction6</groupId>  <!--自定义-->
+            <artifactId>smsMainFunction6</artifactId>    <!--自定义-->
+            <version>1.0</version> <!--自定义-->
+            <scope>system</scope> <!--system，类似provided，需要显式提供依赖的jar以后，Maven就不会在Repository中查找它-->
+            <systemPath>${basedir}/lib/httpcore-4.3.2.jar</systemPath> <!--项目根目录下的lib文件夹下-->
+        </dependency>
 
     </dependencies>
 
@@ -168,22 +207,22 @@
                 </configuration>
             </plugin>
 
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-war-plugin</artifactId>-->
-                <!--<configuration>-->
-                    <!--<warName>${project.artifactId}</warName>-->
-                    <!--<webResources>-->
-                        <!--<resource>-->
-                            <!--<directory>lib/</directory>-->
-                            <!--<targetPath>WEB-INF/lib</targetPath>-->
-                            <!--<includes>-->
-                                <!--<include>**/*.jar</include>-->
-                            <!--</includes>-->
-                        <!--</resource>-->
-                    <!--</webResources>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <warName>${project.artifactId}</warName>
+                    <webResources>
+                        <resource>
+                            <directory>lib/</directory>
+                            <targetPath>WEB-INF/lib</targetPath>
+                            <includes>
+                                <include>**/*.jar</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
 
         </plugins>
     </build>
