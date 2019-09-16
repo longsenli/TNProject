@@ -584,7 +584,7 @@ public class AutomaticSchedulingTimer {
             return true;
        }
     }
-    @Scheduled(cron = "0 54 13 * * ?")
+   // @Scheduled(cron = "0 54 13 * * ?")
     public void testFunction() {
         String[] numPhone = new String[] {"15539392921"};
         SMSTN.sendMessage(numPhone,"消息提醒！有隐患排查");
