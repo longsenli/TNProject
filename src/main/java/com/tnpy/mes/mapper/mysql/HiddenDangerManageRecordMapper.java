@@ -42,7 +42,7 @@ public interface HiddenDangerManageRecordMapper {
     @Select("select id,name from tb_equipmentinfo ${filter} ")
     List<Map<Object, Object>> selectLocationInfoByQR(@Param("filter") String filter);
 
-    @Select("select id,areaID,hiddendanger,hiddenDangerPicture,reporter,reportTime,remark from tb_hiddendangermanagerecord  ${filter} ")
+    @Select("select id,areaID,hiddendanger,hiddenDangerPicture,reporter, DATE_FORMAT(reportTime, '%Y-%m-%d %H:%i:%s') as  reportTime,remark from tb_hiddendangermanagerecord  ${filter} ")
     List<Map<Object, Object>> getRegularInspectRecord(@Param("filter") String filter);
 
     @Select(" select  a.name,ifnull(b.num,0) as num from (select id,name from tb_equipmentinfo where typeID = '10050' ) a left join ( " +
