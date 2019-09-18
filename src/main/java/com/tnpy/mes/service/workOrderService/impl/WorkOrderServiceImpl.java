@@ -326,7 +326,19 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             return result;
         }
     }
+    public TNPYResponse changePrintStatus( String workOrderID )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
 
+            workOrderMapper.updateWorkOrderPrintStatus(workOrderID, StatusEnum.WorkOrderStatus.printed.getIndex()+ "",StatusEnum.WorkOrderStatus.finished.getIndex() + "");
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("变更失败！" + ex.getMessage());
+            return result;
+        }
+    }
     public TNPYResponse changeWorkOrderStatus(String ID, String status) {
         TNPYResponse result = new TNPYResponse();
         try {

@@ -55,6 +55,11 @@ public class OrderController {
         return  workOrderService.changeWorkOrderStatus(ID,status);
     }
 
+    @RequestMapping(value = "/changePrintStatus")
+    public TNPYResponse changePrintStatus( String workOrderID ) {
+        return  workOrderService.changePrintStatus(workOrderID);
+    }
+
     @RequestMapping(value = "/getordersplit")
     public TNPYResponse getOrderSplit(String orderID ) {
         return  workOrderService.getOrderSplit(orderID);

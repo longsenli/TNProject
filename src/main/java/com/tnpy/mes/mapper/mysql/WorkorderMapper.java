@@ -58,6 +58,9 @@ public interface WorkorderMapper {
     @Update("update tb_workorder set status= #{status} where id = #{id}")
     int updateWorkOrderStatus(String id,String status);
 
+    @Update("update tb_workorder set status= #{status} where id = #{id} and status < #{finishStatus}")
+    int updateWorkOrderPrintStatus(String id,String status,String finishStatus);
+
     @Select("select count(1) from tb_workorder where lineID = #{lineID}  and scheduledStartTime =  #{startDate}")
     int selectOrderNumber(String lineID,String startDate);
 
