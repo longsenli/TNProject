@@ -1,8 +1,5 @@
 package com.tnpy.common.Enum;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @Description: TODO
  * @Author: LLS
@@ -113,7 +110,8 @@ public class StatusEnum {
     }
     public static  enum WorkOrderStatus {
 
-        ordered("已下单", 1), printed("已打印", 2), doing("'已开工'", 3), finished("'已完成'", 4), closed("已关闭",5), deleted("已删除", 6), repairin("维修入库",7);
+        ordered("已下单", 1), printed("已打印", 2), doing("'已开工'", 3), finished("'已完成'", 4),
+        closed("已关闭",5), deleted("已删除", 6), repairin("维修入库",7), addmissing("补充工单",9);
         // 成员变量
         private String name;
         private int index;

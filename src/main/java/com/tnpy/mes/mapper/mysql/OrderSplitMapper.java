@@ -84,4 +84,8 @@ public interface OrderSplitMapper {
             "a left join sys_material b on a.materialID = b.id ")
     List<OrderSplit> selectByFilterWithMaterialName(@Param("filter") String filter);
 
+    @Insert("insert into tb_materialrecord (id,materialID,orderID,subOrderID,inOrOut,status,inputer,inputTime,inputPlantID,inputProcessID,inputLineID,inputerID,materialNameInfo) " +
+            "select c.*,d.name from ( select uuid(),b.materialID,b.id,a.orderSplitID,'1','9','系统补丁',now(),b.plantID,b.processID,b.lineID,'系统补打' from (  " +
+            "select orderSplitID,orderID,productionNum from tb_ordersplit where orderID= #{workOrderID}) a left join tb_workorder b on a.orderID = b.id ) c left join sys_material d on c.materialID = d.id")
+    int autoFinishOrderByOrderID(String workOrderID);
 }

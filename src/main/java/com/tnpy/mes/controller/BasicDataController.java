@@ -5,6 +5,7 @@ import com.tnpy.mes.service.basicDataService.IBasicDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -93,10 +94,11 @@ public class BasicDataController {
     }
 
     @RequestMapping(value = "/getmaterialbyprocess")
-    public TNPYResponse getMaterialByProcess(String processID) {
+    public TNPYResponse getMaterialByProcess(String processID,@RequestParam(defaultValue = "-1")String plantID) {
 
-        return  basicDataService.getOutMaterialByProcess(processID);
+        return  basicDataService.getOutMaterialByProcess(processID,plantID);
     }
+
     @RequestMapping(value = "/getinputmaterialbyprocess")
     public TNPYResponse getInputMaterialByProcess(String processID) {
 

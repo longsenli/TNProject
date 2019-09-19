@@ -52,6 +52,6 @@ public interface MaterialMapper {
     List<Map<Object, Object>> selectProportionalityByOut(String outMaterialID);
 
     @Select("select c.id,c.name,ifnull(d.number,c.eachbatchnumber) as eachbatchnumber,ifnull(d.number,c.eachbatchnumber) as description  from ( select b.name,b.id,b.eachbatchnumber from sys_processmaterial a \n" +
-            "left join sys_material b on a.materialTypeID = b.typeID where a.processID = #{processID} and a.inOrout = '2' and b.id is not null ) c  left join  sys_materialBasicInfo d on c.id = d.materialID  order by c.name ")
-    List<Map<Object, Object>> selectOutMaterialByProcessID(String processID);
+            "left join sys_material b on a.materialTypeID = b.typeID where a.processID = #{processID} and a.inOrout = '2' and b.id is not null ) c  left join (select * from  sys_materialBasicInfo where plantID = #{plantID})d on c.id = d.materialID  order by c.name ")
+    List<Map<Object, Object>> selectOutMaterialByProcessIDPlantID(String processID,String plantID);
 }

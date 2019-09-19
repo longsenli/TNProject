@@ -13,7 +13,7 @@ public interface IBasicDataService {
     public TNPYResponse getProductionLine(String plantID,String processID);
     public TNPYResponse getMaterial();
     public TNPYResponse getEquipmentType();
-    public TNPYResponse getOutMaterialByProcess(String processID);
+    public TNPYResponse getOutMaterialByProcess(String processID,String plantID);
     public TNPYResponse getInputMaterialByProcess(String processID);
     public TNPYResponse getIndustrialPlantByFilter(String type);
 

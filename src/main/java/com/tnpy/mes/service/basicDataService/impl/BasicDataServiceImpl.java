@@ -162,13 +162,13 @@ public class BasicDataServiceImpl implements IBasicDataService {
 
     }
 
-    public TNPYResponse getOutMaterialByProcess(String processID)
+    public TNPYResponse getOutMaterialByProcess(String processID,String plantID)
     {
         TNPYResponse result = new TNPYResponse();
         try
         {
           //  List<Material> materialList = materialMapper.selectOutByProcess(processID);
-            List<Map<Object, Object>> materialList = materialMapper.selectOutMaterialByProcessID(processID);
+            List<Map<Object, Object>> materialList = materialMapper.selectOutMaterialByProcessIDPlantID(processID,plantID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSONString(materialList, SerializerFeature.WriteMapNullValue).toString());
             return  result;

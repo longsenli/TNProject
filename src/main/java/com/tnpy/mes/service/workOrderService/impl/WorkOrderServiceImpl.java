@@ -206,12 +206,77 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         return tmp + numStr;
     }
 
+    public TNPYResponse addMissingWorkOrder( Workorder workorder) {
+        TNPYResponse result = new TNPYResponse();
+        try {
+        //    Workorder workorder = (Workorder) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), Workorder.class);
+
+            if (StringUtils.isEmpty(workorder.getId())) {
+                //workorder.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+
+                workorder.setCreatetime(new Date());
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                // System.out.println(dateFormat.format(workorder.getScheduledstarttime()));
+                //  int orderNum = workOrderMapper.selectOrderNumber(workorder.getLineid(),dateFormat.format(workorder.getScheduledstarttime()));
+
+                List<String> idList = workOrderMapper.selectOrderIDList(workorder.getLineid(), dateFormat.format(workorder.getScheduledstarttime()));
+                // int orderNum = 0;
+                String numStr = "";
+                for (int i = 0; ; i++) {
+                    numStr = workorder.getOrderid().substring(0, workorder.getOrderid().length() - 10) + "BD" + String.valueOf(i + 1)
+                            + workorder.getOrderid().substring(workorder.getOrderid().length() - 10, workorder.getOrderid().length());
+                    if (idList.contains(numStr)) {
+                        continue;
+                    } else
+                        break;
+                }
+                if (numStr.length() < 3) {
+                    result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                    result.setMessage("自定义工单失败！");
+                    return result;
+                }
+
+                workorder.setOrderid(numStr);
+                workorder.setId(numStr);
+                workOrderMapper.insertSelective(workorder);
+
+                List<OrderSplit> orderSplitList = new ArrayList<>();
+                for (int i = 0; i < workorder.getBatchnum(); i++) {
+                    OrderSplit orderSplit = new OrderSplit();
+                    orderSplit.setOrderid(workorder.getId());
+                    orderSplit.setStatus(StatusEnum.WorkOrderStatus.finished.getIndex() + "");
+                    orderSplit.setMaterialid(workorder.getMaterialid());
+                    orderSplit.setOrdersplitid(workorder.getOrderid() + getOrderNumber(i + 1, 3));
+                    orderSplit.setId(orderSplit.getOrdersplitid());
+                    orderSplit.setProductionnum(workorder.getTotalproduction() / workorder.getBatchnum() * 1.0);
+                    orderSplitList.add(orderSplit);
+                }
+                orderSplitMapper.insertManyOrder(orderSplitList, workorder.getId());
+
+                orderSplitMapper.autoFinishOrderByOrderID(workorder.getId());
+
+
+            } else {
+                workOrderMapper.updateByPrimaryKey(workorder);
+            }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setMessage("修改成功！");
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("修改出错！" + ex.getMessage());
+            return result;
+        }
+    }
     public TNPYResponse changeWorkOrder(String jsonStr) {
         TNPYResponse result = new TNPYResponse();
         try {
             Workorder workorder = (Workorder) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), Workorder.class);
 
             if (StringUtils.isEmpty(workorder.getId())) {
+                if((StatusEnum.WorkOrderStatus.addmissing.getIndex() + "").equals(workorder.getStatus()) )
+                {
+                    return  addMissingWorkOrder(workorder);
+                }
                 //workorder.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 workorder.setStatus(StatusEnum.WorkOrderStatus.ordered.getIndex() + "");
                 workorder.setCreatetime(new Date());
@@ -235,8 +300,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                     result.setMessage("自定义工单失败！");
                     return result;
                 }
-                //  String numStr = workorder.getOrderid().substring(0,workorder.getOrderid().length() - 10) + String.valueOf(orderNum+1)
-                //          + workorder.getOrderid().substring(workorder.getOrderid().length() - 10,workorder.getOrderid().length() );
+
                 workorder.setOrderid(numStr);
                 workorder.setId(numStr);
                 workOrderMapper.insertSelective(workorder);
@@ -244,7 +308,6 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 List<OrderSplit> orderSplitList = new ArrayList<>();
                 for (int i = 0; i < workorder.getBatchnum(); i++) {
                     OrderSplit orderSplit = new OrderSplit();
-                    //orderSplit.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                     orderSplit.setOrderid(workorder.getId());
                     orderSplit.setStatus(StatusEnum.WorkOrderStatus.ordered.getIndex() + "");
                     orderSplit.setMaterialid(workorder.getMaterialid());
