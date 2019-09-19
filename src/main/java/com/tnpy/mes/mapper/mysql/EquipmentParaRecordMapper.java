@@ -59,4 +59,15 @@ public interface EquipmentParaRecordMapper {
 
     @Select("select typeID from tb_equipmentinfo where id = #{equipID} limit 1")
     String selectEquipType(String equipID);
+
+    @Select(" \n" +
+            "select m.totalElectric,n.totalProduction,ROUND(n.totalProduction/m.totalElectric,0) as prodPerElc,m.timeStr from (\n" +
+            "  select sum(a.value) as totalElectric,a.timeStr from (\n" +
+            "select equipmentID,ROUND(value,1) as value,date_format(date_add(recordTime, interval -1 day), '%Y-%m-%d') as timeStr \n" +
+            "from tb_equipmentparamrecord_10012 where recordTime > #{startTime}  and recordTime < #{endTime}) a \n" +
+            "left join tb_equipmentinfo b on a.equipmentID = b.id where b.processID = #{processID} and b.plantID = #{plantID} group by timeStr ) m left join (\n" +
+            "SELECT sum(productionNum) totalProduction,processID,date_format(date_add(updateTime, interval -1 day), '%Y-%m-%d') as timeStr \n" +
+            "FROM tb_materialinventoryrecord where updateTime > #{startTime}   and updateTime < #{endTime} and processID = #{processID} and plantID = #{plantID} group by timeStr ) n on m.timeStr = n.timeStr order by timeStr ")
+    List<Map<Object,Object>> getElectricProductionRelation(String plantID, String processID,String startTime,String endTime);
+
 }

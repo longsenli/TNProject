@@ -104,4 +104,10 @@ public class EquipmentParamController {
 
         return  equipmentParamService.getOneEquipParamRecord(startTime, endTime, equipID,paramID);
     }
+
+    @RequestMapping(value = "/getElectricProductionRelation")
+    public TNPYResponse getElectricProductionRelation(String plantID,String processID, String startTime,String endTime)
+    {
+        return  equipmentParamService.getElectricProductionRelation(plantID,processID,startTime, endTime);
+    }
 }

@@ -232,4 +232,19 @@ public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordSer
             return result;
         }
     }
+
+
+    public TNPYResponse getElectricProductionRelation(String plantID,String processID, String startTime,String endTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            List<Map<Object,Object>>  equipmentParaRecordList = equipmentParaRecordMapper.getElectricProductionRelation(plantID,processID,startTime,endTime);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(equipmentParaRecordList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
 }
