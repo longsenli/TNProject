@@ -2,6 +2,7 @@ package com.tnpy.mes.service.equipmentParamRecordService.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.util.StringUtil;
 import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
@@ -167,7 +168,13 @@ public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordSer
     {
         TNPYResponse result = new TNPYResponse();
         try {
-            List<EquipParamLatestRecord> parameterInfoList = equipmentParaRecordMapper.selectOneEquipParamRecord(startTime,endTime,equipID,paramID);
+            String equipType = equipmentParaRecordMapper.selectEquipType(equipID);
+            String DBName = ConfigParamEnum.basicEquipParamDB;
+            if(!StringUtil.isEmpty(equipType))
+            {
+                DBName += "_" + equipType;
+            }
+            List<EquipParamLatestRecord> parameterInfoList = equipmentParaRecordMapper.selectOneEquipParamRecord(DBName,startTime,endTime,equipID,paramID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(parameterInfoList).toString());
             return result;

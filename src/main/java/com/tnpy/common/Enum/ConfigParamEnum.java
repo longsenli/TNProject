@@ -10,6 +10,7 @@ import java.util.Map;
  */
 public class ConfigParamEnum {
     public  static String serviceIP = "192.168.80.228;10.0.0.151";
+    public  static String basicEquipParamDB = "tb_equipmentparamrecord";
     public  static Map  DryFilnCapacityMap = new HashMap<String,Integer>() {{
         put("7d57a44907154c5289ee46344de0ce41",94);
         put("fa3a57559107432599d0252b2bf67fcf",94);

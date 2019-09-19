@@ -39,9 +39,9 @@ public interface EquipmentParaRecordMapper {
   */
     List<EquipParamLatestRecord> selectLatestRecord(String plantID, String equipType, String paramID, @Param("tableName") String tableName);
 
-    @Select("select * from tb_equipmentparamrecord where equipmentID = #{equipID} and paramID = #{paramID} and recordTime >= #{startTime} " +
+    @Select("select * from ${DBName} where equipmentID = #{equipID} and paramID = #{paramID} and recordTime >= #{startTime} " +
             "and recordTime <= #{endTime}  order by recordTime asc limit 1000")
-    List<EquipParamLatestRecord> selectOneEquipParamRecord( String startTime,String endTime,String equipID,String paramID);
+    List<EquipParamLatestRecord> selectOneEquipParamRecord(@Param("DBName") String dbName, String startTime,String endTime,String equipID,String paramID);
 
     @Select("select * from tb_equipmentparamrecord where equipmentID = #{equipID} and recordTime >= #{startTime} " +
             "and recordTime <= #{endTime}  order by recordTime desc limit 1000")
@@ -56,4 +56,7 @@ public interface EquipmentParaRecordMapper {
             " from ${tableName} where  paramID in ( select paramID from tb_equipmentparam where equipmentTypeID = #{equipType})  and equipmentTypeID =#{equipType} and  recordTime >= #{recentTime} ) as t1  where RowNum = 1) a\n" +
             ") c on p.id = c.equipmentID and p.paramID = c.paramID) d left join tb_parameterinfo e on d.paramID = e.ID  order by ordernum asc,paramID asc")
     List<Map<Object,Object>> selectRecentAllParamPecord(String plantID, String equipType,String recentTime, @Param("tableName") String tableName, @Param("processIDFilter") String processIDFilter);
+
+    @Select("select typeID from tb_equipmentinfo where id = #{equipID} limit 1")
+    String selectEquipType(String equipID);
 }
