@@ -197,11 +197,13 @@ public interface MaterialRecordMapper {
     @Select("select ${columnList} from tb_materialrecord ${filter}")
     List<Map<Object, Object>>  selectByFilter(@Param("columnList") String columnList,@Param("filter") String filter);
 
-    @Select(" ( select inputer,'' as subOrderID ,sum(number) as number ,'-' as inputTime,materialNameInfo from tb_materialrecord " +
-            "where inputerID = #{staffID} and inputTime >= #{startTime} and inputTime <  #{endTime} group by materialNameInfo  limit 100)" +
-            " union all " +
-            " ( select inputer,subOrderID,number,inputTime,materialNameInfo from tb_materialrecord " +
-            "where inputerID = #{staffID} and inputTime >= #{startTime} and inputTime <  #{endTime} order by subOrderID   limit 1000)")
+    @Select(" select a.inputer,a.subOrderID,a.number,a.inputTime,a.materialNameInfo,round(a.number * b.wage,2) as wage from (\n" +
+            "( select inputer,'总计' as subOrderID ,sum(number) as number ,'-' as inputTime,materialNameInfo,materialID from tb_materialrecord  \n" +
+            " where inputerID =  #{staffID} and inputTime >= #{startTime} and inputTime < #{endTime} group by materialNameInfo  limit 100) \n" +
+            "  union all  " +
+            "  ( select inputer,subOrderID,number,inputTime,materialNameInfo,materialID from tb_materialrecord  \n" +
+            "  where inputerID = #{staffID} and inputTime >= #{startTime} and inputTime <  #{endTime} order by subOrderID   limit 1000)\n" +
+            "  ) a left join sys_material b on a.materialID = b.id")
     List<Map<Object, Object>>  selectSelfProductionRecord( String staffID,  String startTime,String endTime);
 
     @Select("select subOrderID from tb_materialrecord where inputTime > '2019-07-23'  and orderID like '%BB20190723'")

@@ -46,7 +46,17 @@ public class WageManageServiceImpl implements IWageManageService {
             String staffFilter = "";
             if(!"-1".equals(staffName))
             {
-                staffFilter = " and staffName = '" + staffName + "' ";
+                staffFilter = " and staffID = '" + staffName + "' ";
+            }
+
+            if(!"-1".equals(plantID))
+            {
+                staffFilter = " and plantID = '" + plantID + "' ";
+            }
+
+            if(!"-1".equals(processID))
+            {
+                staffFilter = " and processID = '" + processID + "' ";
             }
 
             List<Map<Object, Object>> mapList = wageDetailMapper.selectByFilterWithName(plantID,processID,startTime,endTime,staffFilter);
@@ -69,7 +79,17 @@ public class WageManageServiceImpl implements IWageManageService {
             String staffFilter = "";
             if(!"-1".equals(staffName))
             {
-                staffFilter = " and staffName = '" + staffName + "' ";
+                staffFilter = " and staffID = '" + staffName + "' ";
+            }
+
+            if(!"-1".equals(plantID))
+            {
+                staffFilter = " and plantID = '" + plantID + "' ";
+            }
+
+            if(!"-1".equals(processID))
+            {
+                staffFilter = " and processID = '" + processID + "' ";
             }
             List<Map<Object, Object>> mapList = rewardingPunishmentDetailMapper.selectByFilter(plantID,processID,startTime,endTime,staffFilter);
             result.setStatus(1);
@@ -142,7 +162,7 @@ public class WageManageServiceImpl implements IWageManageService {
             String filter = " where closingDate >= '" + startTime + "' and closingDate <= '" + endTime + "' ";
             if(!"-1".equals(staffName))
             {
-                filter += " and staffName = '" + staffName + "' ";
+                filter += " and staffID = '" + staffName + "' ";
             }
             if(!"-1".equals(plantID))
             {

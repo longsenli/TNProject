@@ -24,10 +24,10 @@ public interface RewardingPunishmentDetailMapper {
 
     int updateByPrimaryKey(RewardingPunishmentDetail record);
 
-    @Select(" ( select '' as id,staffName,round(sum(wage),2) as wage ,'' as reason,'' as closingDate,'' as updaterName from tb_rewardingpunishmentdetail where plantID = #{plantID} and processID = #{processID} and " +
+    @Select(" ( select '' as id,staffName,round(sum(wage),2) as wage ,'' as reason,'' as closingDate,'' as updaterName from tb_rewardingpunishmentdetail where  " +
             "closingDate >= #{startTime} and closingDate <= #{endTime} ${staffFilter} group by staffName order by staffName limit 1000 ) " +
             "union all" +
-            " ( select id,staffName,wage,reason,CONCAT(closingDate,'') as closingDate,updaterName  from tb_rewardingpunishmentdetail where plantID = #{plantID} and processID = #{processID} " +
-            "and closingDate >= #{startTime} and closingDate <= #{endTime}  ${staffFilter} order by closingDate,staffName limit 3000)")
+            " ( select id,staffName,wage,reason,CONCAT(closingDate,'') as closingDate,updaterName  from tb_rewardingpunishmentdetail where   " +
+            "  closingDate >= #{startTime} and closingDate <= #{endTime}  ${staffFilter} order by closingDate,staffName limit 3000)")
     List<Map<Object, Object>> selectByFilter(String plantID, String processID, String startTime, String endTime,@Param("staffFilter") String staffFilter);
 }
