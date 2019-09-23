@@ -55,6 +55,18 @@ public interface WorkorderMapper {
             ") e left join sys_productionline f on e.lineID = f.id  order by lineName")
     List<Map<Object,Object>> getRealtimeProductionDashboard(String plantID, String processID, String startTime, String endTime );
 
+    @Select(" select  ifnull(e.gainNum,0)  as realProduction ,e.name as materialName ,f.name as lineName  from ( select c.lineID,c.gainNum,d.name from ( \n" +
+            " select b.lineID,b.materialID,a.gainNum from ( \n" +
+            " SELECT expendOrderID,outputLineID,sum(number) as gainNum FROM ilpsdb.tb_materialrecord \n" +
+            " where outputTime > #{startTime} and outputTime < #{endTime}  and outputPlantID = #{plantID}  and outputProcessID = #{processID} group by expendOrderID ) a\n" +
+            " left join tb_workorder b on a.expendOrderID = b.id ) c left join sys_material d on c.materialID = d.id ) e \n" +
+            " left join sys_productionline f on e.lineID = f.id order by lineName\n")
+    List<Map<Object,Object>> getRealtimeGainNumberDashboard(String plantID, String processID, String startTime, String endTime );
+
+
+    @Select(" select ifnull(sum(number),0) from tb_materialrecord where inputTime > #{startTime} and inputTime < #{endTime}  and inputPlantID = #{plantID}  and inputProcessID = #{processID} ")
+    int getJSSumProduction(String plantID, String processID, String startTime, String endTime);
+
     @Update("update tb_workorder set status= #{status} where id = #{id}")
     int updateWorkOrderStatus(String id,String status);
 

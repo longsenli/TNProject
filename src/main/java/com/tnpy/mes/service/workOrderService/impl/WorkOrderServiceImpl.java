@@ -664,6 +664,19 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     public TNPYResponse getRealtimeProductionDashboard(String plantID, String processID, String startTime, String endTime) {
         TNPYResponse result = new TNPYResponse();
         try {
+            if(ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(processID))
+            {
+
+                startTime = startTime.split(" ")[0] ;
+                endTime = endTime.split(" ")[0] + " 23:00" ;
+                if(workOrderMapper.getJSSumProduction(plantID, processID, startTime, endTime) < 2)
+                {
+                    List<Map<Object, Object>> realtimeProductionDashboardList = workOrderMapper.getRealtimeGainNumberDashboard(plantID, processID, startTime, endTime);
+                    result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                    result.setData(JSONObject.toJSON(realtimeProductionDashboardList).toString());
+                    return result;
+                }
+            }
             List<Map<Object, Object>> realtimeProductionDashboardList = workOrderMapper.getRealtimeProductionDashboard(plantID, processID, startTime, endTime);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(realtimeProductionDashboardList).toString());
