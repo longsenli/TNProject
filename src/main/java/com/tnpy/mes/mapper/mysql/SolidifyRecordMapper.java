@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 @Component
@@ -50,4 +51,8 @@ public interface SolidifyRecordMapper {
 
     @Select("select count(1) from tb_solidifyrecord where solidifyRoomID = #{roomID} and status =#{status} ")
     int selectInNumber(String roomID,String status);
+
+    @Select("select a.subOrderID as orderID ,CONCAT(a.materialNameInfo,'  ',a.number)  as status ,CONCAT(date_format(a.inputTime, '%Y-%m-%d %H:%i:%s'),' ' ,a.inputer ) as returnMessage  from tb_materialrecord  a left join \n" +
+            "  tb_solidifyrecord  b on a.subOrderID = b.id where inputTime > #{startTime}  and inputTime <#{endTime} and inputProcessID = #{processID} and inputPlantID = #{plantID} and b.orderID is null ")
+    List<Map<Object, Object>>  uninputSolidifyRoom(String plantID ,String processID , String startTime, String endTime );
 }

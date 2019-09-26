@@ -262,7 +262,7 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
                     try {
                         SolidifyRecord solidifyRecord = new SolidifyRecord();
                         solidifyRecord.setOrderid(orderSplitID);
-                        solidifyRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                        solidifyRecord.setId(orderSplitID);
                         solidifyRecord.setMaterialid(materialRecord.getMaterialid());
                         solidifyRecord.setMaterialname(materialRecord.getMaterialnameinfo());
                         solidifyRecord.setProductionnum(materialRecord.getNumber().intValue());
@@ -355,6 +355,21 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
 //
 //            solidifyRecordMapper.changeSolidifyStatus(valueUpdate, solidifyUpdate);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+
+    public TNPYResponse uninputSolidifyRoom(String plantID,String startTime,String endTime) {
+
+        TNPYResponse result = new TNPYResponse();
+        try {
+            List<Map<Object, Object>>  uninputList = solidifyRecordMapper.uninputSolidifyRoom(plantID, ConfigParamEnum.BasicProcessEnum.TBProcessID.getName(),startTime,endTime);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSONString(uninputList, SerializerFeature.WriteMapNullValue).toString());
             return result;
         } catch (Exception ex) {
             result.setMessage("查询出错！" + ex.getMessage());

@@ -985,7 +985,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             EquipmentInfo equipmentInfo = equipmentInfoMapper.selectByPrimaryKey(equipmentID);
             if (equipmentInfo == null) {
-                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                //result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 result.setMessage("不是正确的干燥窑二维码");
                 return result;
             }
@@ -995,7 +995,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             //Integer capacity = ConfigParamEnum.EquipmentCapacity.DRYKILNZY.getNum();
             //如果窑满了
             if (exitsIndry + orderIDList.split("###").length > (int) (ConfigParamEnum.DryFilnCapacityMap.get(equipmentID))) {
-                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+               // result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 result.setMessage(equipmentInfo.getName() + "已有" + exitsIndry + "拖，最多能够入!" + ConfigParamEnum.DryFilnCapacityMap.get(equipmentID) + "拖！");
                 return result;
             }

@@ -65,5 +65,10 @@ public class SolidifyRecordController {
         return  solidifyRecordService.changeAllSolidifyStatusAuto(roomID,operatorName);
     }
 
+    @RequestMapping(value = "/uninputSolidifyRoom")
+    public TNPYResponse uninputSolidifyRoom(String plantID,String startTime,String endTime)
+    {
+        return solidifyRecordService.uninputSolidifyRoom(plantID,startTime,endTime);
+    }
 }
 
