@@ -1,7 +1,5 @@
 package com.tnpy.mes.model.mysql;
 
-import com.alibaba.fastjson.annotation.JSONField;
-
 import java.util.Date;
 
 public class GrantMaterialRecord {
@@ -24,6 +22,8 @@ public class GrantMaterialRecord {
     private String status;
 
     private String ordername;
+
+    private String acceptplantid;
 
     public String getId() {
         return id;
@@ -103,5 +103,13 @@ public class GrantMaterialRecord {
 
     public void setOrdername(String ordername) {
         this.ordername = ordername == null ? null : ordername.trim();
+    }
+
+    public String getAcceptplantid() {
+        return acceptplantid;
+    }
+
+    public void setAcceptplantid(String acceptplantid) {
+        this.acceptplantid = acceptplantid == null ? null : acceptplantid.trim();
     }
 }

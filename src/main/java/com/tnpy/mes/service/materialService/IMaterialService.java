@@ -20,7 +20,7 @@ public interface IMaterialService {
     public TNPYResponse addGrantMaterialRecord( String orderSplitID,String operator ,int orderType ,String processID);
     public TNPYResponse notGrantMaterialDetail( String plantID,String processID,String startTime,String endTime  );
     public TNPYResponse grantAndExpendStatistics(  String startTime,String endTime,String plantID,String processID );
-    public TNPYResponse addGrantMaterialRecordByBatch( String orderIDList,String operator ,String grantType,String processID);
+    public TNPYResponse addGrantMaterialRecordByBatch( String orderIDList,String operator ,String grantType,String processID, String acceptPlantID);
 
     public TNPYResponse getMaterialInventoryStatistics( String plantID,String processID,String startTime,String endTime );
     public TNPYResponse getSecondaryMaterialInventoryStatistics( String plantID,String processID,String startTime,String endTime );

@@ -504,7 +504,7 @@ public class MaterialServiceImpl implements IMaterialService {
     }
 
     //1 当天工单ID 2第二天工单ID
-    public TNPYResponse addGrantMaterialRecordByBatch(String orderIDList, String operator, String grantType, String processID) {
+    public TNPYResponse addGrantMaterialRecordByBatch(String orderIDList, String operator, String grantType, String processID, String acceptPlantID) {
         TNPYResponse result = new TNPYResponse();
         try {
             if ("3".equals(grantType)) {
@@ -591,7 +591,18 @@ public class MaterialServiceImpl implements IMaterialService {
                         newGrantMaterialRecord.setOrdername(orderSplit.getOrdersplitid());
                         newGrantMaterialRecord.setPlantid(materialRecord.getInputplantid());
                         newGrantMaterialRecord.setProcessid(materialRecord.getInputprocessid());
-                        newGrantMaterialRecord.setStatus("1");
+
+                        if("-1".equals(acceptPlantID) ||acceptPlantID.equals(materialRecord.getInputplantid()) )
+                        {
+                            newGrantMaterialRecord.setStatus("1");
+                            newGrantMaterialRecord.setAcceptplantid(materialRecord.getInputplantid());
+                        }
+                        else
+                        {
+                            newGrantMaterialRecord.setStatus("2");
+                            newGrantMaterialRecord.setAcceptplantid(acceptPlantID);
+                        }
+
                         grantMaterialRecordMapper.insert(newGrantMaterialRecord);
                         mapResult.put("status", "成功");
                         mapResult.put("returnMessage", "" + orderSplit.getProductionnum().intValue() + " " + materialRecord.getMaterialnameinfo());

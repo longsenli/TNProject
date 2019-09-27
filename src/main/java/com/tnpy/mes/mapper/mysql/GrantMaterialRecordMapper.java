@@ -8,14 +8,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @Description: TODO
- * @Author: LLS
- * @Date: 2019/2/24 9:52
- */
 @Mapper
 @Component
-public  interface GrantMaterialRecordMapper {
+public interface GrantMaterialRecordMapper {
     int deleteByPrimaryKey(String id);
 
     int insert(GrantMaterialRecord record);
@@ -27,6 +22,7 @@ public  interface GrantMaterialRecordMapper {
     int updateByPrimaryKeySelective(GrantMaterialRecord record);
 
     int updateByPrimaryKey(GrantMaterialRecord record);
+
 
     @Select("select * from tb_grantmaterialrecord where orderID = #{orderID} limit 1")
     GrantMaterialRecord selectByOrderID(String orderID);
