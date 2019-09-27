@@ -297,11 +297,12 @@ public class AutomaticSchedulingTimer {
             String timeStart = "";
             Calendar calendar = new GregorianCalendar();
             calendar.setTime(date);
-            timeFinish = dateFormat.format(date) + " 07:00:00";
+          //  timeFinish = dateFormat.format(date) + " 07:00:00";
+            timeFinish = dateFormat.format(date);
             calendar.add(Calendar.DATE, -1);
             date = calendar.getTime();   //这个时间就是日期往后推一天的结果
             timeStart = dateFormat.format(date) + " 07:00:00";
-
+           // timeStart = dateFormat.format(date);
             List<IndustrialPlant> industrialPlantList = industrialPlantMapper.selectAll();
             List<ProductionProcess> productionProcessList = productionProcessMapper.selectAll();
 
@@ -312,16 +313,16 @@ public class AutomaticSchedulingTimer {
                     try {
 
                         if (ConfigParamEnum.BasicProcessEnum.TBProcessID.getName().equals(productionProcessList.get(j).getId())) {
-                            materialInventoryRecordMapper.insertTBInventoryStatistics(timeStart, timeFinish, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j + 1).getId(), dateFormat.format(date) + " 06:00:00");
+                            materialInventoryRecordMapper.insertTBInventoryStatistics(timeStart, timeFinish, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j + 1).getId(), dateFormat.format(date) );
                         }
 
                         if (ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(productionProcessList.get(j).getId())) {
-                            materialInventoryRecordMapper.insertZHInventoryStatistics(timeStart, timeFinish, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j + 1).getId(), dateFormat.format(date) + " 06:00:00");
+                            materialInventoryRecordMapper.insertZHInventoryStatistics(timeStart, timeFinish, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j + 1).getId(), dateFormat.format(date) );
                         }
 
                         if (ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(productionProcessList.get(j).getId())) {
-                            materialInventoryRecordMapper.insertJZInventoryStatistics(timeStart, timeFinish, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j + 1).getId(), dateFormat.format(date) + " 06:00:00");
-                            wageDetailMapper.insertRecord(industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), timeStart, timeFinish);
+                            materialInventoryRecordMapper.insertJZInventoryStatistics(timeStart, timeFinish, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j + 1).getId(), dateFormat.format(date) );
+                            wageDetailMapper.insertRecord(industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), timeStart, timeFinish + " 07:00");
                         }
                     } catch (Exception ex) {
                         System.out.println("一级库盘点出错===============" + ex.getMessage() + "  " + industrialPlantList.get(i).getName() + " " + productionProcessList.get(j).getName());
