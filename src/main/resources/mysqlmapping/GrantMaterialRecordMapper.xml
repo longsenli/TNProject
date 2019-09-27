@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.GrantMaterialRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.GrantMaterialRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="batteryType" jdbcType="VARCHAR" property="batterytype" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="orderID" jdbcType="VARCHAR" property="orderid" />
+    <result column="grantTime" jdbcType="TIMESTAMP" property="granttime" />
+    <result column="operator" jdbcType="VARCHAR" property="operator" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="orderName" jdbcType="VARCHAR" property="ordername" />
+    <result column="acceptPlantID" jdbcType="VARCHAR" property="acceptplantid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, batteryType, plantID, processID, orderID, grantTime, operator, number, status, 
+    orderName, acceptPlantID
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_grantmaterialrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_grantmaterialrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.GrantMaterialRecord">
+    insert into tb_grantmaterialrecord (id, batteryType, plantID, 
+      processID, orderID, grantTime, 
+      operator, number, status, 
+      orderName, acceptPlantID)
+    values (#{id,jdbcType=VARCHAR}, #{batterytype,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, 
+      #{processid,jdbcType=VARCHAR}, #{orderid,jdbcType=VARCHAR}, #{granttime,jdbcType=TIMESTAMP}, 
+      #{operator,jdbcType=VARCHAR}, #{number,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, 
+      #{ordername,jdbcType=VARCHAR}, #{acceptplantid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.GrantMaterialRecord">
+    insert into tb_grantmaterialrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="batterytype != null">
+        batteryType,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="processid != null">
+        processID,
+      </if>
+      <if test="orderid != null">
+        orderID,
+      </if>
+      <if test="granttime != null">
+        grantTime,
+      </if>
+      <if test="operator != null">
+        operator,
+      </if>
+      <if test="number != null">
+        number,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="ordername != null">
+        orderName,
+      </if>
+      <if test="acceptplantid != null">
+        acceptPlantID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="batterytype != null">
+        #{batterytype,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="orderid != null">
+        #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="granttime != null">
+        #{granttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null">
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null">
+        #{number,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="ordername != null">
+        #{ordername,jdbcType=VARCHAR},
+      </if>
+      <if test="acceptplantid != null">
+        #{acceptplantid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.GrantMaterialRecord">
+    update tb_grantmaterialrecord
+    <set>
+      <if test="batterytype != null">
+        batteryType = #{batterytype,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        processID = #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="orderid != null">
+        orderID = #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="granttime != null">
+        grantTime = #{granttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null">
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null">
+        number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="ordername != null">
+        orderName = #{ordername,jdbcType=VARCHAR},
+      </if>
+      <if test="acceptplantid != null">
+        acceptPlantID = #{acceptplantid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.GrantMaterialRecord">
+    update tb_grantmaterialrecord
+    set batteryType = #{batterytype,jdbcType=VARCHAR},
+      plantID = #{plantid,jdbcType=VARCHAR},
+      processID = #{processid,jdbcType=VARCHAR},
+      orderID = #{orderid,jdbcType=VARCHAR},
+      grantTime = #{granttime,jdbcType=TIMESTAMP},
+      operator = #{operator,jdbcType=VARCHAR},
+      number = #{number,jdbcType=INTEGER},
+      status = #{status,jdbcType=VARCHAR},
+      orderName = #{ordername,jdbcType=VARCHAR},
+      acceptPlantID = #{acceptplantid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
