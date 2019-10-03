@@ -492,8 +492,6 @@ public class ChargePackServiceImpl implements IChargePackService {
 
                 filter += " and pileTime >= '" + startTime + "' ";
                 filter += " and pileTime <= '" + endTime + "' ";
-
-
             if(!"-1".equals(plantID))
             {
                 filter += " and plantID = '" + plantID + "' ";
@@ -684,5 +682,32 @@ public class ChargePackServiceImpl implements IChargePackService {
             result.setMessage("查询出错！" + ex.getMessage());
             return  result;
         }
+    }
+
+    public TNPYResponse changeBatteryInventoryRecord( String jsonStr)
+    {
+        TidyPackageBatteryInventory tidyPackageBatteryInventory =(TidyPackageBatteryInventory) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), TidyPackageBatteryInventory.class);
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            if(StringUtils.isEmpty(tidyPackageBatteryInventory.getId()))
+            {
+                tidyPackageBatteryInventory.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                tidyPackageBatteryInventoryMapper.insertSelective(tidyPackageBatteryInventory);
+            }
+            else
+            {
+                tidyPackageBatteryInventoryMapper.updateByPrimaryKeySelective(tidyPackageBatteryInventory);
+            }
+
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setMessage("修改成功！");
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("保存失败！" + ex.getMessage());
+        }
+        return  result;
     }
 }

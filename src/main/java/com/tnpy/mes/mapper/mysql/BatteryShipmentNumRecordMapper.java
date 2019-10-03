@@ -26,5 +26,4 @@ public interface BatteryShipmentNumRecordMapper {
     @Select("select * from tb_batteryShipmentNumRecord ${filter}")
     List<BatteryShipmentNumRecord> selectByFilter(@Param("filter") String filter);
 
-
 }

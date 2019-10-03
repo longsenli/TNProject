@@ -49,6 +49,11 @@ public class ChargePackController {
     }
 
 
+    @RequestMapping(value = "/changeBatteryInventoryRecord")
+    public TNPYResponse changeBatteryInventoryRecord(@RequestBody String jsonStr) {
+        return  chargePackService.changeBatteryInventoryRecord(jsonStr);
+    }
+
     @RequestMapping(value = "/getpilerecordbypileid")
     public TNPYResponse getPileRecordByPileID( String id) {
         return  chargePackService.getPileRecordByPileID(id);

@@ -27,6 +27,7 @@ public interface IChargePackService {
     public TNPYResponse getBatteryGearRecordInfo(String plantID, String lineID,String workLocation,String altitude,String startTime);
 
     public TNPYResponse getBatteryInventoryRecord(String plantID,String startTime,String endTime);
+    public TNPYResponse changeBatteryInventoryRecord( String jsonStr);
 
     public TNPYResponse getPackageRecordDetail(String plantID,String lineID,String startTime,String endTime);
 
