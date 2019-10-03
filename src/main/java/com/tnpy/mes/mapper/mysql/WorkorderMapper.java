@@ -86,13 +86,13 @@ public interface WorkorderMapper {
             "insert into tb_workorder (id,orderID,plantID,processID,lineID,status,batchNum,totalProduction,materialID,createTime,scheduledStartTime) \n" +
             "select id ,id ,plantID,processID,lineID,'1',batchNum,totalProduction,materialID,now(),${endOrderTime} from (\n" +
             "select replace(orderID,${timeStartString},${timeEndString}) as id ,plantID,processID,lineID,'1',batchNum,totalProduction,materialID \n" +
-            "from tb_workorder where scheduledStartTime = #{startOrderTime}  and status != '5' and plantID = #{plantID} and processID = #{processID}  ) a")
+            "from tb_workorder where scheduledStartTime = #{startOrderTime}  and status < '5' and plantID = #{plantID} and processID = #{processID}  ) a")
     int insertAutoMainOrder(String startOrderTime,@Param("endOrderTime") String endOrderTime,@Param("timeStartString")String timeStartString,@Param("timeEndString")String timeEndString,String plantID,String processID);
 
     @Insert("insert into tb_ordersplit (id,orderID,orderSplitID,productionNum,status,materialID) \n" +
             "select replace(b.id,${timeStartString},${timeEndString}) as id,replace(b.orderID,${timeStartString},${timeEndString}) as orderID,\n" +
             "replace(b.orderSplitID,${timeStartString},${timeEndString}) as orderSplitID,a.totalProduction/a.batchNum,'1',b.materialID\n" +
-            " from  ( select id,totalProduction,batchNum from tb_workorder where scheduledStartTime  = #{startOrderTime}   and status != '5' and plantID = #{plantID} and" +
+            " from  ( select id,totalProduction,batchNum from tb_workorder where scheduledStartTime  = #{startOrderTime}   and status < '5' and plantID = #{plantID} and" +
             " processID = #{processID} ) a left join  tb_ordersplit b on a.id = b.orderID ")
     int insertAutoSubOrder(String startOrderTime,@Param("timeStartString")String timeStartString,@Param("timeEndString")String timeEndString,String plantID,String processID);
 }

@@ -521,6 +521,10 @@ public class AutomaticSchedulingTimer {
 
             for (int i = 0; i < industrialPlantList.size(); i++) {
 
+                if(ConfigParamEnum.BasicPlantEnum.TNPY1B.getName().equals( industrialPlantList.get(i).getId()))
+                {
+                    continue;
+                }
                 for (int j = 0; j < productionProcessList.size(); j++) {
                     try {
                         if(ConfigParamEnum.BasicProcessEnum.TBProcessID.getName().equals( productionProcessList.get(j).getId()))
