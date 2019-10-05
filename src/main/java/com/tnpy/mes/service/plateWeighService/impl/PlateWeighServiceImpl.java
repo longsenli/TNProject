@@ -79,6 +79,8 @@ public class PlateWeighServiceImpl implements IPlateWeighService {
       String sql = "(SELECT distinct materialName as name ,'1' as type FROM " +dbName+" where time > '"+dateFormat.format(date)+"')\n" +
               "union all  " +
               "(SELECT distinct Operator as name ,'2' as type FROM  " +dbName+" where time > '"+dateFormat.format(date)+"')\n" +
+              "union all  " +
+              "(SELECT distinct balanceID as name ,'3' as type FROM  " +dbName+" where time > '"+dateFormat.format(date)+"' order by name limit 100 )\n" +
               "order by type ;";
 
             List<Map<Object,Object>> plateWeighList = plateWeighRecordMapper.selectBasicData(sql);
@@ -91,7 +93,7 @@ public class PlateWeighServiceImpl implements IPlateWeighService {
         }
     }
 
-    public TNPYResponse getRealtimeRecord(String plantID, String staffName, String materialName )
+    public TNPYResponse getRealtimeRecord(String plantID, String staffName, String materialName,String balanceID )
     {
         TNPYResponse result = new TNPYResponse();
         try {
@@ -112,8 +114,20 @@ public class PlateWeighServiceImpl implements IPlateWeighService {
             calendar.add(Calendar.HOUR, -2);
             date = calendar.getTime();   //这个时间就是日期往后推一天的结果
 
-            String sql = "select DATE_FORMAT(time,'%Y-%m-%d %H:%i:%s') as time,materialName,Operator,weight,centerWeight FROM " +dbName+" where time > '"+dateFormat.format(date)
-                    + "' and materialName ='" + materialName + "' and Operator = '"+ staffName+"' order by time";
+            String sql = "select DATE_FORMAT(time,'%Y-%m-%d %H:%i:%s') as time,materialName,Operator,weight,centerWeight FROM " +dbName+" where time > '"+dateFormat.format(date) +"' ";
+            if(!"-1".equals(staffName))
+            {
+                sql += " and Operator ='" + staffName + "'";
+            }
+            if(!"-1".equals(materialName))
+            {
+                sql += " and materialName ='" + materialName + "'";
+            }
+            if(!"-1".equals(balanceID))
+            {
+                sql += " and balanceID ='" + balanceID + "'";
+            }
+             sql += " order by time  ";
 
             List<Map<Object,Object>> plateWeighList = plateWeighRecordMapper.selectBasicData(sql);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());

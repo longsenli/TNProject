@@ -4,6 +4,7 @@ import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.service.plateWeighService.IPlateWeighService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -30,7 +31,7 @@ public class PlateWeighController {
 
 
     @RequestMapping(value = "/getRealtimeRecord")
-    public TNPYResponse getRealtimeRecord(String plantID, String staffName, String materialName ) {
-        return  plateWeighService.getRealtimeRecord( plantID, staffName,materialName );
+    public TNPYResponse getRealtimeRecord(String plantID, String staffName, String materialName,@RequestParam(defaultValue = "-1") String balanceID ) {
+        return  plateWeighService.getRealtimeRecord( plantID, staffName,materialName ,balanceID);
     }
 }

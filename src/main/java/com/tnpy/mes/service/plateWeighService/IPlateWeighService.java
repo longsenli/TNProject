@@ -10,5 +10,5 @@ import com.tnpy.common.utils.web.TNPYResponse;
 public interface IPlateWeighService {
     public TNPYResponse getPlateWeighRecord(String plantID, String staffName, String materialName, String startTime, String endTime );
     public TNPYResponse getPlateWeighBasicData(String plantID);
-    public TNPYResponse getRealtimeRecord(String plantID, String staffName, String materialName );
+    public TNPYResponse getRealtimeRecord(String plantID, String staffName, String materialName ,String balanceID);
 }
