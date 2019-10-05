@@ -105,7 +105,7 @@ public class PlateWeighServiceImpl implements IPlateWeighService {
                 result.setMessage("未查询到厂区信息，请确认！" + plantID);
                 return result;
             }
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             Date date = new Date();//取时间
             Calendar calendar = new GregorianCalendar();
             calendar.setTime(date);

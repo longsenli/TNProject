@@ -254,8 +254,6 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 orderSplitMapper.insertManyOrder(orderSplitList, workorder.getId());
 
                 orderSplitMapper.autoFinishOrderByOrderID(workorder.getId());
-
-
             } else {
                 workOrderMapper.updateByPrimaryKey(workorder);
             }
