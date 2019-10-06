@@ -119,7 +119,9 @@ public class ConfigParamEnum {
     }
 
     public static  enum EquipmentTypeEnum {
-        HCSC("3", "tb_equipmentparamrecord"), SZGZY("4", "tb_equipmentparamrecord"), ZNDB("10012", "tb_equipmentparamrecord_10012");
+        // 化成水槽、树脂干燥窑、智能电表、固化室采集
+        HCSC("3", "tb_equipmentparamrecord"), SZGZY("4", "tb_equipmentparamrecord"), ZNDB("10012", "tb_equipmentparamrecord_10012"),
+        GHSCJ("10016", "tb_equipmentparamrecord_10016");
         // 成员变量
         private String typeID;
         private String tableName;
