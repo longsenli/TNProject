@@ -136,17 +136,18 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             calendar.setTime(date);
             if (calendar.get(Calendar.HOUR_OF_DAY) < 7) {
                 //  timeFinish = dateFormat.format(date) + " 06:00:00";
-                timeFinish = "2020-11-11 00:00:00";
+                timeFinish = "2030-11-11 00:00:00";
                 calendar.add(Calendar.DATE, -1);
                 date = calendar.getTime();   //这个时间就是日期往后推一天的结果
                 timeStart = dateFormat.format(date) + " 18:00:00";
             } else if (calendar.get(Calendar.HOUR_OF_DAY) > 18) {
-                timeStart = dateFormat.format(date) + " 18:00:00";
-                timeFinish = "2020-11-11 00:00:00";
+                timeStart = dateFormat.format(date) + " 06:00:00";
+                timeFinish = "2030-11-11 00:00:00";
                 // timeFinish = dateFormat.format(date) + " 20:00:00";
             } else {
                 timeStart = dateFormat.format(date) + " 06:00:00";
-                timeFinish = "2020-11-11 00:00:00";
+
+                timeFinish = "2030-11-11 00:00:00";
                 //timeFinish = dateFormat.format(date) + " 08:00:00";
             }
 
