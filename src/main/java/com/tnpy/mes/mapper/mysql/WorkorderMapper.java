@@ -41,7 +41,7 @@ public interface WorkorderMapper {
 
     @Select("select totalProduction,c.name as materialName,d.name as lineName from\n" +
             " (  select totalProduction,materialID,lineID,b.name from (\n" +
-            " select totalProduction,materialID,lineID from tb_workorder where plantID = #{plantID} and processID = #{processID}  and status != '5'  and scheduledStartTime >= #{startTime} and scheduledStartTime <= #{endTime}\n" +
+            " select totalProduction,materialID,lineID from tb_workorder where plantID = #{plantID} and processID = #{processID}  and status < '5'  and scheduledStartTime >= #{startTime} and scheduledStartTime <= #{endTime}\n" +
             " ) a left join sys_material b on a.materialID = b.id \n" +
             " ) c left join sys_productionline d on c.lineID = d.id  order by lineName ")
    List<Map<Object,Object>> getPlanProductionDashboard(String plantID, String processID, String startTime, String endTime );
@@ -49,7 +49,7 @@ public interface WorkorderMapper {
     @Select("select ifnull(realProduction,0)  as realProduction, materialName,f.name as lineName from (\n" +
             "select realProduction,materialID,lineID,d.name as materialName from (\n" +
             "select a.id,a.lineID,a.materialID,sum(b.number) as realProduction  from (\n" +
-            "select id,orderID,totalProduction,materialID,lineID from tb_workorder where plantID = #{plantID} and processID = #{processID} and status != '5' and scheduledStartTime >= #{startTime} and scheduledStartTime <= #{endTime}\n" +
+            "select id,orderID,totalProduction,materialID,lineID from tb_workorder where plantID = #{plantID} and processID = #{processID} and status < '5' and scheduledStartTime >= #{startTime} and scheduledStartTime <= #{endTime}\n" +
             ") a left join tb_materialrecord b on a.id = b.orderID  group by a.id \n" +
             ") c  left join sys_material d on c.materialID = d.id \n" +
             ") e left join sys_productionline f on e.lineID = f.id  order by lineName")
