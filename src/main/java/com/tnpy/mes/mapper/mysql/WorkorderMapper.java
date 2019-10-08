@@ -45,6 +45,9 @@ public interface WorkorderMapper {
             " ) a left join sys_material b on a.materialID = b.id \n" +
             " ) c left join sys_productionline d on c.lineID = d.id  order by lineName ")
    List<Map<Object,Object>> getPlanProductionDashboard(String plantID, String processID, String startTime, String endTime );
+    @Select("select sum(planNumber) as totalProduction ,materialName,lineName from tb_packagedetailrecord where dayTime >= #{startTime} and dayTime <= #{endTime} " +
+        " and plantID = #{plantID} group by  materialName,lineName \n")
+    List<Map<Object,Object>> getPlanProductionBZDashboard(String plantID, String startTime, String endTime );
 
     @Select("select ifnull(realProduction,0)  as realProduction, materialName,f.name as lineName from (\n" +
             "select realProduction,materialID,lineID,d.name as materialName from (\n" +
@@ -54,6 +57,10 @@ public interface WorkorderMapper {
             ") c  left join sys_material d on c.materialID = d.id \n" +
             ") e left join sys_productionline f on e.lineID = f.id  order by lineName")
     List<Map<Object,Object>> getRealtimeProductionDashboard(String plantID, String processID, String startTime, String endTime );
+
+    @Select( "select sum(totalNumber) as realProduction ,materialName,lineName from tb_packagedetailrecord where dayTime >= #{startTime} and dayTime <= #{endTime} and " +
+            " plantID =  #{plantID} group by  materialName,lineName \n")
+    List<Map<Object,Object>> getRealtimeProductionBZDashboard(String plantID,  String startTime, String endTime );
 
     @Select(" select  ifnull(e.gainNum,0)  as realProduction ,e.name as materialName ,f.name as lineName  from ( select c.lineID,c.gainNum,d.name from ( \n" +
             " select b.lineID,b.materialID,a.gainNum from ( \n" +

@@ -435,7 +435,7 @@ public class MaterialServiceImpl implements IMaterialService {
     public TNPYResponse addGrantMaterialRecord(String orderSplitID, String operator, int orderType, String processID) {
         TNPYResponse result = new TNPYResponse();
         try {
-            if (ConfigParamEnum.BasicProcessEnum.ZLProcessID.getName().equals(processID)) {
+            if (ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(processID)) {
                 return pileBatteryGrantOneByOne(orderSplitID, operator, orderType, processID);
             }
             OrderSplit orderSplit = null;
@@ -511,7 +511,7 @@ public class MaterialServiceImpl implements IMaterialService {
                 return cancelGrantMaterial(orderIDList, operator);
             }
 
-            if (ConfigParamEnum.BasicProcessEnum.ZLProcessID.getName().equals(processID)) {
+            if (ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(processID)) {
                 return pileBatteryGrantByBatch(orderIDList, operator, grantType, processID);
             }
 

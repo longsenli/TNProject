@@ -650,7 +650,16 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     public TNPYResponse getPlanProductionDashboard(String plantID, String processID, String startTime, String endTime) {
         TNPYResponse result = new TNPYResponse();
         try {
-            List<Map<Object, Object>> planProductionDashboardList = workOrderMapper.getPlanProductionDashboard(plantID, processID, startTime, endTime);
+            List<Map<Object, Object>> planProductionDashboardList;
+            if(ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(processID))
+            {
+                planProductionDashboardList = workOrderMapper.getPlanProductionBZDashboard(plantID, startTime.split(" ")[0], endTime.split(" ")[0]);
+            }
+            else
+            {
+                planProductionDashboardList = workOrderMapper.getPlanProductionDashboard(plantID, processID, startTime, endTime);
+            }
+
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(planProductionDashboardList).toString());
             return result;
@@ -663,6 +672,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     public TNPYResponse getRealtimeProductionDashboard(String plantID, String processID, String startTime, String endTime) {
         TNPYResponse result = new TNPYResponse();
         try {
+            List<Map<Object, Object>> realtimeProductionDashboardList;
             if(ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(processID))
             {
 
@@ -670,13 +680,24 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 endTime = endTime.split(" ")[0] + " 23:00" ;
                 if(workOrderMapper.getJSSumProduction(plantID, processID, startTime, endTime) < 2)
                 {
-                    List<Map<Object, Object>> realtimeProductionDashboardList = workOrderMapper.getRealtimeGainNumberDashboard(plantID, processID, startTime, endTime);
+                     realtimeProductionDashboardList = workOrderMapper.getRealtimeGainNumberDashboard(plantID, processID, startTime, endTime);
                     result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                     result.setData(JSONObject.toJSON(realtimeProductionDashboardList).toString());
                     return result;
                 }
             }
-            List<Map<Object, Object>> realtimeProductionDashboardList = workOrderMapper.getRealtimeProductionDashboard(plantID, processID, startTime, endTime);
+
+
+            if(ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(processID))
+            {
+                realtimeProductionDashboardList = workOrderMapper.getRealtimeProductionBZDashboard(plantID, startTime.split(" ")[0], endTime.split(" ")[0]);
+            }
+            else
+            {
+                realtimeProductionDashboardList = workOrderMapper.getRealtimeProductionDashboard(plantID, processID, startTime, endTime);
+            }
+
+
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(realtimeProductionDashboardList).toString());
             return result;

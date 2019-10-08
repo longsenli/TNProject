@@ -203,7 +203,7 @@ public class ChargePackServiceImpl implements IChargePackService {
                 tidyBatteryRecord.setMaterialname(chargingRackRecord.getMaterialname());
                 tidyBatteryRecord.setMaterialtype(chargingRackRecord.getMaterialtype());
                 tidyBatteryRecord.setPulloffnum(chargingRackRecord.getRealnumber());
-                tidyBatteryRecord.setProcessid(ConfigParamEnum.BasicProcessEnum.ZLProcessID.getName());
+                tidyBatteryRecord.setProcessid(ConfigParamEnum.BasicProcessEnum.BZProcessID.getName());
                 tidyBatteryRecordMapper.insertSelective(tidyBatteryRecord);
             }
             else if(formatter.format(tidyBatteryRecord.getDaytime()).equals(formatter.format(chargingRackRecord.getPulloffdate())))
@@ -219,7 +219,7 @@ public class ChargePackServiceImpl implements IChargePackService {
                 TidyBatteryRecord insertTidyBatteryRecord = new TidyBatteryRecord();
                 insertTidyBatteryRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 insertTidyBatteryRecord.setPlantid(chargingRackRecord.getPlantid());
-                insertTidyBatteryRecord.setProcessid(ConfigParamEnum.BasicProcessEnum.ZLProcessID.getName());
+                insertTidyBatteryRecord.setProcessid(ConfigParamEnum.BasicProcessEnum.BZProcessID.getName());
                 insertTidyBatteryRecord.setLineid(nextLineID);
                 insertTidyBatteryRecord.setStatus(StatusEnum.StatusFlag.using.getIndex()+ "");
                 insertTidyBatteryRecord.setCurrentnum(chargingRackRecord.getRealnumber());
