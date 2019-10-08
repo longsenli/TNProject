@@ -39,14 +39,14 @@ public interface DryingKilnJZRecordMapper {
   	  * 查询当前窑中有多少工单
      */
     @Select("select count(1) from tb_dryingkilnjzrecord t where t.dryingKilnID = #{dryingKilnID} and t.outputTime is null")
-    int selectExitsInDryRecord(@Param("dryingKilnID") String dryingKilnID);
+    int selectExitsInDryRecord(String dryingKilnID);
     
     /**
  	  *取消入窑, 按  suborderid 删除 
     */
    @Delete("delete from tb_dryingkilnjzrecord\r\n" + 
-   		"    where suborderID = #{suborderID} ")
-   int deleteBySubOrderId(@Param("suborderID") String suborderID);
+   		"    where id = #{suborderID} ")
+   int deleteBySubOrderId( String suborderID);
 
     @Select(" select a.suborderID as orderID,a.materialNameInfo as status,CONCAT(a.inputer,' ',a.inputTime) as returnMessage  from ( select subOrderID,inputer, " +
             " materialNameInfo,date_format(inputTime, '%Y-%m-%d %H:%i:%s') as inputTime from tb_materialrecord where inputPlantID = #{plantID} " +
