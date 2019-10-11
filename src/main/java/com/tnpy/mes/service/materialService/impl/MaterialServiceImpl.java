@@ -53,6 +53,13 @@ public class MaterialServiceImpl implements IMaterialService {
     public TNPYResponse getMaterialRecord(String expendOrderID) {
         TNPYResponse result = new TNPYResponse();
         try {
+
+            if(StringUtils.isEmpty(expendOrderID))
+            {
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setData(JSONObject.toJSON("").toString());
+                return result;
+            }
             List<CustomMaterialRecord> materialRecordList = materialRecordMapper.selectByExpendOrder(expendOrderID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(materialRecordList).toString());
@@ -871,6 +878,13 @@ public class MaterialServiceImpl implements IMaterialService {
     public TNPYResponse getMaterialRecordDetailBySubOrderID(String subOrderID) {
         TNPYResponse result = new TNPYResponse();
         try {
+
+            if(StringUtils.isEmpty(subOrderID))
+            {
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setData(JSONObject.toJSON("").toString());
+                return result;
+            }
             List<Map<Object, Object>> materialStatisInfo = materialRecordMapper.getMaterialRecordDetailBySubOrderID(subOrderID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(materialStatisInfo).toString());
