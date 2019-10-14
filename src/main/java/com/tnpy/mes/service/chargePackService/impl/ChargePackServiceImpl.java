@@ -83,8 +83,8 @@ public class ChargePackServiceImpl implements IChargePackService {
             // System.out.println(plantID + " 参数 " +processID);
             if("onRack".equals(selectType))
             {
-                filter += " order by workLocation, putonDate asc ";
-                workLocationList = chargingRackRecordMapper.selectByFilter(filter);
+                //filter += " order by workLocation, putonDate asc ";
+                workLocationList = chargingRackRecordMapper.selectByFilterOnRack(filter);
             }
             else
             {
@@ -145,6 +145,7 @@ public class ChargePackServiceImpl implements IChargePackService {
             }
             else
             {
+
                 ChargingRackRecord chargingRackRecordOld = chargingRackRecordMapper.selectByPrimaryKey(chargingRackRecord.getId());
                 List<String> nextLineList = objectRelationDictMapper.selectNextObjectID(chargingRackRecordOld.getLineid(),"1002");
                  String nextLineID = "-1";
@@ -152,14 +153,20 @@ public class ChargePackServiceImpl implements IChargePackService {
                 {
                     nextLineID = nextLineList.get(0);
                 }
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                String tidyRecordFilter = " where status != '-1' and plantID = '" + chargingRackRecordOld.getPlantid()+ "' and lineID ='" + nextLineID
-                        +"' and materialID = '" + chargingRackRecordOld.getMaterialid() +"'  and materialType ='" + chargingRackRecordOld.getMaterialtype()+ "' and dayTime = '" + formatter.format(chargingRackRecordOld.getPulloffdate())+"'"  ;  ;
-                chargingRackRecordMapper.updateByPrimaryKeySelective(chargingRackRecord);
-                TidyBatteryRecord tidyBatteryRecord = tidyBatteryRecordMapper.selectLatestRecordByFilter(tidyRecordFilter);
-                tidyBatteryRecord.setPulloffnum(tidyBatteryRecord.getPulloffnum() + chargingRackRecordOld.getRepairnumber() - chargingRackRecord.getRepairnumber());
-                tidyBatteryRecord.setCurrentnum(tidyBatteryRecord.getCurrentnum() + chargingRackRecordOld.getRepairnumber() - chargingRackRecord.getRepairnumber());
-                tidyBatteryRecordMapper.updateByPrimaryKeySelective(tidyBatteryRecord);
+              //  System.out.println("======");
+              chargingRackRecordMapper.updateByPrimaryKeySelective(chargingRackRecord);
+
+                if(!StringUtils.isEmpty(chargingRackRecord.getPulloffstaffname()))
+                {
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    String tidyRecordFilter = " where status != '-1' and plantID = '" + chargingRackRecordOld.getPlantid()+ "' and lineID ='" + nextLineID
+                            +"' and materialID = '" + chargingRackRecordOld.getMaterialid() +"'  and materialType ='" + chargingRackRecordOld.getMaterialtype()+ "' and dayTime = '" + formatter.format(chargingRackRecordOld.getPulloffdate())+"'"  ;  ;
+                    TidyBatteryRecord tidyBatteryRecord = tidyBatteryRecordMapper.selectLatestRecordByFilter(tidyRecordFilter);
+                    tidyBatteryRecord.setPulloffnum(tidyBatteryRecord.getPulloffnum() + chargingRackRecordOld.getRepairnumber() - chargingRackRecord.getRepairnumber());
+                    tidyBatteryRecord.setCurrentnum(tidyBatteryRecord.getCurrentnum() + chargingRackRecordOld.getRepairnumber() - chargingRackRecord.getRepairnumber());
+                    tidyBatteryRecordMapper.updateByPrimaryKeySelective(tidyBatteryRecord);
+                }
+
             }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setMessage("修改成功！");
