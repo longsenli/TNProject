@@ -84,7 +84,16 @@ public class ChargePackServiceImpl implements IChargePackService {
             if("onRack".equals(selectType))
             {
                 //filter += " order by workLocation, putonDate asc ";
-                workLocationList = chargingRackRecordMapper.selectByFilterOnRack(filter);
+
+                if(!"-1".equals(locationID))
+                {
+                    filter += " order by workLocation, putonDate asc ";
+                    workLocationList = chargingRackRecordMapper.selectByFilter(filter);
+                }
+                else
+                {
+                    workLocationList = chargingRackRecordMapper.selectByFilterOnRack(filter);
+                }
             }
             else
             {
