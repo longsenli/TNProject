@@ -575,8 +575,9 @@ public class MaterialServiceImpl implements IMaterialService {
 //                            break;
 //                        }
                         if ((StatusEnum.InOutStatus.PreInput.getIndex() + "").equals(materialRecord.getInorout().toString())) {
-                            mapResult.put("returnMessage", "该订单未完成固化不能发料！" + orderSplitID);
-                            break;
+                            mapResult.put("returnMessage", "物料未完成固化！" + orderSplitID);
+                            materialRecordMapper.updateFinishStatusByID(materialRecord.getId(),StatusEnum.InOutStatus.Input.getIndex()+"");
+                           // break;
                         }
                     }
                     Date date = new Date();//取时间

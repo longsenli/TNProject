@@ -208,6 +208,9 @@ public interface MaterialRecordMapper {
 
     @Select("select subOrderID from tb_materialrecord where inputTime > '2019-07-23'  and orderID like '%BB20190723'")
     List<String> selectByID();
+
+    @Update(" update tb_materialrecord set inOrOut = #{inOrOutStatus} where id =#{recordID}" )
+    int updateFinishStatusByID(String recordID,String inOrOutStatus);
 }
 
 
