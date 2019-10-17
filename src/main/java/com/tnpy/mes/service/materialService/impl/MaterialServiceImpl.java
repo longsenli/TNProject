@@ -60,7 +60,30 @@ public class MaterialServiceImpl implements IMaterialService {
                 result.setData(JSONObject.toJSON("").toString());
                 return result;
             }
-            List<CustomMaterialRecord> materialRecordList = materialRecordMapper.selectByExpendOrder(expendOrderID);
+
+            if(expendOrderID.contains("___"))
+            {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+                String filter = " where outputTime > '" + dateFormat.format(new Date()) + "'";
+                if(!"-1".equals(expendOrderID.split("___")[0]))
+                {
+                    filter += " and outputPlantID = '" + expendOrderID.split("___")[0] + "'";
+                }
+                if(!"-1".equals(expendOrderID.split("___")[1]))
+                {
+                    filter += " and outputProcessID = '" + expendOrderID.split("___")[1] + "'";
+                }
+                if(!"-1".equals(expendOrderID.split("___")[2]))
+                {
+                    filter += " and outputLineID = '" + expendOrderID.split("___")[2] + "' ";
+                }
+                List<CustomMaterialRecord> materialRecordList = materialRecordMapper.selectByExpendLineIDFilter(filter);
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setData(JSONObject.toJSON(materialRecordList).toString());
+                return result;
+            }
+            List<CustomMaterialRecord> materialRecordList = materialRecordMapper.selectByExpendOrder2(expendOrderID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(materialRecordList).toString());
             return result;
@@ -127,13 +150,36 @@ public class MaterialServiceImpl implements IMaterialService {
     public TNPYResponse gainMaterialRecord(String materialRecordIDListStr, String materialOrderID, String expendOrderID, String outputter) {
         TNPYResponse result = new TNPYResponse();
         try {
+            List<String> materialIDList = JSON.parseArray(materialRecordIDListStr, String.class);
+            MaterialRecord materialRecord = materialRecordMapper.selectByPrimaryKey(materialIDList.get(0));
 
+            if(expendOrderID.contains("###") )
+            {
+                materialRecord.setInorout(StatusEnum.InOutStatus.Output.getIndex());
+                materialRecord.setOutputer(outputter);
+                materialRecord.setOutputtime(new Date());
+                materialRecord.setExpendorderid(expendOrderID);
+                String[] outputterInfo = outputter.split("###");
+                if (outputterInfo.length > 1) {
+                    materialRecord.setOutputer(outputterInfo[0]);
+                    materialRecord.setOutputerid(outputterInfo[1]);
+                    materialRecord.setOutputworklocationid(outputterInfo[2]);
+                }
+
+                    materialRecord.setOutputplantid(expendOrderID.split("###")[0]);
+                    materialRecord.setOutputprocessid(expendOrderID.split("###")[1]);
+                    materialRecord.setOutputlineid(expendOrderID.split("###")[2]);
+
+                materialRecordMapper.updateByPrimaryKeySelective(materialRecord);
+                insertDataProvenance(materialRecord);
+                //materialRecordMapper.updateGainMaterialRecord(materialIDList,expendOrderID,outputter,new Date(),StatusEnum.InOutStatus.Output.getIndex());
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                return result;
+            }
             TNPYResponse materialUseable = judgeAvailable(materialOrderID, expendOrderID);
             if (materialUseable.getStatus() != StatusEnum.ResponseStatus.Success.getIndex()) {
                 return materialUseable;
             }
-            List<String> materialIDList = JSON.parseArray(materialRecordIDListStr, String.class);
-            MaterialRecord materialRecord = materialRecordMapper.selectByPrimaryKey(materialIDList.get(0));
 
             if (materialRecord.getInorout() == StatusEnum.InOutStatus.Output.getIndex()) {
                 result.setMessage("该订单已经被使用！" + materialRecord.getOutputer() + "  " + materialRecord.getOutputtime());
@@ -143,8 +189,6 @@ public class MaterialServiceImpl implements IMaterialService {
             if (resultGrant.getStatus() != StatusEnum.ResponseStatus.Success.getIndex()) {
                 return resultGrant;
             }
-
-
             materialRecord.setInorout(StatusEnum.InOutStatus.Output.getIndex());
             materialRecord.setOutputer(outputter);
             materialRecord.setOutputtime(new Date());
@@ -200,13 +244,42 @@ public class MaterialServiceImpl implements IMaterialService {
     public TNPYResponse gainPartMaterialRecord(String materialRecordID, String materialOrderID, String number, String expendOrderID, String outputter) {
         TNPYResponse result = new TNPYResponse();
         try {
+            MaterialRecord materialRecord = materialRecordMapper.selectByPrimaryKey(materialRecordID);
+            MaterialRecord materialRecordCopy = materialRecordMapper.selectByPrimaryKey(materialRecordID);
             String[] outputterInfo = outputter.split("###");
+
+            if(expendOrderID.contains("###") )
+            {
+                materialRecordCopy.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                materialRecordCopy.setNumber(materialRecord.getNumber() - Float.parseFloat(number));
+                materialRecord.setInorout(StatusEnum.InOutStatus.Output.getIndex());
+                materialRecord.setOutputer(outputter);
+                materialRecord.setOutputtime(new Date());
+                materialRecord.setExpendorderid(expendOrderID);
+                materialRecord.setNumber(Float.parseFloat(number) * 1.0);
+                if (outputterInfo.length > 1) {
+                    materialRecord.setOutputer(outputterInfo[0]);
+                    materialRecord.setOutputerid(outputterInfo[1]);
+                    materialRecord.setOutputworklocationid(outputterInfo[2]);
+                }
+                materialRecord.setOutputplantid(expendOrderID.split("###")[0]);
+                materialRecord.setOutputprocessid(expendOrderID.split("###")[1]);
+                materialRecord.setOutputlineid(expendOrderID.split("###")[2]);
+
+                materialRecordMapper.updateByPrimaryKey(materialRecord);
+                if (materialRecordCopy.getNumber() > 0) {
+                    materialRecordMapper.insert(materialRecordCopy);
+                }
+                insertDataProvenance(materialRecord);
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                return result;
+            }
+
+
             TNPYResponse materialUseable = judgeAvailable(materialOrderID, expendOrderID);
             if (materialUseable.getStatus() != StatusEnum.ResponseStatus.Success.getIndex()) {
                 return materialUseable;
             }
-            MaterialRecord materialRecord = materialRecordMapper.selectByPrimaryKey(materialRecordID);
-            MaterialRecord materialRecordCopy = materialRecordMapper.selectByPrimaryKey(materialRecordID);
 
             TNPYResponse resultGrant = judgeZHGrantStatus(materialRecord.getSuborderid());
             if (resultGrant.getStatus() != StatusEnum.ResponseStatus.Success.getIndex()) {
@@ -340,7 +413,6 @@ public class MaterialServiceImpl implements IMaterialService {
     public TNPYResponse getMaterialRecordBySubOrderID(String qrCode, String expendOrderID) {
         TNPYResponse result = new TNPYResponse();
         try {
-
             qrCode = qrCode.toUpperCase();
             TNPYResponse resultGrant = judgeZHGrantStatus(qrCode);
             if (resultGrant.getStatus() != StatusEnum.ResponseStatus.Success.getIndex()) {
@@ -355,14 +427,24 @@ public class MaterialServiceImpl implements IMaterialService {
             }
 
             MaterialRecord materialRecord = materialRecordMapper.selectBySuborderID(qrCode);
-            // int count1 = materialRecordMapper.checkMaterialRecordUsed(qrCode,StatusEnum.InOutStatus.Input.getIndex());
-            int count2 = materialRecordMapper.checkMaterialRelation(qrCode, expendOrderID);
-
             if (materialRecord == null) {
                 result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
                 result.setMessage(msgStr + "， 未找到该工单的入库记录");
                 return result;
             }
+
+            if(ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(materialRecord.getInputprocessid()) && ConfigParamEnum.BasicPlantEnum.TNPY1B.getName().equals(materialRecord.getInputplantid()))
+            {
+                List<CustomMaterialRecord> materialRecordList = materialRecordMapper.selectBySubOrderID(qrCode);
+
+                result.setData(JSONObject.toJSON(materialRecordList).toString());
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                return result;
+            }
+            // int count1 = materialRecordMapper.checkMaterialRecordUsed(qrCode,StatusEnum.InOutStatus.Input.getIndex());
+            int count2 = materialRecordMapper.checkMaterialRelation(qrCode, expendOrderID);
+
+
 //            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //            if(materialRecord.getInorout() ==StatusEnum.InOutStatus.Output.getIndex())
 //            {
@@ -375,10 +457,12 @@ public class MaterialServiceImpl implements IMaterialService {
                 result.setMessage("该工单不能够使用该物料！");
                 return result;
             }
-            TNPYResponse materialUseable = judgeAvailable(orderSplit.getOrderid(), expendOrderID);
-            if (materialUseable.getStatus() != StatusEnum.ResponseStatus.Success.getIndex()) {
-                return materialUseable;
-            }
+//            TNPYResponse materialUseable = judgeAvailable(orderSplit.getOrderid(), expendOrderID);
+//            if (materialUseable.getStatus() != StatusEnum.ResponseStatus.Success.getIndex()) {
+//                return materialUseable;
+//            }
+
+
             List<CustomMaterialRecord> materialRecordList = materialRecordMapper.selectBySubOrderID(qrCode);
 
             result.setData(JSONObject.toJSON(materialRecordList).toString());

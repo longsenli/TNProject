@@ -31,12 +31,24 @@ public interface MaterialRecordMapper {
     @Select("select * from tb_materialrecord where subOrderID = #{id} and inOrOut = #{inoutStatus} limit 1")
     MaterialRecord selectBySuborderIDAndInOut(String id,String inoutStatus);
 
-    // @Select("select * from tb_materialrecord where expendOrderID = #{expendOrder}")
     @Select("select c.*,d.name as materialName from ( \n" +
             "SELECT a.*,b.orderSplitID as inSubOrderName,left(b.orderSplitID, length(b.orderSplitID)-3)  as inOrderName \n" +
             "FROM tb_materialrecord  a left join tb_ordersplit b on a.subOrderID = b.id where expendOrderID = #{expendOrder} \n" +
             ") c left join sys_material d on c.materialID = d.id  order by outputTime desc")
     List<CustomMaterialRecord> selectByExpendOrder(String expendOrder);
+
+
+    @Select("( select '' as  id,'' as materialid,'' as inOrderName,'' as inSubOrderName,'' as outOrderName, materialNameInfo as materialName,'' as inputer,now() as inputtime,'总计' as outputer,now() as outputtime,sum(number) as number,'' as inorout " +
+            " FROM tb_materialrecord  where expendOrderID = #{expendOrder} group by materialNameInfo limit 100 ) union all " +
+            " ( SELECT id,materialid,orderid as inOrderName,subOrderID as inSubOrderName,expendorderid as outOrderName, materialNameInfo as materialName,inputer,inputtime,outputer,outputtime,number,inorout " +
+            " FROM tb_materialrecord  where expendOrderID = #{expendOrder} order by outputTime desc  limit 1000)" )
+    List<CustomMaterialRecord> selectByExpendOrder2(String expendOrder);
+
+    @Select("( select '' as  id,'' as materialid,'' as inOrderName,'' as inSubOrderName,'' as outOrderName, materialNameInfo as materialName,'' as inputer,now() as inputtime,'总计' as outputer,now() as outputtime,sum(number) as number,'' as inorout " +
+            " FROM tb_materialrecord  ${filter} group by materialNameInfo limit 100 ) union all " +
+            " ( SELECT id,materialid,orderid as inOrderName,subOrderID as inSubOrderName,expendorderid as outOrderName, materialNameInfo as materialName,inputer,inputtime,outputer,outputtime,number,inorout " +
+            "  FROM tb_materialrecord  ${filter} order by outputTime desc limit 1000 ) ")
+    List<CustomMaterialRecord> selectByExpendLineIDFilter(@Param("filter") String filter);
 
     @Select("select c.*,d.name as materialName from ( \n" +
             "SELECT a.*,b.orderSplitID as inSubOrderName,left(b.orderSplitID, length(b.orderSplitID)-3)  as inOrderName \n" +

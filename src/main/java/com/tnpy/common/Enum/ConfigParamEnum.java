@@ -43,6 +43,27 @@ public class ConfigParamEnum {
         put("1003-1004-1007", 800);
         put("1003-1004-1008", 800);
         put("1003-1004-1009", 800);
+
+        put("1B-GH-1001", 72);
+        put("1B-GH-1002", 72);
+        put("1B-GH-1003", 72);
+        put("1B-GH-1004", 72);
+        put("1B-GH-1005", 72);
+        put("1B-GH-1006", 72);
+        put("1B-GH-1007", 72);
+        put("1B-GH-1008", 72);
+        put("1B-GH-1009", 72);
+        put("1B-GH-1010", 72);
+        put("1B-GH-1011", 72);
+        put("1B-GH-2001", 72);
+        put("1B-GH-2002", 72);
+        put("1B-GH-2003", 72);
+        put("1B-GH-2004", 72);
+        put("1B-GH-2005", 72);
+        put("1B-GH-2006", 72);
+        put("1B-GH-2007", 72);
+        put("1B-GH-2008", 72);
+        put("1B-GH-2009", 72);
     }};
 
     public  static Map  PlateWeighDBMap = new HashMap<String,String>() {{

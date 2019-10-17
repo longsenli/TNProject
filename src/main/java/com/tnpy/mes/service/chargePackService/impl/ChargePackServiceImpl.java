@@ -194,6 +194,19 @@ public class ChargePackServiceImpl implements IChargePackService {
         TNPYResponse result = new TNPYResponse();
         try
         {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            try
+            {
+                if(formatter.format(chargingRackRecord.getPulloffdate()).equals(formatter.format(chargingRackRecord.getPutondate())))
+                {
+                    result.setMessage("当日上架的电池不能下架！");
+                    return  result;
+                }
+            }
+            catch (Exception ex2)
+            {
+
+            }
            chargingRackRecordMapper.updateByPrimaryKeySelective(chargingRackRecord);
             List<String> nextLineList = objectRelationDictMapper.selectNextObjectID(chargingRackRecord.getLineid(),"1002");
             String nextLineID = "-1";
@@ -201,7 +214,7 @@ public class ChargePackServiceImpl implements IChargePackService {
             {
                 nextLineID = nextLineList.get(0);
             }
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
            String tidyRecordFilter = " where status != '-1' and plantID = '" + chargingRackRecord.getPlantid()+ "' and lineID ='" + nextLineID
                    +"' and materialID = '" + chargingRackRecord.getMaterialid() +"'  and materialType ='" + chargingRackRecord.getMaterialtype()+ "' order by dayTime desc limit 1"  ;
             TidyBatteryRecord tidyBatteryRecord = tidyBatteryRecordMapper.selectLatestRecordByFilter(tidyRecordFilter);

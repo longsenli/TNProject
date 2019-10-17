@@ -2,6 +2,7 @@ package com.tnpy.mes.service.scrapInfoService.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.MaterialScrapRecordMapper;
@@ -101,6 +102,14 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
             }
             if ("夜班".equals(classType)) {
                 productionTime += " 19:00";
+            }
+
+            if(ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(processID) && ConfigParamEnum.BasicPlantEnum.TNPY1B.getName().equals(plantID))
+            {
+                List<Map<Object, Object>> usedMaterialInfoList = materialScrapRecordMapper.getUsedMaterialInfoWithExpend(lineID, dateFormat.format(tmp));
+                result.setData(JSONObject.toJSONString(usedMaterialInfoList, SerializerFeature.WriteMapNullValue));
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                return result;
             }
             List<Map<Object, Object>> usedMaterialInfoList = materialScrapRecordMapper.getUsedMaterialInfo(lineID, productionTime);
             result.setData(JSONObject.toJSONString(usedMaterialInfoList, SerializerFeature.WriteMapNullValue));

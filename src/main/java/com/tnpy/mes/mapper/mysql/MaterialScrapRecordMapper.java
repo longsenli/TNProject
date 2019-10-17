@@ -22,13 +22,15 @@ public interface MaterialScrapRecordMapper {
 
     int updateByPrimaryKeySelective(MaterialScrapRecord record);
 
-    int updateByPrimaryKey(MaterialScrapRecord record);
+       int updateByPrimaryKey(MaterialScrapRecord record);
 
     @Select("SELECT id,name FROM sys_material where id in ( ( SELECT distinct inMaterialID as materialID FROM sys_materialrelation where outMaterialID in \n" +
             "(SELECT materialID FROM tb_workorder where  lineID = #{lineID} and  scheduledStartTime = #{productTime} and status != '5') ) union all " +
             " (SELECT distinct materialID as materialID FROM tb_workorder where  lineID = #{lineID} and  scheduledStartTime = #{productTime} and status != '5') )")
     List<Map<Object, Object>> getUsedMaterialInfo(String lineID, String productTime);
 
+    @Select("  SELECT materialID as id,materialNameInfo as name FROM tb_materialrecord where outputLineID = #{lineID} and outputTime > #{productTime} group by materialID,materialNameInfo ")
+    List<Map<Object, Object>> getUsedMaterialInfoWithExpend(String lineID, String productTime);
 
     @Select("SELECT id,lineID,date_format(productDay, '%Y-%m-%d %H:%i:%s') as productDay ,classType,materialName,value,updateStaff,date_format(updateTime, '%Y-%m-%d %H:%i:%s') as updateTime,remark FROM tb_materialscraprecord" +
             "  where productDay >= #{startTime} and productDay <= #{endTime} ${filter}  order by productDay,classType,lineID")
