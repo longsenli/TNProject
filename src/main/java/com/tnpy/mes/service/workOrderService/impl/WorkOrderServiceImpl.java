@@ -332,11 +332,23 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     public TNPYResponse deleteWorkOrder(String orderID) {
         TNPYResponse result = new TNPYResponse();
         try {
+           Workorder workorder = workOrderMapper.selectByPrimaryKey(orderID);
+            if( workorder.getStatus().equals(StatusEnum.WorkOrderStatus.printed.getIndex() + ""))
+            {
+                result.setMessage("该工单已打印，不能删除！");
+                return result;
+            }
             String productionOrder = materialRecordMapper.getProductionByOrderID(orderID);
             if (!org.springframework.util.StringUtils.isEmpty(productionOrder)) {
                 result.setMessage("该工单已有入库记录不能删除！");
                 return result;
             }
+
+            if (!org.springframework.util.StringUtils.isEmpty(productionOrder)) {
+                result.setMessage("该工单已有入库记录不能删除！");
+                return result;
+            }
+
             orderSplitMapper.deleteByOrderID(orderID);
             workOrderMapper.deleteByPrimaryKey(orderID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
