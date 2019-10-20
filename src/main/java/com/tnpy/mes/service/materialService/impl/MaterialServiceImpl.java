@@ -155,10 +155,11 @@ public class MaterialServiceImpl implements IMaterialService {
 
             if(expendOrderID.contains("###") )
             {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
                 materialRecord.setInorout(StatusEnum.InOutStatus.Output.getIndex());
                 materialRecord.setOutputer(outputter);
                 materialRecord.setOutputtime(new Date());
-                materialRecord.setExpendorderid(expendOrderID.substring(0,30));
+                materialRecord.setExpendorderid(expendOrderID.substring(0,20) +"BB" + dateFormat.format(new Date()));
                 String[] outputterInfo = outputter.split("###");
                 if (outputterInfo.length > 1) {
                     materialRecord.setOutputer(outputterInfo[0]);
@@ -250,12 +251,13 @@ public class MaterialServiceImpl implements IMaterialService {
 
             if(expendOrderID.contains("###") )
             {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
                 materialRecordCopy.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 materialRecordCopy.setNumber(materialRecord.getNumber() - Float.parseFloat(number));
                 materialRecord.setInorout(StatusEnum.InOutStatus.Output.getIndex());
                 materialRecord.setOutputer(outputter);
                 materialRecord.setOutputtime(new Date());
-                materialRecord.setExpendorderid(expendOrderID.substring(0,30));
+                materialRecord.setExpendorderid(expendOrderID.substring(0,20)+"BB" + dateFormat.format(new Date()) );
                 materialRecord.setNumber(Float.parseFloat(number) * 1.0);
                 if (outputterInfo.length > 1) {
                     materialRecord.setOutputer(outputterInfo[0]);
