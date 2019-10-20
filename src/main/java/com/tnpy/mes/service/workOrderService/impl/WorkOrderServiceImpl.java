@@ -363,7 +363,6 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     public TNPYResponse getOrderSplit(String orderID) {
         TNPYResponse result = new TNPYResponse();
         try {
-
             List<OrderSplit> orderSplitList = orderSplitMapper.selectByOrderID(orderID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(orderSplitList).toString());

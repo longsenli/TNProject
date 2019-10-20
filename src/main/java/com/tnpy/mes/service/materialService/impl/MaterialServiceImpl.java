@@ -158,7 +158,7 @@ public class MaterialServiceImpl implements IMaterialService {
                 materialRecord.setInorout(StatusEnum.InOutStatus.Output.getIndex());
                 materialRecord.setOutputer(outputter);
                 materialRecord.setOutputtime(new Date());
-                materialRecord.setExpendorderid(expendOrderID);
+                materialRecord.setExpendorderid(expendOrderID.substring(0,30));
                 String[] outputterInfo = outputter.split("###");
                 if (outputterInfo.length > 1) {
                     materialRecord.setOutputer(outputterInfo[0]);
@@ -255,7 +255,7 @@ public class MaterialServiceImpl implements IMaterialService {
                 materialRecord.setInorout(StatusEnum.InOutStatus.Output.getIndex());
                 materialRecord.setOutputer(outputter);
                 materialRecord.setOutputtime(new Date());
-                materialRecord.setExpendorderid(expendOrderID);
+                materialRecord.setExpendorderid(expendOrderID.substring(0,30));
                 materialRecord.setNumber(Float.parseFloat(number) * 1.0);
                 if (outputterInfo.length > 1) {
                     materialRecord.setOutputer(outputterInfo[0]);
@@ -433,7 +433,7 @@ public class MaterialServiceImpl implements IMaterialService {
                 return result;
             }
 
-            if(ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(materialRecord.getInputprocessid()) && ConfigParamEnum.BasicPlantEnum.TNPY1B.getName().equals(materialRecord.getInputplantid()))
+            if(ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(materialRecord.getInputprocessid()) && ConfigParamEnum.BasicPlantEnum.TNPY1B.getName().equals(expendOrderID))
             {
                 List<CustomMaterialRecord> materialRecordList = materialRecordMapper.selectBySubOrderID(qrCode);
 
