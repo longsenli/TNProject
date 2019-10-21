@@ -3,6 +3,7 @@ package com.tnpy.mes.service.dashboardService.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.DashboardMapper;
+import com.tnpy.mes.mapper.mysql.ObjectRelationDictMapper;
 import com.tnpy.mes.mapper.mysql.WageDetailMapper;
 import com.tnpy.mes.service.dashboardService.IDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,18 +26,26 @@ public class DashboardServiceImpl implements IDashboardService {
     @Autowired
     private WageDetailMapper wageDetailMapper ;
 
+    @Autowired
+    private ObjectRelationDictMapper objectRelationDictMapper;
+
     @Override
     public TNPYResponse getDailyProduction(String plantID ,String processID,String queryTypeID,String startTime,String endTime) {
         /*
         queryTypeID 前后台统一：
         <option value='byLine'>产线</option>
-		<option value='byMaterial'>物料</option>
-		<option value='byWorkingLocation'>工位</option>
-		<option value='byStaff'>人员</option>
-		<option value='byClassType'>班次</option>
-		<option value='byStaffAndMaterial'>人员物料</option>
-		<option value='byWage'>人员工资</option>
-		<option value='byOrderDetail'>工单详情</option>
+					<option value='byMaterial'>物料</option>
+					<option value='byWorkingLocation'>工位</option>
+					<option value='byStaff'>人员</option>
+					<option value='byClassType'>班次</option>
+					<option value='byGrantMaterial'>工序发料</option>
+					<option value='byGainMaterial'>工序领料</option>
+					<option value='byLineMaterial'>产线物料</option>
+					<option value='byStaffAndMaterial'>人员物料</option>
+					<option value='byLineExpend'>产线投料</option>
+					<option value='byStaffExpend'>人员投料</option>
+					<option value='byWage'>人员工资</option>
+					<option value='byOrderDetail'>工单详情</option>
          */
 
         TNPYResponse result = new TNPYResponse();
@@ -233,6 +242,33 @@ public class DashboardServiceImpl implements IDashboardService {
                         "select case  when left(timeStr,2) = 'BB' then '白班'  else '夜班' end as banci ,right(timeStr,8) as dayTime ,outputer,materialNameInfo,number from (\n" +
                         "select outputer,sum(number) as number,right(expendOrderID,10) as timeStr,materialNameInfo  from tb_materialrecord where outputPlantID = '"+plantID+"' \n" +
                         "and outputProcessID = '"+processID+"' and outputTime > '" +newStartTimeStr +"' and outputTime < '" +newEndTimeStr +"'  group by outputer,materialNameInfo,timeStr ) a  order by dayTime desc,banci, outputer  limit 1000)" ;
+            }
+
+            if("byGrantMaterial".equals(queryTypeID))
+            {
+                querySQL = "( select b.name as materialName,a.number,'' as grantDayTime ,'' as acceptPlant from (  select batteryType,sum(number ) as number from tb_grantmaterialrecord \n" +
+                        " where plantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' and grantTime < '" + endTime+" 23:59:59' group by batteryType ) a left join sys_material b on a.batteryType = b.id  order by materialName limit 100 ) \n" +
+                        " union all\n" +
+                        "( select c.materialName,c.number,c.grantDayTime,d.name as acceptPlant from ( select b.name as materialName,a.number,a.acceptPlantID,a.grantDayTime from (  select batteryType,sum(number ) as number,\n" +
+                        " acceptPlantID, DATE_FORMAT(grantTime, '%Y-%m-%d') as grantDayTime from tb_grantmaterialrecord where plantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' \n" +
+                        " and grantTime < '" + endTime+" 23:59:59' group by grantDayTime,batteryType,acceptPlantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.acceptPlantID = d.id order by grantDayTime,materialName limit 1000 )" ;
+            }
+
+            if("byGainMaterial".equals(queryTypeID))
+            {
+                List<String> lastProcessID  = objectRelationDictMapper.selectPreviousObjectID(processID,"1001");
+                if(lastProcessID.size() < 1)
+                {
+                    result.setMessage("未获取到前一工序信息！不知道发料工序！");
+                    return  result;
+                }
+                processID = lastProcessID.get(0);
+                querySQL = "( select b.name as materialName,a.number,'' as grantDayTime ,'' as grantPlant from (  select batteryType,sum(number ) as number from tb_grantmaterialrecord \n" +
+                        " where acceptPlantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' and grantTime < '" + endTime+" 23:59:59' group by batteryType ) a left join sys_material b on a.batteryType = b.id  order by materialName limit 100 ) \n" +
+                        " union all\n" +
+                        "( select  c.materialName,c.number,c.grantDayTime,d.name as grantPlant from ( select b.name as materialName,a.number,a.plantID,a.grantDayTime from (  select batteryType,sum(number ) as number,\n" +
+                        " plantID, DATE_FORMAT(grantTime, '%Y-%m-%d') as grantDayTime from tb_grantmaterialrecord where acceptPlantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' \n" +
+                        " and grantTime < '" + endTime+" 23:59:59' group by grantDayTime,batteryType,plantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.plantID = d.id order by grantDayTime,materialName limit 1000 )" ;
             }
 
            // System.out.println(querySQL);
