@@ -111,7 +111,7 @@ public class PlateWeighServiceImpl implements IPlateWeighService {
             Date date = new Date();//取时间
             Calendar calendar = new GregorianCalendar();
             calendar.setTime(date);
-            calendar.add(Calendar.HOUR, -2);
+            calendar.add(Calendar.MINUTE, -30);
             date = calendar.getTime();   //这个时间就是日期往后推一天的结果
 
             String sql = "select DATE_FORMAT(time,'%Y-%m-%d %H:%i:%s') as time,materialName,Operator,weight,centerWeight FROM " +dbName+" where time > '"+dateFormat.format(date) +"' ";

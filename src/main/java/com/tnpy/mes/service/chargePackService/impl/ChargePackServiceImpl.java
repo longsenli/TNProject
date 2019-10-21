@@ -207,7 +207,21 @@ public class ChargePackServiceImpl implements IChargePackService {
             {
 
             }
-           chargingRackRecordMapper.updateByPrimaryKeySelective(chargingRackRecord);
+
+            ChargingRackRecord chargingRackRecordDB = chargingRackRecordMapper.selectByPrimaryKey(chargingRackRecord.getId());
+            chargingRackRecord.setProductionnumber(chargingRackRecordDB.getProductionnumber() -(chargingRackRecordDB.getRealnumber() -chargingRackRecord.getRealnumber()) );
+            if(chargingRackRecordDB.getRealnumber() > chargingRackRecord.getRealnumber())
+            {
+                chargingRackRecordDB.setProductionnumber(chargingRackRecordDB.getRealnumber() -chargingRackRecord.getRealnumber());
+                chargingRackRecordDB.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                chargingRackRecordDB.setRealnumber(chargingRackRecordDB.getRealnumber() -chargingRackRecord.getRealnumber() );
+
+                chargingRackRecordDB.setRepaircombine("");
+                chargingRackRecordDB.setRepairnumber(Float.parseFloat("0") );
+                chargingRackRecordMapper.insertSelective(chargingRackRecordDB);
+            }
+
+            chargingRackRecordMapper.updateByPrimaryKeySelective(chargingRackRecord);
             List<String> nextLineList = objectRelationDictMapper.selectNextObjectID(chargingRackRecord.getLineid(),"1002");
             String nextLineID = "-1";
             if(nextLineList.size() > 0)
