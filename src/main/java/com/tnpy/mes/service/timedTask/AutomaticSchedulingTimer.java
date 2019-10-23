@@ -531,6 +531,14 @@ public class AutomaticSchedulingTimer {
                         {
                             continue;
                         }
+                        if(ConfigParamEnum.BasicProcessEnum.FBProcessID.getName().equals( productionProcessList.get(j).getId()))
+                        {
+                            continue;
+                        }
+                        if(ConfigParamEnum.BasicProcessEnum.BBProcessID.getName().equals( productionProcessList.get(j).getId()))
+                        {
+                            continue;
+                        }
 /*
                         if(!"1011".equals(productionProcessList.get(j).getId()))
                             continue;

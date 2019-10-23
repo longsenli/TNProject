@@ -1,6 +1,7 @@
 package com.tnpy.mes.service.dashboardService.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.DashboardMapper;
 import com.tnpy.mes.mapper.mysql.ObjectRelationDictMapper;
@@ -204,6 +205,11 @@ public class DashboardServiceImpl implements IDashboardService {
 
             String newEndTimeStr =sdf.format(newEndTime) + " 07:00:00";
 
+            if(ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals( processID))
+            {
+                newStartTimeStr = startTime;
+                newEndTimeStr = endTime + " 23:59:59";
+            }
 
                 querySQL =
                         "(\n" +
@@ -269,6 +275,20 @@ public class DashboardServiceImpl implements IDashboardService {
                         "( select  c.materialName,c.number,c.grantDayTime,d.name as grantPlant from ( select b.name as materialName,a.number,a.plantID,a.grantDayTime from (  select batteryType,sum(number ) as number,\n" +
                         " plantID, DATE_FORMAT(grantTime, '%Y-%m-%d') as grantDayTime from tb_grantmaterialrecord where acceptPlantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' \n" +
                         " and grantTime < '" + endTime+" 23:59:59' group by grantDayTime,batteryType,plantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.plantID = d.id order by grantDayTime,materialName limit 1000 )" ;
+            }
+
+            if("byScrapMaterial".equals(queryTypeID))
+            {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                //String->Date
+                Date newStartTime = sdf.parse(startTime); //new Date(startTime);
+                Date newEndTime = sdf.parse(endTime); // new Date(endTime);
+
+                querySQL =  "( SELECT materialName,sum(value) as scrapNumber,'' as classType,'' as  productDayStr FROM ilpsdb.tb_materialscraprecord \n" +
+                        " where plantID = '" +plantID+ "' and processID = '" +processID+ "' and productDay >= '"+sdf.format(newStartTime)+"'  and productDay <= '"+sdf.format(newEndTime)+"' group by materialName order by materialName limit 100)\n" +
+                        " union all \n" +
+                        " ( SELECT materialName,sum(value) as scrapNumber,classType,DATE_FORMAT(productDay, '%Y-%m-%d') as productDayStr FROM ilpsdb.tb_materialscraprecord \n" +
+                        " where plantID = '" +plantID+ "' and processID = '" +processID+ "' and productDay >= '"+sdf.format(newStartTime)+"'  and productDay <= '"+sdf.format(newEndTime)+"'  group by productDayStr,classType,materialName order by productDayStr,classType,materialName  limit 1000)" ;
             }
 
            // System.out.println(querySQL);

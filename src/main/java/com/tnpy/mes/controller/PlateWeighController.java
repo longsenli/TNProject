@@ -20,8 +20,8 @@ public class PlateWeighController {
     private IPlateWeighService plateWeighService ;
 
     @RequestMapping(value = "/getPlateWeighRecord")
-    public TNPYResponse getPlateWeighRecord(String plantID, String staffName, String materialName, String startTime, String endTime ) {
-        return  plateWeighService.getPlateWeighRecord( plantID, staffName,materialName, startTime, endTime );
+    public TNPYResponse getPlateWeighRecord(String plantID, @RequestParam(defaultValue = "-1") String balanceID,String staffName, String materialName, String startTime, String endTime ) {
+        return  plateWeighService.getPlateWeighRecord( plantID,balanceID, staffName,materialName, startTime, endTime );
     }
 
     @RequestMapping(value = "/getPlateWeighBasicData")
@@ -33,5 +33,10 @@ public class PlateWeighController {
     @RequestMapping(value = "/getRealtimeRecord")
     public TNPYResponse getRealtimeRecord(String plantID, String staffName, String materialName,@RequestParam(defaultValue = "-1") String balanceID ) {
         return  plateWeighService.getRealtimeRecord( plantID, staffName,materialName ,balanceID);
+    }
+
+    @RequestMapping(value = "/getQualifiedRateInfo")
+    public TNPYResponse getQualifiedRateInfo(String plantID, String balanceID,String staffName, String materialName,String weighQualifyRange, String startTime, String endTime) {
+        return  plateWeighService.getQualifiedRateInfo( plantID,balanceID, staffName,materialName,weighQualifyRange, startTime, endTime );
     }
 }

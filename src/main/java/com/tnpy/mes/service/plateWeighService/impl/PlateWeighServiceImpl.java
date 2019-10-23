@@ -22,7 +22,7 @@ import java.util.*;
 public class PlateWeighServiceImpl implements IPlateWeighService {
     @Autowired
     private PlateWeighRecordMapper plateWeighRecordMapper;
-    public TNPYResponse getPlateWeighRecord(String plantID, String staffName, String materialName, String startTime, String endTime ){
+    public TNPYResponse getPlateWeighRecord(String plantID,  String balanceID, String staffName, String materialName, String startTime, String endTime ){
         TNPYResponse result = new TNPYResponse();
         try {
             String dbName = null;
@@ -46,6 +46,11 @@ public class PlateWeighServiceImpl implements IPlateWeighService {
             {
                 filter += " and materialName = '" + materialName + "' ";
             }
+            if(!"-1".equals(balanceID))
+            {
+                filter += " and balanceID = '" + balanceID + "' ";
+            }
+            filter += " order by time ";
             List<PlateWeighRecord> plateWeighRecordList = plateWeighRecordMapper.selectByFilter(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(plateWeighRecordList).toString());
@@ -135,6 +140,46 @@ public class PlateWeighServiceImpl implements IPlateWeighService {
             return result;
         } catch (Exception ex) {
             result.setMessage("获取称重基础信息出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse getQualifiedRateInfo(String plantID, String balanceID,String staffName, String materialName, String weighQualifyRange, String startTime, String endTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            String dbName = null;
+            if( ConfigParamEnum.PlateWeighDBMap.containsKey(plantID))
+            {
+                dbName = ConfigParamEnum.PlateWeighDBMap.get(plantID).toString();
+            }
+            else
+            {
+                result.setMessage("未查询到厂区信息，请确认！" + plantID);
+                return result;
+            }
+
+            String filter = dbName + "  where time > '" + startTime + "' and time < '" + endTime + "' ";
+
+            if(!"-1".equals(staffName))
+            {
+                filter += " and Operator = '" + staffName + "' ";
+            }
+            if(!"-1".equals(materialName))
+            {
+                filter += " and materialName = '" + materialName + "' ";
+            }
+            if(!"-1".equals(balanceID))
+            {
+                filter += " and balanceID = '" + balanceID + "' ";
+            }
+
+            List<Map<Object,Object>> plateWeighList = plateWeighRecordMapper.QualifiedRateInfo(filter,weighQualifyRange);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(plateWeighList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("获取称重信息出错！" + ex.getMessage());
             return result;
         }
     }
