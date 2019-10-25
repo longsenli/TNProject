@@ -501,7 +501,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             orderSplitMapper.updateByPrimaryKeySelective(orderSplit);
 
             MaterialRecord materialRecord = new MaterialRecord();
-            materialRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+            materialRecord.setId(orderSplit.getId());
             materialRecord.setInorout(StatusEnum.InOutStatus.Input.getIndex());
             materialRecord.setMaterialid(orderSplit.getMaterialid());
             materialRecord.setNumber(orderSplit.getProductionnum());
@@ -569,7 +569,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             return result;
         } catch (Exception ex) {
             // System.out.println("====完成工单失败！====" + jsonStr + "====" + name);
-            result.setMessage("查询出错！" + ex.getMessage());
+            result.setMessage("查询出错！" + ex.getMessage().substring(0,100));
             return result;
         }
     }
