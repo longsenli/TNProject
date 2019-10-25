@@ -180,63 +180,66 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
                     }
                     orderSplit = orderInfoList.get(j);
                     orderSplitID = orderSplit.getId();
+                    try {
+                        if (!(StatusEnum.WorkOrderStatus.finished.getIndex() + "").equals(orderSplit.getStatus())) {
 
-                    if (!(StatusEnum.WorkOrderStatus.finished.getIndex() + "").equals(orderSplit.getStatus())) {
-
-                        MaterialRecord materialRecord = new MaterialRecord();
-                        materialRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-                        materialRecord.setInorout(StatusEnum.InOutStatus.Input.getIndex());
-                        materialRecord.setMaterialid(orderSplit.getMaterialid());
-                        materialRecord.setNumber(orderSplit.getProductionnum());
-                        materialRecord.setOrderid(orderSplit.getOrderid());
-                        materialRecord.setSuborderid(orderSplit.getId());
-                        materialRecord.setStatus(StatusEnum.StatusFlag.using.getIndex());
-                        materialRecord.setInputtime(new Date());
-                        materialRecord.setInputer(operatorName);
-                        materialRecord.setInputer(operatorName);
-                        materialRecord.setInputerid(operatorName);
-                        if (operatorName.split("###").length > 1) {
-                            materialRecord.setInputer(operatorName.split("###")[0]);
-                            materialRecord.setInputerid(operatorName.split("###")[1]);
-                            materialRecord.setMaterialnameinfo(orderSplit.getOrdersplitid());
-                        }
-                        Workorder workorder = workorderMapper.selectByPrimaryKey(orderSplit.getOrderid());
-                        if (workorder != null) {
-                            materialRecord.setInputplantid(workorder.getPlantid());
-                            materialRecord.setInputprocessid(workorder.getProcessid());
-                            materialRecord.setInputlineid(workorder.getLineid());
-                            if (!materialRecord.getInputprocessid().equals(ConfigParamEnum.BasicProcessEnum.TBProcessID.getName())) {
-                                mapResult.put("returnMessage", "只有涂板工序的工单才能入窑！" + orderSplitID);
-                                break;
+                            MaterialRecord materialRecord = new MaterialRecord();
+                            materialRecord.setId(orderSplit.getId());
+                            materialRecord.setInorout(StatusEnum.InOutStatus.Input.getIndex());
+                            materialRecord.setMaterialid(orderSplit.getMaterialid());
+                            materialRecord.setNumber(orderSplit.getProductionnum());
+                            materialRecord.setOrderid(orderSplit.getOrderid());
+                            materialRecord.setSuborderid(orderSplit.getId());
+                            materialRecord.setStatus(StatusEnum.StatusFlag.using.getIndex());
+                            materialRecord.setInputtime(new Date());
+                            materialRecord.setInputer(operatorName);
+                            materialRecord.setInputer(operatorName);
+                            materialRecord.setInputerid(operatorName);
+                            if (operatorName.split("###").length > 1) {
+                                materialRecord.setInputer(operatorName.split("###")[0]);
+                                materialRecord.setInputerid(operatorName.split("###")[1]);
+                                materialRecord.setMaterialnameinfo(orderSplit.getOrdersplitid());
                             }
-                        }
-
-                        // orderSplit.setStatus(StatusEnum.WorkOrderStatus.finished.getIndex() + "");
-                        // System.out.println(  "==============" +JSONObject.toJSON(orderSplit).toString());
-                        orderSplitMapper.updateStatus(orderSplit.getId(), StatusEnum.WorkOrderStatus.finished.getIndex() + "");
-
-                        materialRecordMapper.insert(materialRecord);
-
-                        try {
-                            String batchID = batchrelationcontrolMapper.selectTBBatchByOrderID(orderSplit.getOrderid());
-
-                            if (StringUtil.isEmpty(batchID) || batchID.length() < 6) {
-                                String batch = orderSplit.getId().substring(0, orderSplit.getId().length() - 14)
-                                        + orderSplit.getId().substring(orderSplit.getId().length() - 11, orderSplit.getId().length() - 3);
-                                Batchrelationcontrol batchrelationcontrol = new Batchrelationcontrol();
-                                batchrelationcontrol.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-                                batchrelationcontrol.setRelationorderid(orderSplit.getOrderid());
-                                batchrelationcontrol.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
-                                batchrelationcontrol.setRelationtime(new Date());
-
-                                if (!StringUtil.isEmpty(batchID)) {
-                                    batchrelationcontrol.setTbbatch(batch);
-                                    batchrelationcontrolMapper.insert(batchrelationcontrol);
+                            Workorder workorder = workorderMapper.selectByPrimaryKey(orderSplit.getOrderid());
+                            if (workorder != null) {
+                                materialRecord.setInputplantid(workorder.getPlantid());
+                                materialRecord.setInputprocessid(workorder.getProcessid());
+                                materialRecord.setInputlineid(workorder.getLineid());
+                                if (!materialRecord.getInputprocessid().equals(ConfigParamEnum.BasicProcessEnum.TBProcessID.getName())) {
+                                    mapResult.put("returnMessage", "只有涂板工序的工单才能入窑！" + orderSplitID);
+                                    break;
                                 }
                             }
-                        } catch (Exception ex) {
-                            result.setMessage(result.getMessage() + " " + ex.getMessage());
+
+                            // orderSplit.setStatus(StatusEnum.WorkOrderStatus.finished.getIndex() + "");
+                            // System.out.println(  "==============" +JSONObject.toJSON(orderSplit).toString());
+                            orderSplitMapper.updateStatus(orderSplit.getId(), StatusEnum.WorkOrderStatus.finished.getIndex() + "");
+
+                            materialRecordMapper.insert(materialRecord);
+
+                            try {
+                                String batchID = batchrelationcontrolMapper.selectTBBatchByOrderID(orderSplit.getOrderid());
+
+                                if (StringUtil.isEmpty(batchID) || batchID.length() < 6) {
+                                    String batch = orderSplit.getId().substring(0, orderSplit.getId().length() - 14)
+                                            + orderSplit.getId().substring(orderSplit.getId().length() - 11, orderSplit.getId().length() - 3);
+                                    Batchrelationcontrol batchrelationcontrol = new Batchrelationcontrol();
+                                    batchrelationcontrol.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                                    batchrelationcontrol.setRelationorderid(orderSplit.getOrderid());
+                                    batchrelationcontrol.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
+                                    batchrelationcontrol.setRelationtime(new Date());
+
+                                    if (!StringUtil.isEmpty(batchID)) {
+                                        batchrelationcontrol.setTbbatch(batch);
+                                        batchrelationcontrolMapper.insert(batchrelationcontrol);
+                                    }
+                                }
+                            } catch (Exception ex) {
+                                result.setMessage(result.getMessage() + " " + ex.getMessage());
+                            }
                         }
+                    } catch (Exception ex2) {
+                        result.setMessage(result.getMessage() + " " + ex2.getMessage().substring(0, 100));
                     }
 
 //                    if (!(StatusEnum.WorkOrderStatus.finished.getIndex() + "").equals(orderSplit.getStatus())) {
@@ -363,11 +366,11 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
     }
 
 
-    public TNPYResponse uninputSolidifyRoom(String plantID,String startTime,String endTime) {
+    public TNPYResponse uninputSolidifyRoom(String plantID, String startTime, String endTime) {
 
         TNPYResponse result = new TNPYResponse();
         try {
-            List<Map<Object, Object>>  uninputList = solidifyRecordMapper.uninputSolidifyRoom(plantID, ConfigParamEnum.BasicProcessEnum.TBProcessID.getName(),startTime,endTime);
+            List<Map<Object, Object>> uninputList = solidifyRecordMapper.uninputSolidifyRoom(plantID, ConfigParamEnum.BasicProcessEnum.TBProcessID.getName(), startTime, endTime);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSONString(uninputList, SerializerFeature.WriteMapNullValue).toString());
             return result;
