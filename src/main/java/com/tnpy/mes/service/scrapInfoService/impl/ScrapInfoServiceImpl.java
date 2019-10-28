@@ -106,7 +106,7 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
 
             if(ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(processID) && ConfigParamEnum.BasicPlantEnum.TNPY1B.getName().equals(plantID))
             {
-                List<Map<Object, Object>> usedMaterialInfoList = materialScrapRecordMapper.getUsedMaterialInfoWithExpend(lineID, dateFormat.format(tmp));
+                List<Map<Object, Object>> usedMaterialInfoList = materialScrapRecordMapper.getUsedMaterialInfoByProcess(plantID,processID, dateFormat.format(tmp),dateFormat.format(tmp) + " 23:59");
                 result.setData(JSONObject.toJSONString(usedMaterialInfoList, SerializerFeature.WriteMapNullValue));
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 return result;

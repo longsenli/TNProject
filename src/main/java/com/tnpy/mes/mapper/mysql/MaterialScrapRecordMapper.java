@@ -32,6 +32,9 @@ public interface MaterialScrapRecordMapper {
     @Select("  SELECT materialID as id,materialNameInfo as name FROM tb_materialrecord where outputLineID = #{lineID} and outputTime > #{productTime} group by materialID,materialNameInfo ")
     List<Map<Object, Object>> getUsedMaterialInfoWithExpend(String lineID, String productTime);
 
+    @Select("  SELECT materialID as id,materialNameInfo as name FROM tb_materialrecord where outputPlantID = #{plantID} and outputProcessID = #{processID}  and outputTime > #{productTime}  and outputTime < #{endTime}  group by materialID,materialNameInfo ")
+    List<Map<Object, Object>> getUsedMaterialInfoByProcess(String plantID,String processID, String productTime,String endTime);
+
     @Select("SELECT id,lineID,date_format(productDay, '%Y-%m-%d %H:%i:%s') as productDay ,classType,materialName,value,updateStaff,date_format(updateTime, '%Y-%m-%d %H:%i:%s') as updateTime,remark FROM tb_materialscraprecord" +
             "  where productDay >= #{startTime} and productDay <= #{endTime} ${filter}  order by productDay,classType,lineID")
     List<Map<Object, Object>> getMaterialScrapRecord(@Param("filter") String filter, String startTime, String endTime);
