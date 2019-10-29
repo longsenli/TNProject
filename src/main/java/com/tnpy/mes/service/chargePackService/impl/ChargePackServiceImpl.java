@@ -197,7 +197,7 @@ public class ChargePackServiceImpl implements IChargePackService {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             try
             {
-                if(formatter.format(chargingRackRecord.getPulloffdate()).equals(formatter.format(chargingRackRecord.getPutondate())))
+                if(formatter.format(chargingRackRecord.getPulloffdate()).equals(formatter.format(chargingRackRecord.getPutondate())) && !"5".equals(chargingRackRecord.getMaterialtype()))
                 {
                     result.setMessage("当日上架的电池不能下架！");
                     return  result;
