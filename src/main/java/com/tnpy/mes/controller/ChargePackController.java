@@ -58,17 +58,26 @@ public class ChargePackController {
     public TNPYResponse getPileRecordByPileID( String id) {
         return  chargePackService.getPileRecordByPileID(id);
     }
-
+    //包装扫码消耗电池
     @RequestMapping(value = "/expendpilebatterybypackage")
     public TNPYResponse expendPileBatteryByPackage( String id,int packageNum,int totalNum) {
         return  chargePackService.expendPileBatteryByPackage(id,packageNum,totalNum);
     }
 
-
+    //电池打堆api方法
     @RequestMapping(value = "/addpiletidybatteryrecord")
     public TNPYResponse addPileTidyBatteryRecord( String jsonTidyRecord,String pileNum,String perPileMaterialNum,String storeLocation) {
         return  chargePackService.addPileTidyBatteryRecord(jsonTidyRecord,pileNum,perPileMaterialNum,storeLocation);
     }
+    
+    
+    //整理打堆扫码完成入库
+    @RequestMapping(value = "/finishPileTidyBatteryRecord")
+    public TNPYResponse finishPileTidyBatteryRecord( String id,String remainpileNum,String piletotalNum, String partpileNum,String plantID,
+    		String processID,String lineID,String userID,String username) {
+        return  chargePackService.finishPileTidyBatteryRecord(id, remainpileNum, piletotalNum,partpileNum, plantID, processID, lineID, userID, username);
+    }
+    
 
     @RequestMapping(value = "/getpiletidybatteryrecord")
     public TNPYResponse getPileTidyBatteryRecord(String plantID, String processID,String lineID,String startTime,String endTime,String selectType) {

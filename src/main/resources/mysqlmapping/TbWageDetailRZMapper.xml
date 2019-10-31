@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.TbWageDetailRZMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.TbWageDetailRZ">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="senddate" jdbcType="VARCHAR" property="senddate" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="cardno" jdbcType="VARCHAR" property="cardno" />
+    <result column="department" jdbcType="VARCHAR" property="department" />
+    <result column="wage" jdbcType="VARCHAR" property="wage" />
+    <result column="overtimepay" jdbcType="VARCHAR" property="overtimepay" />
+    <result column="performancebonus" jdbcType="VARCHAR" property="performancebonus" />
+    <result column="subsidyincome" jdbcType="VARCHAR" property="subsidyincome" />
+    <result column="militarytrainingincome" jdbcType="VARCHAR" property="militarytrainingincome" />
+    <result column="wagesupplement" jdbcType="VARCHAR" property="wagesupplement" />
+    <result column="utilities" jdbcType="VARCHAR" property="utilities" />
+    <result column="housingallowance" jdbcType="VARCHAR" property="housingallowance" />
+    <result column="hightemperaturesubsidy" jdbcType="VARCHAR" property="hightemperaturesubsidy" />
+    <result column="seniorityallowance" jdbcType="VARCHAR" property="seniorityallowance" />
+    <result column="shouldsendsalary" jdbcType="VARCHAR" property="shouldsendsalary" />
+    <result column="socialinsurance" jdbcType="VARCHAR" property="socialinsurance" />
+    <result column="reservedfunds" jdbcType="VARCHAR" property="reservedfunds" />
+    <result column="othercutpayment" jdbcType="VARCHAR" property="othercutpayment" />
+    <result column="utilitiescut" jdbcType="VARCHAR" property="utilitiescut" />
+    <result column="lovedonation" jdbcType="VARCHAR" property="lovedonation" />
+    <result column="individualincometax" jdbcType="VARCHAR" property="individualincometax" />
+    <result column="takehomepay" jdbcType="VARCHAR" property="takehomepay" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, senddate, name, cardno, department, wage, overtimepay, performancebonus, subsidyincome, 
+    militarytrainingincome, wagesupplement, utilities, housingallowance, hightemperaturesubsidy, 
+    seniorityallowance, shouldsendsalary, socialinsurance, reservedfunds, othercutpayment, 
+    utilitiescut, lovedonation, individualincometax, takehomepay
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_wagedetail_rz
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_wagedetail_rz
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.TbWageDetailRZ">
+    insert into tb_wagedetail_rz (id, senddate, name, 
+      cardno, department, wage, 
+      overtimepay, performancebonus, subsidyincome, 
+      militarytrainingincome, wagesupplement, 
+      utilities, housingallowance, hightemperaturesubsidy, 
+      seniorityallowance, shouldsendsalary, socialinsurance, 
+      reservedfunds, othercutpayment, utilitiescut, 
+      lovedonation, individualincometax, takehomepay
+      )
+    values (#{id,jdbcType=VARCHAR}, #{senddate,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{cardno,jdbcType=VARCHAR}, #{department,jdbcType=VARCHAR}, #{wage,jdbcType=VARCHAR}, 
+      #{overtimepay,jdbcType=VARCHAR}, #{performancebonus,jdbcType=VARCHAR}, #{subsidyincome,jdbcType=VARCHAR}, 
+      #{militarytrainingincome,jdbcType=VARCHAR}, #{wagesupplement,jdbcType=VARCHAR}, 
+      #{utilities,jdbcType=VARCHAR}, #{housingallowance,jdbcType=VARCHAR}, #{hightemperaturesubsidy,jdbcType=VARCHAR}, 
+      #{seniorityallowance,jdbcType=VARCHAR}, #{shouldsendsalary,jdbcType=VARCHAR}, #{socialinsurance,jdbcType=VARCHAR}, 
+      #{reservedfunds,jdbcType=VARCHAR}, #{othercutpayment,jdbcType=VARCHAR}, #{utilitiescut,jdbcType=VARCHAR}, 
+      #{lovedonation,jdbcType=VARCHAR}, #{individualincometax,jdbcType=VARCHAR}, #{takehomepay,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.TbWageDetailRZ">
+    insert into tb_wagedetail_rz
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="senddate != null">
+        senddate,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="cardno != null">
+        cardno,
+      </if>
+      <if test="department != null">
+        department,
+      </if>
+      <if test="wage != null">
+        wage,
+      </if>
+      <if test="overtimepay != null">
+        overtimepay,
+      </if>
+      <if test="performancebonus != null">
+        performancebonus,
+      </if>
+      <if test="subsidyincome != null">
+        subsidyincome,
+      </if>
+      <if test="militarytrainingincome != null">
+        militarytrainingincome,
+      </if>
+      <if test="wagesupplement != null">
+        wagesupplement,
+      </if>
+      <if test="utilities != null">
+        utilities,
+      </if>
+      <if test="housingallowance != null">
+        housingallowance,
+      </if>
+      <if test="hightemperaturesubsidy != null">
+        hightemperaturesubsidy,
+      </if>
+      <if test="seniorityallowance != null">
+        seniorityallowance,
+      </if>
+      <if test="shouldsendsalary != null">
+        shouldsendsalary,
+      </if>
+      <if test="socialinsurance != null">
+        socialinsurance,
+      </if>
+      <if test="reservedfunds != null">
+        reservedfunds,
+      </if>
+      <if test="othercutpayment != null">
+        othercutpayment,
+      </if>
+      <if test="utilitiescut != null">
+        utilitiescut,
+      </if>
+      <if test="lovedonation != null">
+        lovedonation,
+      </if>
+      <if test="individualincometax != null">
+        individualincometax,
+      </if>
+      <if test="takehomepay != null">
+        takehomepay,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="senddate != null">
+        #{senddate,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="cardno != null">
+        #{cardno,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null">
+        #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="wage != null">
+        #{wage,jdbcType=VARCHAR},
+      </if>
+      <if test="overtimepay != null">
+        #{overtimepay,jdbcType=VARCHAR},
+      </if>
+      <if test="performancebonus != null">
+        #{performancebonus,jdbcType=VARCHAR},
+      </if>
+      <if test="subsidyincome != null">
+        #{subsidyincome,jdbcType=VARCHAR},
+      </if>
+      <if test="militarytrainingincome != null">
+        #{militarytrainingincome,jdbcType=VARCHAR},
+      </if>
+      <if test="wagesupplement != null">
+        #{wagesupplement,jdbcType=VARCHAR},
+      </if>
+      <if test="utilities != null">
+        #{utilities,jdbcType=VARCHAR},
+      </if>
+      <if test="housingallowance != null">
+        #{housingallowance,jdbcType=VARCHAR},
+      </if>
+      <if test="hightemperaturesubsidy != null">
+        #{hightemperaturesubsidy,jdbcType=VARCHAR},
+      </if>
+      <if test="seniorityallowance != null">
+        #{seniorityallowance,jdbcType=VARCHAR},
+      </if>
+      <if test="shouldsendsalary != null">
+        #{shouldsendsalary,jdbcType=VARCHAR},
+      </if>
+      <if test="socialinsurance != null">
+        #{socialinsurance,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedfunds != null">
+        #{reservedfunds,jdbcType=VARCHAR},
+      </if>
+      <if test="othercutpayment != null">
+        #{othercutpayment,jdbcType=VARCHAR},
+      </if>
+      <if test="utilitiescut != null">
+        #{utilitiescut,jdbcType=VARCHAR},
+      </if>
+      <if test="lovedonation != null">
+        #{lovedonation,jdbcType=VARCHAR},
+      </if>
+      <if test="individualincometax != null">
+        #{individualincometax,jdbcType=VARCHAR},
+      </if>
+      <if test="takehomepay != null">
+        #{takehomepay,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.TbWageDetailRZ">
+    update tb_wagedetail_rz
+    <set>
+      <if test="senddate != null">
+        senddate = #{senddate,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="cardno != null">
+        cardno = #{cardno,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null">
+        department = #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="wage != null">
+        wage = #{wage,jdbcType=VARCHAR},
+      </if>
+      <if test="overtimepay != null">
+        overtimepay = #{overtimepay,jdbcType=VARCHAR},
+      </if>
+      <if test="performancebonus != null">
+        performancebonus = #{performancebonus,jdbcType=VARCHAR},
+      </if>
+      <if test="subsidyincome != null">
+        subsidyincome = #{subsidyincome,jdbcType=VARCHAR},
+      </if>
+      <if test="militarytrainingincome != null">
+        militarytrainingincome = #{militarytrainingincome,jdbcType=VARCHAR},
+      </if>
+      <if test="wagesupplement != null">
+        wagesupplement = #{wagesupplement,jdbcType=VARCHAR},
+      </if>
+      <if test="utilities != null">
+        utilities = #{utilities,jdbcType=VARCHAR},
+      </if>
+      <if test="housingallowance != null">
+        housingallowance = #{housingallowance,jdbcType=VARCHAR},
+      </if>
+      <if test="hightemperaturesubsidy != null">
+        hightemperaturesubsidy = #{hightemperaturesubsidy,jdbcType=VARCHAR},
+      </if>
+      <if test="seniorityallowance != null">
+        seniorityallowance = #{seniorityallowance,jdbcType=VARCHAR},
+      </if>
+      <if test="shouldsendsalary != null">
+        shouldsendsalary = #{shouldsendsalary,jdbcType=VARCHAR},
+      </if>
+      <if test="socialinsurance != null">
+        socialinsurance = #{socialinsurance,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedfunds != null">
+        reservedfunds = #{reservedfunds,jdbcType=VARCHAR},
+      </if>
+      <if test="othercutpayment != null">
+        othercutpayment = #{othercutpayment,jdbcType=VARCHAR},
+      </if>
+      <if test="utilitiescut != null">
+        utilitiescut = #{utilitiescut,jdbcType=VARCHAR},
+      </if>
+      <if test="lovedonation != null">
+        lovedonation = #{lovedonation,jdbcType=VARCHAR},
+      </if>
+      <if test="individualincometax != null">
+        individualincometax = #{individualincometax,jdbcType=VARCHAR},
+      </if>
+      <if test="takehomepay != null">
+        takehomepay = #{takehomepay,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.TbWageDetailRZ">
+    update tb_wagedetail_rz
+    set senddate = #{senddate,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      cardno = #{cardno,jdbcType=VARCHAR},
+      department = #{department,jdbcType=VARCHAR},
+      wage = #{wage,jdbcType=VARCHAR},
+      overtimepay = #{overtimepay,jdbcType=VARCHAR},
+      performancebonus = #{performancebonus,jdbcType=VARCHAR},
+      subsidyincome = #{subsidyincome,jdbcType=VARCHAR},
+      militarytrainingincome = #{militarytrainingincome,jdbcType=VARCHAR},
+      wagesupplement = #{wagesupplement,jdbcType=VARCHAR},
+      utilities = #{utilities,jdbcType=VARCHAR},
+      housingallowance = #{housingallowance,jdbcType=VARCHAR},
+      hightemperaturesubsidy = #{hightemperaturesubsidy,jdbcType=VARCHAR},
+      seniorityallowance = #{seniorityallowance,jdbcType=VARCHAR},
+      shouldsendsalary = #{shouldsendsalary,jdbcType=VARCHAR},
+      socialinsurance = #{socialinsurance,jdbcType=VARCHAR},
+      reservedfunds = #{reservedfunds,jdbcType=VARCHAR},
+      othercutpayment = #{othercutpayment,jdbcType=VARCHAR},
+      utilitiescut = #{utilitiescut,jdbcType=VARCHAR},
+      lovedonation = #{lovedonation,jdbcType=VARCHAR},
+      individualincometax = #{individualincometax,jdbcType=VARCHAR},
+      takehomepay = #{takehomepay,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -188,7 +188,17 @@
             <scope>system</scope> <!--system，类似provided，需要显式提供依赖的jar以后，Maven就不会在Repository中查找它-->
             <systemPath>${basedir}/lib/httpcore-4.3.2.jar</systemPath> <!--项目根目录下的lib文件夹下-->
         </dependency>
-
+        <!--读取解析excel-->
+		<dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.13</version>
+        </dependency>
     </dependencies>
 
     <build>

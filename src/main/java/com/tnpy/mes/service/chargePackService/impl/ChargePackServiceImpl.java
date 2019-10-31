@@ -187,7 +187,9 @@ public class ChargePackServiceImpl implements IChargePackService {
         }
         return  result;
     }
-
+    /**
+                 * 充电架电池下架
+     */
     public TNPYResponse pulloffChargingRackRecord( String jsonStr)
     {
         ChargingRackRecord chargingRackRecord =(ChargingRackRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), ChargingRackRecord.class);
@@ -416,7 +418,9 @@ public class ChargePackServiceImpl implements IChargePackService {
         }
         return  tmp+numStr;
     }
-
+    /**
+     * 电池打堆下单保存方法
+     */
     public TNPYResponse addPileTidyBatteryRecord( String jsonTidyRecord,String pileNum,String perPileMaterialNum,String storeLocation)
     {
         TidyBatteryRecord tidyBatteryRecord =(TidyBatteryRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonTidyRecord), TidyBatteryRecord.class);
@@ -424,11 +428,14 @@ public class ChargePackServiceImpl implements IChargePackService {
         try
         {
             TidyBatteryRecord tidyBatteryRecordNew = tidyBatteryRecordMapper.selectByPrimaryKey(tidyBatteryRecord.getId());
+            //打堆拖数
             int pileNumInt = Integer.parseInt(pileNum);
+            //每拖数量
             int perPileMaterialNumInt = Integer.parseInt(perPileMaterialNum);
-            tidyBatteryRecordNew.setCurrentnum(tidyBatteryRecordNew.getCurrentnum() -pileNumInt*perPileMaterialNumInt);
-            tidyBatteryRecordNew.setPilenum((float)pileNumInt*perPileMaterialNumInt);
-            tidyBatteryRecordMapper.updateByPrimaryKeySelective(tidyBatteryRecordNew);
+//            //剩余数量 = 当前剩余数量 - 打堆拖数*每托数量
+//            tidyBatteryRecordNew.setCurrentnum(tidyBatteryRecordNew.getCurrentnum() -pileNumInt*perPileMaterialNumInt);
+//            tidyBatteryRecordNew.setPilenum((float)pileNumInt*perPileMaterialNumInt);
+//            tidyBatteryRecordMapper.updateByPrimaryKeySelective(tidyBatteryRecordNew);
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSSS");
             Date now = new Date();
@@ -464,7 +471,9 @@ public class ChargePackServiceImpl implements IChargePackService {
         }
         return  result;
     }
-
+    /**
+     * 包装扫码查询方法
+     */
     public TNPYResponse getPileRecordByPileID( String id)
     {
         TNPYResponse result = new TNPYResponse();
@@ -484,6 +493,110 @@ public class ChargePackServiceImpl implements IChargePackService {
             return  result;
         }
     }
+    /**
+     * 整理扫码完成入库方法
+     */
+    
+    public TNPYResponse finishPileTidyBatteryRecord( String id,String remainpileNum,String piletotalNum, String partpileNum,String plantID,
+    		String processID,String lineID,String userID,String username)
+    {
+//    	TidyBatteryRecord tidyBatteryRecord =(TidyBatteryRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonTidyRecord), TidyBatteryRecord.class);
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+        	String filter = " where id = '" + id +"' ";
+            // System.out.println(plantID + " 参数 " +processID);
+            List<PileBatteryRecord> pileBatteryRecordList = pileBatteryRecordMapper.selectByFilter(filter);
+            PileBatteryRecord pile = pileBatteryRecordList.get(0);
+            TidyBatteryRecord tidyBatteryRecordNew = tidyBatteryRecordMapper.selectByPrimaryKey(pile.getTidyrecordid());
+            //部分打堆扫码查询数据,只传id
+            if((id!=null)&&(id!="")&&(id!="undefined")&&(!partpileNum.equals("0")&&(partpileNum.equals("partpilequery")))) {
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setData(JSONObject.toJSON(pileBatteryRecordList).toString());
+                return  result;
+            }
+            Date now = new Date();
+            //整理打堆部分入库
+            if(Integer.parseInt(partpileNum)>0) {
+            	String partfilter = " where partpileID = '" + id +"' ";
+                //判断是否已经部分打堆
+                List<PileBatteryRecord> partpileBatteryRecordList = pileBatteryRecordMapper.selectByFilter(partfilter);
+            	if(!(partpileBatteryRecordList.size()>0)) {
+	            	//部分打堆将主id设置成partpileID
+	            	pile.setPartpileid(pile.getId());
+	            	//设置ID
+	            	pile.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+	            	//部分打堆修改状态
+	        		pile.setStatus(StatusEnum.StatusFlag.partfinishpile.getIndex() + "");
+	        		//设置数量
+	        		pile.setFinishpilenum((float)Integer.parseInt(partpileNum));
+	        		//实际完成打堆人
+	        		pile.setFinishplantid(plantID);
+	        		pile.setFinishprocessid(processID);
+	        		pile.setFinishlineid(lineID);
+	        		pile.setFinishpilestaffid(userID);
+	        		pile.setFinishpilestaffname(username);
+	        		pile.setFinishpiletime(now);
+	//        		pileBatteryRecordMapper.updateByPrimaryKey(pile);
+	        		//插入一条新部分打堆记录
+	        		pileBatteryRecordMapper.insert(pile);
+	        		//修改整理台数据
+	        		int perPileMaterialNumInt =pile.getFinishpilenum().intValue();
+	                //剩余数量 = 当前剩余数量 - 每次整理打堆入库数
+	                tidyBatteryRecordNew.setCurrentnum(tidyBatteryRecordNew.getCurrentnum() - perPileMaterialNumInt);
+	                tidyBatteryRecordNew.setPilenum(tidyBatteryRecordNew.getPilenum()+(float)perPileMaterialNumInt);
+	                tidyBatteryRecordMapper.updateByPrimaryKeySelective(tidyBatteryRecordNew);
+	                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+	                result.setMessage("部分打堆成功！");
+	                return  result;
+                }else {
+                	result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                    result.setMessage("该二维码已部分打堆扫码!");
+                    return  result;
+                }
+                	
+            }
+            //整托打堆
+            else {
+            	//是否已经打堆判断
+            	if(!pile.getStatus().trim().equals(StatusEnum.StatusFlag.finishpile.getIndex() + "")) {
+            		//整托打堆修改状态
+            		pile.setStatus(StatusEnum.StatusFlag.finishpile.getIndex() + "");
+            		//实际完成打堆人
+            		pile.setFinishplantid(plantID);
+            		pile.setFinishprocessid(processID);
+            		pile.setFinishlineid(lineID);
+            		pile.setFinishpilestaffid(userID);
+            		pile.setFinishpilestaffname(username);
+            		pile.setFinishpiletime(now);
+            		pileBatteryRecordMapper.updateByPrimaryKey(pile);
+            		int perPileMaterialNumInt =pile.getProductionnumber().intValue();
+                    //剩余数量 = 当前剩余数量 - 每次整理打堆入库数
+                    tidyBatteryRecordNew.setCurrentnum(tidyBatteryRecordNew.getCurrentnum() - perPileMaterialNumInt);
+                    tidyBatteryRecordNew.setPilenum(tidyBatteryRecordNew.getPilenum()+(float)perPileMaterialNumInt);
+                    tidyBatteryRecordMapper.updateByPrimaryKeySelective(tidyBatteryRecordNew);
+                    result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                    result.setMessage("整托打堆成功！");
+                    return  result;
+            	}else {
+            		result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                    result.setMessage("该二维码已打堆扫码!");
+                    return  result;
+            	}
+            }
+            
+            
+            
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("插入失败！" + ex.getMessage());
+        }
+        return  result;
+    }
+    /**
+     * 包装扫码保存方法
+     */
     public TNPYResponse expendPileBatteryByPackage( String id,int packageNum,int totalNum)
     {
         TNPYResponse result = new TNPYResponse();
