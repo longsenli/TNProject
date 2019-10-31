@@ -861,7 +861,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         }
     }
 
-    private TNPYResponse mergeOnlineMaterialRecordJS(String mergeID, String operator) {
+    private TNPYResponse mergeOnlineMaterialRecordJS(String mergeID, String operator,String inputNumber) {
         TNPYResponse result = new TNPYResponse();
         try {
             String mergeIDList = "'" + mergeID.replace(",", "','") + "'";
@@ -877,6 +877,11 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 return result;
             }
 
+            if("-1".equals(inputNumber))
+            {
+                inputNumber = onlineMaterialRecordList.get(0).getMaterialnum().toString();
+            }
+
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
             Date now = new Date();
             OnlineMaterialRecord onlineMaterialRecord = new OnlineMaterialRecord();
@@ -887,7 +892,8 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             onlineMaterialRecord.setPlantid(onlineMaterialRecordList.get(0).getPlantid().split("###")[0]);
             onlineMaterialRecord.setProcessid(onlineMaterialRecordList.get(0).getProcessid().split("###")[0]);
             onlineMaterialRecord.setLineid(onlineMaterialRecordList.get(0).getLineid().split("###")[0]);
-            onlineMaterialRecord.setMaterialnum(onlineMaterialRecordList.get(0).getMaterialnum());
+            onlineMaterialRecord.setMaterialnum(Integer.parseInt(inputNumber) );
+            onlineMaterialRecord.setClasstype(( onlineMaterialRecordList.get(0).getMaterialnum() - Integer.parseInt(inputNumber) ) + "");
             onlineMaterialRecord.setOperator(operator);
             onlineMaterialRecordMapper.insertSelective(onlineMaterialRecord);
 
@@ -900,7 +906,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         }
     }
 
-    private TNPYResponse mergeOnlineMaterialRecordZH(String mergeID, String operator) {
+    private TNPYResponse mergeOnlineMaterialRecordZH(String mergeID, String operator,String inputNumber) {
         TNPYResponse result = new TNPYResponse();
         try {
             String mergeIDList = "'" + mergeID.replace(",", "','") + "'";
@@ -919,6 +925,11 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
             Date now = new Date();
             String orderName = onlineMaterialRecordList.get(0).getPlantid().split("###")[1] + onlineMaterialRecordList.get(0).getProcessid().split("###")[1] + onlineMaterialRecordList.get(0).getLineid().split("###")[1] + dateFormat.format(now);
+           if("-1".equals(inputNumber))
+           {
+               inputNumber = onlineMaterialRecordList.get(0).getMaterialnum().toString();
+           }
+            double dbNum = Integer.parseInt(inputNumber);
 
             OnlineMaterialRecord onlineMaterialRecord = new OnlineMaterialRecord();
             onlineMaterialRecord.setId(orderName);
@@ -928,14 +939,15 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             onlineMaterialRecord.setPlantid(onlineMaterialRecordList.get(0).getPlantid().split("###")[0]);
             onlineMaterialRecord.setProcessid(onlineMaterialRecordList.get(0).getProcessid().split("###")[0]);
             onlineMaterialRecord.setLineid(onlineMaterialRecordList.get(0).getLineid().split("###")[0]);
-            onlineMaterialRecord.setMaterialnum(onlineMaterialRecordList.get(0).getMaterialnum());
+            onlineMaterialRecord.setMaterialnum(Integer.parseInt(inputNumber) );
+            onlineMaterialRecord.setClasstype(( onlineMaterialRecordList.get(0).getMaterialnum() - Integer.parseInt(inputNumber) ) + "");
             onlineMaterialRecord.setOperator(operator);
             onlineMaterialRecordMapper.insertSelective(onlineMaterialRecord);
 
             OrderSplit orderSplit = new OrderSplit();
             orderSplit.setId(orderName);
             orderSplit.setMaterialid(onlineMaterialRecordList.get(0).getMaterialid());
-            double dbNum = onlineMaterialRecordList.get(0).getMaterialnum();
+
             orderSplit.setProductionnum(dbNum);
             orderSplit.setOrdersplitid(orderName);
             orderSplit.setOrderid(orderName);
@@ -965,12 +977,12 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         }
     }
 
-    public TNPYResponse mergeOnlineMaterialRecord(String mergeID, String operator, String processID) {
+    public TNPYResponse mergeOnlineMaterialRecord(String mergeID, String operator, String processID,String inputNumber) {
         if (ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(processID)) {
-            return mergeOnlineMaterialRecordZH(mergeID, operator);
+            return mergeOnlineMaterialRecordZH(mergeID, operator,inputNumber);
         }
         if (ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(processID)) {
-            return mergeOnlineMaterialRecordJS(mergeID, operator);
+            return mergeOnlineMaterialRecordJS(mergeID, operator,inputNumber);
         }
         TNPYResponse result = new TNPYResponse();
         result.setMessage("该工段没有线边仓功能，如需添加请联系开发人员！");
