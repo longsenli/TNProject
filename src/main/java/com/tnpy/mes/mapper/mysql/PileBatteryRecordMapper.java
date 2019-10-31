@@ -1,0 +1,31 @@
+package com.tnpy.mes.mapper.mysql;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+import org.springframework.stereotype.Component;
+
+import com.tnpy.mes.model.mysql.PileBatteryRecord;
+@Mapper
+@Component
+public interface PileBatteryRecordMapper {
+    int deleteByPrimaryKey(String id);
+
+    int insert(PileBatteryRecord record);
+
+    int insertSelective(PileBatteryRecord record);
+
+    PileBatteryRecord selectByPrimaryKey(String id);
+
+    int updateByPrimaryKeySelective(PileBatteryRecord record);
+
+    int updateByPrimaryKey(PileBatteryRecord record);
+    @Select("select * from tb_pilebatteryrecord ${filter} ")
+    List<PileBatteryRecord> selectByFilter(@Param("filter") String filter);
+
+    @Update(" update tb_pilebatteryrecord set status = #{status} ,packageTime = #{packageTime} where id = #{id}")
+    int updateStatusByPrimaryKey(String id,String status,String packageTime);
+}
