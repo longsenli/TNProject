@@ -5,6 +5,7 @@ import com.tnpy.mes.service.workOrderService.IWorkOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -133,8 +134,8 @@ public class OrderController {
         return  workOrderService.changeOnlineMaterialRecord(jsonStr);
     }
     @RequestMapping(value = "/mergeonlinematerialrecord")
-    public TNPYResponse mergeOnlineMaterialRecord( String mergeID ,String operator ,String processID) {
-        return  workOrderService.mergeOnlineMaterialRecord(mergeID,operator,processID);
+    public TNPYResponse mergeOnlineMaterialRecord( String mergeID ,String operator ,String processID,@RequestParam(defaultValue = "-1")String inputNumber) {
+        return  workOrderService.mergeOnlineMaterialRecord(mergeID,operator,processID, inputNumber);
     }
     @RequestMapping(value = "/getonlinematerialrecord")
     public TNPYResponse getOnlineMaterialRecord(  String plantID,String processID,String lineID ,String startTime,String endTime ) {
