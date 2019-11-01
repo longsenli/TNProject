@@ -292,33 +292,133 @@ public class ChargePackServiceImpl implements IChargePackService {
         TNPYResponse result = new TNPYResponse();
         try
         {
-            String filter = " where status != '-1' ";
+        	String filter1 = "(\r\n" + 
+        			"	SELECT\r\n" + 
+        			"		id,\r\n" + 
+        			"		plantID,\r\n" + 
+        			"		processID,\r\n" + 
+        			"		lineID,\r\n" + 
+        			"		workLocation,\r\n" + 
+        			"		sum(currentNum) AS currentNum,\r\n" + 
+        			"		sum(lastNum) AS lastNum,\r\n" + 
+        			"		materialID,\r\n" + 
+        			"		materialName,\r\n" + 
+        			"		sum(repairNumber) AS repairNumber,\r\n" + 
+        			"		repairID,\r\n" + 
+        			"		repairName,\r\n" + 
+        			"		repairTime,\r\n" + 
+        			"		reason,\r\n" + 
+        			"		materialType,\r\n" + 
+        			"		sum(backToChargeNum) AS backToChargeNum,\r\n" + 
+        			"		sum(pileNum) AS pileNum,\r\n" + 
+        			"		sum(packNum) AS packNum,\r\n" + 
+        			"		sum(pullOffNum) AS pullOffNum,\r\n" + 
+        			"		sum(repairBackNum) AS repairBackNum,\r\n" + 
+        			"		repairCombine,\r\n" + 
+        			"		dayTime,\r\n" + 
+        			"		STATUS,\r\n" + 
+        			"		remark,\r\n" + 
+        			"		operatorID,\r\n" + 
+        			"		operatorName,\r\n" + 
+        			"		operatorTime\r\n" + 
+        			"	FROM\r\n" + 
+        			"		tb_tidybatteryrecord\r\n" + 
+        			"	WHERE ";
+            String filter2 = "  status != '-1' ";
             if("onWorkbench".equals(selectType))
             {
-                filter += " and currentNum > 0 ";
+                filter2 += " and currentNum > 0 ";
             }
             if("workbenchHistory".equals(selectType))
             {
-                filter += " and dayTime >= '" + startTime + "' ";
-                filter += " and dayTime <= '" + endTime + "' ";
+                filter2+= " and dayTime >= '" + startTime + "' ";
+                filter2 += " and dayTime <= '" + endTime + "' ";
             }
 
             if(!"-1".equals(plantID))
             {
-                filter += " and plantID = '" + plantID + "' ";
+                filter2 += " and plantID = '" + plantID + "' ";
             }
             if(!"-1".equals(processID))
             {
-                filter += " and processID = '" + processID + "' ";
+                filter2 += " and processID = '" + processID + "' ";
             }
             if(!"-1".equals(lineID))
             {
-                filter += " and lineID = '" + lineID + "' ";
+                filter2 += " and lineID = '" + lineID + "' ";
             }
 
-            filter += " order by dayTime asc ";
-            // System.out.println(plantID + " 参数 " +processID);
-            List<TidyBatteryRecord> tidyBatteryRecordList = tidyBatteryRecordMapper.selectByFilter(filter);
+            filter2 += "AND (\r\n" + 
+            		"		materialType = '1'\r\n" + 
+            		"		OR materialType = '2'\r\n" + 
+            		"	) GROUP BY materialID  order by dayTime asc ) UNION ALL  ";
+            
+            
+            String filter3 = "(\r\n" + 
+        			"	SELECT\r\n" + 
+        			"		id,\r\n" + 
+        			"		plantID,\r\n" + 
+        			"		processID,\r\n" + 
+        			"		lineID,\r\n" + 
+        			"		workLocation,\r\n" + 
+        			"		sum(currentNum) AS currentNum,\r\n" + 
+        			"		sum(lastNum) AS lastNum,\r\n" + 
+        			"		materialID,\r\n" + 
+        			"		materialName,\r\n" + 
+        			"		sum(repairNumber) AS repairNumber,\r\n" + 
+        			"		repairID,\r\n" + 
+        			"		repairName,\r\n" + 
+        			"		repairTime,\r\n" + 
+        			"		reason,\r\n" + 
+        			"		materialType,\r\n" + 
+        			"		sum(backToChargeNum) AS backToChargeNum,\r\n" + 
+        			"		sum(pileNum) AS pileNum,\r\n" + 
+        			"		sum(packNum) AS packNum,\r\n" + 
+        			"		sum(pullOffNum) AS pullOffNum,\r\n" + 
+        			"		sum(repairBackNum) AS repairBackNum,\r\n" + 
+        			"		repairCombine,\r\n" + 
+        			"		dayTime,\r\n" + 
+        			"		STATUS,\r\n" + 
+        			"		remark,\r\n" + 
+        			"		operatorID,\r\n" + 
+        			"		operatorName,\r\n" + 
+        			"		operatorTime\r\n" + 
+        			"	FROM\r\n" + 
+        			"		tb_tidybatteryrecord\r\n" + 
+        			"	WHERE ";
+            String filter4 = "  status != '-1' ";
+            if("onWorkbench".equals(selectType))
+            {
+                filter4 += " and currentNum > 0 ";
+            }
+            if("workbenchHistory".equals(selectType))
+            {
+                filter4+= " and dayTime >= '" + startTime + "' ";
+                filter4 += " and dayTime <= '" + endTime + "' ";
+            }
+
+            if(!"-1".equals(plantID))
+            {
+                filter4 += " and plantID = '" + plantID + "' ";
+            }
+            if(!"-1".equals(processID))
+            {
+                filter4 += " and processID = '" + processID + "' ";
+            }
+
+            filter4 += "AND (\r\n" + 
+            		"		materialType = '3'\r\n" + 
+            		"		OR materialType = '4'\r\n" + 
+            		"	) GROUP BY materialID  order by dayTime asc )   ";
+            
+            
+            StringBuilder stb = new StringBuilder();
+            stb.append(filter1).append(filter2).append(filter3).append(filter4);
+//            System.out.println(stb);
+            
+            List<TidyBatteryRecord> tidyBatteryRecordList = tidyBatteryRecordMapper.selectByFilter1(stb.toString());
+            
+            
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
 
             result.setData(JSONObject.toJSON(tidyBatteryRecordList).toString());
