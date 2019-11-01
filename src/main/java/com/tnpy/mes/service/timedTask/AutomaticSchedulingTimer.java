@@ -316,6 +316,14 @@ public class AutomaticSchedulingTimer {
                             materialInventoryRecordMapper.insertTBInventoryStatistics(timeStart, timeFinish, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j + 1).getId(), dateFormat.format(date) );
                         }
 
+                        if (ConfigParamEnum.BasicProcessEnum.FBProcessID.getName().equals(productionProcessList.get(j).getId())) {
+                            materialInventoryRecordMapper.insertFBInventoryStatistics(timeStart, timeFinish + " 06:59", industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j + 1).getId(), dateFormat.format(date) );
+                        }
+
+                        if (ConfigParamEnum.BasicProcessEnum.BBProcessID.getName().equals(productionProcessList.get(j).getId())) {
+                            materialInventoryRecordMapper.insertFBInventoryStatistics(timeStart, timeFinish + " 06:59", industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j + 1).getId(), dateFormat.format(date) );
+                        }
+
                         if (ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(productionProcessList.get(j).getId())) {
                             materialInventoryRecordMapper.insertZHInventoryStatistics(timeStart, timeFinish, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j + 1).getId(), dateFormat.format(date) );
                         }

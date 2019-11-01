@@ -68,4 +68,20 @@ public interface MaterialInventoryRecordMapper {
             " ( select materialID,sum(value) as scrapNum from tb_workorderscrapinfo where orderID in (select id from tb_workorder where  scheduledStartTime >=  #{startTime} \n" +
             " and  scheduledStartTime < #{endTime} and plantID = #{plantID} and processID = #{nextProcessID} ) group by materialID ) h on g.id = h.materialID where (ifnull(currentNum,0) + ifnull(productionNum,0)  + ifnull(grantNum,0)   + ifnull(scrapNum,0) + ifnull(onlineInnum,0)) != 0")
     int insertTBInventoryStatistics( String startTime,String endTime,String plantID,String processID,String nextProcessID,String lastStatisTime);
+
+    //  只有入库和消耗，对于不发料的工序，productionNum = 产量，expendNum = 投料消耗掉的，
+    @Insert(" insert into tb_materialinventoryrecord (id,materialID,plantID,processID,currentNum,lastStorage,updateTime,productionNum, inNum, expendNum, outNum, operator, status,extend6) \n" +
+            " select uuid(),id,#{plantID},#{processID},currentNum + totalIn - totalOut,totalOut,now(),totalIn,0,totalOut,0,'system','1',name from (\n" +
+            " select p.id,p.name,ifnull(p.totalIn,0) as totalIn ,ifnull(p.totalOut,0) as totalOut,ifnull(q.currentNum,0) as currentNum from (\n" +
+            " select m.id,m.name,sum(productionNumber) as totalIn,sum(outputNumber) as totalOut from (\n" +
+            " select id,name from sys_material where typeID in ( select materialTypeID from sys_processmaterial where processID = #{processID} and inOrout = 2) ) m left join  \n" +
+            "(  ( select  materialID,  sum(number) as productionNumber,0 as outputNumber  from (\n" +
+            " select id from tb_workorder where  scheduledStartTime >=  #{startTime} and  scheduledStartTime <#{endTime} and plantID = #{plantID} and processID = #{processID} and status < '6' ) \n" +
+            " a left join tb_materialrecord b on a.id = b.orderID where materialID is not null  group by materialID ) union all\n" +
+            " ( select  materialID, 0 as productionNumber, sum(number) as outputNumber   from tb_materialrecord where\n" +
+            " outputTime >=  #{startTime}  and  outputTime < #{endTime}  and inputPlantID = #{plantID} and inputProcessID = #{processID} group by materialID )\n" +
+            " )  n on m.id = n.materialID    group by m.id ) p left join ( select materialID,max(currentNum) as currentNum from tb_materialinventoryrecord\n" +
+            " where plantID = #{plantID} and processID = #{processID} and updateTime >=  #{lastStatisTime}  \n" +
+            "and updateTime <=  #{startTime} group by  materialID) q on p.id = q.materialID ) y where totalIn + totalOut +currentNum <> 0")
+    int insertFBInventoryStatistics( String startTime,String endTime,String plantID,String processID,String nextProcessID,String lastStatisTime);
 }
