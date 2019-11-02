@@ -55,4 +55,10 @@ public interface MaterialMapper {
             "left join sys_material b on a.materialTypeID = b.typeID where a.processID = #{processID} and a.inOrout = '2' and b.id is not null  and b.status = '1') c  left join " +
             "(select * from  sys_materialBasicInfo where plantID = #{plantID})d on c.id = d.materialID  order by c.name ")
     List<Map<Object, Object>> selectOutMaterialByProcessIDPlantID(String processID,String plantID);
+
+
+    @Select("select c.id,c.name,ifnull(d.number,c.eachbatchnumber) as eachbatchnumber,ifnull(d.number,c.eachbatchnumber) as description  from ( select b.name,b.id,b.eachbatchnumber from sys_processmaterial a \n" +
+            "left join sys_material b on a.materialTypeID = b.typeID where a.processID = #{processID} and a.inOrout = '2' and b.id is not null  and b.status = '1') c  left join " +
+            "(select * from  sys_materialBasicInfo where plantID = #{plantID} ) d on c.id = d.materialID  where d.number is not null order by c.name ")
+    List<Map<Object, Object>> selectOutProductMaterialByProcessIDPlantID(String processID,String plantID);
 }

@@ -168,7 +168,12 @@ public class BasicDataServiceImpl implements IBasicDataService {
         try
         {
           //  List<Material> materialList = materialMapper.selectOutByProcess(processID);
-            List<Map<Object, Object>> materialList = materialMapper.selectOutMaterialByProcessIDPlantID(processID,plantID);
+            List<Map<Object, Object>> materialList;
+            materialList    = materialMapper.selectOutProductMaterialByProcessIDPlantID(processID,plantID);
+            if(materialList == null || materialList.size() ==0)
+            {
+                materialList    = materialMapper.selectOutMaterialByProcessIDPlantID(processID,plantID);
+            }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSONString(materialList, SerializerFeature.WriteMapNullValue).toString());
             return  result;
