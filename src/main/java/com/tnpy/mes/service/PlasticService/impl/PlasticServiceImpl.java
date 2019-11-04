@@ -79,7 +79,6 @@ public class PlasticServiceImpl  implements IPlasticService {
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 return  result;
              }
-            System.out.println("========over");
             int currentUsedNumber = 0;
             for(int i =0;i<orderArray.length;i++)
             {
