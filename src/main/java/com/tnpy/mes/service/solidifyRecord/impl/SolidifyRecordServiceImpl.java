@@ -11,7 +11,6 @@ import com.tnpy.mes.model.mysql.*;
 import com.tnpy.mes.service.solidifyRecord.ISolidifyRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -207,16 +206,8 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
                                 materialRecord.setInputprocessid(workorder.getProcessid());
                                 materialRecord.setInputlineid(workorder.getLineid());
                                 if (!materialRecord.getInputprocessid().equals(ConfigParamEnum.BasicProcessEnum.TBProcessID.getName())  ) {
-                                    if(!materialRecord.getInputprocessid().equals(ConfigParamEnum.BasicProcessEnum.FBProcessID.getName()))
-                                    {
                                         mapResult.put("returnMessage", "只有涂板工序的工单才能入窑！" + orderSplitID);
                                         break;
-                                    }
-                                    if(StringUtils.isEmpty(materialRecord.getMaterialnameinfo()) && !materialRecord.getMaterialnameinfo().contains("连涂"))
-                                    {
-                                        mapResult.put("returnMessage", "分板只有连涂的工单才能入窑！" + orderSplitID);
-                                        break;
-                                    }
                                 }
                             }
 
@@ -262,16 +253,8 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
                         break;
                     }
                     if (!materialRecord.getInputprocessid().equals(ConfigParamEnum.BasicProcessEnum.TBProcessID.getName())  ) {
-                        if(!materialRecord.getInputprocessid().equals(ConfigParamEnum.BasicProcessEnum.FBProcessID.getName()))
-                        {
                             mapResult.put("returnMessage", "只有涂板工序的工单才能入窑！" + orderSplitID);
                             break;
-                        }
-                        if(StringUtils.isEmpty(materialRecord.getMaterialnameinfo()) && !materialRecord.getMaterialnameinfo().contains("连涂"))
-                        {
-                            mapResult.put("returnMessage", "分板只有连涂的工单才能入窑！" + orderSplitID);
-                            break;
-                        }
                     }
 
                     List<SolidifyRecord> solidifyRecordList = solidifyRecordMapper.selectByOrderID(orderSplitID);
