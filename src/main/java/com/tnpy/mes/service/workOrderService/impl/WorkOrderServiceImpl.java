@@ -526,6 +526,10 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             if (ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(materialRecord.getInputprocessid())) {
                 materialRecord.setInorout(StatusEnum.InOutStatus.PreInput.getIndex());
             }
+            if(ConfigParamEnum.BasicProcessEnum.BBProcessID.getName().equals(workorder.getProcessid()))
+            {
+                materialRecord.setInputworklocationid(orderSplit.getProductionnum() + "");
+            }
             materialRecordMapper.insert(materialRecord);
             boolean blTB = ConfigParamEnum.BasicProcessEnum.TBProcessID.getName().equals(workOrderMapper.getProcessIDByOrder(orderSplit.getOrderid()));
          /*

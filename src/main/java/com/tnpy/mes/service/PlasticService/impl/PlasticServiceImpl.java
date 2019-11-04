@@ -11,6 +11,7 @@ import com.tnpy.mes.service.PlasticService.IPlasticService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -61,6 +62,25 @@ public class PlasticServiceImpl  implements IPlasticService {
             String[] orderArray = listID.split("###");
 
             MaterialRecord materialRecord = materialRecordMapper.selectBySuborderID(orderID);
+
+            int remainNumber = Double.valueOf(materialRecord.getInputworklocationid()).intValue();
+           // System.out.println("========" + Double.valueOf(materialRecord.getInputworklocationid()).intValue());
+            if( orderArray.length >remainNumber)
+            {
+                for(int i =0;i<orderArray.length;i++) {
+                    Map<String, String> mapResult = new HashMap<String, String>();
+                    mapResult.put("orderID", orderArray[i]);
+                    mapResult.put("status", "失败");
+                    mapResult.put("returnMessage", "物料不足!剩余：" + materialRecord.getInputworklocationid() + "，本次需使用：" + orderArray.length);
+                    grantResult.add(mapResult);
+                }
+
+                result.setData(JSONObject.toJSON(grantResult).toString());
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                return  result;
+             }
+            System.out.println("========over");
+            int currentUsedNumber = 0;
             for(int i =0;i<orderArray.length;i++)
             {
                 Map<String, String> mapResult = new HashMap<String, String>();
@@ -88,22 +108,60 @@ public class PlasticServiceImpl  implements IPlasticService {
                     plasticUsedRecordMapper.insert(plasticUsedRecord);
                     mapResult.put("status","成功");
                     mapResult.put("returnMessage","成功!");
-
+                    currentUsedNumber++;
                 }
                 catch (Exception ex)
                 {
-                    mapResult.put("returnMessage",ex.getMessage());
+                    if(ex.getMessage().contains("Duplicate entry"))
+                    {
+                        mapResult.put("returnMessage","该底壳已扫码");
+                    }
+                    else
+                    {
+                        mapResult.put("returnMessage",ex.getMessage());
+                    }
+
                 }
 
                 grantResult.add(mapResult);
             }
+            materialRecordMapper.updateJQNumber(materialRecord.getId(),(remainNumber - currentUsedNumber) +"");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();//取时间
+            dateFormat.format(date);
+            String timeFinish = "";
+            String timeStart = "";
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(date);
+            if (calendar.get(Calendar.HOUR_OF_DAY) > 6 && calendar.get(Calendar.HOUR_OF_DAY) < 19) {
+                timeStart = dateFormat.format(date) + " 07:00:00";
+                timeFinish = dateFormat.format(date) + " 19:00:00";
+
+            } else  if (calendar.get(Calendar.HOUR_OF_DAY) < 7){
+             //   timeStart = dateFormat.format(date) + " 19:00:00";
+                timeFinish = dateFormat.format(date) + " 07:00:00";
+
+                calendar.add(Calendar.DATE, -1);
+                date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+                timeStart = dateFormat.format(date) + " 19:00:00";
+            }
+            else
+            {
+                timeStart = dateFormat.format(date) + " 19:00:00";
+
+                calendar.add(Calendar.DATE, 1);
+                date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+                timeFinish = dateFormat.format(date) + " 7:00:00";
+            }
+            int finishedNumber = plasticUsedRecordMapper.selectPlasticUsedNumber(locationID,timeStart,timeFinish);
             result.setData(JSONObject.toJSON(grantResult).toString());
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setMessage((remainNumber - currentUsedNumber) + "___" +finishedNumber);
             return  result;
         }
         catch (Exception ex)
         {
-            result.setMessage("发放失败！" + ex.getMessage());
+            result.setMessage("底壳投料失败！" + ex.getMessage());
             return  result;
         }
     }

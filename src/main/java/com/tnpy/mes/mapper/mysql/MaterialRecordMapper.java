@@ -223,6 +223,9 @@ public interface MaterialRecordMapper {
 
     @Update(" update tb_materialrecord set inOrOut = #{inOrOutStatus} where id =#{recordID}" )
     int updateFinishStatusByID(String recordID,String inOrOutStatus);
+
+    @Update("update tb_materialrecord set inputWorkLocationID = #{numberRemain} where id =#{id} ")
+    int updateJQNumber(String id,String numberRemain );
 }
 
 

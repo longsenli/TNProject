@@ -25,4 +25,10 @@ public interface PlasticUsedRecordMapper {
 
     @Select("select * from tb_plasticUsedRecord ${filter}")
     List<PlasticUsedRecord> selectByParam(@Param("filter") String filter);
+
+    @Select("select count(*) from tb_plasticUsedRecord  where JQID = #{orderID}")
+    int selectJQUsedNumber(String orderID);
+
+    @Select("select count(*) from tb_plasticUsedRecord  where workLocation = #{locationID} and usedTime > #{startTime} and usedTime < #{endTime}")
+    int selectPlasticUsedNumber(String locationID,String startTime,String endTime);
 }
