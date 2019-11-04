@@ -315,7 +315,10 @@ public class AutomaticSchedulingTimer {
                         if (ConfigParamEnum.BasicProcessEnum.TBProcessID.getName().equals(productionProcessList.get(j).getId())) {
                             //materialInventoryRecordMapper.insertTBInventoryStatistics(timeStart, timeFinish, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j + 1).getId(), dateFormat.format(date) );
 
-                            materialInventoryRecordMapper.insertFBInventoryStatistics(timeStart, timeFinish + " 06:59", industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j + 1).getId(), dateFormat.format(date) );
+                            materialInventoryRecordMapper.insertTBNewInventoryStatistics(timeStart, timeFinish + " 06:59", industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j + 1).getId(), dateFormat.format(date) );
+                        }
+                        if (ConfigParamEnum.BasicProcessEnum.GHProcessID.getName().equals(productionProcessList.get(j).getId())) {
+                            materialInventoryRecordMapper.insertGHNewInventoryStatistics(timeStart, timeFinish + " 06:59", industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j + 1).getId(), dateFormat.format(date) );
                         }
 
                         if (ConfigParamEnum.BasicProcessEnum.FBProcessID.getName().equals(productionProcessList.get(j).getId())) {

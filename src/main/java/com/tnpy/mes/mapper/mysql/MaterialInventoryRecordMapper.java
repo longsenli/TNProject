@@ -84,4 +84,28 @@ public interface MaterialInventoryRecordMapper {
             " where plantID = #{plantID} and processID = #{processID} and updateTime >=  #{lastStatisTime}  \n" +
             "and updateTime <=  #{startTime} group by  materialID) q on p.id = q.materialID ) y where totalIn + totalOut +currentNum <> 0")
     int insertFBInventoryStatistics( String startTime,String endTime,String plantID,String processID,String nextProcessID,String lastStatisTime);
+
+    //涂板只计算产量
+    @Insert(" insert into tb_materialinventoryrecord (id,materialID,plantID,processID,updateTime,productionNum, operator, status,extend6) \n" +
+            "select uuid(),id,#{plantID}, #{processID},now(),totalIn,'system','1',name from (\n" +
+            "select m.id,m.name,sum(productionNumber) as totalIn,sum(outputNumber) as totalOut from (\n" +
+            "select id,name from sys_material where typeID in ( select materialTypeID from sys_processmaterial where processID =   #{processID} and inOrout = 2) ) m left join  \n" +
+            "  ( select  materialID,  sum(number) as productionNumber,0 as outputNumber  from (\n" +
+            "select id from tb_workorder where  scheduledStartTime >=    #{startTime}  and  scheduledStartTime < #{endTime} and plantID = #{plantID} and processID = #{processID} and status < '6' ) \n" +
+            "a left join tb_materialrecord b on a.id = b.orderID where materialID is not null  group by materialID ) n on m.id = n.materialID group by m.id ) y where totalIn + totalOut  <> 0   ")
+    int insertTBNewInventoryStatistics( String startTime,String endTime,String plantID,String processID,String nextProcessID,String lastStatisTime);
+
+
+    //固化室显示当前在库数，当日入库数、当日出库数
+    @Insert(" insert into tb_materialinventoryrecord (id,materialID,plantID,processID,currentNum,lastStorage,updateTime,productionNum, inNum, expendNum, outNum, operator, status,extend6)\n" +
+            "select uuid(),materialID,#{plantID}, #{processID},remainNumber,remainTS,now(),totalInNumber,inTS,totalOutNumber,outTS,'system','1',materialName from (\n" +
+            "select materialID,materialName,sum(remainNumber) as remainNumber,sum(remainTS) as remainTS,sum(totalInNumber) as totalInNumber,sum(inTS) as inTS,sum(totalOutNumber) as totalOutNumber,sum(outTS) as outTS from (\n" +
+            "( SELECT materialID,materialName,sum(productionNum) as remainNumber,count(1) as remainTS,0 as totalInNumber, 0 as inTS,0 as totalOutNumber,0 as outTS  \n" +
+            "FROM tb_solidifyrecord where plantID = #{plantID} and status < '9' group by materialID,materialName) union all\n" +
+            "(SELECT materialID,materialName,0 as remainNumber,0 as remainTS, sum(productionNum) as totalInNumber,count(1) as inTS ,0 as totalOutNumber,0 as outTS \n" +
+            " FROM tb_solidifyrecord where plantID = #{plantID} and  starttime1> #{startTime} and  starttime1 < #{endTime} group by materialID,materialName) union all\n" +
+            "(SELECT materialID,materialName,0 as remainNumber,0 as remainTS,0 as totalInNumber, 0 as inTS,sum(productionNum) as totalOutNumber,count(1) as outTS \n" +
+            "FROM tb_solidifyrecord where plantID =#{plantID} and  endtime3> #{startTime} \n" +
+            "and  endtime3 <  #{endTime} group by materialID,materialName)  ) a group by materialID,materialName ) b where remainNumber + totalInNumber + totalOutNumber > 0  ")
+    int insertGHNewInventoryStatistics( String startTime,String endTime,String plantID,String processID,String nextProcessID,String lastStatisTime);
 }
