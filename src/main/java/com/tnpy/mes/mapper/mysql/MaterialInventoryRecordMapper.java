@@ -116,7 +116,7 @@ public interface MaterialInventoryRecordMapper {
 
     //更新周期浇铸、固化室、极群、装配；分板的在包板二级库存中查看，电池在包装二级库存
     @Insert("update tb_materialsecondaryinventoryrecord t1,tb_planproductionrecord t2 set t1.extend1 = t2.planDailyProduction,t1.extend2 = t1.currentNum/ifnull(t2.planDailyProduction,1) ,t1.extend6 = t2.materialName \n" +
-            "where t1.materialID = t2.materialID and t1.plantID = t2.plantID and t1.updateTime > #{startTime} and t2.planMonth = #{monthStr} and t1.processID in('1006','1012') ")
+            "where t1.materialID = t2.materialID and t1.plantID = t2.plantID and t1.updateTime > #{startTime} and t2.planMonth = #{monthStr} and t1.processID in ('1005','1006','1012') ")
     int updateEJKCZQData( String startTime,String monthStr);
 
 
