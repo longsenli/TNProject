@@ -108,4 +108,16 @@ public interface MaterialInventoryRecordMapper {
             "FROM tb_solidifyrecord where plantID =#{plantID} and  endtime3> #{startTime} \n" +
             "and  endtime3 <  #{endTime} group by materialID,materialName)  ) a group by materialID,materialName ) b where remainNumber + totalInNumber + totalOutNumber > 0  ")
     int insertGHNewInventoryStatistics( String startTime,String endTime,String plantID,String processID,String nextProcessID,String lastStatisTime);
+
+    //更新周期浇铸、固化室、极群、装配；分板的在包板二级库存中查看，电池在包装二级库存
+    @Insert("update tb_materialinventoryrecord t1,tb_planproductionrecord t2 set t1.extend1 = t2.planDailyProduction,t1.extend2 = t1.currentNum/ifnull(t2.planDailyProduction,1) \n" +
+            "where t1.materialID = t2.materialID and t1.plantID = t2.plantID and t1.updateTime > #{startTime} and t2.planMonth = #{monthStr} and t1.processID in ('1011','1006','1007','1004') ")
+    int updateZQData( String startTime,String monthStr);
+
+    //更新周期浇铸、固化室、极群、装配；分板的在包板二级库存中查看，电池在包装二级库存
+    @Insert("update tb_materialsecondaryinventoryrecord t1,tb_planproductionrecord t2 set t1.extend1 = t2.planDailyProduction,t1.extend2 = t1.currentNum/ifnull(t2.planDailyProduction,1) ,t1.extend6 = t2.materialName \n" +
+            "where t1.materialID = t2.materialID and t1.plantID = t2.plantID and t1.updateTime > #{startTime} and t2.planMonth = #{monthStr} and t1.processID in('1006','1012') ")
+    int updateEJKCZQData( String startTime,String monthStr);
+
+
 }

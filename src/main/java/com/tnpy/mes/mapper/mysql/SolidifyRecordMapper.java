@@ -55,4 +55,18 @@ public interface SolidifyRecordMapper {
     @Select("select a.subOrderID as orderID ,CONCAT(a.materialNameInfo,'  ',a.number)  as status ,CONCAT(date_format(a.inputTime, '%Y-%m-%d %H:%i:%s'),' ' ,a.inputer ) as returnMessage  from tb_materialrecord  a left join \n" +
             "  tb_solidifyrecord  b on a.subOrderID = b.id where inputTime > #{startTime}  and inputTime <#{endTime} and inputProcessID = #{processID} and inputPlantID = #{plantID} and b.orderID is null ")
     List<Map<Object, Object>>  uninputSolidifyRoom(String plantID ,String processID , String startTime, String endTime );
+
+    @Select("( select a.materialName,a.solidifyRoomID,a.total1D,b.planDailyProduction as total2D,a.total1D/ifnull(b.planDailyProduction,1) as total3D from ( \n" +
+            "SELECT materialName,'物料周期' as solidifyRoomID,sum( productionNum) as total1D  FROM tb_solidifyrecord  \n" +
+            "where status < '9' and  plantID = #{plantID}  group by materialName  ) a left join  \n" +
+            "(select * from tb_planproductionrecord where plantID =#{plantID} and planMonth = #{monthStr}) b  on a.materialName = b.materialName order by a.materialName limit 100) \n" +
+            "union all\n" +
+            "(SELECT materialName,'分段总计' as solidifyRoomID,sum( if( status = '1' , productionNum, 0)) as total1D,  sum( if( status = '2' , productionNum, 0)) as total2D ,  \n" +
+            "sum( if( status = '3' , productionNum, 0)) as total3D   FROM tb_solidifyrecord  \n" +
+            "where status < '9' and  plantID = #{plantID}  group by materialName limit 100)\n" +
+            "union all\n" +
+            "( select m.materialName,n.name,m.total1D,m.total2D,m.total3D from ( SELECT materialName,solidifyRoomID,sum( if( status = '1' , productionNum, 0)) as total1D,  sum( if( status = '2' , productionNum, 0)) as total2D ,  \n" +
+            "sum( if( status = '3' , productionNum, 0)) as total3D   FROM tb_solidifyrecord  \n" +
+            "where status < '9' and  plantID = #{plantID} group by materialName,solidifyRoomID order by solidifyRoomID  ) m left join sys_productionline n on m.solidifyRoomID = n.id limit 1000)")
+    List<Map<Object, Object>>  getSolidifyRoomDetail(String plantID ,String monthStr );
 }

@@ -37,4 +37,30 @@ public interface MaterialSecondaryInventoryRecordMapper {
             " ) h on g.id = h.materialID where (ifnull(currentNum,0) + ifnull(expendNum,0)  + ifnull(grantNum,0)   + + ifnull(onlineNum,0)  + ifnull(mergeNum,0)  + ifnull(repairNum,0)) != 0")
     int insertJSSecondaryInventory( String startTime,String endTime,String plantID,String processID,String lastProcessID ,String lastStatisTime);
 
+    //包板二级库存 ： 库存 = 上次结余 + 固化出库 + 借调 - 报废 -借出 - 极群消耗，统一规整为小片型号
+    @Insert("insert into tb_materialsecondaryinventoryrecord (id,materialID,plantID,processID,currentNum,lastStorage,updateTime,gainNum,inNum,expendNum,outNum,todayRepair,operator,status)\n" +
+            "select uuid(),materialID,plantID,'1006',currentNum +outNumber -scrapNumber + borrowInNumber-borrowOutNumber - expendNumber,currentNum,now(),borrowInNumber,outNumber,expendNumber,borrowOutNumber,scrapNumber,'system','1' from (\n" +
+            "select materialID,plantID,sum(currentNum) as currentNum,sum(outNumber) as outNumber, sum(scrapNumber) as scrapNumber,sum(borrowInNumber) as borrowInNumber,sum(borrowOutNumber) as borrowOutNumber,sum(expendNumber) as expendNumber from (\n" +
+            "select ifnull(c.outMaterialID,b.materialID ) as materialID,b.plantID,b.currentNum, ifnull(c.rate,1) * b.outNumber as outNumber , ifnull(c.rate,1) * b.scrapNumber as scrapNumber,\n" +
+            " ifnull(c.rate, 1) *b.borrowInNumber as borrowInNumber, ifnull(c.rate,1) *b.borrowOutNumber as borrowOutNumber, ifnull(c.rate,1) *b.expendNumber as expendNumber from ( \n" +
+            "(select materialID,plantID,currentNum,0 as outNumber,0 as scrapNumber ,0 as borrowInNumber,0 as borrowOutNumber,0 as expendNumber from tb_materialsecondaryinventoryrecord \n" +
+            "where updateTime > #{lastInventoryTime} and updateTime <  #{startTime} and processID = '1006' group by materialID,plantID)\n" +
+            "union all\n" +
+            "(select materialID,plantID, 0 as currentNum,sum(productionNum)  as outNumber,0 as scrapNumber ,0 as borrowInNumber,0 as borrowOutNumber,0 as expendNumber   from tb_solidifyrecord  \n" +
+            "where endtime3 > #{startTime} and endtime3 < #{endTime} group by materialID,plantID)\n" +
+            "union all\n" +
+            "(select materialID,plantID, 0 as currentNum,0 as outNumber,sum(value) as scrapNumber,0 as borrowInNumber,0 as borrowOutNumber,0 as expendNumber  from tb_materialscraprecord \n" +
+            "where  updateTime > #{startTime} and updateTime <#{endTime} and processID in ('1004','1005','1006') group by materialID,plantID)\n" +
+            "union all\n" +
+            "(SELECT batteryType as materialID,acceptPlantID as plantID, 0 as currentNum, 0 as outNumber,0 as scrapNumber, sum(number) as borrowInNumber,0 as borrowOutNumber,0 as expendNumber   FROM tb_grantmaterialrecord \n" +
+            "where grantTime > #{startTime} and grantTime < #{endTime} and acceptPlantID != plantID and processID in ('1004','1005','1003') group by acceptPlantID,batteryType )\n" +
+            "union all\n" +
+            "(select materialID,inputPlantID as plantID,0 as currentNum, 0 as outNumber,0 as scrapNumber,0 as borrowInNumber,0 as borrowOutNumber,sum(number) as expendNumber  \n" +
+            "from tb_materialrecord where inputProcessID = '1006' and orderID like #{dayString}  and status = '1' group by materialID,inputPlantID)\n" +
+            "union all\n" +
+            "(SELECT  batteryType as materialID,acceptPlantID as plantID, 0 as currentNum,0 as outNumber,0 as scrapNumber, 0 as borrowInNumber,sum(number) as borrowOutNumber,0 as expendNumber  FROM tb_grantmaterialrecord \n" +
+            "where grantTime > #{startTime} and grantTime < #{endTime} and acceptPlantID != plantID and processID in ('1004','1005','1003') group by plantID,batteryType) \n" +
+            " ) b left join tb_materialchangerelation c on b.materialID = c.inMaterialID and b.plantID = c.plantID\n" +
+            " ) a group by  plantID,materialID ) d ")
+    int insertBBSecondaryInventory(  String startTime,String endTime,String dayString,String lastInventoryTime);
 }

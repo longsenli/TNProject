@@ -82,35 +82,35 @@ public class AutomaticSchedulingTimer {
     /**
      * 每天晚上21:50:30运行
      */
-    @Scheduled(cron = "00 45 23 * * ?")
-    public void automaticScheduling() {
-        try {
-            if(!serviceIPJudge())
-                return;
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = new Date();//取时间
-
-            Calendar calendar = new GregorianCalendar();
-            calendar.setTime(date);
-            calendar.add(Calendar.DATE, 1);
-            date = calendar.getTime();   //这个时间就是日期往后推一天的结果
-            String ybShift = workShiftRecordMapper.getYBTeam(dateFormat.format(date));
-
-            calendar.add(Calendar.DATE, 1);//把日期往后增加一天.正数往后推,负数往前推
-            int dayNum = calendar.get(Calendar.DATE);
-            if (dayNum == 16 || dayNum == 1) {
-                if ("A".equals(ybShift))
-                    ybShift = "B";
-                else
-                    ybShift = "A";
-            }
-            date = calendar.getTime();   //这个时间就是日期往后推一天的结果
-
-            workShiftRecordMapper.automaticScheduling(ybShift, dateFormat.format(date));
-        } catch (Exception ex) {
-
-        }
-    }
+//    @Scheduled(cron = "00 45 23 * * ?")
+//    public void automaticScheduling() {
+//        try {
+//            if(!serviceIPJudge())
+//                return;
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//            Date date = new Date();//取时间
+//
+//            Calendar calendar = new GregorianCalendar();
+//            calendar.setTime(date);
+//            calendar.add(Calendar.DATE, 1);
+//            date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+//            String ybShift = workShiftRecordMapper.getYBTeam(dateFormat.format(date));
+//
+//            calendar.add(Calendar.DATE, 1);//把日期往后增加一天.正数往后推,负数往前推
+//            int dayNum = calendar.get(Calendar.DATE);
+//            if (dayNum == 16 || dayNum == 1) {
+//                if ("A".equals(ybShift))
+//                    ybShift = "B";
+//                else
+//                    ybShift = "A";
+//            }
+//            date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+//
+//            workShiftRecordMapper.automaticScheduling(ybShift, dateFormat.format(date));
+//        } catch (Exception ex) {
+//
+//        }
+//    }
 
     @Scheduled(cron = "0 58 6,18 * * ?")
     public void automaticOrderStatus() {
@@ -251,16 +251,17 @@ public class AutomaticSchedulingTimer {
         }
     }
 */
-    @Scheduled(cron = "0 50 6 * * ?")
+    @Scheduled(cron = "0 45 6 * * ?")
     public void automaticSecondaryInventoryStatistics() {
         try {
             if(!serviceIPJudge())
                 return;
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyyMMdd");
             Date date = new Date();//取时间
-            dateFormat.format(date);
             String timeFinish = "";
             String timeStart = "";
+            String dayTimeString = "%" + dateFormat2.format(date);
             Calendar calendar = new GregorianCalendar();
             calendar.setTime(date);
             timeFinish = dateFormat.format(date) + " 07:00:00";
@@ -275,6 +276,11 @@ public class AutomaticSchedulingTimer {
                         if (ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(productionProcessList.get(j).getId())) {
                             materialSecondaryInventoryRecordMapper.insertJSSecondaryInventory(timeStart, timeFinish, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j - 1).getId(), dateFormat.format(date) + " 06:00:00");
                         }
+
+                        if (ConfigParamEnum.BasicProcessEnum.BBProcessID.getName().equals(productionProcessList.get(j).getId())) {
+                            materialSecondaryInventoryRecordMapper.insertBBSecondaryInventory(timeStart, timeFinish,dayTimeString, dateFormat.format(date) + " 06:00:00");
+                        }
+
                     } catch (Exception ex) {
                         System.out.println("二级库盘点出错===============" + ex.getMessage() + "  " + industrialPlantList.get(i).getName() + " " + productionProcessList.get(j).getName());
                     }
@@ -285,7 +291,7 @@ public class AutomaticSchedulingTimer {
         }
     }
 
-    @Scheduled(cron = "0 54 6 * * ?")
+    @Scheduled(cron = "0 52 6 * * ?")
     public void automaticInventoryStatistics() {
         try {
             if(!serviceIPJudge())
@@ -359,6 +365,22 @@ public class AutomaticSchedulingTimer {
             tidyPackageBatteryInventoryMapper.deleteRemark();
         } catch (Exception ex) {
             System.out.println("盘点出错" + ex.getMessage());
+        }
+    }
+
+
+    @Scheduled(cron = "0 5 7 * * ?")
+    public void automaticUpdateZQ() {
+        try {
+            if(!serviceIPJudge())
+                return;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM");
+            Date date = new Date();//取时间
+            materialInventoryRecordMapper.updateZQData(dateFormat.format(date),dateFormat2.format(date));
+            materialInventoryRecordMapper.updateEJKCZQData(dateFormat.format(date),dateFormat2.format(date));
+        } catch (Exception ex) {
+
         }
     }
 

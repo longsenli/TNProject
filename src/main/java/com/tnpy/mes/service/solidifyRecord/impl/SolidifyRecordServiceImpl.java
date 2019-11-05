@@ -379,4 +379,20 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
             return result;
         }
     }
+
+    public TNPYResponse getSolidifyRoomDetail(String plantID) {
+
+        TNPYResponse result = new TNPYResponse();
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
+            Date date = new Date();//取时间
+            List<Map<Object, Object>> solidifyRoomDetailList = solidifyRecordMapper.getSolidifyRoomDetail(plantID,dateFormat.format(date));
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSONString(solidifyRoomDetailList, SerializerFeature.WriteMapNullValue).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
 }
