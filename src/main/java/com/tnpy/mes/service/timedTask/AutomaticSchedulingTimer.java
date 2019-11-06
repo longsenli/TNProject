@@ -487,6 +487,8 @@ public class AutomaticSchedulingTimer {
     @Scheduled(cron = "0 23 11,23 * * ?")
     public void automaticInsertWorkOrder() {
         try {
+            if(true)
+                return;
             if(!serviceIPJudge())
                 return;
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
