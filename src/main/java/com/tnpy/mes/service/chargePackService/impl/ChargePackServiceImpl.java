@@ -732,6 +732,7 @@ public class ChargePackServiceImpl implements IChargePackService {
 	        		pile.setFinishpilestaffid(userID);
 	        		pile.setFinishpilestaffname(username);
 	        		pile.setFinishpiletime(now);
+                    pile.setPartpileid(id);
 	        		//插入一条新部分打堆记录
 //	        		pileBatteryRecordMapper.insert(pile);
 	        		
@@ -778,6 +779,7 @@ public class ChargePackServiceImpl implements IChargePackService {
             		pile.setFinishpilestaffname(username);
             		pile.setFinishpilenum(pile.getProductionnumber());
             		pile.setFinishpiletime(now);
+                    pile.setPartpileid(id);
             		pileBatteryRecordMapper.updateByPrimaryKey(pile);
             		int perPileMaterialNumInt =pile.getProductionnumber().intValue();
                     //剩余数量 = 当前剩余数量 - 每次整理打堆入库数

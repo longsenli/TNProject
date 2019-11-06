@@ -66,6 +66,9 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     @Autowired
     private DataProvenanceRelationMapper dataProvenanceRelationMapper;
 
+    @Autowired
+    private  PileBatteryRecordMapper pileBatteryRecordMapper;
+
     public TNPYResponse getWorkOrder() {
         TNPYResponse result = new TNPYResponse();
         try {
@@ -1009,6 +1012,12 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     public TNPYResponse cancelInputSuborder(String subOrdderID) {
         TNPYResponse result = new TNPYResponse();
         try {
+            if(subOrdderID.contains("___"))
+            {
+                pileBatteryRecordMapper.cancelInputSuborder(subOrdderID.split("___")[0]);
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                return result;
+            }
             MaterialRecord materialRecord = new MaterialRecord();
             materialRecord.setId(subOrdderID);
             materialRecord.setExpendorderid("");

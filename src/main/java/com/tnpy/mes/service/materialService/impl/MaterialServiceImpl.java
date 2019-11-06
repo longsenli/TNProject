@@ -54,13 +54,40 @@ public class MaterialServiceImpl implements IMaterialService {
         TNPYResponse result = new TNPYResponse();
         try {
 
+
             if(StringUtils.isEmpty(expendOrderID))
             {
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 result.setData(JSONObject.toJSON("").toString());
                 return result;
             }
+            //包装是用###标识
+            if(expendOrderID.contains("###"))
+            {
 
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = new Date();
+                String timeStart = dateFormat.format(date);
+
+                Calendar calendar = new GregorianCalendar();
+                calendar.setTime(date);
+                calendar.add(Calendar.DATE, 1);
+                date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+
+                String timeEnd = dateFormat.format(date);
+                String filter = " where packageTime > '" + timeStart +"' and packageTime < '"  + timeEnd +"' ";
+
+                if(!"-1".equals(expendOrderID.split("###")[0]))
+                {
+                    filter += " and finishopackagelineID = '" + expendOrderID.split("###")[0] + "' ";
+                }
+
+                List<Map<Object, Object>> materialRecordList = pileBatteryRecordMapper.selectLineInputDetail(filter);
+                result.setData(JSONObject.toJSON(materialRecordList).toString());
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                return result;
+            }
+            //加酸用___标识
             if(expendOrderID.contains("___"))
             {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -151,6 +178,43 @@ public class MaterialServiceImpl implements IMaterialService {
         TNPYResponse result = new TNPYResponse();
         try {
             List<String> materialIDList = JSON.parseArray(materialRecordIDListStr, String.class);
+            if(expendOrderID.contains("___") )
+            {
+                PileBatteryRecord pileBatteryRecord = pileBatteryRecordMapper.selectByPrimaryKey(materialIDList.get(0));
+                if(pileBatteryRecord == null)
+                {
+                    result.setMessage("未找到二维码信息，请确认！" + materialIDList.get(0));
+                    return result;
+                }
+//                if("1".equals(pileBatteryRecord.getStatus()))
+//                {
+//                    result.setMessage("该二维码尚未打堆，不能够使用！" + materialIDList.get(0));
+//                    return result;
+//                }
+                if("4".equals(pileBatteryRecord.getStatus()))
+                {
+                    result.setMessage("该二维码已被使用！" + materialIDList.get(0) + "  " + pileBatteryRecord.getFinishpackagestaffname() + "  " +pileBatteryRecord.getPackagetime() );
+                    return result;
+                }
+                pileBatteryRecord.setPackagetime(new Date());
+                String[] outputterInfo = outputter.split("###");
+                if (outputterInfo.length > 1) {
+                    pileBatteryRecord.setFinishpackagestaffid(outputterInfo[1]);
+                    pileBatteryRecord.setFinishpackagestaffname(outputterInfo[0]);
+                }
+                String[] lineInfo = expendOrderID.split("___");
+                if(lineInfo.length > 1)
+                {
+                    pileBatteryRecord.setFinishpackageplantid(lineInfo[0]);
+                    pileBatteryRecord.setFinishopackagelineid(lineInfo[2]);
+                }
+                pileBatteryRecord.setFnishpackagenum(pileBatteryRecord.getFinishpilenum());
+                pileBatteryRecord.setStatus("4");
+                pileBatteryRecordMapper.updateByPrimaryKeySelective(pileBatteryRecord);
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                return result;
+            }
+
             MaterialRecord materialRecord = materialRecordMapper.selectByPrimaryKey(materialIDList.get(0));
 
             if(expendOrderID.contains("###") )
@@ -245,9 +309,53 @@ public class MaterialServiceImpl implements IMaterialService {
     public TNPYResponse gainPartMaterialRecord(String materialRecordID, String materialOrderID, String number, String expendOrderID, String outputter) {
         TNPYResponse result = new TNPYResponse();
         try {
+            String[] outputterInfo = outputter.split("###");
+            if(expendOrderID.contains("___") ) {
+                PileBatteryRecord pileBatteryRecord = pileBatteryRecordMapper.selectByPrimaryKey(materialRecordID);
+                PileBatteryRecord pileBatteryRecord2 = pileBatteryRecordMapper.selectByPrimaryKey(materialRecordID);
+                if((pileBatteryRecord.getFinishpilenum() - Float.parseFloat(number)) < 0)
+                {
+                    result.setMessage("投料数量大于打堆数量，请确认！打堆数量：" +pileBatteryRecord.getFinishpilenum() + ",   "+ materialRecordID);
+                    return result;
+                }
+                if (pileBatteryRecord == null) {
+                    result.setMessage("未找到二维码信息，请确认！" + materialRecordID);
+                    return result;
+                }
+//                if("1".equals(pileBatteryRecord.getStatus()))
+//                {
+//                    result.setMessage("该二维码尚未打堆，不能够使用！" + materialIDList.get(0));
+//                    return result;
+//                }
+                if ("4".equals(pileBatteryRecord.getStatus())) {
+                    result.setMessage("该二维码已被使用！" + materialRecordID + "  " + pileBatteryRecord.getFinishpackagestaffname() + "  " + pileBatteryRecord.getPackagetime());
+                    return result;
+                }
+                pileBatteryRecord.setPackagetime(new Date());
+                if (outputterInfo.length > 1) {
+                    pileBatteryRecord.setFinishpackagestaffid(outputterInfo[1]);
+                    pileBatteryRecord.setFinishpackagestaffname(outputterInfo[0]);
+                }
+                String[] lineInfo = expendOrderID.split("___");
+                if (lineInfo.length > 1) {
+                    pileBatteryRecord.setFinishpackageplantid(lineInfo[0]);
+                    pileBatteryRecord.setFinishopackagelineid(lineInfo[2]);
+                }
+                pileBatteryRecord.setFinishpilenum(Float.parseFloat(number));
+                pileBatteryRecord.setFnishpackagenum(Float.parseFloat(number));
+                pileBatteryRecord.setStatus("4");
+                pileBatteryRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+
+                pileBatteryRecord2.setFinishpilenum(pileBatteryRecord2.getFinishpilenum() - Float.parseFloat(number));
+
+                pileBatteryRecordMapper.updateByPrimaryKeySelective(pileBatteryRecord2);
+                pileBatteryRecordMapper.insertSelective(pileBatteryRecord2);
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                return result;
+            }
             MaterialRecord materialRecord = materialRecordMapper.selectByPrimaryKey(materialRecordID);
             MaterialRecord materialRecordCopy = materialRecordMapper.selectByPrimaryKey(materialRecordID);
-            String[] outputterInfo = outputter.split("###");
+
 
             if(expendOrderID.contains("###") )
             {
@@ -416,6 +524,14 @@ public class MaterialServiceImpl implements IMaterialService {
         TNPYResponse result = new TNPYResponse();
         try {
             qrCode = qrCode.toUpperCase();
+            if(("_" + ConfigParamEnum.BasicProcessEnum.BZProcessID.getName() + "_").equals(expendOrderID))
+            {
+                List<Map<Object, Object>> materialRecordList = materialRecordMapper.selectPilePackageRecord(qrCode);
+
+                result.setData(JSONObject.toJSON(materialRecordList).toString());
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                return result;
+            }
             TNPYResponse resultGrant = judgeZHGrantStatus(qrCode);
             if (resultGrant.getStatus() != StatusEnum.ResponseStatus.Success.getIndex()) {
                 return resultGrant;
