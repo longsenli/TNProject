@@ -76,7 +76,7 @@ public class StatusEnum {
     }
 
     public static  enum StatusFlag {
-        abandon("弃用", -1), using("使用中", 1), finishpile("整托打堆",3),partfinishpile("部分打堆",4);
+        abandon("弃用", -1), using("使用中", 1), finishpile("整托打堆",3),partfinishpile("部分打堆",4) ,finishpackage("整托包装",5) ,partfinishpackage("部分包装",6);
         // 成员变量
         private String name;
         private int index;

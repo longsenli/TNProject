@@ -292,28 +292,48 @@ public class ChargePackServiceImpl implements IChargePackService {
         TNPYResponse result = new TNPYResponse();
         try
         {
-        	String filter1 = "(\r\n" + 
+        	 Date dNow = new Date();   //当前时间
+             Date dBefore = new Date();
+             Calendar calendar = Calendar.getInstance(); //得到日历
+             calendar.setTime(dNow);//把当前时间赋给日历
+             calendar.add(Calendar.DAY_OF_MONTH, -1);  //设置为前一天
+             dBefore = calendar.getTime();   //得到前一天的时间
+//           SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //设置时间格式
+             SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd"); //设置时间格式
+             String onWorkbenchdefDate = sdf.format(dBefore);    //格式化前一天, 整理台实时数据默认显示前一天数据, 当天一等品/二等品
+             
+             
+             
+             Date dBefore4 = new Date();
+             Calendar calendar4 = Calendar.getInstance(); //得到日历
+             calendar4.setTime(dNow);//把当前时间赋给日历
+             calendar4.add(Calendar.DAY_OF_MONTH, -4);  //设置为前一天
+             dBefore4 = calendar4.getTime();   //得到前一天的时间
+//           SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //设置时间格式
+             SimpleDateFormat sdf4=new SimpleDateFormat("yyyy-MM-dd"); //设置时间格式
+             String defstartDate = sdf4.format(dBefore4); ////格式化前四天天, 整理台实时数据默认显示前一天数据, 一次返充二次返充默认显示4天前到今天
+        	 String filter1 = "(\r\n" + 
         			"	SELECT\r\n" + 
         			"		id,\r\n" + 
         			"		plantID,\r\n" + 
         			"		processID,\r\n" + 
         			"		lineID,\r\n" + 
         			"		workLocation,\r\n" + 
-        			"		sum(currentNum) AS currentNum,\r\n" + 
-        			"		sum(lastNum) AS lastNum,\r\n" + 
+        			"		currentNum ,\r\n" + 
+        			"		lastNum,\r\n" + 
         			"		materialID,\r\n" + 
         			"		materialName,\r\n" + 
-        			"		sum(repairNumber) AS repairNumber,\r\n" + 
+        			"		repairNumber ,\r\n" + 
         			"		repairID,\r\n" + 
         			"		repairName,\r\n" + 
         			"		repairTime,\r\n" + 
         			"		reason,\r\n" + 
         			"		materialType,\r\n" + 
-        			"		sum(backToChargeNum) AS backToChargeNum,\r\n" + 
-        			"		sum(pileNum) AS pileNum,\r\n" + 
-        			"		sum(packNum) AS packNum,\r\n" + 
-        			"		sum(pullOffNum) AS pullOffNum,\r\n" + 
-        			"		sum(repairBackNum) AS repairBackNum,\r\n" + 
+        			"		backToChargeNum,\r\n" + 
+        			"		pileNum ,\r\n" + 
+        			"		packNum,\r\n" + 
+        			"		pullOffNum,\r\n" + 
+        			"		repairBackNum,\r\n" + 
         			"		repairCombine,\r\n" + 
         			"		dayTime,\r\n" + 
         			"		STATUS,\r\n" + 
@@ -325,14 +345,20 @@ public class ChargePackServiceImpl implements IChargePackService {
         			"		tb_tidybatteryrecord\r\n" + 
         			"	WHERE ";
             String filter2 = "  status != '-1' ";
+            //整理台实时数据只显示前一天下架数据
             if("onWorkbench".equals(selectType))
             {
                 filter2 += " and currentNum > 0 ";
+                filter2+= " and dayTime = '" + onWorkbenchdefDate + "' ";
             }
             if("workbenchHistory".equals(selectType))
             {
-                filter2+= " and dayTime >= '" + startTime + "' ";
-                filter2 += " and dayTime <= '" + endTime + "' ";
+            	if(!startTime.equals(endTime)) {
+	                filter2+= " and dayTime >= '" + startTime + "' ";
+	                filter2 += " and dayTime <= '" + endTime + "' ";
+            	}else {
+            		filter2 += " and dayTime <= '" + endTime + "' ";
+            	}
             }
 
             if(!"-1".equals(plantID))
@@ -351,31 +377,31 @@ public class ChargePackServiceImpl implements IChargePackService {
             filter2 += "AND (\r\n" + 
             		"		materialType = '1'\r\n" + 
             		"		OR materialType = '2'\r\n" + 
-            		"	) GROUP BY materialID  order by dayTime asc ) UNION ALL  ";
+            		"	)  ) UNION ALL  ";
             
             
             String filter3 = "(\r\n" + 
-        			"	SELECT\r\n" + 
+            		"	SELECT\r\n" + 
         			"		id,\r\n" + 
         			"		plantID,\r\n" + 
         			"		processID,\r\n" + 
         			"		lineID,\r\n" + 
         			"		workLocation,\r\n" + 
-        			"		sum(currentNum) AS currentNum,\r\n" + 
-        			"		sum(lastNum) AS lastNum,\r\n" + 
+        			"		currentNum ,\r\n" + 
+        			"		lastNum,\r\n" + 
         			"		materialID,\r\n" + 
         			"		materialName,\r\n" + 
-        			"		sum(repairNumber) AS repairNumber,\r\n" + 
+        			"		repairNumber ,\r\n" + 
         			"		repairID,\r\n" + 
         			"		repairName,\r\n" + 
         			"		repairTime,\r\n" + 
         			"		reason,\r\n" + 
         			"		materialType,\r\n" + 
-        			"		sum(backToChargeNum) AS backToChargeNum,\r\n" + 
-        			"		sum(pileNum) AS pileNum,\r\n" + 
-        			"		sum(packNum) AS packNum,\r\n" + 
-        			"		sum(pullOffNum) AS pullOffNum,\r\n" + 
-        			"		sum(repairBackNum) AS repairBackNum,\r\n" + 
+        			"		backToChargeNum,\r\n" + 
+        			"		pileNum ,\r\n" + 
+        			"		packNum,\r\n" + 
+        			"		pullOffNum,\r\n" + 
+        			"		repairBackNum,\r\n" + 
         			"		repairCombine,\r\n" + 
         			"		dayTime,\r\n" + 
         			"		STATUS,\r\n" + 
@@ -390,6 +416,8 @@ public class ChargePackServiceImpl implements IChargePackService {
             if("onWorkbench".equals(selectType))
             {
                 filter4 += " and currentNum > 0 ";
+                filter4+= " and dayTime >= '" + defstartDate + "' ";
+                filter4 += " and dayTime <= '" + onWorkbenchdefDate + "' ";
             }
             if("workbenchHistory".equals(selectType))
             {
@@ -405,12 +433,22 @@ public class ChargePackServiceImpl implements IChargePackService {
             {
                 filter4 += " and processID = '" + processID + "' ";
             }
+            if(!"-1".equals(lineID))
+            {
+                filter4 += " and lineID = '" + lineID + "' ";
+            }
+            
 
             filter4 += "AND (\r\n" + 
             		"		materialType = '3'\r\n" + 
             		"		OR materialType = '4'\r\n" + 
-            		"	) GROUP BY materialID  order by dayTime asc )   ";
+            		"	)  )  order by dayTime desc   ";
             
+            
+            
+            
+
+           
             
             StringBuilder stb = new StringBuilder();
             stb.append(filter1).append(filter2).append(filter3).append(filter4);
@@ -580,12 +618,50 @@ public class ChargePackServiceImpl implements IChargePackService {
         try
         {
             String filter = " where id = '" + id +"' ";
-            // System.out.println(plantID + " 参数 " +processID);
-            List<PileBatteryRecord> pileBatteryRecordList = pileBatteryRecordMapper.selectByFilter(filter);
-            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
-
-            result.setData(JSONObject.toJSON(pileBatteryRecordList).toString());
-            return  result;
+            String partfilter = " where partpileID  = '" + id +"' ";
+            //扫的查询记录
+        	List<PileBatteryRecord> pileBatteryRecordList = pileBatteryRecordMapper.selectByFilter(filter);
+        	String status = pileBatteryRecordList.get(0).getStatus().trim();
+            //第一判断扫码status,是否已经整托或者部分打堆  3 4 
+            if(pileBatteryRecordList.size()>0&&(status.equals(StatusEnum.StatusFlag.finishpile.getIndex() + "") || status.equals(StatusEnum.StatusFlag.partfinishpile.getIndex() + "")
+            		|| status.equals(StatusEnum.StatusFlag.partfinishpackage.getIndex() + "") || status.equals(StatusEnum.StatusFlag.finishpackage.getIndex() + "") )) {
+            	//第二如果已经整托包装,则返回提示
+            	if(status.equals(StatusEnum.StatusFlag.finishpackage.getIndex() + "")) {
+            		result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                    result.setMessage("该二维码已整托包装扫码, 请勿重复包装扫码!" + "数量为: " + pileBatteryRecordList.get(0).getFnishpackagenum().intValue() + "扫码人: " + pileBatteryRecordList.get(0).getFinishpackagestaffname());
+                    return  result;
+            	}
+            	//第三如果已经部分包装,则查出剩余电池
+            	if(status.equals(StatusEnum.StatusFlag.partfinishpackage.getIndex() + "")) {
+//            		String[] partids = pileBatteryRecordList.get(0).getPartpackageid().split("#");
+//            		
+//            		StringBuilder partpackfilter = new StringBuilder();
+//            		partpackfilter.append("select * from tb_pilebatteryrecord where id in = ");
+//            		for(int i=0; i<partids.length; i++) {
+//            			if(i==0){
+//            				partpackfilter.append("'"+partids[i]+"'");
+//            			}else {
+//            				partpackfilter.append("or id ='"+partids[i]+"'");
+//            			}
+//            		}
+//            		List<PileBatteryRecord> partpacklist = pileBatteryRecordMapper.selectAllByFilter(partfilter.toString());
+//            		Float countpartnum = new Float("0");
+//            		for (PileBatteryRecord pileBatteryRecord : partpacklist) {
+//            			countpartnum+=pileBatteryRecord.getFnishpackagenum();
+//					}
+            		result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            		 result.setData(JSONObject.toJSON(pileBatteryRecordList).toString());
+                    result.setMessage("部分包装");
+                    return  result;
+            	}
+            	result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setData(JSONObject.toJSON(pileBatteryRecordList).toString());
+                return  result;
+            }else {
+            	result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                result.setMessage("该二维码未打堆扫码!");
+                return  result;
+            }
         }
         catch (Exception ex)
         {
@@ -611,21 +687,40 @@ public class ChargePackServiceImpl implements IChargePackService {
             TidyBatteryRecord tidyBatteryRecordNew = tidyBatteryRecordMapper.selectByPrimaryKey(pile.getTidyrecordid());
             //部分打堆扫码查询数据,只传id
             if((id!=null)&&(id!="")&&(id!="undefined")&&(!partpileNum.equals("0")&&(partpileNum.equals("partpilequery")))) {
-                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
-                result.setData(JSONObject.toJSON(pileBatteryRecordList).toString());
-                return  result;
+            		if(pile.getStatus().trim().equals(StatusEnum.StatusFlag.finishpile.getIndex() + "") || pile.getStatus().trim().equals(StatusEnum.StatusFlag.partfinishpile.getIndex() + "")) {
+            			result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                        result.setMessage("该二维码已打堆扫码,打堆数量: " + pile.getFinishpilenum().intValue() + "  扫码人: " + pile.getFinishpilestaffname());
+                        return  result;
+            		}
+            		if(pile.getStatus().trim().equals(StatusEnum.StatusFlag.partfinishpackage.getIndex() + "") || pile.getStatus().trim().equals(StatusEnum.StatusFlag.finishpackage.getIndex() + "")) {
+            			result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                        result.setMessage("该二维码已包装,包装数量: " + pile.getFnishpackagenum().intValue());
+                        return  result;
+            		}
+	                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+	                result.setData(JSONObject.toJSON(pileBatteryRecordList).toString());
+	                return  result;
             }
+           //校验是否已经包装
+            if(pile.getStatus().trim().equals(StatusEnum.StatusFlag.partfinishpackage.getIndex() + "") || pile.getStatus().trim().equals(StatusEnum.StatusFlag.finishpackage.getIndex() + "")) {
+    			result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                result.setMessage("该二维码已包装,包装数量: " + pile.getFnishpackagenum().intValue());
+                return  result;
+    		}
+            
             Date now = new Date();
             //整理打堆部分入库
             if(Integer.parseInt(partpileNum)>0) {
-            	String partfilter = " where partpileID = '" + id +"' ";
+            	String partfilter = " where "
+            			+ "id = '" + id +"' and status = " + (StatusEnum.StatusFlag.partfinishpile.getIndex() + "" );
                 //判断是否已经部分打堆
                 List<PileBatteryRecord> partpileBatteryRecordList = pileBatteryRecordMapper.selectByFilter(partfilter);
             	if(!(partpileBatteryRecordList.size()>0)) {
+//            		PileBatteryRecord pilemain = pile;
 	            	//部分打堆将主id设置成partpileID
-	            	pile.setPartpileid(pile.getId());
+//	            	pile.setPartpileid(pile.getId());
 	            	//设置ID
-	            	pile.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+//	            	pile.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
 	            	//部分打堆修改状态
 	        		pile.setStatus(StatusEnum.StatusFlag.partfinishpile.getIndex() + "");
 	        		//设置数量
@@ -637,9 +732,18 @@ public class ChargePackServiceImpl implements IChargePackService {
 	        		pile.setFinishpilestaffid(userID);
 	        		pile.setFinishpilestaffname(username);
 	        		pile.setFinishpiletime(now);
-	//        		pileBatteryRecordMapper.updateByPrimaryKey(pile);
 	        		//插入一条新部分打堆记录
-	        		pileBatteryRecordMapper.insert(pile);
+//	        		pileBatteryRecordMapper.insert(pile);
+	        		
+	        		pileBatteryRecordMapper.updateByPrimaryKey(pile);
+	        		
+	        		///////////////////////////
+	        		//修改主数据
+	        		//部分打堆修改状态
+//	        		pile.setStatus(StatusEnum.StatusFlag.partfinishpile.getIndex() + "");
+	        		//设置数量
+//	        		pile.setFinishpilenum((float)Integer.parseInt(partpileNum));
+//	        		pileBatteryRecordMapper.updateByPrimaryKey(pilemain);
 	        		//修改整理台数据
 	        		int perPileMaterialNumInt =pile.getFinishpilenum().intValue();
 	                //剩余数量 = 当前剩余数量 - 每次整理打堆入库数
@@ -647,19 +751,23 @@ public class ChargePackServiceImpl implements IChargePackService {
 	                tidyBatteryRecordNew.setPilenum(tidyBatteryRecordNew.getPilenum()+(float)perPileMaterialNumInt);
 	                tidyBatteryRecordMapper.updateByPrimaryKeySelective(tidyBatteryRecordNew);
 	                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
-	                result.setMessage("部分打堆成功！");
+	                result.setMessage("部分打堆扫码成功！"+ "扫码人: " +  partpileBatteryRecordList.get(0).getFinishpilestaffname());
 	                return  result;
                 }else {
                 	result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
-                    result.setMessage("该二维码已部分打堆扫码!");
+                    result.setMessage("该二维码已部分打堆扫码, 部分打堆数量: " + partpileBatteryRecordList.get(0).getFinishpilenum().intValue() + "  扫码人: " + username);
                     return  result;
                 }
-                	
             }
             //整托打堆
             else {
             	//是否已经打堆判断
-            	if(!pile.getStatus().trim().equals(StatusEnum.StatusFlag.finishpile.getIndex() + "")) {
+            	if(!pile.getStatus().trim().equals(StatusEnum.StatusFlag.finishpile.getIndex() + "") ) {
+            		if(pile.getStatus().trim().equals(StatusEnum.StatusFlag.partfinishpile.getIndex() + "") ) {
+            			result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                        result.setMessage("该二维码已部分打堆扫码, 部分打堆数量: " + pile.getFinishpilenum().intValue() + "  扫码人: " + username);
+                        return  result;
+            		}
             		//整托打堆修改状态
             		pile.setStatus(StatusEnum.StatusFlag.finishpile.getIndex() + "");
             		//实际完成打堆人
@@ -668,6 +776,7 @@ public class ChargePackServiceImpl implements IChargePackService {
             		pile.setFinishlineid(lineID);
             		pile.setFinishpilestaffid(userID);
             		pile.setFinishpilestaffname(username);
+            		pile.setFinishpilenum(pile.getProductionnumber());
             		pile.setFinishpiletime(now);
             		pileBatteryRecordMapper.updateByPrimaryKey(pile);
             		int perPileMaterialNumInt =pile.getProductionnumber().intValue();
@@ -680,7 +789,7 @@ public class ChargePackServiceImpl implements IChargePackService {
                     return  result;
             	}else {
             		result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
-                    result.setMessage("该二维码已打堆扫码!");
+                    result.setMessage("该二维码已整托打堆扫码, 打堆数量为"+pile.getFinishpilenum() + "  扫码人: " + pile.getFinishpilestaffname());
                     return  result;
             	}
             }
@@ -690,38 +799,83 @@ public class ChargePackServiceImpl implements IChargePackService {
         }
         catch (Exception ex)
         {
-            result.setMessage("插入失败！" + ex.getMessage());
+            result.setMessage("查询出错" + ex.getMessage());
         }
         return  result;
     }
     /**
      * 包装扫码保存方法
      */
-    public TNPYResponse expendPileBatteryByPackage( String id,int packageNum,int totalNum)
+    public TNPYResponse expendPileBatteryByPackage( String packagepileid,String remainpackageNum,String packagetotalNum, String packageNum,String plantID,
+    		String processID,String lineID,String userID,String username)
     {
         TNPYResponse result = new TNPYResponse();
+        if(Float.parseFloat(packageNum)>Float.parseFloat(packagetotalNum)) {
+        	result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+        	result.setMessage("包装数量不能大于剩余可包装数量!");
+            return  result;
+        }
         try
         {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-            if(packageNum == totalNum)
+            Date now = new Date();
+//            System.out.println("当前时间：" + dateFormat.format(d));
+            String filter = "where id = '" + packagepileid +"'";
+            //通过扫描打堆二位码id获取打堆信息
+             List<PileBatteryRecord> lipile = pileBatteryRecordMapper.selectByFilter(filter);
+             PileBatteryRecord originpile = lipile.get(0);
+            //整托包装
+            if(packageNum.equals(packagetotalNum)||packageNum==packagetotalNum )
             {
-                pileBatteryRecordMapper.updateStatusByPrimaryKey(id,StatusEnum.InOutStatus.Output.getIndex() + "",dateFormat.format(new Date()));
+            	originpile.setFinishlineid(lineID);
+            	originpile.setProcessid(processID);
+            	originpile.setPlantid(plantID);
+            	originpile.setFinishpackagestaffid(userID);
+            	originpile.setFinishpackagestaffname(username);
+            	originpile.setStatus(StatusEnum.StatusFlag.finishpackage.getIndex()+"");
+            	originpile.setPackagetime(now);
+            	originpile.setFnishpackagenum(Float.parseFloat(packageNum));
+//            	更新PileBatteryRecord记录
+                pileBatteryRecordMapper.updateByPrimaryKey(originpile);
             }
             else
             {
-                String filter = " where id = '" + id +"' ";
-                // System.out.println(plantID + " 参数 " +processID);
-                List<PileBatteryRecord> pileBatteryRecordList1 = pileBatteryRecordMapper.selectByFilter(filter);
-                List<PileBatteryRecord> pileBatteryRecordList2 = pileBatteryRecordMapper.selectByFilter(filter);
-                pileBatteryRecordList1.get(0).setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-                pileBatteryRecordList1.get(0).setProductionnumber((float)totalNum - packageNum );
-                pileBatteryRecordMapper.insertSelective(pileBatteryRecordList1.get(0));
-
-                pileBatteryRecordList2.get(0).setProductionnumber((float)packageNum);
-                pileBatteryRecordList2.get(0).setStatus(StatusEnum.InOutStatus.Output.getIndex() + "");
-                pileBatteryRecordList2.get(0).setPackagetime(new Date());
-                pileBatteryRecordMapper.updateByPrimaryKey(pileBatteryRecordList2.get(0));
+            	//新增部分记录
+            	PileBatteryRecord partpack = new PileBatteryRecord();
+            	partpack.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+            	partpack.setFinishlineid(lineID);
+            	partpack.setProcessid(processID);
+            	partpack.setPlantid(plantID);
+            	partpack.setFinishpackagestaffid(userID);
+            	partpack.setFinishpackagestaffname(username);
+            	partpack.setStatus(StatusEnum.StatusFlag.finishpackage.getIndex()+"");
+            	partpack.setPackagetime(now);
+            	partpack.setFnishpackagenum(Float.parseFloat(packageNum));
+                
+                //修改添加主记录
+                if(originpile.getPartpackageid()!=null&&!originpile.getPartpackageid().equals("null")&&originpile.getPartpackageid().length()>0) {
+                	Float ff = originpile.getFnishpackagenum();
+                	String ps = originpile.getPartpackageid()==null?"":originpile.getPartpackageid();
+                	if(ps.equals("")) {
+                		originpile.setPartpackageid(partpack.getId());
+                	}
+                	originpile.setPartpackageid(ps+ "#"+ partpack.getId());
+                	originpile.setStatus(StatusEnum.StatusFlag.partfinishpackage.getIndex()+"");
+                	if((ff + Float.parseFloat(packageNum))>originpile.getFinishpilenum()) {
+                		result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                        result.setMessage("领料失败, 领料数量大于剩余可包装数量,剩余可包数量为: " + (originpile.getFinishpilenum().intValue() - originpile.getFnishpackagenum().intValue()) );
+                        return  result;
+                	}
+                	originpile.setFnishpackagenum(ff + Float.parseFloat(packageNum) );
+                	pileBatteryRecordMapper.insert(partpack);
+                	pileBatteryRecordMapper.updateByPrimaryKey(originpile);
+                }else {
+                	originpile.setPartpackageid(partpack.getId());
+                	originpile.setStatus(StatusEnum.StatusFlag.partfinishpackage.getIndex()+"");
+                	originpile.setFnishpackagenum(  Float.parseFloat(packageNum));
+                	pileBatteryRecordMapper.updateByPrimaryKey(originpile);
+                }
+                
             }
            // String filter = " where id = '" + id +"' ";
             // System.out.println(plantID + " 参数 " +processID);
@@ -733,6 +887,7 @@ public class ChargePackServiceImpl implements IChargePackService {
         }
         catch (Exception ex)
         {
+        	result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
             result.setMessage("包装消耗出错！" + ex.getMessage());
             return  result;
         }

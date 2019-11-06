@@ -5,7 +5,7 @@ import java.util.Date;
 import com.alibaba.fastjson.annotation.JSONField;
 
 public class PileBatteryRecord {
-	private String id;
+    private String id;
 
     private String plantid;
 
@@ -22,6 +22,7 @@ public class PileBatteryRecord {
     private String pilestaffid;
 
     private String pilestaffname;
+
     @JSONField(format ="yyyy-MM-dd HH:mm:ss")
     private Date piletime;
     @JSONField(format ="yyyy-MM-dd")
@@ -36,6 +37,7 @@ public class PileBatteryRecord {
     private String remark;
 
     private String tidyrecordid;
+
     @JSONField(format ="yyyy-MM-dd HH:mm:ss")
     private Date packagetime;
 
@@ -56,6 +58,18 @@ public class PileBatteryRecord {
     private Float fnishpackagenum;
 
     private String partpileid;
+
+    private String partpackageid;
+
+    private String finishpackageplantid;
+
+    private String finishpackageprocessid;
+
+    private String finishopackagelineid;
+
+    private String finishpackagestaffid;
+
+    private String finishpackagestaffname;
 
     public String getId() {
         return id;
@@ -263,5 +277,53 @@ public class PileBatteryRecord {
 
     public void setPartpileid(String partpileid) {
         this.partpileid = partpileid == null ? null : partpileid.trim();
+    }
+
+    public String getPartpackageid() {
+        return partpackageid;
+    }
+
+    public void setPartpackageid(String partpackageid) {
+        this.partpackageid = partpackageid == null ? null : partpackageid.trim();
+    }
+
+    public String getFinishpackageplantid() {
+        return finishpackageplantid;
+    }
+
+    public void setFinishpackageplantid(String finishpackageplantid) {
+        this.finishpackageplantid = finishpackageplantid == null ? null : finishpackageplantid.trim();
+    }
+
+    public String getFinishpackageprocessid() {
+        return finishpackageprocessid;
+    }
+
+    public void setFinishpackageprocessid(String finishpackageprocessid) {
+        this.finishpackageprocessid = finishpackageprocessid == null ? null : finishpackageprocessid.trim();
+    }
+
+    public String getFinishopackagelineid() {
+        return finishopackagelineid;
+    }
+
+    public void setFinishopackagelineid(String finishopackagelineid) {
+        this.finishopackagelineid = finishopackagelineid == null ? null : finishopackagelineid.trim();
+    }
+
+    public String getFinishpackagestaffid() {
+        return finishpackagestaffid;
+    }
+
+    public void setFinishpackagestaffid(String finishpackagestaffid) {
+        this.finishpackagestaffid = finishpackagestaffid == null ? null : finishpackagestaffid.trim();
+    }
+
+    public String getFinishpackagestaffname() {
+        return finishpackagestaffname;
+    }
+
+    public void setFinishpackagestaffname(String finishpackagestaffname) {
+        this.finishpackagestaffname = finishpackagestaffname == null ? null : finishpackagestaffname.trim();
     }
 }

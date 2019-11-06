@@ -60,8 +60,9 @@ public class ChargePackController {
     }
     //包装扫码消耗电池
     @RequestMapping(value = "/expendpilebatterybypackage")
-    public TNPYResponse expendPileBatteryByPackage( String id,int packageNum,int totalNum) {
-        return  chargePackService.expendPileBatteryByPackage(id,packageNum,totalNum);
+    public TNPYResponse expendPileBatteryByPackage(  String packagepileid,String remainpackageNum,String packagetotalNum, String packageNum,String plantID,
+        		String processID,String lineID,String userID,String username) {
+        return  chargePackService.expendPileBatteryByPackage(packagepileid, remainpackageNum, packagetotalNum, packageNum, plantID, processID, lineID, userID, username);
     }
 
     //电池打堆api方法

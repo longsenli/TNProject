@@ -28,12 +28,19 @@
     <result column="finishpileNum" jdbcType="REAL" property="finishpilenum" />
     <result column="fnishpackageNum" jdbcType="REAL" property="fnishpackagenum" />
     <result column="partpileID" jdbcType="VARCHAR" property="partpileid" />
+    <result column="partpackageID" jdbcType="VARCHAR" property="partpackageid" />
+    <result column="finishpackageplantID" jdbcType="VARCHAR" property="finishpackageplantid" />
+    <result column="finishpackageprocessID" jdbcType="VARCHAR" property="finishpackageprocessid" />
+    <result column="finishopackagelineID" jdbcType="VARCHAR" property="finishopackagelineid" />
+    <result column="finishpackageStaffID" jdbcType="VARCHAR" property="finishpackagestaffid" />
+    <result column="finishpackageStaffName" jdbcType="VARCHAR" property="finishpackagestaffname" />
   </resultMap>
   <sql id="Base_Column_List">
     id, plantID, processID, lineID, productionNumber, materialID, materialName, pileStaffID, 
     pileStaffName, pileTime, batteryDate, materialType, location, status, remark, tidyRecordID, 
     packageTime, finishplantID, finishprocessID, finishlineID, finishpileStaffID, finishpileStaffName, 
-    finishpileTime, finishpileNum, fnishpackageNum, partpileID
+    finishpileTime, finishpileNum, fnishpackageNum, partpileID, partpackageID, finishpackageplantID, 
+    finishpackageprocessID, finishopackagelineID, finishpackageStaffID, finishpackageStaffName
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -54,8 +61,10 @@
       tidyRecordID, packageTime, finishplantID, 
       finishprocessID, finishlineID, finishpileStaffID, 
       finishpileStaffName, finishpileTime, 
-      finishpileNum, fnishpackageNum, partpileID
-      )
+      finishpileNum, fnishpackageNum, partpileID, 
+      partpackageID, finishpackageplantID, finishpackageprocessID, 
+      finishopackagelineID, finishpackageStaffID, 
+      finishpackageStaffName)
     values (#{id,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{processid,jdbcType=VARCHAR}, 
       #{lineid,jdbcType=VARCHAR}, #{productionnumber,jdbcType=REAL}, #{materialid,jdbcType=VARCHAR}, 
       #{materialname,jdbcType=VARCHAR}, #{pilestaffid,jdbcType=VARCHAR}, #{pilestaffname,jdbcType=VARCHAR}, 
@@ -64,8 +73,10 @@
       #{tidyrecordid,jdbcType=VARCHAR}, #{packagetime,jdbcType=TIMESTAMP}, #{finishplantid,jdbcType=VARCHAR}, 
       #{finishprocessid,jdbcType=VARCHAR}, #{finishlineid,jdbcType=VARCHAR}, #{finishpilestaffid,jdbcType=VARCHAR}, 
       #{finishpilestaffname,jdbcType=VARCHAR}, #{finishpiletime,jdbcType=TIMESTAMP}, 
-      #{finishpilenum,jdbcType=REAL}, #{fnishpackagenum,jdbcType=REAL}, #{partpileid,jdbcType=VARCHAR}
-      )
+      #{finishpilenum,jdbcType=REAL}, #{fnishpackagenum,jdbcType=REAL}, #{partpileid,jdbcType=VARCHAR}, 
+      #{partpackageid,jdbcType=VARCHAR}, #{finishpackageplantid,jdbcType=VARCHAR}, #{finishpackageprocessid,jdbcType=VARCHAR}, 
+      #{finishopackagelineid,jdbcType=VARCHAR}, #{finishpackagestaffid,jdbcType=VARCHAR}, 
+      #{finishpackagestaffname,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.PileBatteryRecord">
     insert into tb_pilebatteryrecord
@@ -148,6 +159,24 @@
       <if test="partpileid != null">
         partpileID,
       </if>
+      <if test="partpackageid != null">
+        partpackageID,
+      </if>
+      <if test="finishpackageplantid != null">
+        finishpackageplantID,
+      </if>
+      <if test="finishpackageprocessid != null">
+        finishpackageprocessID,
+      </if>
+      <if test="finishopackagelineid != null">
+        finishopackagelineID,
+      </if>
+      <if test="finishpackagestaffid != null">
+        finishpackageStaffID,
+      </if>
+      <if test="finishpackagestaffname != null">
+        finishpackageStaffName,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -227,6 +256,24 @@
       </if>
       <if test="partpileid != null">
         #{partpileid,jdbcType=VARCHAR},
+      </if>
+      <if test="partpackageid != null">
+        #{partpackageid,jdbcType=VARCHAR},
+      </if>
+      <if test="finishpackageplantid != null">
+        #{finishpackageplantid,jdbcType=VARCHAR},
+      </if>
+      <if test="finishpackageprocessid != null">
+        #{finishpackageprocessid,jdbcType=VARCHAR},
+      </if>
+      <if test="finishopackagelineid != null">
+        #{finishopackagelineid,jdbcType=VARCHAR},
+      </if>
+      <if test="finishpackagestaffid != null">
+        #{finishpackagestaffid,jdbcType=VARCHAR},
+      </if>
+      <if test="finishpackagestaffname != null">
+        #{finishpackagestaffname,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -308,6 +355,24 @@
       <if test="partpileid != null">
         partpileID = #{partpileid,jdbcType=VARCHAR},
       </if>
+      <if test="partpackageid != null">
+        partpackageID = #{partpackageid,jdbcType=VARCHAR},
+      </if>
+      <if test="finishpackageplantid != null">
+        finishpackageplantID = #{finishpackageplantid,jdbcType=VARCHAR},
+      </if>
+      <if test="finishpackageprocessid != null">
+        finishpackageprocessID = #{finishpackageprocessid,jdbcType=VARCHAR},
+      </if>
+      <if test="finishopackagelineid != null">
+        finishopackagelineID = #{finishopackagelineid,jdbcType=VARCHAR},
+      </if>
+      <if test="finishpackagestaffid != null">
+        finishpackageStaffID = #{finishpackagestaffid,jdbcType=VARCHAR},
+      </if>
+      <if test="finishpackagestaffname != null">
+        finishpackageStaffName = #{finishpackagestaffname,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -337,7 +402,13 @@
       finishpileTime = #{finishpiletime,jdbcType=TIMESTAMP},
       finishpileNum = #{finishpilenum,jdbcType=REAL},
       fnishpackageNum = #{fnishpackagenum,jdbcType=REAL},
-      partpileID = #{partpileid,jdbcType=VARCHAR}
+      partpileID = #{partpileid,jdbcType=VARCHAR},
+      partpackageID = #{partpackageid,jdbcType=VARCHAR},
+      finishpackageplantID = #{finishpackageplantid,jdbcType=VARCHAR},
+      finishpackageprocessID = #{finishpackageprocessid,jdbcType=VARCHAR},
+      finishopackagelineID = #{finishopackagelineid,jdbcType=VARCHAR},
+      finishpackageStaffID = #{finishpackagestaffid,jdbcType=VARCHAR},
+      finishpackageStaffName = #{finishpackagestaffname,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

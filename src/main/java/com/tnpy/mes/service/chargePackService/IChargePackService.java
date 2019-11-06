@@ -20,7 +20,8 @@ public interface IChargePackService {
     public TNPYResponse addPileTidyBatteryRecord( String jsonTidyRecord,String pileNum,String perPileMaterialNum,String storeLocation);
     public TNPYResponse getPileTidyBatteryRecord(String plantID, String processID,String lineID,String startTime,String endTime,String selectType);
     public TNPYResponse getPileRecordByPileID( String id);
-    public TNPYResponse expendPileBatteryByPackage( String id,int packageNum,int totalNum);
+    public TNPYResponse expendPileBatteryByPackage( String packagepileid,String remainpackageNum,String packagetotalNum, String packageNum,String plantID,
+    		String processID,String lineID,String userID,String username);
     public TNPYResponse finishPileTidyBatteryRecord( String id,String remainpileNum,String piletotalNum, String partpileNum,String plantID,
     		String processID,String lineID,String userID,String username);
     

@@ -25,6 +25,9 @@ public interface PileBatteryRecordMapper {
     int updateByPrimaryKey(PileBatteryRecord record);
     @Select("select * from tb_pilebatteryrecord ${filter} ")
     List<PileBatteryRecord> selectByFilter(@Param("filter") String filter);
+    
+    @Select("${filter} ")
+    List<PileBatteryRecord> selectAllByFilter(@Param("filter") String filter);
 
     @Update(" update tb_pilebatteryrecord set status = #{status} ,packageTime = #{packageTime} where id = #{id}")
     int updateStatusByPrimaryKey(String id,String status,String packageTime);
