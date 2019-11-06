@@ -26,7 +26,7 @@ public interface MaterialSecondaryInventoryRecordMapper {
             "ifnull(expendNum,0),ifnull(repairNum,0) ,'system','1',ifnull(onlineNum,0),ifnull(mergeNum,0),''  from (\n" +
             "select e.*,f.currentNum from ( select c.id,c.name,c.grantNum,d.expendNum from ( select a.id,a.name,b.grantNum from (\n" +
             "select id,name from sys_material where typeID in ( select materialTypeID from sys_processmaterial where processID = #{processID} and inOrout = '1') )  a\n" +
-            "left join ( select batteryType,sum(number) as grantNum from tb_grantmaterialrecord where plantID =#{plantID} and processID = #{lastProcessID} \n" +
+            "left join ( select batteryType,sum(number) as grantNum from tb_grantmaterialrecord where acceptPlantID =#{plantID} and processID = #{lastProcessID} \n" +
             "and grantTime >= #{startTime} and  grantTime < #{endTime} group by batteryType) b on a.id = b.batteryType ) c left join (\n" +
             "select materialID,sum(number) as expendNum from tb_materialrecord where  expendOrderID in (select id from tb_workorder where  scheduledStartTime >= #{startTime}\n" +
             " and  scheduledStartTime < #{endTime} and plantID = #{plantID} and processID = #{processID} )  group by materialID ) d on c.id = d.materialID ) e left join\n" +
