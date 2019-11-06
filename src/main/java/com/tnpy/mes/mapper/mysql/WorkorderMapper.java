@@ -36,7 +36,7 @@ public interface WorkorderMapper {
     @Update("UPDATE tb_workOrder set status = #{status} where scheduledStartTime = #{time} and status < '5' and processID !='1008'")
     int finishOrder(String time,String status);
 
-    @Update("UPDATE tb_workOrder set status = #{status} where scheduledStartTime = #{time}  and status < '5'")
+    @Update("UPDATE tb_workOrder set status = #{status} where scheduledStartTime = #{time}  and status  = '1'")
     int startOrder(String time,String status);
 
     @Select("select totalProduction,c.name as materialName,d.name as lineName from\n" +
