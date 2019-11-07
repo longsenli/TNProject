@@ -4,6 +4,7 @@ import com.tnpy.mes.model.mysql.TidyBatteryRecord;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -31,4 +32,7 @@ public interface TidyBatteryRecordMapper {
 
     @Select("select * from tb_tidybatteryrecord ${filter} ")
     TidyBatteryRecord selectLatestRecordByFilter(@Param("filter") String filter);
+
+    @Update(" update tb_tidybatteryrecord set currentNum = currentNum - ${pileNum},pileNum = pileNum + ${pileNum} where id = #{id}")
+    int updateCurrentNumAfterPile(String id,@Param("pileNum") String pileNum);
 }

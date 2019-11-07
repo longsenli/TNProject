@@ -69,6 +69,8 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     @Autowired
     private PileBatteryRecordMapper pileBatteryRecordMapper;
 
+    @Autowired
+    private  TidyBatteryRecordMapper tidyBatteryRecordMapper;
     public TNPYResponse getWorkOrder() {
         TNPYResponse result = new TNPYResponse();
         try {
@@ -493,7 +495,6 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
 
             if(ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(orderSplit.getOrderid()))
             {
-
                 PileBatteryRecord pileBatteryRecord = pileBatteryRecordMapper.selectByPrimaryKey(orderSplit.getId());
                 if(!"1".equals(pileBatteryRecord.getStatus()))
                 {
@@ -508,6 +509,8 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 }
                 pileBatteryRecord.setFinishpiletime(new Date());
                 pileBatteryRecordMapper.updateByPrimaryKeySelective(pileBatteryRecord);
+
+                tidyBatteryRecordMapper.updateCurrentNumAfterPile(pileBatteryRecord.getTidyrecordid(),pileBatteryRecord.getFinishpilenum().intValue() + "");
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 return result;
             }
