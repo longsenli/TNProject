@@ -35,4 +35,7 @@ public interface TidyBatteryRecordMapper {
 
     @Update(" update tb_tidybatteryrecord set currentNum = currentNum - ${pileNum},pileNum = pileNum + ${pileNum} where id = #{id}")
     int updateCurrentNumAfterPile(String id,@Param("pileNum") String pileNum);
+
+    @Update(" update tb_tidybatteryrecord set currentNum = currentNum + ${pileNum},pileNum = pileNum - ${pileNum} where id = #{id}")
+    int updateCurrentNumAfterCancelPile(String id,@Param("pileNum") String pileNum);
 }

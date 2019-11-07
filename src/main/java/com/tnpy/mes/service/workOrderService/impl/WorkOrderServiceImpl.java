@@ -751,13 +751,20 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         try {
             if(subOrdderID.contains("___"))
             {
-                String statusInfo  = pileBatteryRecordMapper.selectPileRecordStatus(subOrdderID.split("___")[0]);
-                if("5".equals(statusInfo))
+
+                PileBatteryRecord pileBatteryRecord  = pileBatteryRecordMapper.selectByPrimaryKey(subOrdderID.split("___")[0]);
+                if("5".equals(pileBatteryRecord.getStatus()))
                 {
                     result.setMessage("该工单已投料，不能取消！");
                     return result;
                 }
-                pileBatteryRecordMapper.cancelPileRecordSuborder(subOrdderID.split("___")[0]);
+                if("1".equals(pileBatteryRecord.getStatus()))
+                {
+                    result.setMessage("该工单尚未打堆！");
+                    return result;
+                }
+                pileBatteryRecordMapper.cancelPileRecordSuborder(pileBatteryRecord.getId());
+                tidyBatteryRecordMapper.updateCurrentNumAfterCancelPile(pileBatteryRecord.getTidyrecordid(),pileBatteryRecord.getFinishpilenum().intValue() + "");
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 return result;
             }
