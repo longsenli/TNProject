@@ -67,7 +67,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     private DataProvenanceRelationMapper dataProvenanceRelationMapper;
 
     @Autowired
-    private  PileBatteryRecordMapper pileBatteryRecordMapper;
+    private PileBatteryRecordMapper pileBatteryRecordMapper;
 
     public TNPYResponse getWorkOrder() {
         TNPYResponse result = new TNPYResponse();
@@ -110,7 +110,13 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         TNPYResponse result = new TNPYResponse();
         try {
             List<Map<String, String>> orderSplitList = null;
-
+            if (ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(processID)) {
+                orderSplitList = pileBatteryRecordMapper.selectToOrderFinishInfo(id);
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                // System.out.println(id + "============" + orderSplitList.size());
+                result.setData(JSONObject.toJSON(orderSplitList).toString());
+                return result;
+            }
             if ("2".equals(type.trim())) {
                 orderSplitList = orderSplitMapper.selectToMapBySubOrderName(id, plantID, processID);
             } else {
@@ -210,10 +216,10 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         return tmp + numStr;
     }
 
-    public TNPYResponse addMissingWorkOrder( Workorder workorder) {
+    public TNPYResponse addMissingWorkOrder(Workorder workorder) {
         TNPYResponse result = new TNPYResponse();
         try {
-        //    Workorder workorder = (Workorder) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), Workorder.class);
+            //    Workorder workorder = (Workorder) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), Workorder.class);
 
             if (StringUtils.isEmpty(workorder.getId())) {
                 //workorder.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
@@ -269,15 +275,15 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             return result;
         }
     }
+
     public TNPYResponse changeWorkOrder(String jsonStr) {
         TNPYResponse result = new TNPYResponse();
         try {
             Workorder workorder = (Workorder) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), Workorder.class);
 
             if (StringUtils.isEmpty(workorder.getId())) {
-                if((StatusEnum.WorkOrderStatus.addmissing.getIndex() + "").equals(workorder.getStatus()) )
-                {
-                    return  addMissingWorkOrder(workorder);
+                if ((StatusEnum.WorkOrderStatus.addmissing.getIndex() + "").equals(workorder.getStatus())) {
+                    return addMissingWorkOrder(workorder);
                 }
                 //workorder.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 workorder.setStatus(StatusEnum.WorkOrderStatus.ordered.getIndex() + "");
@@ -335,9 +341,8 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     public TNPYResponse deleteWorkOrder(String orderID) {
         TNPYResponse result = new TNPYResponse();
         try {
-           Workorder workorder = workOrderMapper.selectByPrimaryKey(orderID);
-            if( workorder.getStatus().equals(StatusEnum.WorkOrderStatus.printed.getIndex() + ""))
-            {
+            Workorder workorder = workOrderMapper.selectByPrimaryKey(orderID);
+            if (workorder.getStatus().equals(StatusEnum.WorkOrderStatus.printed.getIndex() + "")) {
                 result.setMessage("该工单已打印，不能删除！");
                 return result;
             }
@@ -402,12 +407,12 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             return result;
         }
     }
-    public TNPYResponse changePrintStatus( String workOrderID )
-    {
+
+    public TNPYResponse changePrintStatus(String workOrderID) {
         TNPYResponse result = new TNPYResponse();
         try {
 
-            workOrderMapper.updateWorkOrderPrintStatus(workOrderID, StatusEnum.WorkOrderStatus.printed.getIndex()+ "",StatusEnum.WorkOrderStatus.finished.getIndex() + "");
+            workOrderMapper.updateWorkOrderPrintStatus(workOrderID, StatusEnum.WorkOrderStatus.printed.getIndex() + "", StatusEnum.WorkOrderStatus.finished.getIndex() + "");
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return result;
         } catch (Exception ex) {
@@ -415,6 +420,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             return result;
         }
     }
+
     public TNPYResponse changeWorkOrderStatus(String ID, String status) {
         TNPYResponse result = new TNPYResponse();
         try {
@@ -485,6 +491,27 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             String[] inputterInfo = name.split("###");
             OrderSplit orderSplit = (OrderSplit) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), OrderSplit.class);
 
+            if(ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(orderSplit.getOrderid()))
+            {
+
+                PileBatteryRecord pileBatteryRecord = pileBatteryRecordMapper.selectByPrimaryKey(orderSplit.getId());
+                if(!"1".equals(pileBatteryRecord.getStatus()))
+                {
+                    result.setMessage("该二维码已打堆！" );
+                    return result;
+                }
+                pileBatteryRecord.setStatus("4");
+                pileBatteryRecord.setFinishpilenum(orderSplit.getProductionnum().floatValue() );
+                if (inputterInfo.length > 3) {
+                    pileBatteryRecord.setFinishpilestaffid(inputterInfo[1]);
+                    pileBatteryRecord.setFinishpilestaffname(inputterInfo[2]);
+                }
+                pileBatteryRecord.setFinishpiletime(new Date());
+                pileBatteryRecordMapper.updateByPrimaryKeySelective(pileBatteryRecord);
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                return result;
+            }
+
             OrderSplit orderSplitTMP = orderSplitMapper.selectByPrimaryKey(orderSplit.getId());
             if (orderSplitTMP.getStatus().equals(StatusEnum.WorkOrderStatus.finished.getIndex() + "")) {
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -529,8 +556,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             if (ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(materialRecord.getInputprocessid())) {
                 materialRecord.setInorout(StatusEnum.InOutStatus.PreInput.getIndex());
             }
-            if(ConfigParamEnum.BasicProcessEnum.BBProcessID.getName().equals(workorder.getProcessid()))
-            {
+            if (ConfigParamEnum.BasicProcessEnum.BBProcessID.getName().equals(workorder.getProcessid())) {
                 materialRecord.setInputworklocationid(orderSplit.getProductionnum() + "");
             }
             materialRecordMapper.insert(materialRecord);
@@ -576,7 +602,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             return result;
         } catch (Exception ex) {
             // System.out.println("====完成工单失败！====" + jsonStr + "====" + name);
-            result.setMessage("查询出错！" + ex.getMessage().substring(0,100));
+            result.setMessage("查询出错！" + ex.getMessage().substring(0, 100));
             return result;
         }
     }
@@ -669,12 +695,9 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         TNPYResponse result = new TNPYResponse();
         try {
             List<Map<Object, Object>> planProductionDashboardList;
-            if(ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(processID))
-            {
+            if (ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(processID)) {
                 planProductionDashboardList = workOrderMapper.getPlanProductionBZDashboard(plantID, startTime.split(" ")[0], endTime.split(" ")[0]);
-            }
-            else
-            {
+            } else {
                 planProductionDashboardList = workOrderMapper.getPlanProductionDashboard(plantID, processID, startTime, endTime);
             }
 
@@ -691,14 +714,12 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         TNPYResponse result = new TNPYResponse();
         try {
             List<Map<Object, Object>> realtimeProductionDashboardList;
-            if(ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(processID))
-            {
+            if (ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(processID)) {
 
-                startTime = startTime.split(" ")[0] ;
-                endTime = endTime.split(" ")[0] + " 23:00" ;
-                if(workOrderMapper.getJSSumProduction(plantID, processID, startTime, endTime) < 2)
-                {
-                     realtimeProductionDashboardList = workOrderMapper.getRealtimeGainNumberDashboard(plantID, processID, startTime, endTime);
+                startTime = startTime.split(" ")[0];
+                endTime = endTime.split(" ")[0] + " 23:00";
+                if (workOrderMapper.getJSSumProduction(plantID, processID, startTime, endTime) < 2) {
+                    realtimeProductionDashboardList = workOrderMapper.getRealtimeGainNumberDashboard(plantID, processID, startTime, endTime);
                     result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                     result.setData(JSONObject.toJSON(realtimeProductionDashboardList).toString());
                     return result;
@@ -706,12 +727,9 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             }
 
 
-            if(ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(processID))
-            {
+            if (ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(processID)) {
                 realtimeProductionDashboardList = workOrderMapper.getRealtimeProductionBZDashboard(plantID, startTime.split(" ")[0], endTime.split(" ")[0]);
-            }
-            else
-            {
+            } else {
                 realtimeProductionDashboardList = workOrderMapper.getRealtimeProductionDashboard(plantID, processID, startTime, endTime);
             }
 
@@ -728,6 +746,18 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     public TNPYResponse cancelFinishSuborder(String subOrdderID) {
         TNPYResponse result = new TNPYResponse();
         try {
+            if(subOrdderID.contains("___"))
+            {
+                String statusInfo  = pileBatteryRecordMapper.selectPileRecordStatus(subOrdderID.split("___")[0]);
+                if("5".equals(statusInfo))
+                {
+                    result.setMessage("该工单已投料，不能取消！");
+                    return result;
+                }
+                pileBatteryRecordMapper.cancelPileRecordSuborder(subOrdderID.split("___")[0]);
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                return result;
+            }
             GrantMaterialRecord grantMaterialRecord = grantMaterialRecordMapper.selectByOrderID(subOrdderID);
             if (grantMaterialRecord != null) {
                 result.setMessage("该工单已发料，不能取消！");
@@ -868,7 +898,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         }
     }
 
-    private TNPYResponse mergeOnlineMaterialRecordJS(String mergeID, String operator,String inputNumber) {
+    private TNPYResponse mergeOnlineMaterialRecordJS(String mergeID, String operator, String inputNumber) {
         TNPYResponse result = new TNPYResponse();
         try {
             String mergeIDList = "'" + mergeID.replace(",", "','") + "'";
@@ -884,8 +914,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 return result;
             }
 
-            if("-1".equals(inputNumber))
-            {
+            if ("-1".equals(inputNumber)) {
                 inputNumber = onlineMaterialRecordList.get(0).getMaterialnum().toString();
             }
 
@@ -899,8 +928,8 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             onlineMaterialRecord.setPlantid(onlineMaterialRecordList.get(0).getPlantid().split("###")[0]);
             onlineMaterialRecord.setProcessid(onlineMaterialRecordList.get(0).getProcessid().split("###")[0]);
             onlineMaterialRecord.setLineid(onlineMaterialRecordList.get(0).getLineid().split("###")[0]);
-            onlineMaterialRecord.setMaterialnum(Integer.parseInt(inputNumber) );
-            onlineMaterialRecord.setClasstype(( onlineMaterialRecordList.get(0).getMaterialnum() - Integer.parseInt(inputNumber) ) + "");
+            onlineMaterialRecord.setMaterialnum(Integer.parseInt(inputNumber));
+            onlineMaterialRecord.setClasstype((onlineMaterialRecordList.get(0).getMaterialnum() - Integer.parseInt(inputNumber)) + "");
             onlineMaterialRecord.setOperator(operator);
             onlineMaterialRecordMapper.insertSelective(onlineMaterialRecord);
 
@@ -913,7 +942,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         }
     }
 
-    private TNPYResponse mergeOnlineMaterialRecordZH(String mergeID, String operator,String inputNumber) {
+    private TNPYResponse mergeOnlineMaterialRecordZH(String mergeID, String operator, String inputNumber) {
         TNPYResponse result = new TNPYResponse();
         try {
             String mergeIDList = "'" + mergeID.replace(",", "','") + "'";
@@ -932,10 +961,9 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
             Date now = new Date();
             String orderName = onlineMaterialRecordList.get(0).getPlantid().split("###")[1] + onlineMaterialRecordList.get(0).getProcessid().split("###")[1] + onlineMaterialRecordList.get(0).getLineid().split("###")[1] + dateFormat.format(now);
-           if("-1".equals(inputNumber))
-           {
-               inputNumber = onlineMaterialRecordList.get(0).getMaterialnum().toString();
-           }
+            if ("-1".equals(inputNumber)) {
+                inputNumber = onlineMaterialRecordList.get(0).getMaterialnum().toString();
+            }
             double dbNum = Integer.parseInt(inputNumber);
 
             OnlineMaterialRecord onlineMaterialRecord = new OnlineMaterialRecord();
@@ -946,8 +974,8 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             onlineMaterialRecord.setPlantid(onlineMaterialRecordList.get(0).getPlantid().split("###")[0]);
             onlineMaterialRecord.setProcessid(onlineMaterialRecordList.get(0).getProcessid().split("###")[0]);
             onlineMaterialRecord.setLineid(onlineMaterialRecordList.get(0).getLineid().split("###")[0]);
-            onlineMaterialRecord.setMaterialnum(Integer.parseInt(inputNumber) );
-            onlineMaterialRecord.setClasstype(( onlineMaterialRecordList.get(0).getMaterialnum() - Integer.parseInt(inputNumber) ) + "");
+            onlineMaterialRecord.setMaterialnum(Integer.parseInt(inputNumber));
+            onlineMaterialRecord.setClasstype((onlineMaterialRecordList.get(0).getMaterialnum() - Integer.parseInt(inputNumber)) + "");
             onlineMaterialRecord.setOperator(operator);
             onlineMaterialRecordMapper.insertSelective(onlineMaterialRecord);
 
@@ -984,12 +1012,12 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         }
     }
 
-    public TNPYResponse mergeOnlineMaterialRecord(String mergeID, String operator, String processID,String inputNumber) {
+    public TNPYResponse mergeOnlineMaterialRecord(String mergeID, String operator, String processID, String inputNumber) {
         if (ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(processID)) {
-            return mergeOnlineMaterialRecordZH(mergeID, operator,inputNumber);
+            return mergeOnlineMaterialRecordZH(mergeID, operator, inputNumber);
         }
         if (ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(processID)) {
-            return mergeOnlineMaterialRecordJS(mergeID, operator,inputNumber);
+            return mergeOnlineMaterialRecordJS(mergeID, operator, inputNumber);
         }
         TNPYResponse result = new TNPYResponse();
         result.setMessage("该工段没有线边仓功能，如需添加请联系开发人员！");
@@ -1012,8 +1040,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     public TNPYResponse cancelInputSuborder(String subOrdderID) {
         TNPYResponse result = new TNPYResponse();
         try {
-            if(subOrdderID.contains("___"))
-            {
+            if (subOrdderID.contains("___")) {
                 pileBatteryRecordMapper.cancelInputSuborder(subOrdderID.split("___")[0]);
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 return result;
@@ -1051,7 +1078,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             //Integer capacity = ConfigParamEnum.EquipmentCapacity.DRYKILNZY.getNum();
             //如果窑满了
             if (exitsIndry + orderIDList.split("###").length > (int) (ConfigParamEnum.DryFilnCapacityMap.get(equipmentID))) {
-               // result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                // result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 result.setMessage(equipmentInfo.getName() + "已有" + exitsIndry + "拖，最多能够入!" + ConfigParamEnum.DryFilnCapacityMap.get(equipmentID) + "拖！");
                 return result;
             }

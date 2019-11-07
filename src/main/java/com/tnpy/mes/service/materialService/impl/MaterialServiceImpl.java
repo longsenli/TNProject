@@ -191,7 +191,7 @@ public class MaterialServiceImpl implements IMaterialService {
 //                    result.setMessage("该二维码尚未打堆，不能够使用！" + materialIDList.get(0));
 //                    return result;
 //                }
-                if("4".equals(pileBatteryRecord.getStatus()))
+                if("5".equals(pileBatteryRecord.getStatus()))
                 {
                     result.setMessage("该二维码已被使用！" + materialIDList.get(0) + "  " + pileBatteryRecord.getFinishpackagestaffname() + "  " +pileBatteryRecord.getPackagetime() );
                     return result;
@@ -208,8 +208,8 @@ public class MaterialServiceImpl implements IMaterialService {
                     pileBatteryRecord.setFinishpackageplantid(lineInfo[0]);
                     pileBatteryRecord.setFinishopackagelineid(lineInfo[2]);
                 }
-                pileBatteryRecord.setFnishpackagenum(pileBatteryRecord.getFinishpilenum());
-                pileBatteryRecord.setStatus("4");
+
+                pileBatteryRecord.setStatus("5");
                 pileBatteryRecordMapper.updateByPrimaryKeySelective(pileBatteryRecord);
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 return result;
@@ -327,7 +327,7 @@ public class MaterialServiceImpl implements IMaterialService {
 //                    result.setMessage("该二维码尚未打堆，不能够使用！" + materialIDList.get(0));
 //                    return result;
 //                }
-                if ("4".equals(pileBatteryRecord.getStatus())) {
+                if ("5".equals(pileBatteryRecord.getStatus())) {
                     result.setMessage("该二维码已被使用！" + materialRecordID + "  " + pileBatteryRecord.getFinishpackagestaffname() + "  " + pileBatteryRecord.getPackagetime());
                     return result;
                 }
@@ -342,14 +342,13 @@ public class MaterialServiceImpl implements IMaterialService {
                     pileBatteryRecord.setFinishopackagelineid(lineInfo[2]);
                 }
                 pileBatteryRecord.setFinishpilenum(Float.parseFloat(number));
-                pileBatteryRecord.setFnishpackagenum(Float.parseFloat(number));
-                pileBatteryRecord.setStatus("4");
+                pileBatteryRecord.setStatus("5");
                 pileBatteryRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
 
                 pileBatteryRecord2.setFinishpilenum(pileBatteryRecord2.getFinishpilenum() - Float.parseFloat(number));
 
                 pileBatteryRecordMapper.updateByPrimaryKeySelective(pileBatteryRecord2);
-                pileBatteryRecordMapper.insertSelective(pileBatteryRecord2);
+                pileBatteryRecordMapper.insertSelective(pileBatteryRecord);
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 return result;
             }
@@ -523,7 +522,8 @@ public class MaterialServiceImpl implements IMaterialService {
     public TNPYResponse getMaterialRecordBySubOrderID(String qrCode, String expendOrderID) {
         TNPYResponse result = new TNPYResponse();
         try {
-            qrCode = qrCode.toUpperCase();
+
+
             if(("_" + ConfigParamEnum.BasicProcessEnum.BZProcessID.getName() + "_").equals(expendOrderID))
             {
                 List<Map<Object, Object>> materialRecordList = materialRecordMapper.selectPilePackageRecord(qrCode);
@@ -532,6 +532,7 @@ public class MaterialServiceImpl implements IMaterialService {
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 return result;
             }
+            qrCode = qrCode.toUpperCase();
             TNPYResponse resultGrant = judgeZHGrantStatus(qrCode);
             if (resultGrant.getStatus() != StatusEnum.ResponseStatus.Success.getIndex()) {
                 return resultGrant;
@@ -1176,6 +1177,13 @@ public class MaterialServiceImpl implements IMaterialService {
     public TNPYResponse getShelfProductionRecord(String staffID, String startTime, String endTime) {
         TNPYResponse result = new TNPYResponse();
         try {
+            if(staffID.contains("___"))
+            {
+                List<Map<Object, Object>> record = pileBatteryRecordMapper.selectLinePileDetail(staffID.split("___")[0],startTime,endTime);
+                result.setData(JSONObject.toJSON(record).toString());
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                return result;
+            }
             List<Map<Object, Object>> record = materialRecordMapper.selectSelfProductionRecord(staffID, startTime, endTime);
             result.setData(JSONObject.toJSON(record).toString());
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());

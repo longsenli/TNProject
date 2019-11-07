@@ -56,7 +56,7 @@ public interface MaterialRecordMapper {
             ") c left join sys_material d on c.materialID = d.id  order by inOrOut ")
     List<CustomMaterialRecord> selectBySubOrderID(String subOrderID);
 
-@Select("select materialid,materialName,productionNumber as number,id as orderid,id as inOrderName,id as inSubOrderName,id as suborderid,finishpileStaffName as inputer,finishpileTime as inputtime,id\n" +
+@Select("select materialid,materialName,finishpileNum as number,id as orderid,id as inOrderName,id as inSubOrderName,id as suborderid,finishpileStaffName as inputer,date_format(finishpileTime,'%Y-%m-%d %h:%i')  as inputtime,id\n" +
         "from tb_pilebatteryrecord where partpileID = #{subOrderID} order by status asc")
     List<Map<Object, Object>> selectPilePackageRecord(String subOrderID);
 
