@@ -505,7 +505,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 pileBatteryRecord.setFinishpilenum(orderSplit.getProductionnum().floatValue() );
                 if (inputterInfo.length > 3) {
                     pileBatteryRecord.setFinishpilestaffid(inputterInfo[1]);
-                    pileBatteryRecord.setFinishpilestaffname(inputterInfo[2]);
+                    pileBatteryRecord.setFinishpilestaffname(inputterInfo[0]);
                 }
                 pileBatteryRecord.setFinishpiletime(new Date());
                 pileBatteryRecordMapper.updateByPrimaryKeySelective(pileBatteryRecord);
