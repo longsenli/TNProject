@@ -487,16 +487,11 @@ public class AutomaticSchedulingTimer {
     @Scheduled(cron = "0 23 11,23 * * ?")
     public void automaticInsertWorkOrder() {
         try {
-            if(true)
-                return;
+
             if(!serviceIPJudge())
                 return;
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-            //SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-           // Date date = ft.parse("2019-07-25 23:20:00");
             Date date = new Date();//取时间
-//System.out.println("=======" + ft.format(date) );
             String timeOrderFinish = "";
             String timeOrderStart = "";
             String timeStartString = "";
@@ -504,7 +499,6 @@ public class AutomaticSchedulingTimer {
             String timeEndTMP = "";
             Calendar calendar = new GregorianCalendar();
             calendar.setTime(date);
-           // System.out.println("=======" + calendar.HOUR +"===" +calendar.get(Calendar.HOUR_OF_DAY));
             if (calendar.get(Calendar.HOUR_OF_DAY) < 16) {
                 timeEndTMP = dateFormat.format(date) + " 19:00:00";
                 timeOrderFinish = "'" +  dateFormat.format(date) + " 19:00:00" + "'";
@@ -524,39 +518,6 @@ public class AutomaticSchedulingTimer {
             }
             List<IndustrialPlant> industrialPlantList = industrialPlantMapper.selectAll();
             List<ProductionProcess> productionProcessList = productionProcessMapper.selectAll();
-            /*
-            List<String> materialRecordList = materialRecordMapper.selectByID();
-            for(int i =0;i<materialRecordList.size();i++)
-            {
-                orderSplitMapper.updateStatus(materialRecordList.get(i),"4");
-            }
-            */
-/*
-          List<Workorder> workorderList =           workorderMapper.selectByFilter(" where id like '%20190723'");
-          String tmpint = "";
-            for (int i = 0;i<workorderList.size();i++)
-            {
-                for(int j =0;j<workorderList.get(i).getBatchnum();j++)
-                {
-                    OrderSplit orderSplit = new OrderSplit();
-                    if(j+1< 10)
-                    {
-                        tmpint = "00" + (j+1);
-                    }
-                    else
-                    {
-                        tmpint = "0" + (j+1);
-
-                    }
-                    orderSplit.setId(workorderList.get(i).getOrderid() +tmpint);
-                    orderSplit.setProductionnum((workorderList.get(i).getTotalproduction()/workorderList.get(i).getBatchnum()) * 1.0);
-                    orderSplit.setOrderid(workorderList.get(i).getOrderid());
-                    orderSplit.setStatus("1");
-                    orderSplit.setMaterialid(workorderList.get(i).getMaterialid());
-                    orderSplit.setOrdersplitid(workorderList.get(i).getOrderid() +tmpint);
-                    orderSplitMapper.insert(orderSplit);
-                }
-            }*/
 
             for (int i = 0; i < industrialPlantList.size(); i++) {
 
@@ -564,6 +525,7 @@ public class AutomaticSchedulingTimer {
                 {
                     continue;
                 }
+
                 for (int j = 0; j < productionProcessList.size(); j++) {
                     try {
                         if(ConfigParamEnum.BasicProcessEnum.TBProcessID.getName().equals( productionProcessList.get(j).getId()))
@@ -578,18 +540,12 @@ public class AutomaticSchedulingTimer {
                         {
                             continue;
                         }
-/*
-                        if(!"1011".equals(productionProcessList.get(j).getId()))
-                            continue;
-                        System.out.println("=========OK" + timeOrderStart + "===" + timeEndTMP);*/
+
                         if (workorderMapper.selectOrderInfo(industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), timeOrderStart) != 0 &&
                                 workorderMapper.selectOrderInfo(industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), timeEndTMP) == 0) {
-                            //System.out.println("=========="  );
                             workorderMapper.insertAutoMainOrder(timeOrderStart, timeOrderFinish, timeStartString, timeEndString, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId());
                             workorderMapper.insertAutoSubOrder(timeOrderStart, timeStartString, timeEndString, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId());
-                          // System.out.println(timeOrderStart + tmp + "====" + iii+ industrialPlantList.get(i).getName() + " " + productionProcessList.get(j).getName());
                         }
-
                     } catch (Exception ex) {
                         System.out.println("自动添加工单失败===============" + ex.getMessage() + "  " + industrialPlantList.get(i).getName() + " " + productionProcessList.get(j).getName());
                     }
@@ -608,7 +564,6 @@ public class AutomaticSchedulingTimer {
             NetworkInterface networkInterface;
             Enumeration<InetAddress> inetAddresses;
             InetAddress inetAddress;
-
             boolean bl = false;
             while (networkInterfaces.hasMoreElements()) {
                 networkInterface = networkInterfaces.nextElement();
