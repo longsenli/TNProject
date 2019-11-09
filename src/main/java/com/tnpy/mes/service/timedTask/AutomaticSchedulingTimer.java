@@ -276,18 +276,14 @@ public class AutomaticSchedulingTimer {
                         if (ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(productionProcessList.get(j).getId())) {
                             materialSecondaryInventoryRecordMapper.insertJSSecondaryInventory(timeStart, timeFinish, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j - 1).getId(), dateFormat.format(date) + " 06:00:00");
                         }
-
-                        if (ConfigParamEnum.BasicProcessEnum.BBProcessID.getName().equals(productionProcessList.get(j).getId())) {
-                            materialSecondaryInventoryRecordMapper.insertBBSecondaryInventory(timeStart, timeFinish,dayTimeString, dateFormat.format(date) + " 06:00:00");
-                        }
-                        if (ConfigParamEnum.BasicProcessEnum.FBProcessID.getName().equals(productionProcessList.get(j).getId())) {
-                            materialSecondaryInventoryRecordMapper.insertFBSecondaryInventory(timeStart, timeFinish,dayTimeString, dateFormat.format(date) + " 06:00:00");
-                        }
                     } catch (Exception ex) {
                         System.out.println("二级库盘点出错===============" + ex.getMessage() + "  " + industrialPlantList.get(i).getName() + " " + productionProcessList.get(j).getName());
                     }
                 }
             }
+            materialSecondaryInventoryRecordMapper.insertBBSecondaryInventory(timeStart, timeFinish,dayTimeString, dateFormat.format(date) + " 06:00:00");
+            materialSecondaryInventoryRecordMapper.insertFBSecondaryInventory(timeStart, timeFinish,dayTimeString, dateFormat.format(date) + " 06:00:00");
+
 
         } catch (Exception ex) {
         }
