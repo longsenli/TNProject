@@ -131,7 +131,7 @@ public class WageRZController {
     	 List<LinkedHashMap<String, Object>> tbwage = tbWageDetailRZMapper.selectByPrimaryKey1(filter);
     	 if(tbwage.isEmpty()) {
     		 result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
-    		 result.setMessage("为找到数据");
+    		 result.setMessage("未找到数据");
              return  result;
     	 }
          result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());

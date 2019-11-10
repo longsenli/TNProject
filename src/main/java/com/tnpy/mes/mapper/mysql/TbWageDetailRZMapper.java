@@ -3,6 +3,7 @@ package com.tnpy.mes.mapper.mysql;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.tnpy.mes.model.mysql.TbWageDetailRZ;
@@ -41,8 +42,8 @@ public interface TbWageDetailRZMapper {
     		"	individualincometax as '代扣个人所得税',\r\n" + 
     		"	takehomepay as '实发工资'\r\n" + 
     		"FROM\r\n" + 
-    		"	tb_wagedetail_rz ")
-    List<LinkedHashMap<String, Object>> selectByPrimaryKey1(String filter);
+    		"	tb_wagedetail_rz ${filter}")
+    List<LinkedHashMap<String, Object>> selectByPrimaryKey1(@Param("filter") String filter);
 
     int updateByPrimaryKeySelective(TbWageDetailRZ record);
 
