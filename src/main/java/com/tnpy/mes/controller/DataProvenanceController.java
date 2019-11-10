@@ -22,4 +22,10 @@ public class DataProvenanceController {
 
         return  dataProvenanceService.getProvenanceByOrderID(orderID);
     }
+
+    @RequestMapping(value = "/getProvenanceByDCDK")
+    public TNPYResponse getProvenanceByDCDK(String DKQRCode ) {
+
+        return  dataProvenanceService.getProvenanceByDCDK(DKQRCode);
+    }
 }

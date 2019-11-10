@@ -84,4 +84,9 @@ public class dataProvenanceServiceImpl implements IDataProvenanceService {
             return  result;
         }
     }
+
+    @Override
+    public TNPYResponse getProvenanceByDCDK(String DKQRCode) {
+        return null;
+    }
 }

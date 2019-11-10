@@ -272,17 +272,28 @@ public class DashboardServiceImpl implements IDashboardService {
                             " union all\n" +
                             "( select c.materialName,c.number,'白班' as classType,c.grantDayTime,d.name as acceptPlant from ( select b.name as materialName,a.number,a.acceptPlantID,a.grantDayTime from (  select batteryType,sum(number ) as number,\n" +
                             " acceptPlantID, DATE_FORMAT(grantTime, '%Y-%m-%d') as grantDayTime from tb_grantmaterialrecord where plantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' \n" +
-                            " and grantTime < '" + endTime+" 23:59:59' group by grantDayTime,batteryType,acceptPlantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.acceptPlantID = d.id order by grantDayTime,materialName limit 1000 )" ;
+                            " and grantTime < '" + endTime+" 23:59' group by grantDayTime,batteryType,acceptPlantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.acceptPlantID = d.id order by grantDayTime,materialName limit 1000 )" ;
                 }
                 else
                 {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Date newEndTime = sdf.parse(endTime); // new Date(endTime);
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(newEndTime);
+                    calendar.add(Calendar.DATE, 1);
+                    newEndTime = calendar.getTime();
+                    endTime = sdf.format(newEndTime) + " 07:00";
+
+                    Date newStartTime = sdf.parse(startTime); //new Date(startTime);
+                    startTime = sdf.format(newStartTime);
                     querySQL = "( select b.name as materialName,a.number,'总计' as classType, '' as grantDayTime ,'' as acceptPlant from (  select batteryType,sum(number ) as number from tb_grantmaterialrecord \n" +
-                            " where plantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' and grantTime < '" + endTime+" 23:59:59' group by batteryType ) a left join sys_material b on a.batteryType = b.id  order by materialName limit 100 ) \n" +
+                            " where plantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+" 07:00' and grantTime < '" + endTime+"' group by batteryType ) a left join sys_material b on a.batteryType = b.id  order by materialName limit 100 ) \n" +
                             " union all\n" +
-                            "( select c.materialName,c.number,c.classType,c.grantDayTime,d.name as acceptPlant from ( select b.name as materialName,a.number,a.acceptPlantID,a.grantDayTime from (  select batteryType,sum(number ) as number,\n" +
-                            " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as classType," +
-                            " acceptPlantID, DATE_FORMAT(grantTime, '%Y-%m-%d') as grantDayTime from tb_grantmaterialrecord where plantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' \n" +
-                            " and grantTime < '" + endTime+" 23:59:59' group by grantDayTime,batteryType,acceptPlantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.acceptPlantID = d.id order by grantDayTime,materialName limit 1000 )" ;
+                            "( select c.materialName,c.number,c.classType,c.grantDayTime,d.name as acceptPlant from ( select b.name as materialName,a.number,a.classType,a.acceptPlantID,a.grantDayTime from (  select batteryType,sum(number ) as number,\n" +
+                            " case  when date_format(grantTime,'%H') < 19 and date_format(grantTime,'%H') > 7 then '白班'  else '夜班' end  as classType," +
+                            " acceptPlantID, case when date_format(grantTime,'%H') < 7 then  DATE_FORMAT(date_add(grantTime, interval -1 day), '%Y-%m-%d') else DATE_FORMAT(grantTime, '%Y-%m-%d') end as grantDayTime" +
+                            "  from tb_grantmaterialrecord where plantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+" 07:00' \n" +
+                            " and grantTime < '" + endTime+"' group by grantDayTime,batteryType,acceptPlantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.acceptPlantID = d.id order by grantDayTime,materialName limit 1000 )" ;
                 }
 
             }
@@ -295,13 +306,41 @@ public class DashboardServiceImpl implements IDashboardService {
                     result.setMessage("未获取到前一工序信息！不知道发料工序！");
                     return  result;
                 }
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Date newEndTime = sdf.parse(endTime); // new Date(endTime);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(newEndTime);
+                calendar.add(Calendar.DATE, 1);
+                endTime = sdf.format(newEndTime) ;
                 processID = lastProcessID.get(0);
-                querySQL = "( select b.name as materialName,a.number,'' as grantDayTime ,'' as grantPlant from (  select batteryType,sum(number ) as number from tb_grantmaterialrecord \n" +
-                        " where acceptPlantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' and grantTime < '" + endTime+" 23:59:59' group by batteryType ) a left join sys_material b on a.batteryType = b.id  order by materialName limit 100 ) \n" +
-                        " union all\n" +
-                        "( select  c.materialName,c.number,c.grantDayTime,d.name as grantPlant from ( select b.name as materialName,a.number,a.plantID,a.grantDayTime from (  select batteryType,sum(number ) as number,\n" +
-                        " plantID, DATE_FORMAT(grantTime, '%Y-%m-%d') as grantDayTime from tb_grantmaterialrecord where acceptPlantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' \n" +
-                        " and grantTime < '" + endTime+" 23:59:59' group by grantDayTime,batteryType,plantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.plantID = d.id order by grantDayTime,materialName limit 1000 )" ;
+                Date newStartTime = sdf.parse(startTime); //new Date(startTime);
+                startTime = sdf.format(newStartTime);
+                if(ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(processID))
+                {
+                    endTime = endTime + " 23:29";
+                    querySQL = "( select b.name as materialName,a.number,'总计' as classType,'' as grantDayTime ,'' as grantPlant from (  select batteryType,sum(number ) as number from tb_grantmaterialrecord \n" +
+                            " where acceptPlantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' and grantTime < '" + endTime+"' group by batteryType ) a left join sys_material b on a.batteryType = b.id  order by materialName limit 100 ) \n" +
+                            " union all\n" +
+                            "( select  c.materialName,c.number,c.classType,c.grantDayTime,d.name as grantPlant from ( select b.name as materialName,a.classType,a.number,a.plantID,a.grantDayTime from (  select batteryType,sum(number ) as number,\n" +
+                            "  '白班'    as classType," +
+                            " plantID,  DATE_FORMAT(grantTime, '%Y-%m-%d')  as grantDayTime" +
+                            " from tb_grantmaterialrecord where acceptPlantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' \n" +
+                            " and grantTime < '" + endTime+"' group by grantDayTime,batteryType,plantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.plantID = d.id order by grantDayTime,materialName limit 1000 )" ;
+                }
+                else
+                {
+                    startTime = startTime + " 07:00";
+                    endTime =  sdf.format(newEndTime) + " 07:00";
+                    querySQL = "( select b.name as materialName,a.number,'总计' as classType,'' as grantDayTime ,'' as grantPlant from (  select batteryType,sum(number ) as number from tb_grantmaterialrecord \n" +
+                            " where acceptPlantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' and grantTime < '" + endTime+"' group by batteryType ) a left join sys_material b on a.batteryType = b.id  order by materialName limit 100 ) \n" +
+                            " union all\n" +
+                            "( select  c.materialName,c.number,c.classType,c.grantDayTime,d.name as grantPlant from ( select b.name as materialName,a.classType,a.number,a.plantID,a.grantDayTime from (  select batteryType,sum(number ) as number,\n" +
+                            " case  when date_format(grantTime,'%H') < 19 and date_format(grantTime,'%H') > 7 then '白班'  else '夜班' end  as classType," +
+                            " plantID, case when date_format(grantTime,'%H') < 7 then  DATE_FORMAT(date_add(grantTime, interval -1 day), '%Y-%m-%d') else DATE_FORMAT(grantTime, '%Y-%m-%d') end as grantDayTime" +
+                            " from tb_grantmaterialrecord where acceptPlantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' \n" +
+                            " and grantTime < '" + endTime+"' group by grantDayTime,batteryType,plantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.plantID = d.id order by grantDayTime,materialName limit 1000 )" ;
+                }
+
             }
 
             if("byScrapMaterial".equals(queryTypeID))

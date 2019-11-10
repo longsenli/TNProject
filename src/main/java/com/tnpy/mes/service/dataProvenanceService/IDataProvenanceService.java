@@ -9,4 +9,5 @@ import com.tnpy.common.utils.web.TNPYResponse;
  */
 public interface IDataProvenanceService {
     public TNPYResponse getProvenanceByOrderID(String orderID );
+    public TNPYResponse getProvenanceByDCDK(String DKQRCode );
 }
