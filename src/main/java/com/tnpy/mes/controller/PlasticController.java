@@ -23,9 +23,9 @@ public class PlasticController {
     }
 
     @RequestMapping(value = "/addPlasticUsedRecord")
-    public TNPYResponse addPlasticUsedRecord(String listID,String userID,String userName,String plantID,String lineID,String locationID,String orderID)
+    public TNPYResponse addPlasticUsedRecord(String listID,String userID,String userName,String plantID,String lineID,String locationID,String orderID,String orderIDZH,String materialIDZH,String materialNameZH )
     {
-        return  plasticService.addPlasticUsedRecord( listID,userID,userName,plantID, lineID,locationID ,orderID);
+        return  plasticService.addPlasticUsedRecord( listID,userID,userName,plantID, lineID,locationID ,orderID,orderIDZH,materialIDZH,materialNameZH);
     }
 
     @RequestMapping(value = "/plasticDataProvenance")

@@ -78,12 +78,12 @@ public class DashboardServiceImpl implements IDashboardService {
                 querySQL = "(select inputLineID,'' as orderDay,'总计' as orderHour,sum(sumProduction)  as sumProduction from (\n" +
                         "select b.inputLineID,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
-                        " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
+                        " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and status < '5'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
                         "left join tb_materialrecord  b on a.id = b.orderID where b.status = '1' and inputLineID is not null group by inputLineID,orderDay,orderHour order by inputLineID,orderDay,orderHour desc ) a group by inputLineID limit 1000)\n" +
                         "union all\n" +
                         "(select b.inputLineID,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
-                        "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
+                        "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and status < '5' and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
                         "left join tb_materialrecord  b on a.id = b.orderID where b.status = '1' and inputLineID is not null group by inputLineID,orderDay,orderHour order by inputLineID,orderDay,orderHour desc limit 1000)" ;
 
             }
@@ -92,12 +92,12 @@ public class DashboardServiceImpl implements IDashboardService {
                 querySQL = "select m.* from ((select inputWorkLocationID,'' as orderDay,'总计' as orderHour,sum(sumProduction)  as sumProduction from (\n" +
                         "select b.inputWorkLocationID,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
-                        " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
+                        " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and status < '5' and  scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
                         "left join tb_materialrecord  b on a.id = b.orderID where b.status = '1' and inputLineID is not null group by inputWorkLocationID,orderDay,orderHour order by inputWorkLocationID,orderDay,orderHour desc ) a group by inputWorkLocationID limit 1000)\n" +
                         "union all\n" +
                         "(select b.inputWorkLocationID,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
-                        "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
+                        "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and status < '5'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
                         "left join tb_materialrecord  b on a.id = b.orderID where b.status = '1' and inputLineID is not null group by inputWorkLocationID,orderDay,orderHour order by inputWorkLocationID,orderDay,orderHour desc limit 1000) \n" +
                          " ) m left join tb_worklocation n on m.inputWorkLocationID = n.id order by m.orderDay, n.ordinal "    ;
 
@@ -108,12 +108,12 @@ public class DashboardServiceImpl implements IDashboardService {
                 querySQL = "(select inputer,'' as orderDay,'总计' as orderHour,sum(sumProduction)  as sumProduction from (\n" +
                         "select b.inputer,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
-                        " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
+                        " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and status < '5' and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
                         "left join tb_materialrecord  b on a.id = b.orderID where b.status = '1' and inputLineID is not null group by inputer,orderDay,orderHour order by orderDay,orderHour,inputer desc ) a group by inputer limit 1000)\n" +
                         "union all\n" +
                         "(select b.inputer,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
-                        "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
+                        "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and status < '5' and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
                         "left join tb_materialrecord  b on a.id = b.orderID where b.status = '1' and inputLineID is not null group by inputer,orderDay,orderHour order by orderDay,orderHour desc,inputer limit 1000)" ;
 
             }
@@ -123,12 +123,12 @@ public class DashboardServiceImpl implements IDashboardService {
                 querySQL = "(select materialNameInfo,'' as orderDay,'总计' as orderHour,sum(sumProduction)  as sumProduction from (\n" +
                         "select b.materialNameInfo,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
-                        " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
+                        " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and status < '5'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
                         "left join tb_materialrecord  b on a.id = b.orderID where b.status = '1' and inputLineID is not null group by materialNameInfo,orderDay,orderHour order by materialNameInfo,orderDay,orderHour desc ) a group by materialNameInfo limit 1000)\n" +
                         "union all\n" +
                         "(select b.materialNameInfo,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
-                        "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
+                        "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and status < '5' and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
                         "left join tb_materialrecord  b on a.id = b.orderID where b.status = '1' and  inputLineID is not null group by materialNameInfo,orderDay,orderHour order by materialNameInfo,orderDay,orderHour desc limit 1000)" ;
 
             }
@@ -138,12 +138,12 @@ public class DashboardServiceImpl implements IDashboardService {
                 querySQL = "(select inputer,materialNameInfo,'' as orderDay,'总计' as orderHour,sum(sumProduction)  as sumProduction from (\n" +
                         "select b.inputer,b.materialNameInfo,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
-                        " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
+                        " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and status < '5' and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
                         "left join tb_materialrecord  b on a.id = b.orderID where b.status = '1' and inputLineID is not null group by inputer,materialNameInfo,orderDay,orderHour order by orderDay,orderHour desc,inputer,materialNameInfo ) a group by inputer,materialNameInfo limit 1000)\n" +
                         "union all\n" +
                         "(select b.inputer,b.materialNameInfo,a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
-                        "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
+                        "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and status < '5' and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
                         "left join tb_materialrecord  b on a.id = b.orderID where b.status = '1' and inputLineID is not null group by inputer,materialNameInfo,orderDay,orderHour order by orderDay,orderHour desc,inputer,materialNameInfo desc limit 1000)" ;
 
             }
@@ -152,12 +152,12 @@ public class DashboardServiceImpl implements IDashboardService {
                 querySQL = "(select '总计' as orderDay, orderHour,sum(sumProduction)  as sumProduction from (\n" +
                         "select a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
-                        " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
+                        " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and status < '5' and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
                         "left join tb_materialrecord  b on a.id = b.orderID where b.status = '1' and inputLineID is not null group by orderDay,orderHour order by orderDay,orderHour desc ) a group by orderHour limit 1000)\n" +
                         "union all\n" +
                         "(select a.orderDay,a.orderHour,sum(number) as sumProduction from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
-                        "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
+                        "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and status < '5'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
                         "left join tb_materialrecord  b on a.id = b.orderID where b.status = '1' and inputLineID is not null group by orderDay,orderHour order by orderDay,orderHour desc limit 1000)" ;
 
             }
@@ -166,7 +166,7 @@ public class DashboardServiceImpl implements IDashboardService {
             {
                 querySQL = "(select a.orderDay,a.orderHour,b.subOrderID,b.materialNameInfo,b.number,b.inputer,b.inputTime from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                         " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
-                        "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
+                        "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and status < '5' and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
                         "left join tb_materialrecord  b on a.id = b.orderID where  b.status = '1' and  inputLineID is not null  order by orderDay,orderHour desc,inputTime limit 1000)" ;
 
             }
@@ -187,12 +187,12 @@ public class DashboardServiceImpl implements IDashboardService {
                     querySQL = "(select inputLineID,'' as orderDay,'总计' as orderHour,sum(sumProduction)  as sumProduction,materialNameInfo  from (\n" +
                             "select b.inputLineID,a.orderDay,a.orderHour,sum(number) as sumProduction ,materialNameInfo from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                             " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
-                            " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
+                            " where plantID = '" + plantID + "' and processID =  '" + processID + "'  and status < '5' and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
                             "left join tb_materialrecord  b on a.id = b.orderID where b.status = '1' and inputLineID is not null group by inputLineID,orderDay,orderHour ,materialNameInfo order by inputLineID,orderDay,orderHour desc ) a group by inputLineID,materialNameInfo limit 1000)\n" +
                             "union all\n" +
                             "(select b.inputLineID,a.orderDay,a.orderHour,sum(number) as sumProduction ,materialNameInfo from (select id ,date_format(scheduledStartTime,'%Y-%m-%d') as orderDay,\n" +
                             " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
-                            "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
+                            "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and status < '5'  and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
                             "left join tb_materialrecord  b on a.id = b.orderID where b.status = '1' and inputLineID is not null group by inputLineID,orderDay,orderHour ,materialNameInfo order by orderDay,orderHour desc,inputLineID limit 1000)" ;
 
                 }
@@ -265,12 +265,26 @@ public class DashboardServiceImpl implements IDashboardService {
 
             if("byGrantMaterial".equals(queryTypeID))
             {
-                querySQL = "( select b.name as materialName,a.number,'' as grantDayTime ,'' as acceptPlant from (  select batteryType,sum(number ) as number from tb_grantmaterialrecord \n" +
-                        " where plantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' and grantTime < '" + endTime+" 23:59:59' group by batteryType ) a left join sys_material b on a.batteryType = b.id  order by materialName limit 100 ) \n" +
-                        " union all\n" +
-                        "( select c.materialName,c.number,c.grantDayTime,d.name as acceptPlant from ( select b.name as materialName,a.number,a.acceptPlantID,a.grantDayTime from (  select batteryType,sum(number ) as number,\n" +
-                        " acceptPlantID, DATE_FORMAT(grantTime, '%Y-%m-%d') as grantDayTime from tb_grantmaterialrecord where plantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' \n" +
-                        " and grantTime < '" + endTime+" 23:59:59' group by grantDayTime,batteryType,acceptPlantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.acceptPlantID = d.id order by grantDayTime,materialName limit 1000 )" ;
+                if(ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(processID))
+                {
+                    querySQL = "( select b.name as materialName,a.number,'总计' as classType, '' as grantDayTime ,'' as acceptPlant from (  select batteryType,sum(number ) as number from tb_grantmaterialrecord \n" +
+                            " where plantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' and grantTime < '" + endTime+" 23:59:59' group by batteryType ) a left join sys_material b on a.batteryType = b.id  order by materialName limit 100 ) \n" +
+                            " union all\n" +
+                            "( select c.materialName,c.number,'白班' as classType,c.grantDayTime,d.name as acceptPlant from ( select b.name as materialName,a.number,a.acceptPlantID,a.grantDayTime from (  select batteryType,sum(number ) as number,\n" +
+                            " acceptPlantID, DATE_FORMAT(grantTime, '%Y-%m-%d') as grantDayTime from tb_grantmaterialrecord where plantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' \n" +
+                            " and grantTime < '" + endTime+" 23:59:59' group by grantDayTime,batteryType,acceptPlantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.acceptPlantID = d.id order by grantDayTime,materialName limit 1000 )" ;
+                }
+                else
+                {
+                    querySQL = "( select b.name as materialName,a.number,'总计' as classType, '' as grantDayTime ,'' as acceptPlant from (  select batteryType,sum(number ) as number from tb_grantmaterialrecord \n" +
+                            " where plantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' and grantTime < '" + endTime+" 23:59:59' group by batteryType ) a left join sys_material b on a.batteryType = b.id  order by materialName limit 100 ) \n" +
+                            " union all\n" +
+                            "( select c.materialName,c.number,c.classType,c.grantDayTime,d.name as acceptPlant from ( select b.name as materialName,a.number,a.acceptPlantID,a.grantDayTime from (  select batteryType,sum(number ) as number,\n" +
+                            " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as classType," +
+                            " acceptPlantID, DATE_FORMAT(grantTime, '%Y-%m-%d') as grantDayTime from tb_grantmaterialrecord where plantID = '"+plantID+"' and processID = '"+processID+"' and grantTime > '" + startTime+"' \n" +
+                            " and grantTime < '" + endTime+" 23:59:59' group by grantDayTime,batteryType,acceptPlantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.acceptPlantID = d.id order by grantDayTime,materialName limit 1000 )" ;
+                }
+
             }
 
             if("byGainMaterial".equals(queryTypeID))

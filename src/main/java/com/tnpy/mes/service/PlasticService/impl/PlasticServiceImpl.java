@@ -54,7 +54,7 @@ public class PlasticServiceImpl  implements IPlasticService {
         }
     }
 
-    public TNPYResponse addPlasticUsedRecord(String listID,String userID,String userName,String plantID,String lineID,String locationID,String orderID){
+    public TNPYResponse addPlasticUsedRecord(String listID,String userID,String userName,String plantID,String lineID,String locationID,String orderID,String orderIDZH,String materialIDZH,String materialNameZH ){
         TNPYResponse result = new TNPYResponse();
         try
         {
@@ -104,6 +104,9 @@ public class PlasticServiceImpl  implements IPlasticService {
                         plasticUsedRecord.setJqstaff(materialRecord.getInputer());
                         plasticUsedRecord.setJqtime(materialRecord.getInputtime());
                     }
+                    plasticUsedRecord.setUsedorderid(orderIDZH);
+                    plasticUsedRecord.setMaterialid(materialIDZH);
+                    plasticUsedRecord.setMaterialname(materialNameZH);
                     plasticUsedRecordMapper.insert(plasticUsedRecord);
                     mapResult.put("status","成功");
                     mapResult.put("returnMessage","成功!");

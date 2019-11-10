@@ -10,6 +10,6 @@ import com.tnpy.common.utils.web.TNPYResponse;
 public interface IPlasticService {
 
     public TNPYResponse getPlasticUsedRecord(String plantID, String lineID, String locationID, String startTime, String endTime );
-    public TNPYResponse addPlasticUsedRecord(String listID,String userID,String userName,String plantID,String lineID,String locationID,String orderID);
+    public TNPYResponse addPlasticUsedRecord(String listID,String userID,String userName,String plantID,String lineID,String locationID,String orderID,String orderIDZH,String materialIDZH,String materialNameZH );
     public TNPYResponse plasticDataProvenance(String id);
 }
