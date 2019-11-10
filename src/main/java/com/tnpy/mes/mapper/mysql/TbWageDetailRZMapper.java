@@ -41,8 +41,8 @@ public interface TbWageDetailRZMapper {
     		"	individualincometax as '代扣个人所得税',\r\n" + 
     		"	takehomepay as '实发工资'\r\n" + 
     		"FROM\r\n" + 
-    		"	tb_wagedetail_rz where id = #{orderID}")
-    List<LinkedHashMap<String, Object>> selectByPrimaryKey1(String id);
+    		"	tb_wagedetail_rz ")
+    List<LinkedHashMap<String, Object>> selectByPrimaryKey1(String filter);
 
     int updateByPrimaryKeySelective(TbWageDetailRZ record);
 

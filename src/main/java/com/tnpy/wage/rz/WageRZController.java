@@ -8,14 +8,21 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.sun.mail.imap.protocol.Status;
+import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.TbWageDetailRZMapper;
 import com.tnpy.mes.model.mysql.TbWageDetailRZ;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -29,27 +36,43 @@ public class WageRZController {
     private WageRZService importService;
     @Autowired
     private TbWageDetailRZMapper tbWageDetailRZMapper;
-
-    @PostMapping(value = "/upload")
+    
+    @PostMapping(value = "/rzwageupload")
     @ResponseBody
-    public String uploadExcel(HttpServletRequest request) throws Exception {
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-
-        MultipartFile file = multipartRequest.getFile("filename");
-        if (file.isEmpty()) {
-            return "文件不能为空";
-        }
-        InputStream inputStream = file.getInputStream();
-        List<List<Object>> list = importService.getBankListByExcel(inputStream, file.getOriginalFilename());
-        inputStream.close();
-
-        for (int i = 0; i < list.size(); i++) {
-            List<Object> lo = list.get(i);
+    public TNPYResponse uploadExcel(HttpServletRequest request) throws Exception {
+    	TNPYResponse result = new TNPYResponse();
+    	try {
+    		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+            MultipartFile file = multipartRequest.getFile("filename");
+            if (file.isEmpty()) {
+                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                result.setMessage("文件不能为空");
+                return  result;
+            }
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM");
+            Date now = new Date();
+            String filter = "where senddate = '"+formatter.format(now)+"' limit 1";
+            List<LinkedHashMap<String, Object>> isexists = tbWageDetailRZMapper.selectByPrimaryKey1(filter);
+            if (isexists.size()>0) {
+                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                result.setMessage(formatter.format(now)+ "月份数据已经上传过啦!");
+                return  result;
+            }
+            InputStream inputStream = file.getInputStream();
+            List<List<Object>> list = importService.getBankListByExcel(inputStream, file.getOriginalFilename());
+            inputStream.close();
+            for (int i = 0; i < list.size(); i++) {
+                List<Object> lo = list.get(i);
             	String uuid = UUID.randomUUID().toString();
             	uuid = uuid.replace("-", "");
             	TbWageDetailRZ tbwage = new TbWageDetailRZ();
             	tbwage.setId(uuid);//主键
-            	tbwage.setSenddate(lo.get(0).toString());//发放月份
+//                	tbwage.setSenddate(lo.get(0).toString());//发放月份
+            	if(lo.get(0).toString().equals(formatter.format(now))) {
+            		tbwage.setSenddate(lo.get(0).toString());//发放月份
+            	}else {
+            		tbwage.setSenddate(formatter.format(now));//发放月份
+            	}
             	tbwage.setName(lo.get(1).toString());//姓名 
             	tbwage.setCardno(lo.get(2).toString());//身份证号
             	tbwage.setDepartment(lo.get(3).toString());//结算部门
@@ -72,27 +95,47 @@ public class WageRZController {
             	tbwage.setIndividualincometax(lo.get(20).toString());//代扣个人所得税
             	tbwage.setTakehomepay(lo.get(21).toString());//实发工资
             	tbWageDetailRZMapper.insert(tbwage);
-            //TODO 随意发挥
-//            System.out.println(lo);
-
-        }
-        return "上传成功";
+            }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setMessage("上传成功!");
+            return  result;
+    		
+		} catch (Exception e) {
+			result.setMessage("上传出错！请联系管理员" + e.getMessage());
+	        return  result;
+		}
+        
     }
     
     
-    @RequestMapping(value = "/userwagequery")
-  public TNPYResponse getEquipmentInfo(String typeID,String plantID) {
+  @RequestMapping(value = "/userwagequery")
+  public TNPYResponse getEquipmentInfo(@RequestBody Map<String, String> reqMap) {
       TNPYResponse result = new TNPYResponse();
+      String cardno = reqMap.get("cardno") == null?"":reqMap.get("cardno").toString();
+      String senddate = reqMap.get("senddate") == null?"":reqMap.get("senddate").toString();
      try
      {
-    	 TbWageDetailRZ key = new TbWageDetailRZ();
-    	 key.setId("06615b0f29a9409981dca38d476931ed");
-    	 key.setCardno("410922198701153115");
-    	 List<LinkedHashMap<String, Object>> tbwage = tbWageDetailRZMapper.selectByPrimaryKey1("06615b0f29a9409981dca38d476931ed");
-    	 
-         result.setStatus(1);
+    	 //如果身份证号为空,则提示错误信息
+    	 if(cardno.equals("")) {
+    		 result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+    		 result.setMessage("身份证号不能为空");
+             return  result;
+    	 }
+    	 //默认为当前月
+    	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+    	 Date nowmonth = new Date();
+    	 if(senddate.equals("")) {
+    		 senddate=sdf.format(nowmonth).toString();
+    	 }
+    	 String filter = "where cardno = '"+cardno+"' and senddate = '"+senddate+"'";
+    	 List<LinkedHashMap<String, Object>> tbwage = tbWageDetailRZMapper.selectByPrimaryKey1(filter);
+    	 if(tbwage.isEmpty()) {
+    		 result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+    		 result.setMessage("为找到数据");
+             return  result;
+    	 }
+         result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
          result.setData(JSONObject.toJSONString(tbwage, SerializerFeature.WriteMapNullValue).toString());
-        // System.out.println(result);
          return  result;
      }
      catch (Exception ex)
