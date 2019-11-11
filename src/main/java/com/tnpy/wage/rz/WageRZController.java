@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -49,13 +50,20 @@ public class WageRZController {
                 result.setMessage("文件不能为空");
                 return  result;
             }
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM");
-            Date now = new Date();
-            String filter = "where senddate = '"+formatter.format(now)+"' limit 1";
+            
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
+            Calendar c = Calendar.getInstance();
+            c.setTime(new Date());
+            c.add(Calendar.MONTH, -1);
+            Date m = c.getTime();
+            String mon = format.format(m);
+            System.out.println("过去一个月："+mon);
+            
+            String filter = "where senddate = '"+mon+"' limit 1";
             List<LinkedHashMap<String, Object>> isexists = tbWageDetailRZMapper.selectByPrimaryKey1(filter);
             if (isexists.size()>0) {
                 result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
-                result.setMessage(formatter.format(now)+ "月份数据已经上传过啦!");
+                result.setMessage(mon+ "月份工资数据已经上传过啦!");
                 return  result;
             }
             InputStream inputStream = file.getInputStream();
@@ -68,10 +76,10 @@ public class WageRZController {
             	TbWageDetailRZ tbwage = new TbWageDetailRZ();
             	tbwage.setId(uuid);//主键
 //                	tbwage.setSenddate(lo.get(0).toString());//发放月份
-            	if(lo.get(0).toString().equals(formatter.format(now))) {
+            	if(lo.get(0).toString().equals(mon)) {
             		tbwage.setSenddate(lo.get(0).toString());//发放月份
             	}else {
-            		tbwage.setSenddate(formatter.format(now));//发放月份
+            		tbwage.setSenddate(mon);//发放月份
             	}
             	tbwage.setName(lo.get(1).toString());//姓名 
             	tbwage.setCardno(lo.get(2).toString());//身份证号
@@ -122,10 +130,21 @@ public class WageRZController {
              return  result;
     	 }
     	 //默认为当前月
-    	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+    	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     	 Date nowmonth = new Date();
+    	 String[] day = sdf.format(nowmonth).split("-");
+    	 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
+         Calendar c = Calendar.getInstance();
+         c.setTime(new Date());
+         c.add(Calendar.MONTH, -1);
+         Date m = c.getTime();
+         String mon = format.format(m);
+         System.out.println("过去一个月："+mon);
     	 if(senddate.equals("")) {
-    		 senddate=sdf.format(nowmonth).toString();
+    		 senddate=mon;
+    	 }
+    	 if(Integer.parseInt(day[2].toString())>25) {
+    		 senddate=format.format(nowmonth);
     	 }
     	 String filter = "where cardno = '"+cardno+"' and senddate = '"+senddate+"'";
     	 List<LinkedHashMap<String, Object>> tbwage = tbWageDetailRZMapper.selectByPrimaryKey1(filter);
