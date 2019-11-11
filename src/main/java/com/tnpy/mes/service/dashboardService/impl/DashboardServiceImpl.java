@@ -311,7 +311,9 @@ public class DashboardServiceImpl implements IDashboardService {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(newEndTime);
                 calendar.add(Calendar.DATE, 1);
+                newEndTime =calendar.getTime();
                 endTime = sdf.format(newEndTime) ;
+
                 processID = lastProcessID.get(0);
                 Date newStartTime = sdf.parse(startTime); //new Date(startTime);
                 startTime = sdf.format(newStartTime);

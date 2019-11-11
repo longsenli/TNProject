@@ -178,7 +178,7 @@ public class MaterialServiceImpl implements IMaterialService {
         TNPYResponse result = new TNPYResponse();
         try {
             List<String> materialIDList = JSON.parseArray(materialRecordIDListStr, String.class);
-            if(expendOrderID.contains("___") )
+            if(expendOrderID.contains("___") )  //包装投料采用___分割
             {
                 PileBatteryRecord pileBatteryRecord = pileBatteryRecordMapper.selectByPrimaryKey(materialIDList.get(0));
                 if(pileBatteryRecord == null)
@@ -437,7 +437,13 @@ public class MaterialServiceImpl implements IMaterialService {
                 return result;
             }
             Workorder workorder = workorderMapper.selectByPrimaryKey(orderSplit.getOrderid());
+
             if (workorder != null) {
+                if((StatusEnum.WorkOrderStatus.addmissing.getIndex()+"").equals(workorder.getStatus()))
+                {
+                    result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                    return result;
+                }
                 if (ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(workorder.getProcessid())) {
                     GrantMaterialRecord grantMaterialRecord = grantMaterialRecordMapper.selectByOrderID(orderSplit.getId());
                     if (grantMaterialRecord == null) {
