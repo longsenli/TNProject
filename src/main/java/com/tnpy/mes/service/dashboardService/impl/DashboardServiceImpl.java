@@ -681,7 +681,7 @@ public class DashboardServiceImpl implements IDashboardService {
         TNPYResponse result = new TNPYResponse();
         try
         {
-            String sqlFilter = " select materialID,plantID,processID,currentNum from tb_materialinventoryrecord where status != '-1' " ;
+            String sqlFilter = " select materialID,plantID,processID,currentNum ,ifnull(extend1,0) as planExpend,ifnull(extend2,0) as cycleTime from tb_materialinventoryrecord where status != '-1' " ;
             if(!"-1".equals(plantID))
             {
                 sqlFilter += " and plantID ='" + plantID + "' ";
@@ -690,17 +690,13 @@ public class DashboardServiceImpl implements IDashboardService {
             {
                 sqlFilter += " and processID ='" + processID + "' ";
             }
-            DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = new Date();//取时间
-            Calendar calendar = new GregorianCalendar();
-            calendar.setTime(date);
-            if( calendar.get(Calendar.HOUR_OF_DAY)<7)
-            {
-                calendar.add(Calendar.DATE, -1);
-                date = calendar.getTime();   //这个时间就是日期往后推一天的结果
-            }
 
-            sqlFilter += " and updateTime > '" + format1.format(date) + "' ";
+
+            //查询某日库存
+            DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+            Date date =format1.parse(dayTime);//取时间
+            sqlFilter += " and updateTime < '" + format1.format(date) + " 12:00' and  updateTime > '" +format1.format(date) + " 03:00' " ;
+
             sqlFilter = " select a.*,b.name from ( " + sqlFilter + " ) a left join sys_material b on a.materialID = b.id";
 
             List<Map<Object, Object>> mapList = dashboardMapper.getInventoryInfo(sqlFilter);
@@ -721,7 +717,7 @@ public class DashboardServiceImpl implements IDashboardService {
         TNPYResponse result = new TNPYResponse();
         try
         {
-            String sqlFilter = " select materialID,plantID,processID,productionNum,expendNum, date_format(updateTime, '%Y-%m-%d') as updateTime from tb_materialinventoryrecord where status != '-1' " ;
+            String sqlFilter = " select materialID,plantID,processID,productionNum,extend1 as planExpend,extend2 as cycleTime, date_format(updateTime, '%Y-%m-%d') as updateTime from tb_materialinventoryrecord where status != '-1' " ;
             if(!"-1".equals(plantID))
             {
                 sqlFilter += " and plantID ='" + plantID + "' ";
@@ -730,17 +726,11 @@ public class DashboardServiceImpl implements IDashboardService {
             {
                 sqlFilter += " and processID ='" + processID + "' ";
             }
+
+            //查询某日库存
             DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = new Date();//取时间
-
-            Calendar calendar = new GregorianCalendar();
-            calendar.setTime(date);
-
-            calendar.add(Calendar.DATE, -7);
-
-            date = calendar.getTime();   //这个时间就是日期往后推一天的结果
-
-            sqlFilter += " and updateTime > '" + format1.format(date) + "'";
+            Date date =format1.parse(dayTime);//取时间
+            sqlFilter += " and updateTime < '" + format1.format(date) + " 12:00' and  updateTime > '" +format1.format(date) + " 03:00' " ;
 
             sqlFilter = " select a.*,b.name from ( " + sqlFilter + " ) a left join sys_material b on a.materialID = b.id order by a.updateTime asc,b.name";
             List<Map<Object, Object>> mapList = dashboardMapper.getInventoryInfo(sqlFilter);
