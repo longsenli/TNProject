@@ -216,19 +216,10 @@ public interface MaterialRecordMapper {
     @Select("select b.* from ( \n" +
             "(select subOrderID,inputer,DATE_FORMAT(inputTime, '%Y-%m-%d %H:%i:%s') as inputTime,materialNameInfo,inputPlantID,inputProcessID,inputLineID from tb_materialrecord\n" +
             " where subOrderID in ( ${orderList} ) )\n" +
-            " union all  (\n" +
-            " select * from (\n" +
-            " (select id as subOrderID ,recorder1 as inputer,CONCAT( DATE_FORMAT(starttime1, '%Y-%m-%d %H:%i:%s') ,' ——' ,DATE_FORMAT(endtime1, '%Y-%m-%d %H:%i:%s')) as inputTime,\n" +
+            " union all  \n" +
+            " (select id as subOrderID ,recorder1 as inputer,CONCAT( DATE_FORMAT(starttime1, '%Y-%m-%d %H:%i:%s') ,' ——' ,DATE_FORMAT(endtime3, '%Y-%m-%d %H:%i:%s')) as inputTime,\n" +
             " materialName as materialNameInfo,plantID as inputPlantID,'1004' as inputProcessID ,solidifyRoomID as inputLineID from tb_solidifyrecord  \n" +
-            " where id in ( ${orderList} ) and endtime1 is not null )\n" +
-            " union all \n" +
-            "  (select id as subOrderID ,recorder2 as inputer,CONCAT( DATE_FORMAT(starttime2, '%Y-%m-%d %H:%i:%s') ,' ——' ,DATE_FORMAT(endtime2, '%Y-%m-%d %H:%i:%s')) as inputTime,\n" +
-            " materialName as materialNameInfo,plantID as inputPlantID,'1004' as inputProcessID ,solidifyRoomID as inputLineID from tb_solidifyrecord  \n" +
-            " where id in ( ${orderList} ) and endtime2 is not null )\n" +
-            " union all\n" +
-            " (select id as subOrderID ,recorder3 as inputer,CONCAT( DATE_FORMAT(starttime3, '%Y-%m-%d %H:%i:%s') ,' ——' ,DATE_FORMAT(endtime3, '%Y-%m-%d %H:%i:%s')) as inputTime,\n" +
-            " materialName as materialNameInfo,plantID as inputPlantID,'1004' as inputProcessID ,solidifyRoomID as inputLineID from tb_solidifyrecord  \n" +
-            " where id in ( ${orderList} ) and endtime3 is not null) ) a order by subOrderID,inputTime  limit 1000 )\n" +
+            " where id in ( ${orderList} ) and endtime3 is not null  order by subOrderID limit 1000 )\n" +
             " ) b left join sys_productionprocess c on b.inputProcessID = c.id order by c.ordinal asc,subOrderID, inputTime")
     List<Map<Object, Object>>  selectByOrderIDList(@Param("orderList") String orderList);
 
