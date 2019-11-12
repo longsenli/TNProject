@@ -75,7 +75,7 @@ public class ConfigParamEnum {
     public static  enum BasicProcessEnum {
         TBProcessID("1003", 1), GHProcessID("1004", 2),CDProcessID("1009",3),JSProcessID("1008",4),
         ZHProcessID("1007",5), JZProcessID("1011", 6), BZProcessID("1012", 7), FBProcessID("1005", 8),
-        BBProcessID("1006", 8);
+        BBProcessID("1006", 8),ZHQDProcessID("1015", 9);
         // 成员变量
         private String name;
         private int index;

@@ -729,6 +729,13 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 }
             }
 
+            if (ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID)) {
+
+                    realtimeProductionDashboardList = workOrderMapper.getZHQDRealtimeProductionDashboard(plantID, processID, startTime, endTime);
+                    result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                    result.setData(JSONObject.toJSON(realtimeProductionDashboardList).toString());
+                    return result;
+            }
 
             if (ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(processID)) {
                 realtimeProductionDashboardList = workOrderMapper.getRealtimeProductionBZDashboard(plantID, startTime.split(" ")[0], endTime.split(" ")[0]);

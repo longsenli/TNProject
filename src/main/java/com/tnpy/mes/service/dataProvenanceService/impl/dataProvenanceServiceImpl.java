@@ -87,6 +87,72 @@ public class dataProvenanceServiceImpl implements IDataProvenanceService {
 
     @Override
     public TNPYResponse getProvenanceByDCDK(String DKQRCode) {
-        return null;
+        TNPYResponse result = new TNPYResponse();
+        List<Map<Object, Object>> dcdkList = dataProvenanceRelationMapper.selectBatteryInfoByBottomQR(DKQRCode);
+        if(dcdkList.size() ==0)
+        {
+            result.setMessage("查询出错！未找到底壳二维码信息！" + DKQRCode );
+            return  result;
+        }
+
+        String orderID = dcdkList.get(0).get("JQID").toString();
+        Set<String> orderList = new HashSet<>();
+        orderList.add(orderID);
+        try
+        {
+            List<String> tmpOrderList = new ArrayList<>();
+            String orderFilter = "'" + orderID +"'";
+            while(true)
+            {
+                tmpOrderList.clear();
+                tmpOrderList = dataProvenanceRelationMapper.selectInOrderIDByOutOrderID(orderFilter);
+                if(tmpOrderList.size() < 1)
+                {
+                    break;
+                }
+                orderFilter = "";
+                for(int i = 0;i<tmpOrderList.size();i++)
+                {
+                    orderList.add(tmpOrderList.get(i));
+                    orderFilter += "'" + tmpOrderList.get(i) +"',";
+                }
+                orderFilter = orderFilter.substring(0,orderFilter.length()-1);
+            }
+            orderFilter = "'" + orderID +"'";
+            while(true)
+            {
+                tmpOrderList.clear();
+                tmpOrderList = dataProvenanceRelationMapper.selectOutOrderIDByInOrderID(orderFilter);
+                if(tmpOrderList.size() < 1)
+                {
+                    break;
+                }
+                orderFilter = "'";
+                for(int i = 0;i<tmpOrderList.size();i++)
+                {
+                    orderList.add(tmpOrderList.get(i));
+                    orderFilter +=   "'" + tmpOrderList.get(i) +"',";
+                }
+                orderFilter = orderFilter.substring(0,orderFilter.length()-1);
+            }
+            orderFilter = "";
+            Iterator<String> iterator=orderList.iterator();
+            while(iterator.hasNext()){
+                orderFilter +=  "'" + iterator.next()+"',";
+            }
+            orderFilter = orderFilter.substring(0,orderFilter.length()-1);
+
+            List<Map<Object, Object>> materialRecordList = materialRecordMapper.selectByOrderIDList(orderFilter);
+
+            materialRecordList.addAll(dcdkList);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(materialRecordList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
     }
 }

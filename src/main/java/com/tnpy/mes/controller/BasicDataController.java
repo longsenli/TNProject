@@ -40,6 +40,11 @@ public class BasicDataController {
         return  basicDataService.getProductionLine(plantID,processID);
     }
 
+    @RequestMapping(value = "/getAllProductionLine")
+    public TNPYResponse getAllProductionLine() {
+        return  basicDataService.getAllProductionLine();
+    }
+
     @RequestMapping(value = "/deleteproductionline")
     public TNPYResponse deteteProductionLine(String id) {
         return  basicDataService.deteteProductionLine(id);

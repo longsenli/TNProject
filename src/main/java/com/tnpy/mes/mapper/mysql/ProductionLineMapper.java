@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 @Component
@@ -23,5 +24,8 @@ public interface ProductionLineMapper {
     int updateByPrimaryKey(ProductionLine record);
     @Select("select * from  sys_productionLine where plantID = #{plantID} and processID = #{processID} order by ordinal asc ")
     List<ProductionLine> selectByPlantProcess(String plantID, String processID);
+
+    @Select("select id,name from  sys_productionLine where status != '-1' ")
+    List<Map<Object,Object>> getAllProductionLine();
 
 }

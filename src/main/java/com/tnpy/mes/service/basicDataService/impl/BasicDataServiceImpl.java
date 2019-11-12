@@ -125,7 +125,24 @@ public class BasicDataServiceImpl implements IBasicDataService {
             return  result;
         }
     }
+    public TNPYResponse getAllProductionLine()
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            // System.out.println(plantID + " 参数 " +processID);
+            List<Map<Object,Object>> productionLineList = productionLineMapper.getAllProductionLine();
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
 
+            result.setData(JSONObject.toJSON(productionLineList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
     @Override
     public TNPYResponse getMaterial() {
         TNPYResponse result = new TNPYResponse();

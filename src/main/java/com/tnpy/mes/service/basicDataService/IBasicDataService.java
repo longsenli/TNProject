@@ -11,6 +11,7 @@ public interface IBasicDataService {
     public TNPYResponse getIndustrialPlant();
     public TNPYResponse getProductionProcess();
     public TNPYResponse getProductionLine(String plantID,String processID);
+    public TNPYResponse getAllProductionLine();
     public TNPYResponse getMaterial();
     public TNPYResponse getEquipmentType();
     public TNPYResponse getOutMaterialByProcess(String processID,String plantID);
