@@ -35,4 +35,7 @@ public interface DataProvenanceRelationMapper {
 
     @Select(" select id as subOrderID,materialName as materialNameInfo,staffName as inputer,DATE_FORMAT(usedTime, '%Y-%m-%d %H:%i:%s') as inputTime,JQID,plantID as inputPlantID,'1015' as inputProcessID,lineID as inputLineID from tb_plasticusedrecord where id   = #{bottomQR} ")
     List<Map<Object, Object>> selectBatteryInfoByBottomQR(String bottomQR);
+
+    @Select(" select id as subOrderID,materialName as materialNameInfo,staffName as inputer,DATE_FORMAT(usedTime, '%Y-%m-%d %H:%i:%s') as inputTime,JQID,plantID as inputPlantID,'1015' as inputProcessID,lineID as inputLineID from tb_plasticusedrecord where JQID   = #{JQCode} ")
+    List<Map<Object, Object>> selectBatteryInfoByJQCode(String JQCode);
 }

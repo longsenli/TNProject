@@ -27,6 +27,8 @@ public class dataProvenanceServiceImpl implements IDataProvenanceService {
     {
         TNPYResponse result = new TNPYResponse();
 
+        List<Map<Object, Object>> dcdkList = dataProvenanceRelationMapper.selectBatteryInfoByJQCode(orderID);
+
         Set<String> orderList = new HashSet<>();
         orderList.add(orderID);
         try
@@ -74,6 +76,8 @@ public class dataProvenanceServiceImpl implements IDataProvenanceService {
             orderFilter = orderFilter.substring(0,orderFilter.length()-1);
 
             List<Map<Object, Object>> materialRecordList = materialRecordMapper.selectByOrderIDList(orderFilter);
+
+            materialRecordList.addAll(dcdkList);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(materialRecordList).toString());
             return  result;
