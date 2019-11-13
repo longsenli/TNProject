@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
+
 @Mapper
 @Component
 public interface PlasticUsedRecordMapper {
@@ -22,8 +24,8 @@ public interface PlasticUsedRecordMapper {
 
     int updateByPrimaryKey(PlasticUsedRecord record);
 
-    @Select("select * from tb_plasticUsedRecord ${filter}")
-    List<PlasticUsedRecord> selectByParam(@Param("filter") String filter);
+    @Select("select count(1) as productionNumb,lineID,workLocation,materialName from tb_plasticUsedRecord ${filter}")
+    List<Map<Object,Object>> selectByParam(@Param("filter") String filter);
 
     @Select("select count(*) from tb_plasticUsedRecord  where JQID = #{orderID}")
     int selectJQUsedNumber(String orderID);
