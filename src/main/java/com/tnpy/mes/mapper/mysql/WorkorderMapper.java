@@ -28,7 +28,7 @@ public interface WorkorderMapper {
 
     //使用closeStaff 字段表示物料名称
     @Select("select a.id,a.orderID,a.plantID,a.processID,a.lineID,a.status,a.batchNum,a.totalProduction,a.materialID,a.scheduledStartTime,a.createTime,b.name as closeStaff " +
-            " from ( select * from tb_workOrder ${filter} ) a left join sys_material b on a.materialID = b.id")
+            " from ( select * from tb_workOrder ${filter} ) a left join sys_material b on a.materialID = b.id order by scheduledStartTime,a.id,closeStaff")
     List<Workorder> selectByFilter(@Param("filter") String filter);
 
     @Select("select processID from tb_workorder where id = #{orderID}")
