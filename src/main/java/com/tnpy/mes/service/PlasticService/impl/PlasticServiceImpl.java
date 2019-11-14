@@ -62,6 +62,13 @@ public class PlasticServiceImpl  implements IPlasticService {
             List<Map<String, String>> grantResult = new  ArrayList<Map<String, String>>();
             String[] orderArray = listID.split("###");
 
+            int count2 = plasticUsedRecordMapper.checkMaterialUsable(orderID, materialIDZH);
+            if (count2 < 1) {
+                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                result.setMessage(materialNameZH + "不能够使用该极群！");
+                return result;
+            }
+
             MaterialRecord materialRecord = materialRecordMapper.selectBySuborderID(orderID);
 
             int remainNumber = Double.valueOf(materialRecord.getInputworklocationid()).intValue();

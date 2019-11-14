@@ -1088,11 +1088,21 @@ public class MaterialServiceImpl implements IMaterialService {
     public TNPYResponse getMaterialRecordDetailBySubOrderID(String subOrderID) {
         TNPYResponse result = new TNPYResponse();
         try {
-
             if(StringUtils.isEmpty(subOrderID))
             {
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 result.setData(JSONObject.toJSON("").toString());
+                return result;
+            }
+            List<OrderSplit> orderSplit = orderSplitMapper.selectByFilter(" where id like '%"+subOrderID+"%' ");
+            if(orderSplit.size() < 1)
+            {
+                result.setMessage("未找到工单记录，请确认二维码是否正确！" + subOrderID);
+                return result;
+            }
+            if(!(StatusEnum.WorkOrderStatus.finished.getIndex() + "").equals(orderSplit.get(0).getStatus()) )
+            {
+                result.setMessage("该工单未入库，请确认！" + subOrderID);
                 return result;
             }
             List<Map<Object, Object>> materialStatisInfo = materialRecordMapper.getMaterialRecordDetailBySubOrderID(subOrderID);

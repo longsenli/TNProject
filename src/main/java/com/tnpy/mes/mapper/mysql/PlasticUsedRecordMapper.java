@@ -30,6 +30,11 @@ public interface PlasticUsedRecordMapper {
     @Select("select count(*) from tb_plasticUsedRecord  where JQID = #{orderID}")
     int selectJQUsedNumber(String orderID);
 
+
+    @Select("SELECT count(*) FROM tb_materialrecord where subOrderID = #{qrCode}  and materialID in(\n" +
+            "select distinct inMaterialID from sys_materialrelation where outMaterialID = #{outMaterialID} )\n")
+    int checkMaterialUsable(String inOrderID,String outMaterialID);
+
     @Select("select count(*) from tb_plasticUsedRecord  where workLocation = #{locationID} and usedTime > #{startTime} and usedTime < #{endTime}")
     int selectPlasticUsedNumber(String locationID,String startTime,String endTime);
 }

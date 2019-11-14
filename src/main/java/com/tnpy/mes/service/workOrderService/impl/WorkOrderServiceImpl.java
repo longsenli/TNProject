@@ -195,8 +195,9 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         try {
             String filter = "where  plantID ='" + plantID + "' and processID = '" + processID + "' ";
             if (!"-1".equals(lineID)) {
-                filter += " and lineID = '" + lineID + "' ";
+                filter += " and lineID = '" + lineID + "'";
             }
+            filter += " limit 500";
             //  filter += " order by scheduledStartTime desc,lineID asc  limit 1000 ";
             // System.out.println("============");
             List<CustomWorkOrderRecord> workOrderList = workOrderMapper.selectCustomResultByFilter(filter);

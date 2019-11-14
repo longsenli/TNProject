@@ -536,7 +536,10 @@ public class AutomaticSchedulingTimer {
                         {
                             continue;
                         }
-
+                        if(ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals( productionProcessList.get(j).getId()))
+                        {
+                            continue;
+                        }
                         if (workorderMapper.selectOrderInfo(industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), timeOrderStart) != 0 &&
                                 workorderMapper.selectOrderInfo(industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), timeEndTMP) == 0) {
                             workorderMapper.insertAutoMainOrder(timeOrderStart, timeOrderFinish, timeStartString, timeEndString, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId());
