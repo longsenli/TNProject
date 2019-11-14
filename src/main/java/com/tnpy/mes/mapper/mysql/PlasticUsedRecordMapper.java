@@ -31,7 +31,7 @@ public interface PlasticUsedRecordMapper {
     int selectJQUsedNumber(String orderID);
 
 
-    @Select("SELECT count(*) FROM tb_materialrecord where subOrderID = #{qrCode}  and materialID in(\n" +
+    @Select("SELECT count(*) FROM tb_materialrecord where subOrderID = #{inOrderID}  and materialID in(\n" +
             "select distinct inMaterialID from sys_materialrelation where outMaterialID = #{outMaterialID} )\n")
     int checkMaterialUsable(String inOrderID,String outMaterialID);
 

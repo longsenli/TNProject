@@ -70,7 +70,8 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     private PileBatteryRecordMapper pileBatteryRecordMapper;
 
     @Autowired
-    private  TidyBatteryRecordMapper tidyBatteryRecordMapper;
+    private TidyBatteryRecordMapper tidyBatteryRecordMapper;
+
     public TNPYResponse getWorkOrder() {
         TNPYResponse result = new TNPYResponse();
         try {
@@ -197,7 +198,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             if (!"-1".equals(lineID)) {
                 filter += " and lineID = '" + lineID + "'";
             }
-            filter += " limit 500";
+            filter += " order by scheduledStartTime desc limit 500 ";
             //  filter += " order by scheduledStartTime desc,lineID asc  limit 1000 ";
             // System.out.println("============");
             List<CustomWorkOrderRecord> workOrderList = workOrderMapper.selectCustomResultByFilter(filter);
@@ -494,16 +495,14 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             String[] inputterInfo = name.split("###");
             OrderSplit orderSplit = (OrderSplit) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), OrderSplit.class);
 
-            if(ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(orderSplit.getOrderid()))
-            {
+            if (ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(orderSplit.getOrderid())) {
                 PileBatteryRecord pileBatteryRecord = pileBatteryRecordMapper.selectByPrimaryKey(orderSplit.getId());
-                if(!"1".equals(pileBatteryRecord.getStatus()))
-                {
-                    result.setMessage("该二维码已打堆！" );
+                if (!"1".equals(pileBatteryRecord.getStatus())) {
+                    result.setMessage("该二维码已打堆！");
                     return result;
                 }
                 pileBatteryRecord.setStatus("4");
-                pileBatteryRecord.setFinishpilenum(orderSplit.getProductionnum().floatValue() );
+                pileBatteryRecord.setFinishpilenum(orderSplit.getProductionnum().floatValue());
                 if (inputterInfo.length > 3) {
                     pileBatteryRecord.setFinishpilestaffid(inputterInfo[1]);
                     pileBatteryRecord.setFinishpilestaffname(inputterInfo[0]);
@@ -512,7 +511,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 pileBatteryRecord.setPartpileid(pileBatteryRecord.getId());
                 pileBatteryRecordMapper.updateByPrimaryKeySelective(pileBatteryRecord);
 
-                tidyBatteryRecordMapper.updateCurrentNumAfterPile(pileBatteryRecord.getTidyrecordid(),pileBatteryRecord.getFinishpilenum().intValue() + "");
+                tidyBatteryRecordMapper.updateCurrentNumAfterPile(pileBatteryRecord.getTidyrecordid(), pileBatteryRecord.getFinishpilenum().intValue() + "");
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 return result;
             }
@@ -700,9 +699,11 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         TNPYResponse result = new TNPYResponse();
         try {
             List<Map<Object, Object>> planProductionDashboardList;
-            if (ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(processID)) {
-                planProductionDashboardList = workOrderMapper.getPlanProductionBZDashboard(plantID, startTime.split(" ")[0], endTime.split(" ")[0]);
-            } else {
+            //暂时不显示包装丝网订单产量
+//            if (ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(processID)) {
+//                planProductionDashboardList = workOrderMapper.getPlanProductionBZDashboard(plantID, startTime.split(" ")[0], endTime.split(" ")[0]);
+//            } else
+            {
                 planProductionDashboardList = workOrderMapper.getPlanProductionDashboard(plantID, processID, startTime, endTime);
             }
 
@@ -723,24 +724,60 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
 
                 startTime = startTime.split(" ")[0];
                 endTime = endTime.split(" ")[0] + " 23:00";
-                if (workOrderMapper.getJSSumProduction(plantID, processID, startTime, endTime) < 2) {
-                    realtimeProductionDashboardList = workOrderMapper.getRealtimeGainNumberDashboard(plantID, processID, startTime, endTime);
+
+                if (workOrderMapper.checkProcessOrderNumber(plantID, processID, startTime, endTime) > 0) {
+                    if (workOrderMapper.getJSSumProduction(plantID, processID, startTime, endTime) < 2) {
+                        realtimeProductionDashboardList = workOrderMapper.getRealtimeGainNumberDashboard(plantID, processID, startTime, endTime);
+                        result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                        result.setData(JSONObject.toJSON(realtimeProductionDashboardList).toString());
+                        return result;
+                    } else {
+                        realtimeProductionDashboardList = workOrderMapper.getRealtimeProductionDashboard(plantID, processID, startTime, endTime);
+                        result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                        result.setData(JSONObject.toJSON(realtimeProductionDashboardList).toString());
+                        return result;
+                    }
+                } else {
+                    realtimeProductionDashboardList = workOrderMapper.getRealtimeGainNumberWithoutOrderDashboard(plantID, processID, startTime, endTime);
                     result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                     result.setData(JSONObject.toJSON(realtimeProductionDashboardList).toString());
                     return result;
                 }
+
             }
 
             if (ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID)) {
 
-                    realtimeProductionDashboardList = workOrderMapper.getZHQDRealtimeProductionDashboard(plantID, processID, startTime, endTime);
-                    result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
-                    result.setData(JSONObject.toJSON(realtimeProductionDashboardList).toString());
-                    return result;
+                realtimeProductionDashboardList = workOrderMapper.getZHQDRealtimeProductionDashboard(plantID, processID, startTime, endTime);
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setData(JSONObject.toJSON(realtimeProductionDashboardList).toString());
+                return result;
             }
 
             if (ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(processID)) {
-                realtimeProductionDashboardList = workOrderMapper.getRealtimeProductionBZDashboard(plantID, startTime.split(" ")[0], endTime.split(" ")[0]);
+                startTime = startTime.split(" ")[0];
+                endTime = endTime.split(" ")[0] + " 23:00";
+
+                if (workOrderMapper.checkProcessOrderNumber(plantID, processID, startTime, endTime) > 0) {
+                    if (workOrderMapper.getJSSumProduction(plantID, processID, startTime, endTime) < 2) {
+                        realtimeProductionDashboardList = workOrderMapper.getRealtimeGainNumberDashboard(plantID, processID, startTime, endTime);
+                        result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                        result.setData(JSONObject.toJSON(realtimeProductionDashboardList).toString());
+                        return result;
+                    } else {
+                        realtimeProductionDashboardList = workOrderMapper.getRealtimeProductionDashboard(plantID, processID, startTime, endTime);
+                        result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                        result.setData(JSONObject.toJSON(realtimeProductionDashboardList).toString());
+                        return result;
+                    }
+                } else {
+                    realtimeProductionDashboardList = workOrderMapper.getBZRealtimeGainNumberWithoutOrderDashboard(plantID, startTime, endTime);
+                    result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                    result.setData(JSONObject.toJSON(realtimeProductionDashboardList).toString());
+                    return result;
+                }
+
+                //realtimeProductionDashboardList = workOrderMapper.getRealtimeProductionBZDashboard(plantID, startTime.split(" ")[0], endTime.split(" ")[0]);
             } else {
                 realtimeProductionDashboardList = workOrderMapper.getRealtimeProductionDashboard(plantID, processID, startTime, endTime);
             }
@@ -758,22 +795,19 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     public TNPYResponse cancelFinishSuborder(String subOrdderID) {
         TNPYResponse result = new TNPYResponse();
         try {
-            if(subOrdderID.contains("___"))
-            {
+            if (subOrdderID.contains("___")) {
 
-                PileBatteryRecord pileBatteryRecord  = pileBatteryRecordMapper.selectByPrimaryKey(subOrdderID.split("___")[0]);
-                if("5".equals(pileBatteryRecord.getStatus()))
-                {
+                PileBatteryRecord pileBatteryRecord = pileBatteryRecordMapper.selectByPrimaryKey(subOrdderID.split("___")[0]);
+                if ("5".equals(pileBatteryRecord.getStatus())) {
                     result.setMessage("该工单已投料，不能取消！");
                     return result;
                 }
-                if("1".equals(pileBatteryRecord.getStatus()))
-                {
+                if ("1".equals(pileBatteryRecord.getStatus())) {
                     result.setMessage("该工单尚未打堆！");
                     return result;
                 }
                 pileBatteryRecordMapper.cancelPileRecordSuborder(pileBatteryRecord.getId());
-                tidyBatteryRecordMapper.updateCurrentNumAfterCancelPile(pileBatteryRecord.getTidyrecordid(),pileBatteryRecord.getFinishpilenum().intValue() + "");
+                tidyBatteryRecordMapper.updateCurrentNumAfterCancelPile(pileBatteryRecord.getTidyrecordid(), pileBatteryRecord.getFinishpilenum().intValue() + "");
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 return result;
             }
