@@ -1,13 +1,16 @@
 package com.tnpy.mes.mapper.mysql;
 
+import com.tnpy.mes.model.mysql.TbWageDetailRZ;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Component;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-
-import com.tnpy.mes.model.mysql.TbWageDetailRZ;
-
+@Mapper
+@Component
 public interface TbWageDetailRZMapper {
     int deleteByPrimaryKey(String id);
 

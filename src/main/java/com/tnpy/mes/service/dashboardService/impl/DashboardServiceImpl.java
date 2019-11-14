@@ -349,8 +349,8 @@ public class DashboardServiceImpl implements IDashboardService {
                             " where plantID = '" + plantID + "' and processID = '" + processID + "' and grantTime > '" + startTime + " 07:00' and grantTime < '" + endTime + "' group by batteryType ) a left join sys_material b on a.batteryType = b.id  order by materialName limit 100 ) \n" +
                             " union all\n" +
                             "( select c.materialName,c.number,c.classType,c.grantDayTime,d.name as acceptPlant from ( select b.name as materialName,a.number,a.classType,a.acceptPlantID,a.grantDayTime from (  select batteryType,sum(number ) as number,\n" +
-                            " case  when date_format(grantTime,'%H') < 19 and date_format(grantTime,'%H') > 7 then '白班'  else '夜班' end  as classType," +
-                            " acceptPlantID, case when date_format(grantTime,'%H') < 7 then  DATE_FORMAT(date_add(grantTime, interval -1 day), '%Y-%m-%d') else DATE_FORMAT(grantTime, '%Y-%m-%d') end as grantDayTime" +
+                            " case  when date_format(grantTime,'%H') < '19' and date_format(grantTime,'%H') > '06' then '白班'  else '夜班' end  as classType," +
+                            " acceptPlantID, case when date_format(grantTime,'%H') < '07' then  DATE_FORMAT(date_add(grantTime, interval -1 day), '%Y-%m-%d') else DATE_FORMAT(grantTime, '%Y-%m-%d') end as grantDayTime" +
                             "  from tb_grantmaterialrecord where plantID = '" + plantID + "' and processID = '" + processID + "' and grantTime > '" + startTime + " 07:00' \n" +
                             " and grantTime < '" + endTime + "' group by grantDayTime,classType,batteryType,acceptPlantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.acceptPlantID = d.id order by grantDayTime,classType desc,materialName limit 1000 )";
                 }
@@ -390,8 +390,8 @@ public class DashboardServiceImpl implements IDashboardService {
                             " where acceptPlantID = '" + plantID + "' and processID = '" + processID + "' and grantTime > '" + startTime + "' and grantTime < '" + endTime + "' group by batteryType ) a left join sys_material b on a.batteryType = b.id  order by materialName limit 100 ) \n" +
                             " union all\n" +
                             "( select  c.materialName,c.number,c.classType,c.grantDayTime,d.name as grantPlant from ( select b.name as materialName,a.classType,a.number,a.plantID,a.grantDayTime from (  select batteryType,sum(number ) as number,\n" +
-                            " case  when date_format(grantTime,'%H') < 19 and date_format(grantTime,'%H') > 7 then '白班'  else '夜班' end  as classType," +
-                            " plantID, case when date_format(grantTime,'%H') < 7 then  DATE_FORMAT(date_add(grantTime, interval -1 day), '%Y-%m-%d') else DATE_FORMAT(grantTime, '%Y-%m-%d') end as grantDayTime" +
+                            " case  when date_format(grantTime,'%H') < '19' and date_format(grantTime,'%H') > '06' then '白班'  else '夜班' end  as classType," +
+                            " plantID, case when date_format(grantTime,'%H') < '07' then  DATE_FORMAT(date_add(grantTime, interval -1 day), '%Y-%m-%d') else DATE_FORMAT(grantTime, '%Y-%m-%d') end as grantDayTime" +
                             " from tb_grantmaterialrecord where acceptPlantID = '" + plantID + "' and processID = '" + processID + "' and grantTime > '" + startTime + "' \n" +
                             " and grantTime < '" + endTime + "' group by grantDayTime,classType,batteryType,plantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.plantID = d.id order by grantDayTime,classType desc,materialName limit 1000 )";
                 }

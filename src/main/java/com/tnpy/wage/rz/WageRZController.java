@@ -1,30 +1,22 @@
 package com.tnpy.wage.rz;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.sun.mail.imap.protocol.Status;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.TbWageDetailRZMapper;
 import com.tnpy.mes.model.mysql.TbWageDetailRZ;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author: curry
@@ -121,31 +113,29 @@ public class WageRZController {
       TNPYResponse result = new TNPYResponse();
       String cardno = reqMap.get("cardno") == null?"":reqMap.get("cardno").toString();
       String senddate = reqMap.get("senddate") == null?"":reqMap.get("senddate").toString();
+
      try
      {
     	 //如果身份证号为空,则提示错误信息
-    	 if(cardno.equals("")) {
+    	 if(StringUtils.isEmpty(cardno)) {
     		 result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
     		 result.setMessage("身份证号不能为空");
              return  result;
     	 }
-    	 //默认为当前月
-    	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
     	 Date nowmonth = new Date();
-    	 String[] day = sdf.format(nowmonth).split("-");
     	 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
          Calendar c = Calendar.getInstance();
-         c.setTime(new Date());
-         c.add(Calendar.MONTH, -1);
-         Date m = c.getTime();
-         String mon = format.format(m);
-         System.out.println("过去一个月："+mon);
-    	 if(senddate.equals("")) {
-    		 senddate=mon;
-    	 }
-    	 if(Integer.parseInt(day[2].toString())>25) {
+         c.setTime(nowmonth);
+         if(c.get(Calendar.DAY_OF_MONTH) < 26)
+         {
+             c.add(Calendar.MONTH, -1);
+         }
+         nowmonth = c.getTime();
+    	 if(StringUtils.isEmpty(senddate)) {
     		 senddate=format.format(nowmonth);
     	 }
+
     	 String filter = "where cardno = '"+cardno+"' and senddate = '"+senddate+"'";
     	 List<LinkedHashMap<String, Object>> tbwage = tbWageDetailRZMapper.selectByPrimaryKey1(filter);
     	 if(tbwage.isEmpty()) {
