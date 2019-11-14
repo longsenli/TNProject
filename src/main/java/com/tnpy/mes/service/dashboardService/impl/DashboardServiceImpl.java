@@ -94,7 +94,6 @@ public class DashboardServiceImpl implements IDashboardService {
                             " case  when date_format(scheduledStartTime,'%H') < '10' then '白班'  when date_format(scheduledStartTime,'%H') > '16' then '夜班' end  as orderHour from tb_workorder\n" +
                             "where plantID = '" + plantID + "' and processID =  '" + processID + "'  and status < '5' and scheduledStartTime > '" + startTime + "' and scheduledStartTime <'" + endTime + "' ) a \n" +
                             "left join tb_materialrecord  b on a.id = b.orderID where b.status = '1' and inputLineID is not null group by inputLineID,orderDay,orderHour order by inputLineID,orderDay,orderHour desc limit 1000)";
-
                 }
             }
             if ("byWorkingLocation".equals(queryTypeID)) {
@@ -265,9 +264,7 @@ public class DashboardServiceImpl implements IDashboardService {
                             "left join tb_materialrecord  b on a.id = b.orderID where b.status = '1' and inputLineID is not null group by inputLineID,orderDay,orderHour ,materialNameInfo order by orderDay,orderHour desc,inputLineID limit 1000)";
 
                 }
-
             }
-
             if ("byLineExpend".equals(queryTypeID)) {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -355,9 +352,8 @@ public class DashboardServiceImpl implements IDashboardService {
                             " case  when date_format(grantTime,'%H') < 19 and date_format(grantTime,'%H') > 7 then '白班'  else '夜班' end  as classType," +
                             " acceptPlantID, case when date_format(grantTime,'%H') < 7 then  DATE_FORMAT(date_add(grantTime, interval -1 day), '%Y-%m-%d') else DATE_FORMAT(grantTime, '%Y-%m-%d') end as grantDayTime" +
                             "  from tb_grantmaterialrecord where plantID = '" + plantID + "' and processID = '" + processID + "' and grantTime > '" + startTime + " 07:00' \n" +
-                            " and grantTime < '" + endTime + "' group by grantDayTime,batteryType,acceptPlantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.acceptPlantID = d.id order by grantDayTime,materialName limit 1000 )";
+                            " and grantTime < '" + endTime + "' group by grantDayTime,classType,batteryType,acceptPlantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.acceptPlantID = d.id order by grantDayTime,classType desc,materialName limit 1000 )";
                 }
-
             }
 
             if ("byGainMaterial".equals(queryTypeID)) {
@@ -397,9 +393,8 @@ public class DashboardServiceImpl implements IDashboardService {
                             " case  when date_format(grantTime,'%H') < 19 and date_format(grantTime,'%H') > 7 then '白班'  else '夜班' end  as classType," +
                             " plantID, case when date_format(grantTime,'%H') < 7 then  DATE_FORMAT(date_add(grantTime, interval -1 day), '%Y-%m-%d') else DATE_FORMAT(grantTime, '%Y-%m-%d') end as grantDayTime" +
                             " from tb_grantmaterialrecord where acceptPlantID = '" + plantID + "' and processID = '" + processID + "' and grantTime > '" + startTime + "' \n" +
-                            " and grantTime < '" + endTime + "' group by grantDayTime,batteryType,plantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.plantID = d.id order by grantDayTime,materialName limit 1000 )";
+                            " and grantTime < '" + endTime + "' group by grantDayTime,classType,batteryType,plantID ) a left join sys_material b on a.batteryType = b.id  ) c left join sys_industrialplant d on c.plantID = d.id order by grantDayTime,classType desc,materialName limit 1000 )";
                 }
-
             }
 
             if ("byScrapMaterial".equals(queryTypeID)) {
@@ -415,7 +410,6 @@ public class DashboardServiceImpl implements IDashboardService {
                         " where plantID = '" + plantID + "' and processID = '" + processID + "' and productDay >= '" + sdf.format(newStartTime) + "'  and productDay <= '" + sdf.format(newEndTime) + "'  group by productDayStr,classType,materialName order by productDayStr,classType,materialName  limit 1000)";
             }
 
-            // System.out.println(querySQL);
             List<Map<Object, Object>> mapList = dashboardMapper.getDailyProduction(querySQL);
             result.setStatus(1);
             result.setData(JSONObject.toJSON(mapList).toString());
