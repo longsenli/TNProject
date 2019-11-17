@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.StaffAttendanceDetailMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.StaffAttendanceDetail">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="lineID" jdbcType="VARCHAR" property="lineid" />
+    <result column="worklocationID" jdbcType="VARCHAR" property="worklocationid" />
+    <result column="staffName" jdbcType="VARCHAR" property="staffname" />
+    <result column="staffID" jdbcType="VARCHAR" property="staffid" />
+    <result column="classType1" jdbcType="VARCHAR" property="classtype1" />
+    <result column="classType2" jdbcType="VARCHAR" property="classtype2" />
+    <result column="dayTime" jdbcType="TIMESTAMP" property="daytime" />
+    <result column="comeTime" jdbcType="TIMESTAMP" property="cometime" />
+    <result column="goTime" jdbcType="TIMESTAMP" property="gotime" />
+    <result column="verifierID" jdbcType="VARCHAR" property="verifierid" />
+    <result column="verifierName" jdbcType="VARCHAR" property="verifiername" />
+    <result column="verifyTime" jdbcType="TIMESTAMP" property="verifytime" />
+    <result column="extd1" jdbcType="VARCHAR" property="extd1" />
+    <result column="extd2" jdbcType="VARCHAR" property="extd2" />
+    <result column="extd3" jdbcType="VARCHAR" property="extd3" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, plantID, processID, lineID, worklocationID, staffName, staffID, classType1, classType2, 
+    dayTime, comeTime, goTime, verifierID, verifierName, verifyTime, extd1, extd2, extd3, 
+    remark, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_staffattendancedetail
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_staffattendancedetail
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.StaffAttendanceDetail">
+    insert into tb_staffattendancedetail (id, plantID, processID, 
+      lineID, worklocationID, staffName, 
+      staffID, classType1, classType2, 
+      dayTime, comeTime, goTime, 
+      verifierID, verifierName, verifyTime, 
+      extd1, extd2, extd3, 
+      remark, status)
+    values (#{id,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{processid,jdbcType=VARCHAR}, 
+      #{lineid,jdbcType=VARCHAR}, #{worklocationid,jdbcType=VARCHAR}, #{staffname,jdbcType=VARCHAR}, 
+      #{staffid,jdbcType=VARCHAR}, #{classtype1,jdbcType=VARCHAR}, #{classtype2,jdbcType=VARCHAR}, 
+      #{daytime,jdbcType=TIMESTAMP}, #{cometime,jdbcType=TIMESTAMP}, #{gotime,jdbcType=TIMESTAMP}, 
+      #{verifierid,jdbcType=VARCHAR}, #{verifiername,jdbcType=VARCHAR}, #{verifytime,jdbcType=TIMESTAMP}, 
+      #{extd1,jdbcType=VARCHAR}, #{extd2,jdbcType=VARCHAR}, #{extd3,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.StaffAttendanceDetail">
+    insert into tb_staffattendancedetail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="processid != null">
+        processID,
+      </if>
+      <if test="lineid != null">
+        lineID,
+      </if>
+      <if test="worklocationid != null">
+        worklocationID,
+      </if>
+      <if test="staffname != null">
+        staffName,
+      </if>
+      <if test="staffid != null">
+        staffID,
+      </if>
+      <if test="classtype1 != null">
+        classType1,
+      </if>
+      <if test="classtype2 != null">
+        classType2,
+      </if>
+      <if test="daytime != null">
+        dayTime,
+      </if>
+      <if test="cometime != null">
+        comeTime,
+      </if>
+      <if test="gotime != null">
+        goTime,
+      </if>
+      <if test="verifierid != null">
+        verifierID,
+      </if>
+      <if test="verifiername != null">
+        verifierName,
+      </if>
+      <if test="verifytime != null">
+        verifyTime,
+      </if>
+      <if test="extd1 != null">
+        extd1,
+      </if>
+      <if test="extd2 != null">
+        extd2,
+      </if>
+      <if test="extd3 != null">
+        extd3,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="worklocationid != null">
+        #{worklocationid,jdbcType=VARCHAR},
+      </if>
+      <if test="staffname != null">
+        #{staffname,jdbcType=VARCHAR},
+      </if>
+      <if test="staffid != null">
+        #{staffid,jdbcType=VARCHAR},
+      </if>
+      <if test="classtype1 != null">
+        #{classtype1,jdbcType=VARCHAR},
+      </if>
+      <if test="classtype2 != null">
+        #{classtype2,jdbcType=VARCHAR},
+      </if>
+      <if test="daytime != null">
+        #{daytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cometime != null">
+        #{cometime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gotime != null">
+        #{gotime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="verifierid != null">
+        #{verifierid,jdbcType=VARCHAR},
+      </if>
+      <if test="verifiername != null">
+        #{verifiername,jdbcType=VARCHAR},
+      </if>
+      <if test="verifytime != null">
+        #{verifytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="extd1 != null">
+        #{extd1,jdbcType=VARCHAR},
+      </if>
+      <if test="extd2 != null">
+        #{extd2,jdbcType=VARCHAR},
+      </if>
+      <if test="extd3 != null">
+        #{extd3,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.StaffAttendanceDetail">
+    update tb_staffattendancedetail
+    <set>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        processID = #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        lineID = #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="worklocationid != null">
+        worklocationID = #{worklocationid,jdbcType=VARCHAR},
+      </if>
+      <if test="staffname != null">
+        staffName = #{staffname,jdbcType=VARCHAR},
+      </if>
+      <if test="staffid != null">
+        staffID = #{staffid,jdbcType=VARCHAR},
+      </if>
+      <if test="classtype1 != null">
+        classType1 = #{classtype1,jdbcType=VARCHAR},
+      </if>
+      <if test="classtype2 != null">
+        classType2 = #{classtype2,jdbcType=VARCHAR},
+      </if>
+      <if test="daytime != null">
+        dayTime = #{daytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cometime != null">
+        comeTime = #{cometime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gotime != null">
+        goTime = #{gotime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="verifierid != null">
+        verifierID = #{verifierid,jdbcType=VARCHAR},
+      </if>
+      <if test="verifiername != null">
+        verifierName = #{verifiername,jdbcType=VARCHAR},
+      </if>
+      <if test="verifytime != null">
+        verifyTime = #{verifytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="extd1 != null">
+        extd1 = #{extd1,jdbcType=VARCHAR},
+      </if>
+      <if test="extd2 != null">
+        extd2 = #{extd2,jdbcType=VARCHAR},
+      </if>
+      <if test="extd3 != null">
+        extd3 = #{extd3,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.StaffAttendanceDetail">
+    update tb_staffattendancedetail
+    set plantID = #{plantid,jdbcType=VARCHAR},
+      processID = #{processid,jdbcType=VARCHAR},
+      lineID = #{lineid,jdbcType=VARCHAR},
+      worklocationID = #{worklocationid,jdbcType=VARCHAR},
+      staffName = #{staffname,jdbcType=VARCHAR},
+      staffID = #{staffid,jdbcType=VARCHAR},
+      classType1 = #{classtype1,jdbcType=VARCHAR},
+      classType2 = #{classtype2,jdbcType=VARCHAR},
+      dayTime = #{daytime,jdbcType=TIMESTAMP},
+      comeTime = #{cometime,jdbcType=TIMESTAMP},
+      goTime = #{gotime,jdbcType=TIMESTAMP},
+      verifierID = #{verifierid,jdbcType=VARCHAR},
+      verifierName = #{verifiername,jdbcType=VARCHAR},
+      verifyTime = #{verifytime,jdbcType=TIMESTAMP},
+      extd1 = #{extd1,jdbcType=VARCHAR},
+      extd2 = #{extd2,jdbcType=VARCHAR},
+      extd3 = #{extd3,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
