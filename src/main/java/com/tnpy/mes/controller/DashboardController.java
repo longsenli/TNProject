@@ -53,4 +53,22 @@ public class DashboardController {
     {
         return dashboardService.getCXCDetailInfo(plantID, processID, startTime,endTime);
     }
+
+    @RequestMapping(value = "/getProductionSummaryWorkLocation")
+    public TNPYResponse getProductionSummaryWorkLocation(String plantID ,String processID,String lineID,String startTime,String endTime)
+    {
+        return dashboardService.getProductionSummaryWorkLocation(plantID, processID, lineID,startTime,endTime);
+    }
+
+    @RequestMapping(value = "/getProductionSummaryLine")
+    public TNPYResponse getProductionSummaryLine(String plantID ,String processID,String lineID,String startTime,String endTime)
+    {
+        return dashboardService.getProductionSummaryLine(plantID, processID, lineID,startTime,endTime);
+    }
+
+    @RequestMapping(value = "/getProductionSummaryProcess")
+    public TNPYResponse getProductionSummaryProcess(String plantID ,String processID,String startTime,String endTime)
+    {
+        return dashboardService.getProductionSummaryProcess(plantID, processID,startTime,endTime);
+    }
 }

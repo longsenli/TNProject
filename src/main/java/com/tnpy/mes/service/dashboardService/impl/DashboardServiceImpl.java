@@ -3,6 +3,7 @@ package com.tnpy.mes.service.dashboardService.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
+import com.tnpy.mes.mapper.mysql.DailyProductionSummaryLineMapper;
 import com.tnpy.mes.mapper.mysql.DashboardMapper;
 import com.tnpy.mes.mapper.mysql.ObjectRelationDictMapper;
 import com.tnpy.mes.mapper.mysql.WageDetailMapper;
@@ -29,6 +30,9 @@ public class DashboardServiceImpl implements IDashboardService {
 
     @Autowired
     private ObjectRelationDictMapper objectRelationDictMapper;
+
+    @Autowired
+    private DailyProductionSummaryLineMapper dailyProductionSummaryLineMapper;
 
     @Override
     public TNPYResponse getDailyProduction(String plantID, String processID, String queryTypeID, String startTime, String endTime) {
@@ -775,6 +779,84 @@ public class DashboardServiceImpl implements IDashboardService {
                     + "' and updateTime < '" + endTime + "'  group by materialID ) b  " + " on a.materialID = b.materialID ) c left join sys_material d on c.materialID = d.id order by name";
 
             List<Map<Object, Object>> mapList = dashboardMapper.getInventoryInfo(sqlFilter);
+            result.setStatus(1);
+            result.setData(JSONObject.toJSON(mapList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+
+    public TNPYResponse getProductionSummaryWorkLocation(String plantID ,String processID,String lineID,String startTime,String endTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            String sqlFilter = " where dayTime >= '" + startTime.split(" ")[0] +"' and dayTime <= '" + endTime.split(" ")[0] + "' ";
+            if(!"-1".equals(plantID))
+            {
+                sqlFilter += " and plantID = '" + plantID + "' ";
+            }
+            if(!"-1".equals(processID))
+            {
+                sqlFilter += " and processID = '" + processID + "' ";
+            }
+            if(!"-1".equals(lineID))
+            {
+                sqlFilter += " and lineID = '" + lineID + "' ";
+            }
+
+            List<Map<Object, Object>> mapList = dailyProductionSummaryLineMapper.selectDailyProductionSummaryWorklocation(sqlFilter);
+            result.setStatus(1);
+            result.setData(JSONObject.toJSON(mapList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+    public TNPYResponse getProductionSummaryLine(String plantID ,String processID,String lineID,String startTime,String endTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            String sqlFilter = " where dayTime >= '" + startTime.split(" ")[0] +"' and dayTime <= '" + endTime.split(" ")[0] + "' ";
+            if(!"-1".equals(plantID))
+            {
+                sqlFilter += " and plantID = '" + plantID + "' ";
+            }
+            if(!"-1".equals(processID))
+            {
+                sqlFilter += " and processID = '" + processID + "' ";
+            }
+            if(!"-1".equals(lineID))
+            {
+                sqlFilter += " and lineID = '" + lineID + "' ";
+            }
+
+            List<Map<Object, Object>> mapList = dailyProductionSummaryLineMapper.selectDailyProductionSummaryLine(sqlFilter);
+            result.setStatus(1);
+            result.setData(JSONObject.toJSON(mapList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+    public TNPYResponse getProductionSummaryProcess(String plantID ,String processID,String startTime,String endTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            String sqlFilter = " where dayTime >= '" + startTime.split(" ")[0] +"' and dayTime <= '" + endTime.split(" ")[0] + "' ";
+            if(!"-1".equals(plantID))
+            {
+                sqlFilter += " and plantID = '" + plantID + "' ";
+            }
+            if(!"-1".equals(processID))
+            {
+                sqlFilter += " and processID = '" + processID + "' ";
+            }
+            List<Map<Object, Object>> mapList = dailyProductionSummaryLineMapper.selectDailyProductionSummaryProcess(sqlFilter);
             result.setStatus(1);
             result.setData(JSONObject.toJSON(mapList).toString());
             return result;
