@@ -23,4 +23,20 @@ public class StaffWorkDiaryController {
         return  staffWorkDiaryService.getStaffAttendanceInfo(plantID, processID, lineID, staffID, startTime, endTime);
     }
 
+    @RequestMapping(value = "/insertStaffComeAttendanceInfo")
+    public TNPYResponse insertStaffComeAttendanceInfo(String qrCode,String staffID,String staffName,String classType1,String classType2,String dayTime)  // 1 上机扫码，  2 下机扫码
+    {
+        return  staffWorkDiaryService.insertStaffComeAttendanceInfo(qrCode, staffID,staffName,classType1,classType2,dayTime);
+    }
+    @RequestMapping(value = "/insertStaffGoAttendanceInfo")
+    public TNPYResponse insertStaffGoAttendanceInfo(String qrCode,String staffID)  // 1 上机扫码，  2 下机扫码
+    {
+        return  staffWorkDiaryService.insertStaffGoAttendanceInfo(qrCode, staffID);
+    }
+    @RequestMapping(value = "/deleteStaffAttendanceInfo")
+    public TNPYResponse deleteStaffAttendanceInfo(String id)
+    {
+        return  staffWorkDiaryService.deleteStaffAttendanceInfo(id);
+    }
+
 }
