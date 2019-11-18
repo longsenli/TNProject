@@ -349,7 +349,9 @@ public class ChargePackServiceImpl implements IChargePackService {
             if("onWorkbench".equals(selectType))
             {
                 filter2 += " and currentNum > 0 ";
-                filter2+= " and dayTime = '" + onWorkbenchdefDate + "' ";
+//                filter2+= " and dayTime = '" + onWorkbenchdefDate + "' ";
+                filter2+= " and dayTime >= '" + defstartDate + "' ";
+                filter2 += " and dayTime <= '" + onWorkbenchdefDate + "' ";
             }
             if("workbenchHistory".equals(selectType))
             {
