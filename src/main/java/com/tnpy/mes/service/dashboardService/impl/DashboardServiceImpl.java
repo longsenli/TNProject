@@ -865,4 +865,32 @@ public class DashboardServiceImpl implements IDashboardService {
             return result;
         }
     }
+
+    public TNPYResponse getDailyProductionSummaryPlant(String plantID ,String startTime,String endTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+
+            String sqlFilter = "select date_format(dayTime, '%Y-%m-%d') as dayTime,processID,classType1,materialName, production,paixu from (\n" +
+        "( select '总计' as classType1,processID,'工序汇总' as materialName,dayTime,sum(production) as production,'1003' as paixu from tb_dailyproductionsummaryprocess where plantID = '"+
+        plantID+"' and dayTime >= '" + startTime.split(" ")[0] +"' and dayTime <= '" + endTime.split(" ")[0] + "'  group by processID,dayTime )\n" +
+        "union all\n" +
+        "( select classType1,processID,'班次汇总' as materialName,dayTime,sum(production) as production, '1002' as paixu from tb_dailyproductionsummaryprocess where plantID = '"+
+        plantID+"' and dayTime >= '" + startTime.split(" ")[0] +"' and dayTime <= '" + endTime.split(" ")[0] + "'  group by processID,classType1,dayTime )\n" +
+        "union all\n" +
+        "( select classType1,processID,materialName,dayTime,production ,'1001' as paixu from tb_dailyproductionsummaryprocess where plantID = '"+
+        plantID+"' and dayTime >= '" + startTime.split(" ")[0] +"' and dayTime <= '" + endTime.split(" ")[0] + "'  )\n" +
+        " ) a order by dayTime,processID,CONVERT(classType1 USING gbk) ,paixu";
+
+
+
+            List<Map<Object, Object>> mapList = dailyProductionSummaryLineMapper.selectDailyProductionSummary(sqlFilter);
+            result.setStatus(1);
+            result.setData(JSONObject.toJSON(mapList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
 }

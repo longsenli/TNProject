@@ -8,6 +8,7 @@ import com.tnpy.common.utils.token.TokenUtil;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.LoginRecordMapper;
 import com.tnpy.mes.mapper.mysql.SoftwareVersionMapper;
+import com.tnpy.mes.mapper.mysql.StaffAttendanceDetailMapper;
 import com.tnpy.mes.mapper.mysql.TokenMapper;
 import com.tnpy.mes.model.mysql.LoginRecord;
 import com.tnpy.mes.model.mysql.TbUser;
@@ -20,7 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.UUID;
 
 @RestController
@@ -37,6 +41,9 @@ public class LoginController {
 
 	@Autowired
 	private SoftwareVersionMapper softwareVersionMapper;
+
+	@Autowired
+	private StaffAttendanceDetailMapper staffAttendanceDetailMapper;
 
 	@RequestMapping(value = "/getappversion")
 	public TNPYResponse getAppVersion( ) {
@@ -122,23 +129,46 @@ public class LoginController {
 
 
 				token = tokenUtil.creatToken(username) ;
-				//tokenUtil.InsertToken(token);
-				//System.out.println(JSONObject.toJSON(token).toString());
+
 				tokenmapper.updateToken(token);
 			}
 		}
 		catch (Exception ex)
 		{
-		//	System.out.println( ex.getMessage());
 			response.setMessage("登录失败" + ex.getMessage());
 			return  response;
 		}
-		//返回Token信息给客户端
 
-		response.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();//取时间
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(date);
+		if (calendar.get(Calendar.HOUR_OF_DAY) < 6) {
+			calendar.add(Calendar.DATE, -1);
+			date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+		}
+
 		response.setMessage(myUser.getName() + " ### " + myUser.getRoleid() + " ### " + myUser.getIndustrialplant_id()
 				+ " ### " +  myUser.getProductionprocess_id() + " ### " + myUser.getProductionline_id() + "###" + myUser.getWorklocation_id());
+//		StaffAttendanceDetail staffAttendanceDetail = staffAttendanceDetailMapper.selectCurrentUsableRecord(username,dateFormat.format(date));
+
+//		if(staffAttendanceDetail == null)
+//		{
+//			response.setData("1");  //表示已经扫过工作位置
+//			response.setMessage(myUser.getName() + " ### " + myUser.getRoleid() + " ### " + staffAttendanceDetail.getPlantid()
+//					+ " ### " +  staffAttendanceDetail.getProcessid() + " ### " + staffAttendanceDetail.getLineid() + "###" + staffAttendanceDetail.getWorklocationid());
+//		}
+//		else
+//		{
+//			response.setData("2");//表示未扫过工作位置
+//			response.setMessage(myUser.getName() + " ### " + myUser.getRoleid() + " ### " + myUser.getIndustrialplant_id()
+//					+ " ### " +  myUser.getProductionprocess_id() + " ### " + myUser.getProductionline_id() + "###" + myUser.getWorklocation_id());
+//		}
+		response.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
 		response.setToken(JSONObject.toJSON(token).toString());
+
 		return response;
 	}
 }

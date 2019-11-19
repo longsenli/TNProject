@@ -34,7 +34,14 @@ public interface StaffAttendanceDetailMapper {
     int updateStaffGoAttendanceInfo(String qrCode,String staffID);
 
     @Select("select id,plantID,processID,lineID,worklocationID,staffName,classType1,classType2,date_format(dayTime, '%Y-%m-%d')  as dayTime,DATE_FORMAT(comeTime,'%Y-%m-%d %H:%i:%s') as comeTime," +
-            " DATE_FORMAT(goTime,'%Y-%m-%d %H:%i:%s') as goTime,verifierName, DATE_FORMAT(verifyTime,'%Y-%m-%d %H:%i:%s') as  verifyTime from tb_staffattendancedetail ${filter}  ")
+            " DATE_FORMAT(goTime,'%Y-%m-%d %H:%i:%s') as goTime,verifierID,verifierName, DATE_FORMAT(verifyTime,'%Y-%m-%d %H:%i:%s') as  verifyTime from tb_staffattendancedetail ${filter}  ")
     List<Map<Object,Object>> selectMapRecordByFilter(@Param("filter") String filter);
 
+
+
+    @Update("update tb_staffattendancedetail set verifyTime = now(),verifierName = #{staffName},verifierID = #{staffID} where verifierName is null and id in (${recordIDList} )")
+    int updateConfirmStaffGoAttendanceInfo(String staffID,String staffName,@Param("recordIDList") String recordIDList);
+
+    @Select("select * from tb_staffattendancedetail where staffID = #{staffID} and dayTime >= #{timeString} and goTime is null order by dayTime limit 1")
+    StaffAttendanceDetail selectCurrentUsableRecord(String staffID,String timeString);
 }

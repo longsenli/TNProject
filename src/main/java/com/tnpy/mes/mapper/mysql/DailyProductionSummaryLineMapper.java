@@ -72,4 +72,7 @@ public interface DailyProductionSummaryLineMapper {
             " union all " +
             " (select  plantID,processID,materialName,production,classType1,DATE_FORMAT(dayTime,'%Y-%m-%d') as dayTime from tb_dailyproductionsummaryline ${filter} order by dayTime,classType1,processID limit 500)")
     List<Map<Object, Object>> selectDailyProductionSummaryProcess(@Param("filter") String filter);
+
+    @Select(" ${filter} ")
+    List<Map<Object, Object>> selectDailyProductionSummary(@Param("filter") String filter);
 }

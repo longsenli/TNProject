@@ -18,9 +18,9 @@ public class StaffWorkDiaryController {
     private IStaffWorkDiaryService staffWorkDiaryService  ;
 
     @RequestMapping(value = "/getStaffAttendanceInfo")
-    public TNPYResponse getStaffAttendanceInfo(String plantID,String processID,String lineID,String staffID,String startTime,String endTime)
+    public TNPYResponse getStaffAttendanceInfo(String plantID,String processID,String lineID,String classType,String staffID,String startTime,String endTime)
     {
-        return  staffWorkDiaryService.getStaffAttendanceInfo(plantID, processID, lineID, staffID, startTime, endTime);
+        return  staffWorkDiaryService.getStaffAttendanceInfo(plantID, processID, lineID,classType, staffID, startTime, endTime);
     }
 
     @RequestMapping(value = "/insertStaffComeAttendanceInfo")
@@ -38,5 +38,9 @@ public class StaffWorkDiaryController {
     {
         return  staffWorkDiaryService.deleteStaffAttendanceInfo(id);
     }
-
+    @RequestMapping(value = "/confirmStaffAttendanceInfo")
+    public TNPYResponse confirmStaffAttendanceInfo(String staffID,String staffName,String recordID)
+    {
+        return  staffWorkDiaryService.confirmStaffAttendanceInfo(staffID,staffName,recordID);
+    }
 }

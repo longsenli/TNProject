@@ -71,4 +71,9 @@ public class DashboardController {
     {
         return dashboardService.getProductionSummaryProcess(plantID, processID,startTime,endTime);
     }
+    @RequestMapping(value = "/getDailyProductionSummaryPlant")
+    public TNPYResponse getDailyProductionSummaryPlant(String plantID ,String startTime,String endTime)
+    {
+        return dashboardService.getDailyProductionSummaryPlant(plantID,startTime,endTime);
+    }
 }

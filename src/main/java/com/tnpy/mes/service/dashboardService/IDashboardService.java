@@ -22,4 +22,6 @@ public interface IDashboardService {
     public TNPYResponse getProductionSummaryWorkLocation(String plantID ,String processID,String lineID,String startTime,String endTime);
     public TNPYResponse getProductionSummaryLine(String plantID ,String processID,String lineID,String startTime,String endTime);
     public TNPYResponse getProductionSummaryProcess(String plantID ,String processID,String startTime,String endTime);
+
+    public TNPYResponse getDailyProductionSummaryPlant(String plantID ,String startTime,String endTime);
 }

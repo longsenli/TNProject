@@ -1,7 +1,6 @@
 package com.tnpy.mes.service.staffWorkDiaryService.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.ProductionLineMapper;
@@ -36,7 +35,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
     @Autowired
     private WorkLocationMapper workLocationMapper;
 
-    public TNPYResponse getStaffAttendanceInfo(String plantID, String processID, String lineID, String staffID, String startTime, String endTime) {
+    public TNPYResponse getStaffAttendanceInfo(String plantID, String processID, String lineID,String classType, String staffID, String startTime, String endTime) {
         TNPYResponse result = new TNPYResponse();
         try {
             String filter = " where dayTime >= '" + startTime + "' and dayTime <= '" +endTime + "' ";
@@ -52,10 +51,13 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             if (!"-1".equals(staffID)) {
                 filter += " and staffID = '" + staffID + "' ";
             }
+            if (!"-1".equals(classType)) {
+                filter += " and classType1 = '" + classType + "' ";
+            }
             filter += " order by dayTime desc limit 1000";
             List<Map<Object,Object>> staffAttendanceRecordList = staffAttendanceDetailMapper.selectMapRecordByFilter(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
-            result.setData(JSONObject.toJSONString(staffAttendanceRecordList, SerializerFeature.WriteMapNullValue).toString());
+            result.setData(JSONObject.toJSONString(staffAttendanceRecordList).toString());
             return result;
         } catch (Exception ex) {
             result.setMessage("查询出错！" + ex.getMessage());
@@ -151,6 +153,21 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             return result;
         } catch (Exception ex) {
             result.setMessage("删除失败！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse confirmStaffAttendanceInfo(String staffID,String staffName,String recordID)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            recordID ="'" + recordID.replaceAll("___","','") + "'";
+            staffAttendanceDetailMapper.updateConfirmStaffGoAttendanceInfo(staffID,staffName,recordID);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setMessage("确认成功！");
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("确认失败！" + ex.getMessage());
             return result;
         }
     }
