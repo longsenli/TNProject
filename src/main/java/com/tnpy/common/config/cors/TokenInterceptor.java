@@ -7,6 +7,7 @@ import com.tnpy.mes.model.mysql.ApiCallRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import org.thymeleaf.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,6 +58,10 @@ public class TokenInterceptor implements HandlerInterceptor {
                 String value = request.getParameter(name);//通过参数名获取对应的值
                 apiParam += " " + name+ "=" +value ;
             }
+            if(!StringUtils.isEmpty(apiParam) && apiParam.length() > 450)
+            {
+                apiParam= apiParam.substring(0,450);
+            }
             apiCallRecord.setParams(apiParam);
             if(tokenAPILog != null)
             {
@@ -66,7 +71,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         }
         catch (Exception ex)
         {
-            System.out.println(ex.getMessage());
+            System.out.println(ex.getMessage() + " api异常");
         }
 
        // System.out.println("==================" + request.getRequestURI());

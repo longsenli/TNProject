@@ -43,4 +43,31 @@ public class StaffWorkDiaryController {
     {
         return  staffWorkDiaryService.confirmStaffAttendanceInfo(staffID,staffName,recordID);
     }
+
+    @RequestMapping(value = "/getTMPProductionWageInfo")
+    public TNPYResponse getTMPProductionWageInfo(String plantID,String processID,String dayString,String classType)
+    {
+        return  staffWorkDiaryService.getTMPProductionWageInfo(plantID,processID,dayString,classType);
+    }
+
+    @RequestMapping(value = "/getFinalProductionWageInfo")
+    public TNPYResponse getFinalProductionWageInfo(String plantID,String processID,String dayString,String classType)
+    {
+        return  staffWorkDiaryService.getFinalProductionWageInfo(plantID,processID,dayString,classType);
+    }
+
+
+    @RequestMapping(value = "/confirmProductionWageInfo")
+    public TNPYResponse confirmProductionWageInfo( String recordJsonString,String verifierID,String verifierName)
+    {
+        return  staffWorkDiaryService.confirmProductionWageInfo(recordJsonString,verifierID,verifierName);
+    }
+
+    @RequestMapping(value = "/deleteConfirmProductionWageRecord")
+    public TNPYResponse deleteConfirmProductionWageRecord(String plantID,String processID,String dayString,String classType)
+    {
+        return  staffWorkDiaryService.deleteConfirmProductionWageRecord(plantID,processID,dayString,classType);
+    }
 }
+
+

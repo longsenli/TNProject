@@ -1,11 +1,15 @@
 package com.tnpy.mes.service.staffWorkDiaryService.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
+import com.tnpy.mes.mapper.mysql.DailyProductionAndWageDetailMapper;
 import com.tnpy.mes.mapper.mysql.ProductionLineMapper;
 import com.tnpy.mes.mapper.mysql.StaffAttendanceDetailMapper;
 import com.tnpy.mes.mapper.mysql.WorkLocationMapper;
+import com.tnpy.mes.model.mysql.DailyProductionAndWageDetail;
 import com.tnpy.mes.model.mysql.ProductionLine;
 import com.tnpy.mes.model.mysql.StaffAttendanceDetail;
 import com.tnpy.mes.model.mysql.WorkLocation;
@@ -34,6 +38,9 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
 
     @Autowired
     private WorkLocationMapper workLocationMapper;
+
+    @Autowired
+    DailyProductionAndWageDetailMapper dailyProductionAndWageDetailMapper;
 
     public TNPYResponse getStaffAttendanceInfo(String plantID, String processID, String lineID,String classType, String staffID, String startTime, String endTime) {
         TNPYResponse result = new TNPYResponse();
@@ -168,6 +175,114 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             return result;
         } catch (Exception ex) {
             result.setMessage("确认失败！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse getTMPProductionWageInfo(String plantID,String processID,String dayString,String classType)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = dateFormat2.parse(dayString);//取时间
+            String orderInfo = "" ;
+
+            if("白班".equals(classType))
+            {
+                orderInfo = "'%BB" + dateFormat.format(date) + "'";
+            }
+            else
+            {
+                orderInfo = "'%YB" + dateFormat.format(date) + "'";
+            }
+            dayString = dateFormat2.format(date);
+            List<Map<Object,Object>> productionWageTMP;
+
+            if(ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID))
+            {
+                productionWageTMP= dailyProductionAndWageDetailMapper.ZHQDProductionWageInfoByWorklocation(plantID,processID,orderInfo,dayString,classType);
+            }
+            else  if(ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(processID))
+            {
+                productionWageTMP= dailyProductionAndWageDetailMapper.orderProductionWageInfoByWorklocation(plantID,processID,orderInfo,dayString,classType);
+            }
+            else
+            {
+                productionWageTMP= dailyProductionAndWageDetailMapper.orderProductionWageInfoByLine(plantID,processID,orderInfo,dayString,classType);
+            }
+
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSONString(productionWageTMP).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse getFinalProductionWageInfo(String plantID,String processID,String dayString,String classType)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+
+            List<Map<Object,Object>> productionWageFinal = dailyProductionAndWageDetailMapper.getFinalProductionWageInfo(plantID,processID,dayString,classType);
+        result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+        result.setData(JSONObject.toJSONString(productionWageFinal).toString());
+        return result;
+    } catch (Exception ex) {
+        result.setMessage("查询出错！" + ex.getMessage());
+        return result;
+    }
+    }
+    public TNPYResponse deleteConfirmProductionWageRecord(String plantID,String processID,String dayString,String classType)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+
+            dailyProductionAndWageDetailMapper.deleteConfirmProductionWageRecord(plantID,processID,dayString,classType);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setMessage("删除成功！");
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("删除失败！" + ex.getMessage());
+            return result;
+        }
+    }
+    public TNPYResponse confirmProductionWageInfo( String recordJsonString,String verifierID,String verifierName)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+
+
+            List<DailyProductionAndWageDetail> recordList = JSON.parseArray(recordJsonString,DailyProductionAndWageDetail.class);
+
+            if(recordList.size() < 1)
+            {
+                result.setMessage("输入产量信息为空，请确认！" );
+                return result;
+            }
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            if(dailyProductionAndWageDetailMapper.checkConfirmAlready(recordList.get(0).getPlantid(),recordList.get(0).getProcessid(),
+                  dateFormat.format(recordList.get(0).getDaytime()),  recordList.get(0).getClasstype1()) > 0)
+            {
+                result.setMessage("该工序已确认过产量！" );
+                return result;
+            }
+            for(int i =0;i< recordList.size();i++)
+            {
+                recordList.get(i).setVerifierid(verifierID);
+                recordList.get(i).setVerifiername(verifierName);
+                recordList.get(i).setVerifytime(new Date());
+                recordList.get(i).setStatus("1");
+                dailyProductionAndWageDetailMapper.insertSelective(recordList.get(i));
+            }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+          //  result.setData(JSONObject.toJSONString(productionWageTMP).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("确认产量出错！" + ex.getMessage());
             return result;
         }
     }
