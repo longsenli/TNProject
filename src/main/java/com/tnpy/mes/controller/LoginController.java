@@ -11,6 +11,7 @@ import com.tnpy.mes.mapper.mysql.SoftwareVersionMapper;
 import com.tnpy.mes.mapper.mysql.StaffAttendanceDetailMapper;
 import com.tnpy.mes.mapper.mysql.TokenMapper;
 import com.tnpy.mes.model.mysql.LoginRecord;
+import com.tnpy.mes.model.mysql.StaffAttendanceDetail;
 import com.tnpy.mes.model.mysql.TbUser;
 import com.tnpy.mes.service.userService.ITbUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,22 +151,20 @@ public class LoginController {
 			date = calendar.getTime();   //这个时间就是日期往后推一天的结果
 		}
 
-		response.setMessage(myUser.getName() + " ### " + myUser.getRoleid() + " ### " + myUser.getIndustrialplant_id()
-				+ " ### " +  myUser.getProductionprocess_id() + " ### " + myUser.getProductionline_id() + "###" + myUser.getWorklocation_id());
-//		StaffAttendanceDetail staffAttendanceDetail = staffAttendanceDetailMapper.selectCurrentUsableRecord(username,dateFormat.format(date));
+		StaffAttendanceDetail staffAttendanceDetail = staffAttendanceDetailMapper.selectCurrentUsableRecord(username,dateFormat.format(date));
 
-//		if(staffAttendanceDetail == null)
-//		{
-//			response.setData("1");  //表示已经扫过工作位置
-//			response.setMessage(myUser.getName() + " ### " + myUser.getRoleid() + " ### " + staffAttendanceDetail.getPlantid()
-//					+ " ### " +  staffAttendanceDetail.getProcessid() + " ### " + staffAttendanceDetail.getLineid() + "###" + staffAttendanceDetail.getWorklocationid());
-//		}
-//		else
-//		{
-//			response.setData("2");//表示未扫过工作位置
-//			response.setMessage(myUser.getName() + " ### " + myUser.getRoleid() + " ### " + myUser.getIndustrialplant_id()
-//					+ " ### " +  myUser.getProductionprocess_id() + " ### " + myUser.getProductionline_id() + "###" + myUser.getWorklocation_id());
-//		}
+		if(staffAttendanceDetail == null)
+		{
+			response.setData("1");  //表示已经扫过工作位置
+			response.setMessage(myUser.getName() + " ### " + myUser.getRoleid() + " ### " + staffAttendanceDetail.getPlantid()
+					+ " ### " +  staffAttendanceDetail.getProcessid() + " ### " + staffAttendanceDetail.getLineid() + "###" + staffAttendanceDetail.getWorklocationid());
+		}
+		else
+		{
+			response.setData("2");//表示未扫过工作位置
+			response.setMessage(myUser.getName() + " ### " + myUser.getRoleid() + " ### " + myUser.getIndustrialplant_id()
+					+ " ### " +  myUser.getProductionprocess_id() + " ### " + myUser.getProductionline_id() + "###" + myUser.getWorklocation_id());
+		}
 		response.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
 		response.setToken(JSONObject.toJSON(token).toString());
 

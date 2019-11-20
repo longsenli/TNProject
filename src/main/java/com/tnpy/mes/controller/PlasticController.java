@@ -33,4 +33,9 @@ public class PlasticController {
     {
         return  plasticService.plasticDataProvenance(id );
     }
+    @RequestMapping(value = "/getInputTotalNumberByClass")
+    public TNPYResponse getgetInputTotalNumberByClass(String plantID, String lineID, String locationID, String workOrder)
+    {
+        return  plasticService.getgetInputTotalNumberByClass(plantID,lineID,locationID,workOrder );
+    }
 }

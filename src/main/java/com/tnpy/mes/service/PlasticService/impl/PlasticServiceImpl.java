@@ -10,6 +10,7 @@ import com.tnpy.mes.model.mysql.PlasticUsedRecord;
 import com.tnpy.mes.service.PlasticService.IPlasticService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -58,7 +59,6 @@ public class PlasticServiceImpl  implements IPlasticService {
             }
             filter += " group by workLocation,materialName ";
 
-            System.out.println(startTime + "---" + endTime + "---" +filter);
             List<Map<Object,Object>> plasticUsedRecordList = plasticUsedRecordMapper.selectByParam(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(plasticUsedRecordList).toString());
@@ -198,6 +198,45 @@ public class PlasticServiceImpl  implements IPlasticService {
 
             List<Map<Object,Object>> plasticUsedRecordList = plasticUsedRecordMapper.selectByParam(filter);
 
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(plasticUsedRecordList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse getgetInputTotalNumberByClass(String plantID, String lineID, String locationID, String workOrder)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+
+            String filter = "";
+            if(!StringUtils.isEmpty(workOrder) && workOrder.length() > 10)
+            {
+
+                filter += "where usedOrderID like '%" + workOrder.substring(workOrder.length() - 10) +"' ";
+            }
+            else
+            {
+                filter += " where usedOrderID = '" + workOrder +"' ";
+            }
+            if(!"-1".equals(plantID))
+            {
+                filter += " and plantID = '" + plantID + "' ";
+            }
+            if(!"-1".equals(lineID))
+            {
+                filter += " and lineID = '" + lineID + "' ";
+            }
+            if(!"-1".equals(locationID))
+            {
+                filter += " and workLocation = '" + locationID + "' ";
+            }
+            filter += " group by workLocation,materialName ";
+
+            List<Map<Object,Object>> plasticUsedRecordList = plasticUsedRecordMapper.selectByParam(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(plasticUsedRecordList).toString());
             return result;
