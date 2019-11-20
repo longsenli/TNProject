@@ -31,7 +31,19 @@ public class PlasticServiceImpl  implements IPlasticService {
     {
         TNPYResponse result = new TNPYResponse();
         try {
-            String filter = " where usedTime > '" + startTime + "' and usedTime < '" + endTime + "' ";
+            String filter ="";
+            if(startTime.substring(0,10).equals(endTime.substring(0,10))  )
+            {
+                filter += " where usedOrderID like  '%BB" + startTime.substring(0,10).replaceAll("-","") + "'  ";
+            }
+            else if(startTime.contains("19:") && endTime.contains("07:"))
+            {
+                filter += " where usedOrderID like  '%YB" + startTime.substring(0,10).replaceAll("-","") + "'  ";
+            }
+            else
+            {
+                filter += " where usedTime > '" + startTime + "' and usedTime < '" + endTime + "' ";
+            }
             if(!"-1".equals(plantID))
             {
                 filter += " and plantID = '" + plantID + "' ";
@@ -45,6 +57,8 @@ public class PlasticServiceImpl  implements IPlasticService {
                 filter += " and workLocation = '" + locationID + "' ";
             }
             filter += " group by workLocation,materialName ";
+
+            System.out.println(startTime + "---" + endTime + "---" +filter);
             List<Map<Object,Object>> plasticUsedRecordList = plasticUsedRecordMapper.selectByParam(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(plasticUsedRecordList).toString());

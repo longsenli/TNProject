@@ -272,6 +272,7 @@ public class DashboardServiceImpl implements IDashboardService {
             if ("byLineExpend".equals(queryTypeID)) {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMdd");
                 //String->Date
                 Date newStartTime = sdf.parse(startTime); //new Date(startTime);
                 Date newEndTime = sdf.parse(endTime); // new Date(endTime);
@@ -291,21 +292,31 @@ public class DashboardServiceImpl implements IDashboardService {
                     newStartTimeStr = startTime;
                     newEndTimeStr = endTime + " 23:59:59";
                 }
+                if (ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID)) {
+                    querySQL = "(select '总计' as banci,lineID as outputLineID,materialName as materialNameInfo , '' as dayTime,count(1) as number from tb_plasticusedrecord \n" +
+                            "where  right( usedOrderID,8 ) >= '"+sdf2.format(newStartTime)+"' and  right( usedOrderID,8 ) <= '"+sdf2.format(newEndTime)+"' and plantID = '"+plantID+"' group  by lineID,materialName)\n" +
+                            "union all\n" +
+                            "(select  case when  substring( usedOrderID,-10,2) = 'BB' then '白班' else '夜班' end as banci,lineID as outputLineID,materialName as materialNameInfo,\n" +
+                            "CONCAT(substring( usedOrderID,-8,4) ,'-', substring( usedOrderID,-4,2),'-' , substring( usedOrderID,-2,2) ) as dayTime,count(1) as number  from tb_plasticusedrecord \n" +
+                            "where  right( usedOrderID,8 ) >= '"+sdf2.format(newStartTime)+"' and  right( usedOrderID,8 ) <= '"+sdf2.format(newEndTime)+"' and plantID ='"+plantID+"' group  by right( usedOrderID,10 ), lineID,materialName order by dayTime,lineID,banci desc limit 1000)\n" ;
 
-                querySQL =
-                        "(\n" +
-                                " select '总计' as banci,'' as dayTime, outputLineID,materialNameInfo,sum(number) as number  from tb_materialrecord where outputPlantID = '" + plantID + "' \n" +
-                                " and outputProcessID = '" + processID + "' and outputTime > '" + newStartTimeStr + "' and outputTime < '" + newEndTimeStr + "'   group by outputLineID,materialNameInfo order by outputLineID limit 1000)\n" +
-                                " union all \n" +
-                                "( " +
-                                "select case  when left(timeStr,2) = 'BB' then '白班'  else '夜班' end as banci ,right(timeStr,8) as dayTime ,outputLineID,materialNameInfo,number from (\n" +
-                                "select outputLineID,sum(number) as number,right(expendOrderID,10) as timeStr,materialNameInfo  from tb_materialrecord where outputPlantID = '" + plantID + "' \n" +
-                                "and outputProcessID = '" + processID + "' and outputTime > '" + newStartTimeStr + "' and outputTime < '" + newEndTimeStr + "'  group by outputLineID,materialNameInfo,timeStr ) a  order by dayTime desc,banci,outputLineID limit 1000 ) ";
+                }
+                else
+                {
+                    querySQL = " select '总计' as banci,'' as dayTime, outputLineID,materialNameInfo,sum(number) as number  from tb_materialrecord where outputPlantID = '" + plantID + "' \n" +
+                            " and outputProcessID = '" + processID + "' and outputTime > '" + newStartTimeStr + "' and outputTime < '" + newEndTimeStr + "'   group by outputLineID,materialNameInfo order by outputLineID limit 1000)\n" +
+                            " union all \n" +
+                            "( " +
+                            "select case  when left(timeStr,2) = 'BB' then '白班'  else '夜班' end as banci ,right(timeStr,8) as dayTime ,outputLineID,materialNameInfo,number from (\n" +
+                            "select outputLineID,sum(number) as number,right(expendOrderID,10) as timeStr,materialNameInfo  from tb_materialrecord where outputPlantID = '" + plantID + "' \n" +
+                            "and outputProcessID = '" + processID + "' and outputTime > '" + newStartTimeStr + "' and outputTime < '" + newEndTimeStr + "'  group by outputLineID,materialNameInfo,timeStr ) a  order by dayTime desc,banci,outputLineID limit 1000 ) ";
+                }
             }
 
             if ("byStaffExpend".equals(queryTypeID)) {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMdd");
                 //String->Date
                 Date newStartTime = sdf.parse(startTime); //new Date(startTime);
                 Date newEndTime = sdf.parse(endTime); // new Date(endTime);
@@ -320,14 +331,25 @@ public class DashboardServiceImpl implements IDashboardService {
                 newEndTime = calendar.getTime();
 
                 String newEndTimeStr = sdf.format(newEndTime) + " 07:00:00";
-                querySQL = "(\n" +
-                        " select '总计' as banci,'' as dayTime, outputer,materialNameInfo,sum(number) as number  from tb_materialrecord where outputPlantID = '" + plantID + "' \n" +
-                        "and outputProcessID = '" + processID + "' and outputTime > '" + newStartTimeStr + "' and outputTime < '" + newEndTimeStr + "'  group by outputer,materialNameInfo order by outputer limit 1000)\n" +
-                        " union all \n" +
-                        "( \n" +
-                        "select case  when left(timeStr,2) = 'BB' then '白班'  else '夜班' end as banci ,right(timeStr,8) as dayTime ,outputer,materialNameInfo,number from (\n" +
-                        "select outputer,sum(number) as number,right(expendOrderID,10) as timeStr,materialNameInfo  from tb_materialrecord where outputPlantID = '" + plantID + "' \n" +
-                        "and outputProcessID = '" + processID + "' and outputTime > '" + newStartTimeStr + "' and outputTime < '" + newEndTimeStr + "'  group by outputer,materialNameInfo,timeStr ) a  order by dayTime desc,banci, outputer  limit 1000)";
+
+                if (ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID)) {
+                    querySQL = "(select '总计' as banci,staffName as outputer,materialName as materialNameInfo, '' as dayTime,count(1) as number  from tb_plasticusedrecord \n" +
+                            "where  right( usedOrderID,8 ) >= '" + sdf2.format(newStartTime) + "' and  right( usedOrderID,8 ) <= '" + sdf2.format(newEndTime) + "' and plantID = '" + plantID + "' group  by staffName,materialName)\n" +
+                            "union all\n" +
+                            "(select  case when  substring( usedOrderID,-10,2) = 'BB' then '白班' else '夜班' end as banci,staffName  as outputer,materialName as materialNameInfo,\n" +
+                            "CONCAT(substring( usedOrderID,-8,4) ,'-', substring( usedOrderID,-4,2),'-' , substring( usedOrderID,-2,2) ) as dayTime,count(1)  as number from tb_plasticusedrecord \n" +
+                            "where  right( usedOrderID,8 ) >= '" + sdf2.format(newStartTime) + "' and  right( usedOrderID,8 ) <= '" + sdf2.format(newEndTime) + "' and plantID ='" + plantID + "' group  by right( usedOrderID,10 ), staffName,materialName order by dayTime,lineID,banci desc limit 1000)\n";
+
+                } else {
+                    querySQL = "(\n" +
+                            " select '总计' as banci,'' as dayTime, outputer,materialNameInfo,sum(number) as number  from tb_materialrecord where outputPlantID = '" + plantID + "' \n" +
+                            "and outputProcessID = '" + processID + "' and outputTime > '" + newStartTimeStr + "' and outputTime < '" + newEndTimeStr + "'  group by outputer,materialNameInfo order by outputer limit 1000)\n" +
+                            " union all \n" +
+                            "( \n" +
+                            "select case  when left(timeStr,2) = 'BB' then '白班'  else '夜班' end as banci ,right(timeStr,8) as dayTime ,outputer,materialNameInfo,number from (\n" +
+                            "select outputer,sum(number) as number,right(expendOrderID,10) as timeStr,materialNameInfo  from tb_materialrecord where outputPlantID = '" + plantID + "' \n" +
+                            "and outputProcessID = '" + processID + "' and outputTime > '" + newStartTimeStr + "' and outputTime < '" + newEndTimeStr + "'  group by outputer,materialNameInfo,timeStr ) a  order by dayTime desc,banci, outputer  limit 1000)";
+                }
             }
 
             if ("byGrantMaterial".equals(queryTypeID)) {
@@ -881,8 +903,6 @@ public class DashboardServiceImpl implements IDashboardService {
         "( select classType1,processID,materialName,dayTime,production ,'1001' as paixu from tb_dailyproductionsummaryprocess where plantID = '"+
         plantID+"' and dayTime >= '" + startTime.split(" ")[0] +"' and dayTime <= '" + endTime.split(" ")[0] + "'  )\n" +
         " ) a order by dayTime,processID,CONVERT(classType1 USING gbk) ,paixu";
-
-
 
             List<Map<Object, Object>> mapList = dailyProductionSummaryLineMapper.selectDailyProductionSummary(sqlFilter);
             result.setStatus(1);
