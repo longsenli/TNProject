@@ -579,4 +579,33 @@ public class BasicDataServiceImpl implements IBasicDataService {
         }
         return  result;
     }
+
+    public TNPYResponse getWorkContentDetail(String plantID,String processID)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try
+        {
+            String filter = " where status != '-1' ";
+            if(!"-1".equals(plantID))
+            {
+                filter += " and plantID = '" + plantID + "' ";
+            }
+            if(!"-1".equals(processID))
+            {
+                filter += " and processID = '" + processID + "' ";
+            }
+            ;
+            // System.out.println(plantID + " 参数 " +processID);
+            List<Map<Object,Object>> workContentList = productionProcessMapper.getWorkContentDetail(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+            result.setData(JSONObject.toJSON(workContentList).toString());
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return  result;
+        }
+    }
 }

@@ -34,7 +34,7 @@ public interface StaffAttendanceDetailMapper {
     int updateStaffGoAttendanceInfo(String qrCode,String staffID);
 
     @Select("select id,plantID,processID,lineID,worklocationID,staffName,classType1,classType2,date_format(dayTime, '%Y-%m-%d')  as dayTime,DATE_FORMAT(comeTime,'%Y-%m-%d %H:%i:%s') as comeTime," +
-            " DATE_FORMAT(goTime,'%Y-%m-%d %H:%i:%s') as goTime,verifierID,verifierName, DATE_FORMAT(verifyTime,'%Y-%m-%d %H:%i:%s') as  verifyTime from tb_staffattendancedetail ${filter}  ")
+            " DATE_FORMAT(goTime,'%Y-%m-%d %H:%i:%s') as goTime,verifierID,verifierName, DATE_FORMAT(verifyTime,'%Y-%m-%d %H:%i:%s') as  verifyTime ,extd1 as workContent from tb_staffattendancedetail ${filter}  ")
     List<Map<Object,Object>> selectMapRecordByFilter(@Param("filter") String filter);
 
 

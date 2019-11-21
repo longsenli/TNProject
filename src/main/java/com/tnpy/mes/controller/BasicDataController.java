@@ -153,4 +153,9 @@ public class BasicDataController {
     public TNPYResponse getInputMaterialByMaterial(String materialID) {
         return  basicDataService.getInputMaterialByMaterial(materialID);
     }
+
+    @RequestMapping(value = "/getWorkContentDetail")
+    public TNPYResponse getWorkContentDetail(String plantID,String processID) {
+        return  basicDataService.getWorkContentDetail(plantID,processID);
+    }
 }

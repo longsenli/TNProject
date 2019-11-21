@@ -41,4 +41,6 @@ public interface IBasicDataService {
     public TNPYResponse getWorkLocation(String plantID,String processID,String lineID);
     public TNPYResponse deteteWorkLocation(String id);
     public TNPYResponse changeWorkLocation( String jsonStr);
+
+    public TNPYResponse getWorkContentDetail(String plantID,String processID);
 }

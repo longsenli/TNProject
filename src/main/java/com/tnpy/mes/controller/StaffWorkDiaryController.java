@@ -24,9 +24,9 @@ public class StaffWorkDiaryController {
     }
 
     @RequestMapping(value = "/insertStaffComeAttendanceInfo")
-    public TNPYResponse insertStaffComeAttendanceInfo(String qrCode,String staffID,String staffName,String classType1,String classType2,String dayTime)  // 1 上机扫码，  2 下机扫码
+    public TNPYResponse insertStaffComeAttendanceInfo(String qrCode,String staffID,String staffName,String classType1,String classType2,String dayTime,String workContent)  // 1 上机扫码，  2 下机扫码
     {
-        return  staffWorkDiaryService.insertStaffComeAttendanceInfo(qrCode, staffID,staffName,classType1,classType2,dayTime);
+        return  staffWorkDiaryService.insertStaffComeAttendanceInfo(qrCode, staffID,staffName,classType1,classType2,dayTime,workContent);
     }
     @RequestMapping(value = "/insertStaffGoAttendanceInfo")
     public TNPYResponse insertStaffGoAttendanceInfo(String qrCode,String staffID)  // 1 上机扫码，  2 下机扫码

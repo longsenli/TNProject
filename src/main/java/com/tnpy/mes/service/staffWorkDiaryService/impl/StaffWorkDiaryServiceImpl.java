@@ -73,7 +73,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
     }
 
     // 1 上机扫码  2 下机扫码
-    public TNPYResponse insertStaffComeAttendanceInfo(String qrCode, String staffID, String staffName, String classType1, String classType2, String dayTime) {
+    public TNPYResponse insertStaffComeAttendanceInfo(String qrCode, String staffID, String staffName, String classType1, String classType2, String dayTime,String workContent) {
         TNPYResponse result = new TNPYResponse();
         try {
 
@@ -122,6 +122,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             staffAttendanceDetail.setClasstype2(classType2);
             staffAttendanceDetail.setDaytime(dateFormat2.parse(dayTime));
             staffAttendanceDetail.setCometime(new Date());
+            staffAttendanceDetail.setExtd1(workContent);
             staffAttendanceDetail.setStatus(StatusEnum.StatusFlag.using.getIndex()+ "");
             staffAttendanceDetailMapper.insert(staffAttendanceDetail);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
