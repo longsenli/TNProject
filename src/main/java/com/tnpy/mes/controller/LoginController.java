@@ -153,17 +153,19 @@ public class LoginController {
 
 		StaffAttendanceDetail staffAttendanceDetail = staffAttendanceDetailMapper.selectCurrentUsableRecord(username,dateFormat.format(date));
 
-		if(staffAttendanceDetail == null)
+		if(staffAttendanceDetail != null)
 		{
 			response.setData("1");  //表示已经扫过工作位置
 			response.setMessage(myUser.getName() + " ### " + myUser.getRoleid() + " ### " + staffAttendanceDetail.getPlantid()
 					+ " ### " +  staffAttendanceDetail.getProcessid() + " ### " + staffAttendanceDetail.getLineid() + "###" + staffAttendanceDetail.getWorklocationid());
+
 		}
 		else
 		{
 			response.setData("2");//表示未扫过工作位置
 			response.setMessage(myUser.getName() + " ### " + myUser.getRoleid() + " ### " + myUser.getIndustrialplant_id()
 					+ " ### " +  myUser.getProductionprocess_id() + " ### " + myUser.getProductionline_id() + "###" + myUser.getWorklocation_id());
+
 		}
 		response.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
 		response.setToken(JSONObject.toJSON(token).toString());

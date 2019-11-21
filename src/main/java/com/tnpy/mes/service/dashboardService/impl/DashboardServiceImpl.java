@@ -303,7 +303,7 @@ public class DashboardServiceImpl implements IDashboardService {
                 }
                 else
                 {
-                    querySQL = " select '总计' as banci,'' as dayTime, outputLineID,materialNameInfo,sum(number) as number  from tb_materialrecord where outputPlantID = '" + plantID + "' \n" +
+                    querySQL = " ( select '总计' as banci,'' as dayTime, outputLineID,materialNameInfo,sum(number) as number  from tb_materialrecord where outputPlantID = '" + plantID + "' \n" +
                             " and outputProcessID = '" + processID + "' and outputTime > '" + newStartTimeStr + "' and outputTime < '" + newEndTimeStr + "'   group by outputLineID,materialNameInfo order by outputLineID limit 1000)\n" +
                             " union all \n" +
                             "( " +
@@ -311,6 +311,7 @@ public class DashboardServiceImpl implements IDashboardService {
                             "select outputLineID,sum(number) as number,right(expendOrderID,10) as timeStr,materialNameInfo  from tb_materialrecord where outputPlantID = '" + plantID + "' \n" +
                             "and outputProcessID = '" + processID + "' and outputTime > '" + newStartTimeStr + "' and outputTime < '" + newEndTimeStr + "'  group by outputLineID,materialNameInfo,timeStr ) a  order by dayTime desc,banci,outputLineID limit 1000 ) ";
                 }
+                System.out.println(querySQL);
             }
 
             if ("byStaffExpend".equals(queryTypeID)) {
