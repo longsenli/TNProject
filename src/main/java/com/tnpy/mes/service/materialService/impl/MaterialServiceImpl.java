@@ -178,7 +178,7 @@ public class MaterialServiceImpl implements IMaterialService {
         TNPYResponse result = new TNPYResponse();
         try {
             List<String> materialIDList = JSON.parseArray(materialRecordIDListStr, String.class);
-            if(expendOrderID.contains("___") )  //包装投料采用___分割
+            if(expendOrderID.contains("___") )  //包装投料采用___分割,加酸无工单投料###
             {
                 PileBatteryRecord pileBatteryRecord = pileBatteryRecordMapper.selectByPrimaryKey(materialIDList.get(0));
                 if(pileBatteryRecord == null)
@@ -216,8 +216,11 @@ public class MaterialServiceImpl implements IMaterialService {
             }
 
             MaterialRecord materialRecord = materialRecordMapper.selectByPrimaryKey(materialIDList.get(0));
-
-            if(expendOrderID.contains("###") )
+            if (materialRecord.getInorout() == StatusEnum.InOutStatus.Output.getIndex()) {
+                result.setMessage("该订单已经被使用！" + materialRecord.getOutputer() + "  " + materialRecord.getOutputtime());
+                return result;
+            }
+            if(expendOrderID.contains("###") )  //包装投料采用___分割,加酸无工单投料###
             {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
                 materialRecord.setInorout(StatusEnum.InOutStatus.Output.getIndex());
@@ -244,11 +247,6 @@ public class MaterialServiceImpl implements IMaterialService {
             TNPYResponse materialUseable = judgeAvailable(materialOrderID, expendOrderID);
             if (materialUseable.getStatus() != StatusEnum.ResponseStatus.Success.getIndex()) {
                 return materialUseable;
-            }
-
-            if (materialRecord.getInorout() == StatusEnum.InOutStatus.Output.getIndex()) {
-                result.setMessage("该订单已经被使用！" + materialRecord.getOutputer() + "  " + materialRecord.getOutputtime());
-                return result;
             }
             TNPYResponse resultGrant = judgeZHGrantStatus(materialRecord.getSuborderid());
             if (resultGrant.getStatus() != StatusEnum.ResponseStatus.Success.getIndex()) {
@@ -310,7 +308,7 @@ public class MaterialServiceImpl implements IMaterialService {
         TNPYResponse result = new TNPYResponse();
         try {
             String[] outputterInfo = outputter.split("###");
-            if(expendOrderID.contains("___") ) {
+            if(expendOrderID.contains("___") ) {   //包装投料采用___分割,加酸无工单投料###
                 PileBatteryRecord pileBatteryRecord = pileBatteryRecordMapper.selectByPrimaryKey(materialRecordID);
                 PileBatteryRecord pileBatteryRecord2 = pileBatteryRecordMapper.selectByPrimaryKey(materialRecordID);
                 if((pileBatteryRecord.getFinishpilenum() - Float.parseFloat(number)) < 0)
@@ -355,7 +353,10 @@ public class MaterialServiceImpl implements IMaterialService {
             MaterialRecord materialRecord = materialRecordMapper.selectByPrimaryKey(materialRecordID);
             MaterialRecord materialRecordCopy = materialRecordMapper.selectByPrimaryKey(materialRecordID);
 
-
+            if (materialRecord.getInorout() == StatusEnum.InOutStatus.Output.getIndex()) {
+                result.setMessage("该订单已经被使用！" + materialRecord.getOutputer() + "  " + materialRecord.getOutputtime());
+                return result;
+            }
             if(expendOrderID.contains("###") )
             {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");

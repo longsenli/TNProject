@@ -18,4 +18,6 @@ public interface IStaffWorkDiaryService {
     public TNPYResponse confirmProductionWageInfo( String recordJsonString,String verifierID,String verifierName);
     public TNPYResponse getFinalProductionWageInfo(String plantID,String processID,String dayString,String classType);
     public TNPYResponse deleteConfirmProductionWageRecord(String plantID,String processID,String dayString,String classType);
+
+    public TNPYResponse getLocationQRInfo(String QRCode);
 }

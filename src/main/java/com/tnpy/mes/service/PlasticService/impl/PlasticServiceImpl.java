@@ -211,11 +211,9 @@ public class PlasticServiceImpl  implements IPlasticService {
     {
         TNPYResponse result = new TNPYResponse();
         try {
-
             String filter = "";
             if(!StringUtils.isEmpty(workOrder) && workOrder.length() > 10)
             {
-
                 filter += "where usedOrderID like '%" + workOrder.substring(workOrder.length() - 10) +"' ";
             }
             else

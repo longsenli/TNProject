@@ -28,4 +28,8 @@ public interface ProductionLineMapper {
     @Select("select id,name from  sys_productionLine where status != '-1' ")
     List<Map<Object,Object>> getAllProductionLine();
 
+    @Select("SELECT a.id as lineID,'-1' as workLocationID,a.name,a.processID,a.plantID,b.id as contentID,b.name as contentName FROM sys_productionline a left join tb_workcontent b \n" +
+            "on a.plantID = b.plantID and a.processID = b.processID  where a.id = #{qrCode} ")
+    List<Map<Object,Object>> selectByQRCode(String qrCode);
+
 }

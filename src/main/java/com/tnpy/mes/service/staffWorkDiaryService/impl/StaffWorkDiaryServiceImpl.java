@@ -287,4 +287,29 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             return result;
         }
     }
+
+    public TNPYResponse getLocationQRInfo(String QRCode)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+
+            List<Map<Object,Object>> qrCodeInfoList = workLocationMapper.selectByQRCode(QRCode);
+
+            if (qrCodeInfoList == null) {
+                qrCodeInfoList = productionLineMapper.selectByQRCode(QRCode);
+                {
+                    if (qrCodeInfoList == null) {
+                        result.setMessage("未获取到二维码信息，请确认是正确的二维码！" + QRCode);
+                        return result;
+                    }
+                }
+            }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSONString(qrCodeInfoList));
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
 }

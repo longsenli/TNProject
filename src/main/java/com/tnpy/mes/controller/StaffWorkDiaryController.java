@@ -68,6 +68,12 @@ public class StaffWorkDiaryController {
     {
         return  staffWorkDiaryService.deleteConfirmProductionWageRecord(plantID,processID,dayString,classType);
     }
+
+    @RequestMapping(value = "/getLocationQRInfo")
+    public TNPYResponse getLocationQRInfo(String QRCode)
+    {
+        return  staffWorkDiaryService.getLocationQRInfo(QRCode);
+    }
 }
 
 
