@@ -14,7 +14,7 @@ public interface IStaffWorkDiaryService {
     public TNPYResponse deleteStaffAttendanceInfo(String id);
     public TNPYResponse confirmStaffAttendanceInfo(String staffID,String staffName,String recordID);
 
-    public TNPYResponse getTMPProductionWageInfo(String plantID,String processID,String dayString,String classType);
+    public TNPYResponse getTMPProductionWageInfo(String plantID,String processID,String lineID,String dayString,String classType);
     public TNPYResponse confirmProductionWageInfo( String recordJsonString,String verifierID,String verifierName);
     public TNPYResponse getFinalProductionWageInfo(String plantID,String processID,String dayString,String classType);
     public TNPYResponse deleteConfirmProductionWageRecord(String plantID,String processID,String dayString,String classType);

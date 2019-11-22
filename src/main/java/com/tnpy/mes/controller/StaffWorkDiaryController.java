@@ -45,9 +45,9 @@ public class StaffWorkDiaryController {
     }
 
     @RequestMapping(value = "/getTMPProductionWageInfo")
-    public TNPYResponse getTMPProductionWageInfo(String plantID,String processID,String dayString,String classType)
+    public TNPYResponse getTMPProductionWageInfo(String plantID,String processID,String lineID,String dayString,String classType)
     {
-        return  staffWorkDiaryService.getTMPProductionWageInfo(plantID,processID,dayString,classType);
+        return  staffWorkDiaryService.getTMPProductionWageInfo(plantID,processID,lineID,dayString,classType);
     }
 
     @RequestMapping(value = "/getFinalProductionWageInfo")

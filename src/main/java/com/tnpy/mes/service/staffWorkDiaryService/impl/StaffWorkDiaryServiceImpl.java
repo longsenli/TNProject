@@ -180,7 +180,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
         }
     }
 
-    public TNPYResponse getTMPProductionWageInfo(String plantID,String processID,String dayString,String classType)
+    public TNPYResponse getTMPProductionWageInfo(String plantID,String processID,String lineID,String dayString,String classType)
     {
         TNPYResponse result = new TNPYResponse();
         try {
@@ -200,18 +200,31 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             }
             dayString = dateFormat2.format(date);
             List<Map<Object,Object>> productionWageTMP;
-
+            String lineFilter = "";
             if(ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID))
             {
-                productionWageTMP= dailyProductionAndWageDetailMapper.ZHQDProductionWageInfoByWorklocation(plantID,processID,orderInfo,dayString,classType);
+                if(!"-1".equals(lineID))
+                {
+                    lineFilter = " and lineID = '" + lineID + "' ";
+                }
+
+                productionWageTMP= dailyProductionAndWageDetailMapper.ZHQDProductionWageInfoByWorklocation(plantID,processID,lineFilter,orderInfo,dayString,classType);
             }
             else  if(ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(processID))
             {
-                productionWageTMP= dailyProductionAndWageDetailMapper.orderProductionWageInfoByWorklocation(plantID,processID,orderInfo,dayString,classType);
+                if(!"-1".equals(lineID))
+                {
+                    lineFilter = " and inputLineID = '" + lineID + "' ";
+                }
+                productionWageTMP= dailyProductionAndWageDetailMapper.orderProductionWageInfoByWorklocation(plantID,processID,lineFilter,orderInfo,dayString,classType);
             }
             else
             {
-                productionWageTMP= dailyProductionAndWageDetailMapper.orderProductionWageInfoByLine(plantID,processID,orderInfo,dayString,classType);
+                if(!"-1".equals(lineID))
+                {
+                    lineFilter = " and inputLineID = '" + lineID + "' ";
+                }
+                productionWageTMP= dailyProductionAndWageDetailMapper.orderProductionWageInfoByLine(plantID,processID,lineFilter,orderInfo,dayString,classType);
             }
 
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
