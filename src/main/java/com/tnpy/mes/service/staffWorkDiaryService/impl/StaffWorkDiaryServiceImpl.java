@@ -295,10 +295,10 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
 
             List<Map<Object,Object>> qrCodeInfoList = workLocationMapper.selectByQRCode(QRCode);
 
-            if (qrCodeInfoList == null) {
+            if (qrCodeInfoList.size() < 1 ) {
                 qrCodeInfoList = productionLineMapper.selectByQRCode(QRCode);
                 {
-                    if (qrCodeInfoList == null) {
+                    if (qrCodeInfoList.size() < 1) {
                         result.setMessage("未获取到二维码信息，请确认是正确的二维码！" + QRCode);
                         return result;
                     }
