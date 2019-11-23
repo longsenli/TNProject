@@ -67,7 +67,11 @@ public class TokenInterceptor implements HandlerInterceptor {
             {
                 apiCallRecord.setUserid(tokenAPILog.getUserid());
             }
-            apiCallRecordMapper.insertSelective(apiCallRecord);
+            if(!request.getRequestURI().contains("get") && !request.getRequestURI().contains("select"))
+            {
+                apiCallRecordMapper.insertSelective(apiCallRecord);
+            }
+
         }
         catch (Exception ex)
         {
