@@ -5,6 +5,7 @@ import com.tnpy.mes.service.scrapInfoService.IScrapInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -34,8 +35,8 @@ public class ScrapInfoController {
     }
 
     @RequestMapping(value = "/getMaterialScrapRecord")
-    public TNPYResponse getMaterialScrapRecord(String plantID , String processID,String lineID, String startTime, String endTime ) {
-        return scrapInfoService.getMaterialScrapRecord(plantID,processID,lineID, startTime,endTime);
+    public TNPYResponse getMaterialScrapRecord(String plantID , String processID, String lineID, @RequestParam(defaultValue = "-1")String scrapSelectType, String startTime, String endTime ) {
+        return scrapInfoService.getMaterialScrapRecord(plantID,processID,lineID,scrapSelectType, startTime,endTime);
     }
     @RequestMapping(value = "/saveMaterialScrapRecord")
     public TNPYResponse saveMaterialScrapRecord(@RequestBody String strJson ) {
@@ -52,5 +53,10 @@ public class ScrapInfoController {
     @RequestMapping(value = "/getUsedMaterialInfo")
     public TNPYResponse getUsedMaterialInfo(String plantID , String processID,String lineID, String productDate, String classType ) {
         return scrapInfoService.getUsedMaterialInfo(plantID,processID,lineID, productDate,classType);
+    }
+
+    @RequestMapping(value = "/scrapByBatteryQrcode")
+    public TNPYResponse scrapByBatteryQrcode( String id ,String scrapPlant,String scrapProcess,String repairReason,String updateStaffID,String updateStaff) {
+        return scrapInfoService.scrapByBatteryQrcode(id,scrapPlant,scrapProcess,repairReason,updateStaffID,updateStaff);
     }
 }
