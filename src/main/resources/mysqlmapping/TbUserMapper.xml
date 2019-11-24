@@ -30,11 +30,12 @@
     <result column="productionprocess_name" jdbcType="VARCHAR" property="productionprocess_name" />
     <result column="worklocation_id" jdbcType="VARCHAR" property="worklocation_id" />
     <result column="worklocation_name" jdbcType="VARCHAR" property="worklocation_name" />
+    <result column="cardno" jdbcType="VARCHAR" property="cardno" />
   </resultMap>
   <sql id="Base_Column_List">
     userID, name, password, roleID, sex, birthday, dutyID, workplace, createdate, createuser, 
     updatedate, updateuser, deletedate, deleteuser, state, email, mobilephone, telephone, 
-    organID, industrialplant_id, industrialplant_name, productionline_id, productionline_name, productionprocess_id, productionprocess_name, worklocation_id, worklocation_name
+    organID, industrialplant_id, industrialplant_name, productionline_id, productionline_name, productionprocess_id, productionprocess_name, worklocation_id, worklocation_name, cardno
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -45,7 +46,7 @@
   <select id="userList" resultMap="BaseResultMap">
   select u.userID, u.name, u.password, u.roleID, u.sex, u.birthday, u.dutyID, u.workplace, u.createdate, u.createuser, 
     u.updatedate, u.updateuser, u.deletedate, u.deleteuser, u.state, u.email, u.mobilephone, u.telephone, 
-    u.organID, u.industrialplant_id, u.industrialplant_name, u.productionline_id, u.productionline_name, u.productionprocess_id, u.productionprocess_name, u.worklocation_id, u.worklocation_name,(select r.role_name from tb_role r where r.role_id=u.roleID) as roleName from tb_user u
+    u.organID, u.industrialplant_id, u.industrialplant_name, u.productionline_id, u.productionline_name, u.productionprocess_id, u.productionprocess_name, u.worklocation_id, u.worklocation_name,(select r.role_name from tb_role r where r.role_id=u.roleID) as roleName ,u.cardno from tb_user u
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from tb_user
@@ -60,7 +61,7 @@
       email, mobilephone, telephone, 
       organID, industrialplant_id, industrialplant_name, 
       productionline_id, productionline_name, productionprocess_id, productionprocess_name, 
-      worklocation_id, worklocation_name)
+      worklocation_id, worklocation_name ,cardno)
     values (#{userid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{roleid,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, 
       #{dutyid,jdbcType=VARCHAR}, #{workplace,jdbcType=VARCHAR}, #{createdate,jdbcType=TIMESTAMP}, 
@@ -69,7 +70,7 @@
       #{email,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, 
       #{organid,jdbcType=VARCHAR}, #{industrialplant_id,jdbcType=VARCHAR}, #{industrialplant_name,jdbcType=VARCHAR}, 
       #{productionline_id,jdbcType=VARCHAR}, #{productionline_name,jdbcType=VARCHAR}, #{productionprocess_id,jdbcType=VARCHAR}, #{productionprocess_name,jdbcType=VARCHAR}, 
-      #{worklocation_id,jdbcType=VARCHAR}, #{worklocation_name,jdbcType=VARCHAR})
+      #{worklocation_id,jdbcType=VARCHAR}, #{worklocation_name,jdbcType=VARCHAR},#{cardno,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.TbUser">
     insert into tb_user
@@ -155,6 +156,9 @@
       <if test="worklocation_name != null">
         worklocation_name,
       </if>
+      <if test="cardno != null">
+        cardno,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userid != null">
@@ -237,6 +241,9 @@
       </if>
       <if test="worklocation_name != null">
         #{worklocation_name,jdbcType=VARCHAR},
+      </if>
+       <if test="cardno != null">
+        #{cardno,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -321,6 +328,9 @@
       <if test="worklocation_name != null">
         worklocation_name = #{worklocation_name,jdbcType=VARCHAR},
       </if>
+      <if test="cardno != null">
+        cardno = #{cardno,jdbcType=VARCHAR},
+      </if>
     </set>
     where userID = #{userid,jdbcType=VARCHAR}
   </update>
@@ -353,6 +363,7 @@
       productionprocess_name = #{productionprocess_name,jdbcType=VARCHAR},
       worklocation_id = #{worklocation_id,jdbcType=VARCHAR},
       worklocation_name = #{worklocation_name,jdbcType=VARCHAR}
+       cardno = #{cardno,jdbcType=VARCHAR}
     where userID = #{userid,jdbcType=VARCHAR}
   </update>
 </mapper>

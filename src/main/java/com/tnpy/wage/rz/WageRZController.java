@@ -4,8 +4,10 @@ package com.tnpy.wage.rz;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.tnpy.common.Enum.StatusEnum;
+import com.tnpy.common.utils.encryption.Encryption;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.TbWageDetailRZMapper;
+import com.tnpy.mes.model.mysql.TbUser;
 import com.tnpy.mes.model.mysql.TbWageDetailRZ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -94,6 +96,7 @@ public class WageRZController {
             	tbwage.setLovedonation(lo.get(19).toString());//爱心费
             	tbwage.setIndividualincometax(lo.get(20).toString());//代扣个人所得税
             	tbwage.setTakehomepay(lo.get(21).toString());//实发工资
+            	tbwage.setUserid(lo.get(22).toString());
             	tbWageDetailRZMapper.insert(tbwage);
             }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -112,6 +115,7 @@ public class WageRZController {
   public TNPYResponse getEquipmentInfo(@RequestBody Map<String, String> reqMap) {
       TNPYResponse result = new TNPYResponse();
       String cardno = reqMap.get("cardno") == null?"":reqMap.get("cardno").toString();
+      String password = reqMap.get("password") == null?"":reqMap.get("password").toString();
       String senddate = reqMap.get("senddate") == null?"":reqMap.get("senddate").toString();
 
      try
@@ -136,11 +140,27 @@ public class WageRZController {
     		 senddate=format.format(nowmonth);
     	 }
 
+    	 String queryfilter = "select password, cardno from tb_user where cardno ='"+cardno+"'";
+    	 List<LinkedHashMap<String, Object>> verify = tbWageDetailRZMapper.queryDef(queryfilter);
+    	
+    	 
+    	//判断密码不正确
+ 		if (verify.size()==0) {
+ 			result.setMessage("未找到该用户");
+ 			return result;
+ 		}
+ 		 String qpassword =verify.get(0).get("password")==null?"":verify.get(0).get("password").toString().trim();
+    	 Encryption encryption = new Encryption();
+ 		//判断密码不正确
+		if (!password.trim().equals(qpassword) && !encryption.encrypt(password.trim(),null).equals(qpassword)) {
+			result.setMessage("密码不正确");
+			return result;
+		}
     	 String filter = "where cardno = '"+cardno+"' and senddate = '"+senddate+"'";
     	 List<LinkedHashMap<String, Object>> tbwage = tbWageDetailRZMapper.selectByPrimaryKey1(filter);
     	 if(tbwage.isEmpty()) {
     		 result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
-    		 result.setMessage("未找到数据");
+    		 result.setMessage("未找到该用户当月工资数据");
              return  result;
     	 }
          result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());

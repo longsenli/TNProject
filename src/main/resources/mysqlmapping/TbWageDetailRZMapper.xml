@@ -25,12 +25,13 @@
     <result column="lovedonation" jdbcType="VARCHAR" property="lovedonation" />
     <result column="individualincometax" jdbcType="VARCHAR" property="individualincometax" />
     <result column="takehomepay" jdbcType="VARCHAR" property="takehomepay" />
+    <result column="userid" jdbcType="VARCHAR" property="userid" />
   </resultMap>
   <sql id="Base_Column_List">
     id, senddate, name, cardno, department, wage, overtimepay, performancebonus, subsidyincome, 
     militarytrainingincome, wagesupplement, utilities, housingallowance, hightemperaturesubsidy, 
     seniorityallowance, shouldsendsalary, socialinsurance, reservedfunds, othercutpayment, 
-    utilitiescut, lovedonation, individualincometax, takehomepay
+    utilitiescut, lovedonation, individualincometax, takehomepay, userid
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -50,7 +51,7 @@
       utilities, housingallowance, hightemperaturesubsidy, 
       seniorityallowance, shouldsendsalary, socialinsurance, 
       reservedfunds, othercutpayment, utilitiescut, 
-      lovedonation, individualincometax, takehomepay
+      lovedonation, individualincometax, takehomepay, userid
       )
     values (#{id,jdbcType=VARCHAR}, #{senddate,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{cardno,jdbcType=VARCHAR}, #{department,jdbcType=VARCHAR}, #{wage,jdbcType=VARCHAR}, 
@@ -59,7 +60,7 @@
       #{utilities,jdbcType=VARCHAR}, #{housingallowance,jdbcType=VARCHAR}, #{hightemperaturesubsidy,jdbcType=VARCHAR}, 
       #{seniorityallowance,jdbcType=VARCHAR}, #{shouldsendsalary,jdbcType=VARCHAR}, #{socialinsurance,jdbcType=VARCHAR}, 
       #{reservedfunds,jdbcType=VARCHAR}, #{othercutpayment,jdbcType=VARCHAR}, #{utilitiescut,jdbcType=VARCHAR}, 
-      #{lovedonation,jdbcType=VARCHAR}, #{individualincometax,jdbcType=VARCHAR}, #{takehomepay,jdbcType=VARCHAR}
+      #{lovedonation,jdbcType=VARCHAR}, #{individualincometax,jdbcType=VARCHAR}, #{takehomepay,jdbcType=VARCHAR},#{userid,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.TbWageDetailRZ">
@@ -134,6 +135,9 @@
       <if test="takehomepay != null">
         takehomepay,
       </if>
+      <if test="userid != null">
+        userid,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -204,6 +208,9 @@
       </if>
       <if test="takehomepay != null">
         #{takehomepay,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -276,6 +283,9 @@
       <if test="takehomepay != null">
         takehomepay = #{takehomepay,jdbcType=VARCHAR},
       </if>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -302,7 +312,8 @@
       utilitiescut = #{utilitiescut,jdbcType=VARCHAR},
       lovedonation = #{lovedonation,jdbcType=VARCHAR},
       individualincometax = #{individualincometax,jdbcType=VARCHAR},
-      takehomepay = #{takehomepay,jdbcType=VARCHAR}
+      takehomepay = #{takehomepay,jdbcType=VARCHAR},
+      userid = #{userid,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

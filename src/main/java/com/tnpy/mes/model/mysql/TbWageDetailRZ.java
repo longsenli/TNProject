@@ -46,8 +46,18 @@ public class TbWageDetailRZ {
     private String individualincometax;
 
     private String takehomepay;
+    
+    private String userid;
 
-    public String getId() {
+    public String getUserid() {
+		return userid;
+	}
+
+	public void setUserid(String userid) {
+		this.userid = userid;
+	}
+
+	public String getId() {
         return id;
     }
 

@@ -47,6 +47,9 @@ public interface TbWageDetailRZMapper {
     		"FROM\r\n" + 
     		"	tb_wagedetail_rz ${filter}")
     List<LinkedHashMap<String, Object>> selectByPrimaryKey1(@Param("filter") String filter);
+    
+    @Select(" ${filter}")
+    List<LinkedHashMap<String, Object>> queryDef(@Param("filter") String filter);
 
     int updateByPrimaryKeySelective(TbWageDetailRZ record);
 

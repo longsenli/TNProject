@@ -115,6 +115,16 @@ public class TbUser {
 	private String worklocation_id;
 
 	private String worklocation_name;
+	
+	private String cardno;
+
+	public String getCardno() {
+		return cardno;
+	}
+
+	public void setCardno(String cardno) {
+		this.cardno = cardno;
+	}
 
 	public String getUserid() {
 		return userid;
