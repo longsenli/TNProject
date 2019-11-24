@@ -2,6 +2,9 @@ package com.tnpy.mes.service.dashboardService.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.ConfigParamEnum;
+import com.tnpy.common.Enum.StatusEnum;
+import com.tnpy.common.utils.mass.DateUtilsDef;
+import com.tnpy.common.utils.mass.ListUtilsDef;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.DailyProductionSummaryLineMapper;
 import com.tnpy.mes.mapper.mysql.DashboardMapper;
@@ -914,4 +917,124 @@ public class DashboardServiceImpl implements IDashboardService {
             return result;
         }
     }
+
+	@Override
+	public TNPYResponse getproductAccountSummaryPlant(String plantID, String processID, String startTime,
+			String endTime) {
+		TNPYResponse result = new TNPYResponse();
+
+		try {
+			// 判断日期是否合法
+			if (!DateUtilsDef.isDateCheck(startTime) && !DateUtilsDef.isDateCheck(endTime)) {
+				result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+				result.setMessage("日期不合法");
+				return result;
+			}
+			// 获取日期范围天数
+			List<String> rangdate = DateUtilsDef.getEveryday(startTime, endTime);
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年M月d日");
+			String date = dateFormat.format(new Date());
+			/////////////////////////////////////// 方法二/////////////////////
+			StringBuilder stb = new StringBuilder();
+			StringBuilder stbtotal = new StringBuilder();
+			for (String fdate : rangdate) {
+				if (fdate.equals(rangdate.get(rangdate.size() - 1))) {
+					stb.append(" sum( CASE p.dayTime WHEN '" + fdate + "' THEN p.production ELSE 0 END ) as  '" + fdate
+							+ "日" + "' ");
+					stbtotal.append("`" + fdate + "日`  as 合计");
+				} else {
+					stb.append(" sum( CASE p.dayTime WHEN '" + fdate + "' THEN p.production ELSE 0 END ) as  '" + fdate
+							+ "日" + "' ,");
+					stbtotal.append("`" + fdate + "日` +");
+				}
+			}
+			String sqlfilter = "select * , " + stbtotal + " from (( SELECT\r\n" +
+//                    		"	p.plantID,\r\n" + 
+//                    		"	p.processID,\r\n" + 
+					" i.`name` AS '厂区',\r\n" + "			s.`name` AS '工序',\r\n"
+					+ "CONCAT(s.`name`,p.classType1) as '班组',\r\n" + "	p.materialName as '型号',\r\n" + stb.toString()
+					+ " FROM\r\n"
+					+ "	tb_dailyproductionsummaryline p LEFT JOIN sys_material m ON p.materialID = m.id\r\n"
+					+ "	LEFT JOIN sys_productionprocess s ON s.id = p.processID\r\n"
+					+ "	LEFT JOIN sys_industrialplant i ON i.id = p.plantID\r\n" + "WHERE\r\n" + "	1 = 1"
+							+ "\r\n";
+					
+				if (!"-1".equals(plantID)) {
+					sqlfilter += " and  p.plantID = '" + plantID + "' ";
+				}
+				if (!"-1".equals(processID)) {
+					sqlfilter += " and p.processID = '" + processID + "' ";
+				}
+				sqlfilter += " AND p.daytime >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
+						+ " AND p.daytime <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d') " +
+//					+ "AND p.plantID = '1001'\r\n" + "-- AND p.processID = '1011'\r\n"
+//					+ "AND p.daytime >= DATE_FORMAT('2019-11-03', '%Y-%m-%d')\r\n" + "AND p.daytime <= DATE_FORMAT(\r\n"
+//					+ "	'2019-11-23 23:59:59',\r\n" + "	'%Y-%m-%d'\r\n" + ")\r\n" + 
+					" GROUP BY\r\n"
+					+ "	p.materialName,p.classType1 )\r\n" + "\r\n" + 
+					"UNION all \r\n" + "(\r\n" + "	SELECT\r\n" +
+//                    		"		p.plantID,\r\n" + 
+//                    		"		p.processID,\r\n" + 
+					"		i.`name` AS '厂区',\r\n" + "		s.`name` AS '工序',\r\n"
+					+ "		CONCAT(s.`name`,p.classType1) as '班组' ,\r\n" + "		'合计'  AS '型号',\r\n" + "		\r\n"
+					+ stb.toString() + "	FROM\r\n" + "		tb_dailyproductionsummaryline p\r\n"
+					+ "	LEFT JOIN sys_material m ON p.materialID = m.id\r\n"
+					+ "	LEFT JOIN sys_productionprocess s ON s.id = p.processID\r\n"
+					+ "	LEFT JOIN sys_industrialplant i ON i.id = p.plantID\r\n" + "	WHERE\r\n" + "		1 = 1\r\n";
+					
+					if (!"-1".equals(plantID)) {
+						sqlfilter += " and  p.plantID = '" + plantID + "' ";
+					}
+					if (!"-1".equals(processID)) {
+						sqlfilter += " and p.processID = '" + processID + "' ";
+					}
+					sqlfilter += " AND p.daytime >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
+							+ " AND p.daytime <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d') " +
+					
+//					+ "	AND p.plantID = '1001'\r\n" + "-- 	AND p.processID = '1011'\r\n"
+//					+ "	AND p.daytime >= DATE_FORMAT('2019-11-16', '%Y-%m-%d')\r\n"
+//					+ "	AND p.daytime <= DATE_FORMAT(\r\n" + "		'2019-11-23 23:59:59',\r\n" + "		'%Y-%m-%d'\r\n"
+//					+ "	)\r\n" +
+//					
+					
+					"	GROUP BY\r\n" + "		processID,\r\n" + "		p.classType1\r\n" + ")\r\n"
+					+ "UNION ALL\r\n" + "	(\r\n" + "		SELECT\r\n" +
+//                    		"			p.plantID,\r\n" + 
+//                    		"			p.processID,\r\n" + 
+					"			i.`name` AS '厂区',\r\n" + "			s.`name` AS '工序',\r\n" +
+//                    		"			'' AS '班组',\r\n" + 
+					"		CONCAT(s.`name`,'夜班') as '班组' ,\r\n" + "			' 总计'  AS '型号',\r\n" + "\r\n" + "\r\n"
+					+ stb.toString() + "		FROM\r\n" + "			tb_dailyproductionsummaryline p\r\n"
+					+ "		LEFT JOIN sys_material m ON p.materialID = m.id\r\n"
+					+ "		LEFT JOIN sys_productionprocess s ON s.id = p.processID\r\n"
+					+ "		LEFT JOIN sys_industrialplant i ON i.id = p.plantID\r\n" + "		WHERE\r\n"
+					+ "			1 = 1\r\n";
+					if (!"-1".equals(plantID)) {
+						sqlfilter += " and  p.plantID = '" + plantID + "' ";
+					}
+					if (!"-1".equals(processID)) {
+						sqlfilter += " and p.processID = '" + processID + "' ";
+					}
+					sqlfilter += " AND p.daytime >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
+							+ " AND p.daytime <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d') " +
+
+//                    		"		AND p.plantID = '1001'\r\n" + 
+//                    		"-- 		AND p.processID = '1011'\r\n" + 
+//                    		"		AND p.daytime >= DATE_FORMAT('2019-11-16', '%Y-%m-%d')\r\n" + 
+//                    		"		AND p.daytime <= DATE_FORMAT(\r\n" + 
+//                    		"			'2019-11-23 23:59:59',\r\n" + 
+//                    		"			'%Y-%m-%d'\r\n" + 
+//                    		"		)\r\n" + 
+					"		GROUP BY\r\n" + "			processID\r\n" + "	)\r\n" + "\r\n"
+					+ "ORDER BY `厂区`  asc, `工序`  asc,  `班组`  desc, `型号` desc ) rsall";
+			List<LinkedHashMap<Object, Object>> rlnmapList = dashboardMapper.queryDef(sqlfilter);
+			result.setStatus(1);
+			result.setData(JSONObject.toJSON(rlnmapList).toString());
+			return result;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			result.setMessage("查询出错！" + ex.getMessage());
+			return result;
+		}
+	}
 }
