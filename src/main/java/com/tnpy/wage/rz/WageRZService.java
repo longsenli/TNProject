@@ -1,6 +1,9 @@
 package com.tnpy.wage.rz;
 
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -56,6 +59,7 @@ public class WageRZService {
                 List<Object> li = new ArrayList<>();
                 for (int y = row.getFirstCellNum(); y < row.getLastCellNum(); y++) {
                     cell = row.getCell(y);
+                    cell.setCellType(HSSFCell.CELL_TYPE_STRING);
                     li.add(cell);
                 }
                 list.add(li);
@@ -65,6 +69,7 @@ public class WageRZService {
         return list;
     }
 
+    
     /**
      * 判断文件格式
      *

@@ -41,4 +41,7 @@ public interface TbUserMapper {
 
 	@Select("select ${columnList} from tb_user ${filter} ")
 	List<Map<Object, Object>> selecUserInfoByfilter(@Param("columnList") String columnList,@Param("filter")String filter);
+	
+	@Select("select * from tb_user")
+	List<TbUser> selectAllUser();
 }

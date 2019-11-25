@@ -6,6 +6,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.encryption.Encryption;
 import com.tnpy.common.utils.web.TNPYResponse;
+import com.tnpy.mes.mapper.mysql.TbUserMapper;
 import com.tnpy.mes.mapper.mysql.TbWageDetailRZMapper;
 import com.tnpy.mes.model.mysql.TbUser;
 import com.tnpy.mes.model.mysql.TbWageDetailRZ;
@@ -31,6 +32,8 @@ public class WageRZController {
     private WageRZService importService;
     @Autowired
     private TbWageDetailRZMapper tbWageDetailRZMapper;
+    @Autowired
+    private TbUserMapper tbUserMapper;
     
     @PostMapping(value = "/rzwageupload")
     @ResponseBody
@@ -54,12 +57,17 @@ public class WageRZController {
             System.out.println("过去一个月："+mon);
             
             String filter = "where senddate = '"+mon+"' limit 1";
-            List<LinkedHashMap<String, Object>> isexists = tbWageDetailRZMapper.selectByPrimaryKey1(filter);
+            List<LinkedHashMap<String, String>> isexists = tbWageDetailRZMapper.selectByPrimaryKey1(filter);
             if (isexists.size()>0) {
                 result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
                 result.setMessage(mon+ "月份工资数据已经上传过啦!");
                 return  result;
             }
+            
+            //获取所有user表记录
+            List<TbUser> ltbuser = tbUserMapper.selectAllUser();
+            
+            
             InputStream inputStream = file.getInputStream();
             List<List<Object>> list = importService.getBankListByExcel(inputStream, file.getOriginalFilename());
             inputStream.close();
@@ -97,13 +105,43 @@ public class WageRZController {
             	tbwage.setIndividualincometax(lo.get(20).toString());//代扣个人所得税
             	tbwage.setTakehomepay(lo.get(21).toString());//实发工资
             	tbwage.setUserid(lo.get(22).toString());
-            	tbWageDetailRZMapper.insert(tbwage);
+            	
+            	
+            	if((lo.get(22).toString()==null||lo.get(22).toString().equals(""))) {
+        			result.setMessage("上传出错, 有员工工号为空");
+        	        return  result;
+        		}
+            	if(!isexistsUser(ltbuser, lo.get(22).toString())) {
+        			TbUser tbuserfu = new TbUser();
+        			tbuserfu.setCardno(lo.get(2).toString());
+        			tbuserfu.setUserid(lo.get(22).toString());
+        			tbuserfu.setName(lo.get(1).toString());
+        			tbuserfu.setPassword(lo.get(2).toString().substring(lo.get(2).toString().length() - 6));
+        			tbUserMapper.insertSelective(tbuserfu);
+        		}
+            	if(isexistsUser(ltbuser, lo.get(22).toString())) {
+        			for(int j=0;j<ltbuser.size();j++) {
+	            		//如果用户存在则不插入新记录
+	            		if(lo.get(2).toString().equals(ltbuser.get(j).getCardno())&&lo.get(22).toString().equals(ltbuser.get(j).getUserid())) {
+	            			continue;
+	            		}
+            			//如果userid存在, 但身份证号不存在则更新
+                		if((ltbuser.get(j).getCardno()== null || ltbuser.get(j).getCardno().equals("")) &&lo.get(22).toString().equals(ltbuser.get(j).getUserid())) {
+                			TbUser tbuserfu = ltbuser.get(j);
+                			tbuserfu.setCardno(lo.get(2).toString());
+                			tbUserMapper.updateByPrimaryKeySelective(tbuserfu);
+                		}
+	            	}
+        		}
+	            	tbWageDetailRZMapper.insert(tbwage);
+            	
             }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setMessage("上传成功!");
             return  result;
     		
 		} catch (Exception e) {
+			e.printStackTrace();
 			result.setMessage("上传出错！请联系管理员" + e.getMessage());
 	        return  result;
 		}
@@ -140,8 +178,8 @@ public class WageRZController {
     		 senddate=format.format(nowmonth);
     	 }
 
-    	 String queryfilter = "select password, cardno from tb_user where cardno ='"+cardno+"'";
-    	 List<LinkedHashMap<String, Object>> verify = tbWageDetailRZMapper.queryDef(queryfilter);
+//    	 String queryfilter = "select password, cardno from tb_user where cardno ='"+cardno+"'";
+    	 List<LinkedHashMap<String, Object>> verify = tbWageDetailRZMapper.queryDef(cardno);
     	
     	 
     	//判断密码不正确
@@ -157,7 +195,7 @@ public class WageRZController {
 			return result;
 		}
     	 String filter = "where cardno = '"+cardno+"' and senddate = '"+senddate+"'";
-    	 List<LinkedHashMap<String, Object>> tbwage = tbWageDetailRZMapper.selectByPrimaryKey1(filter);
+    	 List<LinkedHashMap<String, String>> tbwage = tbWageDetailRZMapper.selectByPrimaryKey1(filter);
     	 if(tbwage.isEmpty()) {
     		 result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
     		 result.setMessage("未找到该用户当月工资数据");
@@ -172,6 +210,26 @@ public class WageRZController {
          result.setMessage("查询出错！" + ex.getMessage());
          return  result;
      }
+  }
+  
+  public boolean isexistsUser(List<TbUser> lsuser, String excelUserid) {
+	  boolean flag = false;
+	  for(int i = 0; i< lsuser.size(); i++) {
+		  if(lsuser.get(i).getUserid().equals(excelUserid)) {
+			  flag = true;
+		  }
+	  }
+	  return flag;
+  }
+  
+  public boolean isexistsWageData(List<TbUser> lsuser, String excelUserid) {
+	  boolean flag = false;
+	  for(int i = 0; i< lsuser.size(); i++) {
+		  if(lsuser.get(i).getUserid().equals(excelUserid)) {
+			  flag = true;
+		  }
+	  }
+	  return flag;
   }
 
 }
