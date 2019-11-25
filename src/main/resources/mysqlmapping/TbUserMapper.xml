@@ -362,7 +362,7 @@
       productionprocess_id = #{productionprocess_id,jdbcType=VARCHAR},
       productionprocess_name = #{productionprocess_name,jdbcType=VARCHAR},
       worklocation_id = #{worklocation_id,jdbcType=VARCHAR},
-      worklocation_name = #{worklocation_name,jdbcType=VARCHAR}
+      worklocation_name = #{worklocation_name,jdbcType=VARCHAR},
        cardno = #{cardno,jdbcType=VARCHAR}
     where userID = #{userid,jdbcType=VARCHAR}
   </update>

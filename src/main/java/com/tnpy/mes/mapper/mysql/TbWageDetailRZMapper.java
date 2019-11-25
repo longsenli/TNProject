@@ -22,6 +22,7 @@ public interface TbWageDetailRZMapper {
     
     @Select("SELECT\r\n" +
     		"	id AS 'id',\r\n" + 
+    		"	CONVERT(userid,char) as '我的工号',\r\n" + 
     		"	senddate as '工资月份',\r\n" + 
     		"	NAME as '姓名',\r\n" + 
     		"	cardno as '身份证号',\r\n" + 
