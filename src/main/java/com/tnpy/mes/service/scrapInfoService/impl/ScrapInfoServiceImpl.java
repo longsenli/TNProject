@@ -7,9 +7,11 @@ import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.MaterialScrapRecordMapper;
 import com.tnpy.mes.mapper.mysql.ObjectRelationDictMapper;
+import com.tnpy.mes.mapper.mysql.PlasticUsedRecordMapper;
 import com.tnpy.mes.mapper.mysql.WorkOrderScrapInfoMapper;
 import com.tnpy.mes.model.mysql.Material;
 import com.tnpy.mes.model.mysql.MaterialScrapRecord;
+import com.tnpy.mes.model.mysql.PlasticUsedRecord;
 import com.tnpy.mes.model.mysql.WorkOrderScrapInfo;
 import com.tnpy.mes.service.scrapInfoService.IScrapInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,8 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
     @Autowired
     private ObjectRelationDictMapper objectRelationDictMapper;
 
+    @Autowired
+    private PlasticUsedRecordMapper plasticUsedRecordMapper;
 
     public TNPYResponse getScrapInfo(String plantID, String processID, String lineID, String startTime, String endTime) {
         TNPYResponse result = new TNPYResponse();
@@ -131,7 +135,7 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
         }
     }
 
-    public TNPYResponse getMaterialScrapRecord(String plantID, String processID, String lineID, String startTime, String endTime) {
+    public TNPYResponse getMaterialScrapRecord(String plantID, String processID, String lineID,String scrapSelectType,  String startTime, String endTime) {
         TNPYResponse result = new TNPYResponse();
         try {
             String filter = "";
@@ -139,6 +143,9 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
                 filter = " and plantID = '" + plantID + "' and processID = '" + processID + "'";
             } else {
                 filter = " and lineID = '" + lineID + "'";
+            }
+            if (!"-1".equals(scrapSelectType)) {
+                filter += " and operateType = '" + scrapSelectType + "' ";
             }
             //  System.out.println(filter + "==========" + startTime + "=====" +endTime);
             List<Map<Object, Object>> materialScrapRecordList = materialScrapRecordMapper.getMaterialScrapRecord(filter, startTime, endTime);
@@ -170,7 +177,7 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
             materialScrapRecord.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
             materialScrapRecord.setUpdatetime(new Date());
             materialScrapRecord.setUpdatestaff(jsonMap.get("updateStaff"));
-
+            materialScrapRecord.setOperatetype(jsonMap.get("operateType"));
             for (Map.Entry<String, String> entry : jsonMap.entrySet()) {
                 if (!entry.getKey().contains("###"))
                     continue;
@@ -204,6 +211,52 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
             return result;
         } catch (Exception ex) {
             result.setMessage("删除失败！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse scrapByBatteryQrcode( String id ,String scrapPlant,String scrapProcess,String repairReason,String updateStaffID,String updateStaff)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            PlasticUsedRecord plasticUsedRecord =plasticUsedRecordMapper.selectByPrimaryKey(id);
+            if(plasticUsedRecord == null)
+            {
+                result.setMessage("未找到该底壳的信息！" + id);
+                return result;
+            }
+            plasticUsedRecordMapper.updateScrapInfo(id,repairReason);
+            MaterialScrapRecord materialScrapRecord = new MaterialScrapRecord();
+            materialScrapRecord.setId(id);
+            materialScrapRecord.setOperatetype("电池底壳");
+            materialScrapRecord.setUpdatestaff(updateStaff);
+            materialScrapRecord.setUpdatetime( new Date());
+            materialScrapRecord.setStatus("1");
+            materialScrapRecord.setValue(Float.valueOf(1));
+            materialScrapRecord.setMaterialname(plasticUsedRecord.getMaterialname());
+            materialScrapRecord.setMaterialid(plasticUsedRecord.getMaterialid());
+            materialScrapRecord.setRemark(repairReason);
+            materialScrapRecord.setPlantid(plasticUsedRecord.getPlantid());
+            materialScrapRecord.setProcessid(scrapProcess);
+            materialScrapRecord.setLineid((plasticUsedRecord.getLineid()));
+            materialScrapRecord.setLocationid(plasticUsedRecord.getWorklocation());
+            materialScrapRecord.setOrdername(updateStaffID);
+            materialScrapRecord.setOrderid(plasticUsedRecord.getStaffname());
+    
+            materialScrapRecord.setProductday(new Date());
+            materialScrapRecordMapper.insert(materialScrapRecord);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData("报修成功！");
+            return result;
+        } catch (Exception ex) {
+            if(ex.getMessage().contains("uplicate"))
+            {
+                result.setMessage("报修失败！该电池已报修！" );
+            }
+            else
+            {
+                result.setMessage("报修失败！" + ex.getMessage());
+            }
             return result;
         }
     }

@@ -18,10 +18,16 @@
     <result column="updateStaff" jdbcType="VARCHAR" property="updatestaff" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="weight" jdbcType="DOUBLE" property="weight" />
+    <result column="operateType" jdbcType="VARCHAR" property="operatetype" />
+    <result column="extd1" jdbcType="VARCHAR" property="extd1" />
+    <result column="extd2" jdbcType="VARCHAR" property="extd2" />
+    <result column="extd3" jdbcType="VARCHAR" property="extd3" />
   </resultMap>
   <sql id="Base_Column_List">
     id, plantID, processID, lineID, locationID, productDay, classType, orderID, materialID, 
-    orderName, materialName, value, updateTime, updateStaff, status, remark
+    orderName, materialName, value, updateTime, updateStaff, status, remark, weight, 
+    operateType, extd1, extd2, extd3
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -39,13 +45,17 @@
       classType, orderID, materialID, 
       orderName, materialName, value, 
       updateTime, updateStaff, status, 
-      remark)
+      remark, weight, operateType, 
+      extd1, extd2, extd3
+      )
     values (#{id,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{processid,jdbcType=VARCHAR}, 
       #{lineid,jdbcType=VARCHAR}, #{locationid,jdbcType=VARCHAR}, #{productday,jdbcType=TIMESTAMP}, 
       #{classtype,jdbcType=VARCHAR}, #{orderid,jdbcType=VARCHAR}, #{materialid,jdbcType=VARCHAR}, 
       #{ordername,jdbcType=VARCHAR}, #{materialname,jdbcType=VARCHAR}, #{value,jdbcType=REAL}, 
       #{updatetime,jdbcType=TIMESTAMP}, #{updatestaff,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR})
+      #{remark,jdbcType=VARCHAR}, #{weight,jdbcType=DOUBLE}, #{operatetype,jdbcType=VARCHAR}, 
+      #{extd1,jdbcType=VARCHAR}, #{extd2,jdbcType=VARCHAR}, #{extd3,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.MaterialScrapRecord">
     insert into tb_materialscraprecord
@@ -98,6 +108,21 @@
       <if test="remark != null">
         remark,
       </if>
+      <if test="weight != null">
+        weight,
+      </if>
+      <if test="operatetype != null">
+        operateType,
+      </if>
+      <if test="extd1 != null">
+        extd1,
+      </if>
+      <if test="extd2 != null">
+        extd2,
+      </if>
+      <if test="extd3 != null">
+        extd3,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -147,6 +172,21 @@
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null">
+        #{weight,jdbcType=DOUBLE},
+      </if>
+      <if test="operatetype != null">
+        #{operatetype,jdbcType=VARCHAR},
+      </if>
+      <if test="extd1 != null">
+        #{extd1,jdbcType=VARCHAR},
+      </if>
+      <if test="extd2 != null">
+        #{extd2,jdbcType=VARCHAR},
+      </if>
+      <if test="extd3 != null">
+        #{extd3,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -198,6 +238,21 @@
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
       </if>
+      <if test="weight != null">
+        weight = #{weight,jdbcType=DOUBLE},
+      </if>
+      <if test="operatetype != null">
+        operateType = #{operatetype,jdbcType=VARCHAR},
+      </if>
+      <if test="extd1 != null">
+        extd1 = #{extd1,jdbcType=VARCHAR},
+      </if>
+      <if test="extd2 != null">
+        extd2 = #{extd2,jdbcType=VARCHAR},
+      </if>
+      <if test="extd3 != null">
+        extd3 = #{extd3,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -217,7 +272,12 @@
       updateTime = #{updatetime,jdbcType=TIMESTAMP},
       updateStaff = #{updatestaff,jdbcType=VARCHAR},
       status = #{status,jdbcType=VARCHAR},
-      remark = #{remark,jdbcType=VARCHAR}
+      remark = #{remark,jdbcType=VARCHAR},
+      weight = #{weight,jdbcType=DOUBLE},
+      operateType = #{operatetype,jdbcType=VARCHAR},
+      extd1 = #{extd1,jdbcType=VARCHAR},
+      extd2 = #{extd2,jdbcType=VARCHAR},
+      extd3 = #{extd3,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

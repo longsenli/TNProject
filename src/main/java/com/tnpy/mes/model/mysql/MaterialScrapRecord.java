@@ -1,7 +1,5 @@
 package com.tnpy.mes.model.mysql;
 
-import com.alibaba.fastjson.annotation.JSONField;
-
 import java.util.Date;
 
 public class MaterialScrapRecord {
@@ -14,7 +12,7 @@ public class MaterialScrapRecord {
     private String lineid;
 
     private String locationid;
-    @JSONField(format ="yyyy-MM-dd HH:mm:ss")
+
     private Date productday;
 
     private String classtype;
@@ -28,7 +26,7 @@ public class MaterialScrapRecord {
     private String materialname;
 
     private Float value;
-    @JSONField(format ="yyyy-MM-dd HH:mm:ss")
+
     private Date updatetime;
 
     private String updatestaff;
@@ -36,6 +34,16 @@ public class MaterialScrapRecord {
     private String status;
 
     private String remark;
+
+    private Double weight;
+
+    private String operatetype;
+
+    private String extd1;
+
+    private String extd2;
+
+    private String extd3;
 
     public String getId() {
         return id;
@@ -163,5 +171,45 @@ public class MaterialScrapRecord {
 
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
+    }
+
+    public Double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
+
+    public String getOperatetype() {
+        return operatetype;
+    }
+
+    public void setOperatetype(String operatetype) {
+        this.operatetype = operatetype == null ? null : operatetype.trim();
+    }
+
+    public String getExtd1() {
+        return extd1;
+    }
+
+    public void setExtd1(String extd1) {
+        this.extd1 = extd1 == null ? null : extd1.trim();
+    }
+
+    public String getExtd2() {
+        return extd2;
+    }
+
+    public void setExtd2(String extd2) {
+        this.extd2 = extd2 == null ? null : extd2.trim();
+    }
+
+    public String getExtd3() {
+        return extd3;
+    }
+
+    public void setExtd3(String extd3) {
+        this.extd3 = extd3 == null ? null : extd3.trim();
     }
 }

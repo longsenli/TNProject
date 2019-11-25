@@ -13,7 +13,9 @@ public interface IScrapInfoService {
     public TNPYResponse getMaterialScrapInfo( String materialID, String orderID );
 
     public TNPYResponse getUsedMaterialInfo(String plantID , String processID,String lineID, String productDate, String classType );
-    public TNPYResponse getMaterialScrapRecord(String plantID , String processID,String lineID, String startTime, String endTime );
+    public TNPYResponse getMaterialScrapRecord(String plantID , String processID,String lineID, String scrapSelectType, String startTime, String endTime );
     public TNPYResponse saveMaterialScrapRecord( String strJson );
     public TNPYResponse deleteMaterialScrapRecord( String id );
+
+    public TNPYResponse scrapByBatteryQrcode( String id ,String scrapPlant,String scrapProcess,String repairReason,String updateStaffID,String updateStaff) ;
 }

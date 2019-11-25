@@ -4,6 +4,7 @@ import com.tnpy.mes.model.mysql.PlasticUsedRecord;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -37,4 +38,7 @@ public interface PlasticUsedRecordMapper {
 
     @Select("select count(*) from tb_plasticUsedRecord  where workLocation = #{locationID} and usedTime > #{startTime} and usedTime < #{endTime}")
     int selectPlasticUsedNumber(String locationID,String startTime,String endTime);
+
+    @Update("update tb_plasticUsedRecord set status = '2' ,extend1 = #{repairReason} where id = #{id}")
+    int updateScrapInfo(String id,String repairReason);
 }
