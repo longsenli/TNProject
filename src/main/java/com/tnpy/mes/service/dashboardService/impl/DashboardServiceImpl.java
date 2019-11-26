@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.mass.DateUtilsDef;
-import com.tnpy.common.utils.mass.ListUtilsDef;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.DailyProductionSummaryLineMapper;
 import com.tnpy.mes.mapper.mysql.DashboardMapper;
@@ -302,7 +301,6 @@ public class DashboardServiceImpl implements IDashboardService {
                             "(select  case when  substring( usedOrderID,-10,2) = 'BB' then '白班' else '夜班' end as banci,lineID as outputLineID,materialName as materialNameInfo,\n" +
                             "CONCAT(substring( usedOrderID,-8,4) ,'-', substring( usedOrderID,-4,2),'-' , substring( usedOrderID,-2,2) ) as dayTime,count(1) as number  from tb_plasticusedrecord \n" +
                             "where  right( usedOrderID,8 ) >= '"+sdf2.format(newStartTime)+"' and  right( usedOrderID,8 ) <= '"+sdf2.format(newEndTime)+"' and plantID ='"+plantID+"' group  by right( usedOrderID,10 ), lineID,materialName order by dayTime,lineID,banci desc limit 1000)\n" ;
-
                 }
                 else
                 {
@@ -314,7 +312,6 @@ public class DashboardServiceImpl implements IDashboardService {
                             "select outputLineID,sum(number) as number,right(expendOrderID,10) as timeStr,materialNameInfo  from tb_materialrecord where outputPlantID = '" + plantID + "' \n" +
                             "and outputProcessID = '" + processID + "' and outputTime > '" + newStartTimeStr + "' and outputTime < '" + newEndTimeStr + "'  group by outputLineID,materialNameInfo,timeStr ) a  order by dayTime desc,banci,outputLineID limit 1000 ) ";
                 }
-                System.out.println(querySQL);
             }
 
             if ("byStaffExpend".equals(queryTypeID)) {
