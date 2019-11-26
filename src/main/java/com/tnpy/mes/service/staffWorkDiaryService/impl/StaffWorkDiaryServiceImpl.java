@@ -61,7 +61,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             if (!"-1".equals(classType)) {
                 filter += " and classType1 = '" + classType + "' ";
             }
-            filter += " order by dayTime desc limit 1000";
+            filter += " order by dayTime,classType1,lineID,worklocationID  limit 1000";
             List<Map<Object,Object>> staffAttendanceRecordList = staffAttendanceDetailMapper.selectMapRecordByFilter(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSONString(staffAttendanceRecordList).toString());
