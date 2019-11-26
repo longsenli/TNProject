@@ -84,7 +84,7 @@ public class WageRZController {
             		tbwage.setSenddate(mon);//发放月份
             	}
             	tbwage.setName(lo.get(1).toString());//姓名 
-            	tbwage.setCardno(lo.get(2).toString());//身份证号
+            	tbwage.setCardno(lo.get(2).toString().toUpperCase());//身份证号
             	tbwage.setDepartment(lo.get(3).toString());//结算部门
             	tbwage.setWage(lo.get(4).toString());//工资
             	tbwage.setOvertimepay(lo.get(5).toString());//加班工资
@@ -113,7 +113,7 @@ public class WageRZController {
         		}
             	if(!isexistsUser(ltbuser, lo.get(22).toString())) {
         			TbUser tbuserfu = new TbUser();
-        			tbuserfu.setCardno(lo.get(2).toString());
+        			tbuserfu.setCardno(lo.get(2).toString().toUpperCase());
         			tbuserfu.setUserid(lo.get(22).toString());
         			tbuserfu.setName(lo.get(1).toString());
         			tbuserfu.setPassword(lo.get(2).toString().substring(lo.get(2).toString().length() - 6));
@@ -122,13 +122,13 @@ public class WageRZController {
             	if(isexistsUser(ltbuser, lo.get(22).toString())) {
         			for(int j=0;j<ltbuser.size();j++) {
 	            		//如果用户存在则不插入新记录
-	            		if(lo.get(2).toString().equals(ltbuser.get(j).getCardno())&&lo.get(22).toString().equals(ltbuser.get(j).getUserid())) {
+	            		if(lo.get(2).toString().toUpperCase().equals(ltbuser.get(j).getCardno().toUpperCase())&&lo.get(22).toString().equals(ltbuser.get(j).getUserid())) {
 	            			continue;
 	            		}
             			//如果userid存在, 但身份证号不存在则更新
                 		if((ltbuser.get(j).getCardno()== null || ltbuser.get(j).getCardno().equals("")) &&lo.get(22).toString().equals(ltbuser.get(j).getUserid())) {
                 			TbUser tbuserfu = ltbuser.get(j);
-                			tbuserfu.setCardno(lo.get(2).toString());
+                			tbuserfu.setCardno(lo.get(2).toString().toUpperCase());
                 			tbUserMapper.updateByPrimaryKeySelective(tbuserfu);
                 		}
 	            	}
@@ -177,9 +177,8 @@ public class WageRZController {
     	 if(StringUtils.isEmpty(senddate)) {
     		 senddate=format.format(nowmonth);
     	 }
-
 //    	 String queryfilter = "select password, cardno from tb_user where cardno ='"+cardno+"'";
-    	 List<LinkedHashMap<String, Object>> verify = tbWageDetailRZMapper.queryDef(cardno);
+    	 List<LinkedHashMap<String, Object>> verify = tbWageDetailRZMapper.queryDef("'"+cardno+"'");
     	
     	 
     	//判断密码不正确
