@@ -836,11 +836,33 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             PlanProductionRecord planProductionRecord = (PlanProductionRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), PlanProductionRecord.class);
 
             if (StringUtils.isEmpty(planProductionRecord.getId())) {
-                planProductionRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-                planProductionRecord.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
+                if ("2".equals(planProductionRecord.getStatus())) {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    String startDate = planProductionRecord.getPlanmonth().split("___")[0];
+                    String endDate = planProductionRecord.getPlanmonth().split("___")[1];
+                    Date date = dateFormat.parse(startDate);
+                    Calendar calendar = new GregorianCalendar();
+                    calendar.setTime(date);
+                    for (; ; ) {
+                        planProductionRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                        planProductionRecord.setPlanmonth(dateFormat.format(calendar.getTime()));
+                        planProductionRecordMapper.insertSelective(planProductionRecord);
+                        calendar.add(Calendar.DATE, 1);
+                        if (endDate.compareTo(dateFormat.format(calendar.getTime())) < 0) {
+                            break;
+                        }
+                    }
+                } else {
+                    planProductionRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
 
-                planProductionRecordMapper.insertSelective(planProductionRecord);
+                    planProductionRecord.setStatus("1");
+
+                    planProductionRecordMapper.insertSelective(planProductionRecord);
+                }
             } else {
+                if ("2".equals(planProductionRecord.getStatus())) {
+                    planProductionRecord.setPlanmonth(planProductionRecord.getPlanmonth().split("___")[0]);
+                }
                 planProductionRecordMapper.updateByPrimaryKey(planProductionRecord);
             }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -852,10 +874,15 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         }
     }
 
-    public TNPYResponse getPlanProductionRecord(String plantID, String processID, String startTime, String endTime) {
+    public TNPYResponse getPlanProductionRecord(String plantID, String processID, String startTime, String endTime, String slctType) {
         TNPYResponse result = new TNPYResponse();
         try {
-            String filter = " where planMonth >= '" + startTime + "' and planMonth <= '" + endTime + "' ";
+            if("1".equals(slctType))
+            {
+                startTime = startTime.substring(0,6);
+                endTime = endTime.substring(0,6);
+            }
+            String filter = " where planMonth >= '" + startTime + "' and planMonth <= '" + endTime + "' and status = '" + slctType + "' ";
             if (!"-1".equals(plantID)) {
                 filter += " and plantID ='" + plantID + "' ";
             }
