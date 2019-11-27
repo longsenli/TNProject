@@ -242,8 +242,31 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
             materialScrapRecord.setLocationid(plasticUsedRecord.getWorklocation());
             materialScrapRecord.setOrdername(updateStaffID);
             materialScrapRecord.setOrderid(plasticUsedRecord.getStaffname());
-    
-            materialScrapRecord.setProductday(new Date());
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();//取时间
+
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(date);
+            if (calendar.get(Calendar.HOUR_OF_DAY) < 7) {
+                calendar.add(Calendar.DATE, -1);
+                date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+                date = dateFormat.parse(dateFormat.format(date));
+                materialScrapRecord.setProductday(date);
+                materialScrapRecord.setClasstype("夜班");
+
+            } else  if (calendar.get(Calendar.HOUR_OF_DAY) > 18){
+                date = dateFormat.parse(dateFormat.format(date));
+                materialScrapRecord.setProductday(date);
+                materialScrapRecord.setClasstype("夜班");
+            }
+            else
+            {
+                date = dateFormat.parse(dateFormat.format(date));
+                materialScrapRecord.setProductday(date);
+                materialScrapRecord.setClasstype("白班");
+            }
+
             materialScrapRecordMapper.insert(materialScrapRecord);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData("报修成功！");
