@@ -137,6 +137,12 @@ public class UserManageController {
     	 //uuid随机生成userId
 //    	 String uuid = UUID.randomUUID().toString(); 
 //    	 user.setUserid(uuid);
+    	 TbUser existsuser = userService.selectByPrimaryKey(user.getUserid());
+    	 if(!(existsuser==null)) {
+    		 result.setStatus(2);
+    		 result.setMessage("添加失败，用户已经存在，请直接修改用户!");
+    		 return  result;
+    	 }
     	 int i = userService.insert(user);
          result.setStatus(1);
 //         result.setData(JSONObject.toJSONString(equipmentInfoList, SerializerFeature.WriteMapNullValue).toString());
@@ -145,7 +151,7 @@ public class UserManageController {
      catch (Exception ex)
      {
     	 ex.printStackTrace();
-         result.setMessage("查询出错！" + ex.getMessage());
+         result.setMessage("添加出现错误！" + ex.getMessage());
          return  result;
      }
   }

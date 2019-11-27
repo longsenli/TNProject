@@ -24,7 +24,7 @@ public interface TbUserMapper {
 	@Select("select * from tb_user where userID = #{userid} and state != -1 ")
 	TbUser selectByPrimaryKeyWithStatus(String userid);
 	
-	@Select("select * from tb_user where name like '%${name}%'")
+	@Select("select u.*,(select r.role_name from tb_role r where r.role_id=u.roleID) as roleName from tb_user u where u.name like '%${name}%'")
 	List<TbUser> selectByName(@Param(value = "name") String name);
 
 	@Select("update  tb_user set state = -1 where userID = #{userid}  ")
