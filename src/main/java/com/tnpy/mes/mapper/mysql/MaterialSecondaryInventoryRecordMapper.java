@@ -54,13 +54,13 @@ public interface MaterialSecondaryInventoryRecordMapper {
             " FROM tb_onlinematerialrecord where processID = #{processID} and updateTime >#{startTime} and updateTime < #{endTime} group by plantID,materialID\n" +
             ") union all (\n" +
             "SELECT materialID,plantID, 0 as currentNum,0 as gainNum, 0 as inNum,0 as expendNum,0 as outNum ,0 as onlineNum ,0 as todayRepair,sum(if(operateType ='不良',value,0)) as extend1,sum(if(operateType ='报废',value,0))  as extend2\n" +
-            " FROM tb_materialscraprecord where processID = #{processID} and updateTime > #{startTime} and updateTime< #{endTime} group by plantID,materialID\n" +
+            " FROM tb_materialscraprecord where processID = #{processID} and updateTime > #{scrapStartTime} and updateTime< #{scrapEndTime} group by plantID,materialID\n" +
             " ) union all (\n" +
             " SELECT materialID,plantID,  currentNum,0 as gainNum, 0 as inNum,0 as expendNum,0 as outNum ,0 as onlineNum ,0 as todayRepair,0 as extend1,0  as extend2 \n" +
             " FROM tb_materialsecondaryinventoryrecord  where processID = #{processID} and updateTime > #{startTime} and updateTime< #{endTime} group by plantID,materialID\n" +
             ")\n" +
             " ) a group by plantID,materialID ) b")
-    int insertJSSecondaryInventoryNew( String startTime,String endTime,String processID,String lastProcessID);
+    int insertJSSecondaryInventoryNew( String startTime,String endTime,String processID,String lastProcessID,String scrapStartTime,String scrapEndTime);
     //包板二级库存 ： 库存 = 上次结余 + 固化出库 + 借调 - 报废 -借出 - 极群消耗，统一规整为小片型号
     @Insert("insert into tb_materialsecondaryinventoryrecord (id,materialID,plantID,processID,currentNum,lastStorage,updateTime,gainNum,inNum,expendNum,outNum,todayRepair,operator,status)\n" +
             "select uuid(),materialID,plantID,'1006',currentNum +outNumber -scrapNumber + borrowInNumber-borrowOutNumber - expendNumber,currentNum,now(),borrowInNumber,outNumber,expendNumber,borrowOutNumber,scrapNumber,'system','1' from (\n" +

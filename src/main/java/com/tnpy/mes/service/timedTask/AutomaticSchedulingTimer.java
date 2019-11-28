@@ -233,7 +233,7 @@ public class AutomaticSchedulingTimer {
         }
     }
 */
-    @Scheduled(cron = "0 45 6 * * ?")
+    @Scheduled(cron = "0 45 6,8 * * ?")
     public void automaticSecondaryInventoryStatistics() {
         try {
             if(!serviceIPJudge())
@@ -264,10 +264,16 @@ public class AutomaticSchedulingTimer {
 //                }
 //            }
 
-            materialSecondaryInventoryRecordMapper.insertJSSecondaryInventoryNew(timeStart.split(" ")[0],timeFinish.split(" ")[0],ConfigParamEnum.BasicProcessEnum.JSProcessID.getName(),ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName());
-            materialSecondaryInventoryRecordMapper.insertBBSecondaryInventory(timeStart, timeFinish,dayTimeString, dateFormat.format(date) + " 06:00:00");
-            materialSecondaryInventoryRecordMapper.insertFBSecondaryInventory(timeStart, timeFinish,dayTimeString, dateFormat.format(date) + " 06:00:00");
-
+            if (calendar.get(Calendar.HOUR_OF_DAY) < 7)
+            {
+                materialSecondaryInventoryRecordMapper.insertBBSecondaryInventory(timeStart, timeFinish,dayTimeString, dateFormat.format(date) + " 06:00:00");
+                materialSecondaryInventoryRecordMapper.insertFBSecondaryInventory(timeStart, timeFinish,dayTimeString, dateFormat.format(date) + " 06:00:00");
+            }
+            else
+            {
+                materialSecondaryInventoryRecordMapper.insertJSSecondaryInventoryNew(timeStart.split(" ")[0],timeFinish.split(" ")[0],ConfigParamEnum.BasicProcessEnum.JSProcessID.getName(),
+                        ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName(),timeStart.split(" ")[0] + " 08:45",timeFinish.split(" ")[0] + " 08:45");
+            }
 
         } catch (Exception ex) {
         }
@@ -574,7 +580,7 @@ public class AutomaticSchedulingTimer {
             dailyProductionSummaryLineMapper.insertDailyProductionSummaryWorklocation(timeOrder,classTpe,dayString);
             dailyProductionSummaryLineMapper.insertDailyProductionSummaryWorklocationZHQD(timeOrder,classTpe,dayString);
 
-           dailyProductionSummaryLineMapper.insertDailyProductionSummaryLine(timeOrder,classTpe,dayString);
+            dailyProductionSummaryLineMapper.insertDailyProductionSummaryLine(timeOrder,classTpe,dayString);
             dailyProductionSummaryLineMapper.insertDailyProductionSummaryLineZHQD(timeOrder,classTpe,dayString);
 
             dailyProductionSummaryLineMapper.insertDailyProductionSummaryProcess(timeOrder,classTpe,dayString);
