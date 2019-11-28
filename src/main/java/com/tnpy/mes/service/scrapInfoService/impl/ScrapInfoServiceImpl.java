@@ -112,15 +112,15 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
                 productionTime += " 19:00";
             }
 
-            if(ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(processID) && ConfigParamEnum.BasicPlantEnum.TNPY1B.getName().equals(plantID))
+            if(ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(processID))
             {
-                List<String> nextList = objectRelationDictMapper.selectNextObjectID(lineID,"1002");
-                if(nextList.size() != 1)
-                {
-                    result.setMessage("获取后续产线失败！");
-                    return result;
-                }
-                List<Map<Object, Object>> usedMaterialInfoList = materialScrapRecordMapper.getJSUsedMaterialInfoWithExpend(lineID,nextList.get(0), dateFormat.format(tmp),dateFormat.format(tmp) + " 23:59");
+//                List<String> nextList = objectRelationDictMapper.selectNextObjectID(lineID,"1002");
+//                if(nextList.size() != 1)
+//                {
+//                    result.setMessage("获取后续产线失败！");
+//                    return result;
+//                }
+                List<Map<Object, Object>> usedMaterialInfoList = materialScrapRecordMapper.getJSUsedMaterialInfoWithExpend(lineID, dateFormat.format(tmp),dateFormat.format(tmp) + " 23:59");
                 result.setData(JSONObject.toJSONString(usedMaterialInfoList, SerializerFeature.WriteMapNullValue));
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 return result;

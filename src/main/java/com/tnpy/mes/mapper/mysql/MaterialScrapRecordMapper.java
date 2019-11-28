@@ -40,10 +40,14 @@ public interface MaterialScrapRecordMapper {
             "    where n.materialID is not null group by id,name order by name")
     List<Map<Object, Object>> getUsedMaterialInfo(String lineID, String productTime);
 
-    @Select("  (SELECT materialID as id,materialNameInfo as name FROM tb_materialrecord where outputLineID = #{lineID} and outputTime > #{startTime} and outputTime < #{endTime} group by materialID,materialNameInfo )" +
-            " union all " +
-            " (SELECT materialID as id,materialName as name FROM tb_chargingrackrecord where lineID =#{nextLineID}  and putonDate >= #{startTime} group by materialID,materialName )")
-    List<Map<Object, Object>> getJSUsedMaterialInfoWithExpend(String lineID,String nextLineID,String startTime, String endTime);
+//    @Select("  (SELECT materialID as id,materialNameInfo as name FROM tb_materialrecord where outputLineID = #{lineID} and outputTime > #{startTime} and outputTime < #{endTime} group by materialID,materialNameInfo )" +
+//            " union all " +
+//            " (SELECT materialID as id,materialName as name FROM tb_chargingrackrecord where lineID =#{nextLineID}  and putonDate >= #{startTime} group by materialID,materialName )")
+//    List<Map<Object, Object>> getJSUsedMaterialInfoWithExpend(String lineID,String nextLineID,String startTime, String endTime);
+
+    @Select(" SELECT materialID as id,materialNameInfo as name FROM tb_materialrecord where outputLineID = #{lineID} and outputTime > #{startTime} and outputTime < #{endTime} group by materialID,materialNameInfo " )
+    List<Map<Object, Object>> getJSUsedMaterialInfoWithExpend(String lineID,String startTime, String endTime);
+
 
     @Select("  SELECT materialID as id,materialNameInfo as name FROM tb_materialrecord where outputPlantID = #{plantID} and outputProcessID = #{processID}  and outputTime > #{productTime}  and outputTime < #{endTime}  group by materialID,materialNameInfo ")
     List<Map<Object, Object>> getUsedMaterialInfoByProcess(String plantID,String processID, String productTime,String endTime);
