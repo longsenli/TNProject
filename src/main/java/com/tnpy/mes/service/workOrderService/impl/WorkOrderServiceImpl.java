@@ -879,8 +879,8 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
         try {
             if("1".equals(slctType))
             {
-                startTime = startTime.substring(0,6);
-                endTime = endTime.substring(0,6);
+                startTime = startTime.substring(0,7);
+                endTime = endTime.substring(0,7);
             }
             String filter = " where planMonth >= '" + startTime + "' and planMonth <= '" + endTime + "' and status = '" + slctType + "' ";
             if (!"-1".equals(plantID)) {
@@ -890,6 +890,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 filter += " and processID ='" + processID + "' ";
             }
             filter += " order by planMonth desc";
+
             List<PlanProductionRecord> planProductionRecordList = planProductionRecordMapper.getPlanProductionRecordByFilter(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(planProductionRecordList).toString());
