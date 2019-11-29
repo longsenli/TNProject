@@ -115,8 +115,8 @@ public class OrderController {
     }
 
     @RequestMapping(value = "/getplanproductionrecord")
-    public TNPYResponse getPlanProductionRecord(  String plantID,String processID,String startTime,String endTime ) {
-        return  workOrderService.getPlanProductionRecord(plantID, processID, startTime, endTime );
+    public TNPYResponse getPlanProductionRecord(  String plantID,String processID,String startTime,String endTime,@RequestParam(defaultValue = "1")String slctType ) {
+        return  workOrderService.getPlanProductionRecord(plantID, processID, startTime, endTime,slctType );
     }
 
     @RequestMapping(value = "/deleteplanproductionrecord")

@@ -30,33 +30,12 @@ import java.util.*;
 @Component //使spring管理
 @EnableScheduling //定时任务注解
 public class AutomaticSchedulingTimer {
-    @Autowired
-    private WorkShiftRecordMapper workShiftRecordMapper;
+
     @Autowired
     private WorkorderMapper workorderMapper;
 
     @Autowired
-    private BatteryRepairRecordMapper batteryRepairRecordMapper;
-
-    @Autowired
-    private BatteryScrapRecordMapper batteryScrapRecordMapper;
-
-    @Autowired
-    private BatteryBorrowReturnRecordMapper batteryBorrowReturnRecordMapper;
-    @Autowired
-    private BatteryStastisInventoryRecordMapper batteryStastisInventoryRecordMapper;
-
-    @Autowired
     private IndustrialPlantMapper industrialPlantMapper;
-
-    @Autowired
-    private OrderSplitMapper orderSplitMapper;
-
-    @Autowired
-    private MaterialRecordMapper materialRecordMapper;
-
-    @Autowired
-    private MaterialMapper materialMapper;
 
     @Autowired
     private ProductionProcessMapper productionProcessMapper;
@@ -254,7 +233,7 @@ public class AutomaticSchedulingTimer {
         }
     }
 */
-    @Scheduled(cron = "0 45 6 * * ?")
+    @Scheduled(cron = "0 45 6,8 * * ?")
     public void automaticSecondaryInventoryStatistics() {
         try {
             if(!serviceIPJudge())
@@ -271,22 +250,30 @@ public class AutomaticSchedulingTimer {
             calendar.add(Calendar.DATE, -1);
             date = calendar.getTime();   //这个时间就是日期往后推一天的结果
             timeStart = dateFormat.format(date) + " 07:00:00";
-            List<IndustrialPlant> industrialPlantList = industrialPlantMapper.selectAll();
-            List<ProductionProcess> productionProcessList = productionProcessMapper.selectAll();
-            for (int i = 0; i < industrialPlantList.size(); i++) {
-                for (int j = 0; j < productionProcessList.size(); j++) {
-                    try {
-                        if (ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(productionProcessList.get(j).getId())) {
-                            materialSecondaryInventoryRecordMapper.insertJSSecondaryInventory(timeStart, timeFinish, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j - 1).getId(), dateFormat.format(date) + " 06:00:00");
-                        }
-                    } catch (Exception ex) {
-                        System.out.println("二级库盘点出错===============" + ex.getMessage() + "  " + industrialPlantList.get(i).getName() + " " + productionProcessList.get(j).getName());
-                    }
-                }
-            }
-            materialSecondaryInventoryRecordMapper.insertBBSecondaryInventory(timeStart, timeFinish,dayTimeString, dateFormat.format(date) + " 06:00:00");
-            materialSecondaryInventoryRecordMapper.insertFBSecondaryInventory(timeStart, timeFinish,dayTimeString, dateFormat.format(date) + " 06:00:00");
+//            List<IndustrialPlant> industrialPlantList = industrialPlantMapper.selectAll();
+//            List<ProductionProcess> productionProcessList = productionProcessMapper.selectAll();
+//            for (int i = 0; i < industrialPlantList.size(); i++) {
+//                for (int j = 0; j < productionProcessList.size(); j++) {
+//                    try {
+//                        if (ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(productionProcessList.get(j).getId())) {
+//                            materialSecondaryInventoryRecordMapper.insertJSSecondaryInventory(timeStart, timeFinish, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j - 1).getId(), dateFormat.format(date) + " 06:00:00");
+//                        }
+//                    } catch (Exception ex) {
+//                        System.out.println("二级库盘点出错===============" + ex.getMessage() + "  " + industrialPlantList.get(i).getName() + " " + productionProcessList.get(j).getName());
+//                    }
+//                }
+//            }
 
+            if (calendar.get(Calendar.HOUR_OF_DAY) < 7)
+            {
+                materialSecondaryInventoryRecordMapper.insertBBSecondaryInventory(timeStart, timeFinish,dayTimeString, dateFormat.format(date) + " 06:00:00");
+                materialSecondaryInventoryRecordMapper.insertFBSecondaryInventory(timeStart, timeFinish,dayTimeString, dateFormat.format(date) + " 06:00:00");
+            }
+            else
+            {
+                materialSecondaryInventoryRecordMapper.insertJSSecondaryInventoryNew(timeStart.split(" ")[0],timeFinish.split(" ")[0],ConfigParamEnum.BasicProcessEnum.JSProcessID.getName(),
+                        ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName(),timeStart.split(" ")[0] + " 08:45",timeFinish.split(" ")[0] + " 08:45");
+            }
 
         } catch (Exception ex) {
         }
@@ -543,6 +530,10 @@ public class AutomaticSchedulingTimer {
                         {
                             continue;
                         }
+                        if(ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals( productionProcessList.get(j).getId()))
+                        {
+                            continue;
+                        }
                         if (workorderMapper.selectOrderInfo(industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), timeOrderStart) != 0 &&
                                 workorderMapper.selectOrderInfo(industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), timeEndTMP) == 0) {
                             workorderMapper.insertAutoMainOrder(timeOrderStart, timeOrderFinish, timeStartString, timeEndString, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId());
@@ -589,7 +580,7 @@ public class AutomaticSchedulingTimer {
             dailyProductionSummaryLineMapper.insertDailyProductionSummaryWorklocation(timeOrder,classTpe,dayString);
             dailyProductionSummaryLineMapper.insertDailyProductionSummaryWorklocationZHQD(timeOrder,classTpe,dayString);
 
-           dailyProductionSummaryLineMapper.insertDailyProductionSummaryLine(timeOrder,classTpe,dayString);
+            dailyProductionSummaryLineMapper.insertDailyProductionSummaryLine(timeOrder,classTpe,dayString);
             dailyProductionSummaryLineMapper.insertDailyProductionSummaryLineZHQD(timeOrder,classTpe,dayString);
 
             dailyProductionSummaryLineMapper.insertDailyProductionSummaryProcess(timeOrder,classTpe,dayString);
@@ -636,10 +627,12 @@ public class AutomaticSchedulingTimer {
             return true;
        }
     }
-   // @Scheduled(cron = "0 54 13 * * ?")
+    //@Scheduled(cron = "0 53 10 * * ?")
     public void testFunction() {
-        String[] numPhone = new String[] {"15539392921"};
-        SMSTN.sendMessage(numPhone,"消息提醒！有隐患排查");
+  //      materialSecondaryInventoryRecordMapper.insertJSSecondaryInventoryNew("2019-11-27","2019-11-28",ConfigParamEnum.BasicProcessEnum.JSProcessID.getName(),ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName());
+
+ //       String[] numPhone = new String[] {"15539392921"};
+ //      SMSTN.sendMessage(numPhone,"消息提醒！有隐患排查");
 //        try {
 //            final Client client =  Client.getInstance();
 //            // 正式环境IP，登录验证URL，用户名，密码，集团客户名称

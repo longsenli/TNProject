@@ -42,10 +42,10 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
     @Autowired
     DailyProductionAndWageDetailMapper dailyProductionAndWageDetailMapper;
 
-    public TNPYResponse getStaffAttendanceInfo(String plantID, String processID, String lineID,String classType, String staffID, String startTime, String endTime) {
+    public TNPYResponse getStaffAttendanceInfo(String plantID, String processID, String lineID, String classType, String staffID, String startTime, String endTime) {
         TNPYResponse result = new TNPYResponse();
         try {
-            String filter = " where dayTime >= '" + startTime + "' and dayTime <= '" +endTime + "' ";
+            String filter = " where dayTime >= '" + startTime + "' and dayTime <= '" + endTime + "' ";
             if (!"-1".equals(plantID)) {
                 filter += " and plantID = '" + plantID + "' ";
             }
@@ -62,7 +62,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                 filter += " and classType1 = '" + classType + "' ";
             }
             filter += " order by dayTime,classType1,lineID,worklocationID  limit 1000";
-            List<Map<Object,Object>> staffAttendanceRecordList = staffAttendanceDetailMapper.selectMapRecordByFilter(filter);
+            List<Map<Object, Object>> staffAttendanceRecordList = staffAttendanceDetailMapper.selectMapRecordByFilter(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSONString(staffAttendanceRecordList).toString());
             return result;
@@ -73,7 +73,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
     }
 
     // 1 上机扫码  2 下机扫码
-    public TNPYResponse insertStaffComeAttendanceInfo(String qrCode, String staffID, String staffName, String classType1, String classType2, String dayTime,String workContent) {
+    public TNPYResponse insertStaffComeAttendanceInfo(String qrCode, String staffID, String staffName, String classType1, String classType2, String dayTime, String workContent) {
         TNPYResponse result = new TNPYResponse();
         try {
 
@@ -123,7 +123,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             staffAttendanceDetail.setDaytime(dateFormat2.parse(dayTime));
             staffAttendanceDetail.setCometime(new Date());
             staffAttendanceDetail.setExtd1(workContent);
-            staffAttendanceDetail.setStatus(StatusEnum.StatusFlag.using.getIndex()+ "");
+            staffAttendanceDetail.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
             staffAttendanceDetailMapper.insert(staffAttendanceDetail);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(returnMsg);
@@ -165,12 +165,11 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
         }
     }
 
-    public TNPYResponse confirmStaffAttendanceInfo(String staffID,String staffName,String recordID)
-    {
+    public TNPYResponse confirmStaffAttendanceInfo(String staffID, String staffName, String recordID) {
         TNPYResponse result = new TNPYResponse();
         try {
-            recordID ="'" + recordID.replaceAll("___","','") + "'";
-            staffAttendanceDetailMapper.updateConfirmStaffGoAttendanceInfo(staffID,staffName,recordID);
+            recordID = "'" + recordID.replaceAll("___", "','") + "'";
+            staffAttendanceDetailMapper.updateConfirmStaffGoAttendanceInfo(staffID, staffName, recordID);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setMessage("确认成功！");
             return result;
@@ -180,51 +179,39 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
         }
     }
 
-    public TNPYResponse getTMPProductionWageInfo(String plantID,String processID,String lineID,String dayString,String classType)
-    {
+    public TNPYResponse getTMPProductionWageInfo(String plantID, String processID, String lineID, String dayString, String classType) {
         TNPYResponse result = new TNPYResponse();
         try {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
             SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
             Date date = dateFormat2.parse(dayString);//取时间
-            String orderInfo = "" ;
+            String orderInfo = "";
 
-            if("白班".equals(classType))
-            {
+            if ("白班".equals(classType)) {
                 orderInfo = "'%BB" + dateFormat.format(date) + "'";
-            }
-            else
-            {
+            } else {
                 orderInfo = "'%YB" + dateFormat.format(date) + "'";
             }
             dayString = dateFormat2.format(date);
-            List<Map<Object,Object>> productionWageTMP;
+            List<Map<Object, Object>> productionWageTMP;
             String lineFilter = "";
-            if(ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID))
-            {
-                if(!"-1".equals(lineID))
-                {
+            if (ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID)) {
+                if (!"-1".equals(lineID)) {
                     lineFilter = " and lineID = '" + lineID + "' ";
                 }
 
-                productionWageTMP= dailyProductionAndWageDetailMapper.ZHQDProductionWageInfoByWorklocation(plantID,processID,lineFilter,orderInfo,dayString,classType);
-            }
-            else  if(ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(processID))
-            {
-                if(!"-1".equals(lineID))
-                {
+                productionWageTMP = dailyProductionAndWageDetailMapper.ZHQDProductionWageInfoByWorklocation(plantID, processID, lineFilter, orderInfo, dayString, classType);
+            } else if (ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(processID)) {
+                if (!"-1".equals(lineID)) {
                     lineFilter = " and inputLineID = '" + lineID + "' ";
                 }
-                productionWageTMP= dailyProductionAndWageDetailMapper.orderProductionWageInfoByWorklocation(plantID,processID,lineFilter,orderInfo,dayString,classType);
-            }
-            else
-            {
-                if(!"-1".equals(lineID))
-                {
+                productionWageTMP = dailyProductionAndWageDetailMapper.orderProductionWageInfoByWorklocation(plantID, processID, lineFilter, orderInfo, dayString, classType);
+            } else {
+                if (!"-1".equals(lineID)) {
                     lineFilter = " and inputLineID = '" + lineID + "' ";
                 }
-                productionWageTMP= dailyProductionAndWageDetailMapper.orderProductionWageInfoByLine(plantID,processID,lineFilter,orderInfo,dayString,classType);
+                productionWageTMP = dailyProductionAndWageDetailMapper.orderProductionWageInfoByLine(plantID, processID, lineFilter, orderInfo, dayString, classType);
             }
 
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -236,26 +223,25 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
         }
     }
 
-    public TNPYResponse getFinalProductionWageInfo(String plantID,String processID,String dayString,String classType)
-    {
+    public TNPYResponse getFinalProductionWageInfo(String plantID, String processID, String dayString, String classType) {
         TNPYResponse result = new TNPYResponse();
         try {
 
-            List<Map<Object,Object>> productionWageFinal = dailyProductionAndWageDetailMapper.getFinalProductionWageInfo(plantID,processID,dayString,classType);
-        result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
-        result.setData(JSONObject.toJSONString(productionWageFinal).toString());
-        return result;
-    } catch (Exception ex) {
-        result.setMessage("查询出错！" + ex.getMessage());
-        return result;
+            List<Map<Object, Object>> productionWageFinal = dailyProductionAndWageDetailMapper.getFinalProductionWageInfo(plantID, processID, dayString, classType);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSONString(productionWageFinal).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
     }
-    }
-    public TNPYResponse deleteConfirmProductionWageRecord(String plantID,String processID,String dayString,String classType)
-    {
+
+    public TNPYResponse deleteConfirmProductionWageRecord(String plantID, String processID, String dayString, String classType) {
         TNPYResponse result = new TNPYResponse();
         try {
 
-            dailyProductionAndWageDetailMapper.deleteConfirmProductionWageRecord(plantID,processID,dayString,classType);
+            dailyProductionAndWageDetailMapper.deleteConfirmProductionWageRecord(plantID, processID, dayString, classType);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setMessage("删除成功！");
             return result;
@@ -264,36 +250,59 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             return result;
         }
     }
-    public TNPYResponse confirmProductionWageInfo( String recordJsonString,String verifierID,String verifierName)
-    {
+
+    public TNPYResponse confirmProductionWageInfo(String recordJsonString, String verifierID, String verifierName) {
         TNPYResponse result = new TNPYResponse();
         try {
 
 
-            List<DailyProductionAndWageDetail> recordList = JSON.parseArray(recordJsonString,DailyProductionAndWageDetail.class);
+            List<DailyProductionAndWageDetail> recordList = JSON.parseArray(recordJsonString, DailyProductionAndWageDetail.class);
 
-            if(recordList.size() < 1)
-            {
-                result.setMessage("输入产量信息为空，请确认！" );
+            if (recordList.size() < 1) {
+                result.setMessage("输入产量信息为空，请确认！");
                 return result;
             }
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            if(dailyProductionAndWageDetailMapper.checkConfirmAlready(recordList.get(0).getPlantid(),recordList.get(0).getProcessid(),
-                  dateFormat.format(recordList.get(0).getDaytime()),  recordList.get(0).getClasstype1()) > 0)
-            {
-                result.setMessage("该工序已确认过产量！" );
-                return result;
+            String conformedRecordList = "";
+            List<DailyProductionAndWageDetail> dailyProductionAndWageDetailList = dailyProductionAndWageDetailMapper.getConfirmRecord(recordList.get(0).getPlantid(), recordList.get(0).getProcessid(),
+                    dateFormat.format(recordList.get(0).getDaytime()), recordList.get(0).getClasstype1());
+            if ((ConfigParamEnum.BasicProcessEnum.JZProcessID.getName() + " " + ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName()).contains(recordList.get(0).getProcessid())) {
+                for (int i = 0; i < dailyProductionAndWageDetailList.size(); i++) {
+                    conformedRecordList += dailyProductionAndWageDetailList.get(i).getWorklocationid() + "_" + dailyProductionAndWageDetailList.get(i).getStaffid() + " ";
+                }
+            } else {
+                for (int i = 0; i < dailyProductionAndWageDetailList.size(); i++) {
+                    conformedRecordList += dailyProductionAndWageDetailList.get(i).getLineid() + "_" + dailyProductionAndWageDetailList.get(i).getStaffid() + " ";
+                }
             }
-            for(int i =0;i< recordList.size();i++)
-            {
+//            if(dailyProductionAndWageDetailMapper.checkConfirmAlready(recordList.get(0).getPlantid(),recordList.get(0).getProcessid(),
+//                  dateFormat.format(recordList.get(0).getDaytime()),  recordList.get(0).getClasstype1()) > 0)
+//            {
+//                result.setMessage("该工序已确认过产量！" );
+//                return result;
+//            }
+            int successNumber = 0;
+            String alreadyConfirmedName = "";
+            for (int i = 0; i < recordList.size(); i++) {
+                if ((ConfigParamEnum.BasicProcessEnum.JZProcessID.getName() + " " + ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName()).contains(recordList.get(0).getProcessid())) {
+                    if (conformedRecordList.contains(recordList.get(i).getWorklocationid() + "_" + recordList.get(i).getStaffid())) {
+                        alreadyConfirmedName += recordList.get(i).getStaffname() + ",";
+                        continue;
+                    }
+                } else if (conformedRecordList.contains(recordList.get(i).getLineid() + "_" + recordList.get(i).getStaffid())) {
+                    alreadyConfirmedName += recordList.get(i).getStaffname() + ",";
+                    continue;
+                }
                 recordList.get(i).setVerifierid(verifierID);
                 recordList.get(i).setVerifiername(verifierName);
                 recordList.get(i).setVerifytime(new Date());
                 recordList.get(i).setStatus("1");
+                successNumber++;
                 dailyProductionAndWageDetailMapper.insertSelective(recordList.get(i));
             }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
-          //  result.setData(JSONObject.toJSONString(productionWageTMP).toString());
+            result.setMessage("成功确认" + successNumber + "人产量信息，失败" + (recordList.size() - successNumber) + "人,原因为产量已确认，" + alreadyConfirmedName);
+            //  result.setData(JSONObject.toJSONString(productionWageTMP).toString());
             return result;
         } catch (Exception ex) {
             result.setMessage("确认产量出错！" + ex.getMessage());
@@ -301,14 +310,13 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
         }
     }
 
-    public TNPYResponse getLocationQRInfo(String QRCode)
-    {
+    public TNPYResponse getLocationQRInfo(String QRCode) {
         TNPYResponse result = new TNPYResponse();
         try {
 
-            List<Map<Object,Object>> qrCodeInfoList = workLocationMapper.selectByQRCode(QRCode);
+            List<Map<Object, Object>> qrCodeInfoList = workLocationMapper.selectByQRCode(QRCode);
 
-            if (qrCodeInfoList.size() < 1 ) {
+            if (qrCodeInfoList.size() < 1) {
                 qrCodeInfoList = productionLineMapper.selectByQRCode(QRCode);
                 {
                     if (qrCodeInfoList.size() < 1) {

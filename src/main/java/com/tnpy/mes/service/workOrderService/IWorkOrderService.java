@@ -30,7 +30,7 @@ public interface IWorkOrderService {
     public TNPYResponse cancelFinishSuborder( String subOrdderID );
 
     public TNPYResponse changePlanProductionRecord(  String jsonStr );
-    public TNPYResponse getPlanProductionRecord(  String plantID,String processID,String startTime,String endTime );
+    public TNPYResponse getPlanProductionRecord(  String plantID,String processID,String startTime,String endTime,String slctType );
     public TNPYResponse deletePlanProductionRecord(  String id );
     public TNPYResponse getPlanProductionNumber(  String plantID,String processID,String planMonth );
 
