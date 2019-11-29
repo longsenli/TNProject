@@ -176,8 +176,8 @@ public interface MaterialRecordMapper {
             ") a left join  sys_material b on a.materialID = b.id order by updateTime desc,name)")
     List<Map<Object, Object>> getSecondaryMaterialInventoryStatistics(  String startTime,String endTime,String plantID,String processID);
 
-    @Select("select a.id,plantID,processID,materialID,currentNum,lastStorage,productionNum,inNum,expendNum,outNum,date_format(updateTime,'%Y-%m-%d %H:%i')  as updateTime,name,a.remark, a.extend1,a.extend2  from (\n" +
-            "select id,plantID,processID,materialID,currentNum,lastStorage,productionNum,inNum,expendNum,outNum,updateTime,remark,extend1,extend2  from tb_materialinventoryrecord \n" +
+    @Select("select a.id,plantID,processID,materialID,currentNum,lastStorage,productionNum,inNum,expendNum,outNum,date_format(updateTime,'%Y-%m-%d %H:%i')  as updateTime,name,a.remark, a.extend1,a.extend2,a.extend5  from (\n" +
+            "select id,plantID,processID,materialID,currentNum,lastStorage,productionNum,inNum,expendNum,outNum,updateTime,remark,extend1,extend2,extend5  from tb_materialinventoryrecord \n" +
             "where plantID = #{plantID} and processID = #{processID} and updateTime >= #{startTime} and updateTime <= #{endTime}\n" +
             ") a left join  sys_material b on a.materialID = b.id order by updateTime desc,name")
     List<Map<Object, Object>> getMaterialInventoryStatistics(  String startTime,String endTime,String plantID,String processID);

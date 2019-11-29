@@ -337,6 +337,8 @@ public class AutomaticSchedulingTimer {
                 }
             }
 
+            materialInventoryRecordMapper.insertCDInventoryStatistics(timeStart.split(" ")[0],timeFinish,ConfigParamEnum.BasicProcessEnum.CDProcessID.getName());
+
             SimpleDateFormat dateFormatMonth = new SimpleDateFormat("yyyy-MM");
             planProductionRecordMapper.updateFinishRate(dateFormatMonth.format(date));
 
@@ -627,11 +629,12 @@ public class AutomaticSchedulingTimer {
             return true;
        }
     }
-    //@Scheduled(cron = "0 53 10 * * ?")
+   // @Scheduled(cron = "0 22 14 * * ?")
     public void testFunction() {
   //      materialSecondaryInventoryRecordMapper.insertJSSecondaryInventoryNew("2019-11-27","2019-11-28",ConfigParamEnum.BasicProcessEnum.JSProcessID.getName(),ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName());
+   //     materialInventoryRecordMapper.insertCDInventoryStatistics("2019-11-28","2019-11-29",ConfigParamEnum.BasicProcessEnum.CDProcessID.getName());
 
- //       String[] numPhone = new String[] {"15539392921"};
+        //       String[] numPhone = new String[] {"15539392921"};
  //      SMSTN.sendMessage(numPhone,"消息提醒！有隐患排查");
 //        try {
 //            final Client client =  Client.getInstance();

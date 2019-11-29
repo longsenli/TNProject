@@ -109,6 +109,27 @@ public interface MaterialInventoryRecordMapper {
             "and  endtime3 <  #{endTime} group by materialID,materialName)  ) a group by materialID,materialName ) b where remainNumber + totalInNumber + totalOutNumber > 0  ")
     int insertGHNewInventoryStatistics( String startTime,String endTime,String plantID,String processID,String nextProcessID,String lastStatisTime);
 
+
+    //固化室显示当前在库数，当日入库数、当日出库数
+    @Insert( "insert into tb_materialinventoryrecord (id,materialID,plantID,processID,currentNum,lastStorage,updateTime,productionNum, inNum, expendNum, outNum, operator, status,extend6,extend5)\n" +
+            "select uuid(),materialID,plantID,#{processID},sum(onlineNumber) as onlineNumber,sum(currentNum) as currentNum,now(),sum(putonNumber) as putonNumber,0,sum(repairNumber) as repairNumber,sum(pulloffNumber)  as pulloffNumber,'system','1',materialName,materialType from (\n" +
+            "( SELECT plantID,materialID, extend6 as materialName,currentNum,0 as onlineNumber,0 as putonNumber,0 as repairNumber,0 as pulloffNumber ,extend5 as  materialType FROM tb_materialinventoryrecord \n" +
+            "where   updateTime > #{startTime}  and updateTime <  #{endTime} and processID = #{processID} and currentNum > 0  group by plantID,materialID,extend5 )\n" +
+            "union all\n" +
+            "( SELECT plantID,materialID,materialName,0 as currentNum,sum(realNumber) as onlineNumber,0 as putonNumber,0 as repairNumber,0 as pulloffNumber , materialType FROM tb_chargingrackrecord \n" +
+            "where  pulloffDate is null   group by plantID,materialID,materialType )\n" +
+            "union all\n" +
+            "( SELECT plantID,materialID,materialName,0 as currentNum, 0 as onlineNumber,sum(productionNumber) as putonNumber,0 as repairNumber,0 as pulloffNumber ,materialType FROM tb_chargingrackrecord\n" +
+            " where  putonDate = #{startTime}   group by plantID,materialID,materialType )\n" +
+            "union all\n" +
+            "( SELECT plantID,materialID,materialName,0 as currentNum, 0 as onlineNumber,0 as putonNumber,sum(repairNumber) as repairNumber,0 as pulloffNumber ,materialType FROM tb_chargingrackrecord\n" +
+            " where  repairTime >#{startTime} and repairTime <  #{endTime}  group by plantID,materialID,materialType )\n" +
+            "union all\n" +
+            "( SELECT plantID,materialID,materialName,0 as currentNum, 0 as onlineNumber,0 as putonNumber,0 as repairNumber,sum(realNumber) as pulloffNumber,materialType FROM tb_chargingrackrecord \n" +
+            "where  pulloffDate > #{startTime} and pulloffDate < #{endTime}  group by plantID,materialID,materialType )\n" +
+            ") a group by  plantID,materialID,materialType ")
+    int insertCDInventoryStatistics( String startTime,String endTime,String processID);
+
     //更新周期浇铸、固化室、极群、装配；分板的在包板二级库存中查看，电池在包装二级库存
     @Insert("update tb_materialinventoryrecord t1,tb_planproductionrecord t2 set t1.extend1 = t2.planDailyProduction,t1.extend2 = t1.currentNum/ifnull(t2.planDailyProduction,1) \n" +
             "where t1.materialID = t2.materialID and t1.plantID = t2.plantID and t1.updateTime > #{startTime} and t2.planMonth = #{monthStr} and t1.processID in ('1011','1006','1007','1004') ")
