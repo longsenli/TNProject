@@ -1134,8 +1134,6 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             materialRecord.setOutputer("");
             materialRecord.setOutputtime(new Date(0));
             int res = materialRecordMapper.updateCancelInputSuborder(materialRecord);
-
-
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return result;
         } catch (Exception ex) {

@@ -31,6 +31,6 @@ public interface PlanProductionRecordMapper {
     String getplanNumber(String plantID,String processID,String planMonth);
 
     @Update(" update tb_planproductionrecord a inner join ( select materialID,sum(number) as totalNumber,inputPlantID from tb_materialrecord where inputTime > #{month} group by inputPlantID,materialID ) b " +
-            "  on a.plantID = b.inputPlantID and a.materialID = b.materialID  set a.realProduction =ifnull( b.totalNumber,0),a.accomplishmentRatio = format(ifnull( b.totalNumber,0)/a.planProduction * 100,2) where planMonth >=  #{month} ")
+            "  on a.plantID = b.inputPlantID and a.materialID = b.materialID  set a.realProduction =ifnull( b.totalNumber,0),a.accomplishmentRatio = format(ifnull( b.totalNumber,0)/a.planProduction * 100,2) where planMonth =  #{month} ")
     int updateFinishRate(String month);
 }
