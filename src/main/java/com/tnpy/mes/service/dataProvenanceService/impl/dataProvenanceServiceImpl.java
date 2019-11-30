@@ -8,6 +8,7 @@ import com.tnpy.mes.mapper.mysql.MaterialRecordMapper;
 import com.tnpy.mes.service.dataProvenanceService.IDataProvenanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.*;
 
@@ -31,6 +32,7 @@ public class dataProvenanceServiceImpl implements IDataProvenanceService {
 
         Set<String> orderList = new HashSet<>();
         orderList.add(orderID);
+
         try
         {
             List<String> tmpOrderList = new ArrayList<>();
@@ -51,20 +53,30 @@ public class dataProvenanceServiceImpl implements IDataProvenanceService {
                 }
                 orderFilter = orderFilter.substring(0,orderFilter.length()-1);
             }
+
             orderFilter = "'" + orderID +"'";
             while(true)
             {
+                System.out.println(orderFilter);
                 tmpOrderList.clear();
                 tmpOrderList = dataProvenanceRelationMapper.selectOutOrderIDByInOrderID(orderFilter);
                 if(tmpOrderList.size() < 1)
                 {
                     break;
                 }
-                orderFilter = "'";
+                orderFilter = "";
                 for(int i = 0;i<tmpOrderList.size();i++)
                 {
+                    if(StringUtils.isEmpty(tmpOrderList.get(i)))
+                    {
+                        continue;
+                    }
                     orderList.add(tmpOrderList.get(i));
                     orderFilter +=   "'" + tmpOrderList.get(i) +"',";
+                }
+                if(orderFilter.length() < 10)
+                {
+                    break;
                 }
                 orderFilter = orderFilter.substring(0,orderFilter.length()-1);
             }
