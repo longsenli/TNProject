@@ -20,4 +20,7 @@ public interface IStaffWorkDiaryService {
     public TNPYResponse deleteConfirmProductionWageRecord(String plantID,String processID,String dayString,String classType);
 
     public TNPYResponse getLocationQRInfo(String QRCode);
+
+    public TNPYResponse getShelfWageDetail(String staffID,String startTime,String endTime);
+    public TNPYResponse getShelfDailyTMPDetail(String staffID,String dayTime);
 }

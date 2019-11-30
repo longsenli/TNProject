@@ -74,6 +74,18 @@ public class StaffWorkDiaryController {
     {
         return  staffWorkDiaryService.getLocationQRInfo(QRCode);
     }
+
+    @RequestMapping(value = "/getShelfWageDetail")
+    public TNPYResponse getShelfWageDetail(String staffID,String startTime,String endTime)
+    {
+        return  staffWorkDiaryService.getShelfWageDetail(staffID,startTime,endTime);
+    }
+
+    @RequestMapping(value = "/getShelfDailyTMPDetail")
+    public TNPYResponse getShelfDailyTMPDetail(String staffID,String dayTime)
+    {
+        return  staffWorkDiaryService.getShelfDailyTMPDetail(staffID,dayTime);
+    }
 }
 
 

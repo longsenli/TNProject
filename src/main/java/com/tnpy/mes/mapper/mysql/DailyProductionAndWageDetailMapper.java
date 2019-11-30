@@ -76,6 +76,18 @@ public interface DailyProductionAndWageDetailMapper {
             " and c.extd1 = d.workContentID order by worklocationID\n" )
     List<Map<Object,Object>>  ZHQDProductionWageInfoByWorklocation(String plantID,String processID,  @Param("lineFilter") String lineFilter,@Param("orderInfo") String orderInfo,String dayTime,String classType);
 
+    @Select(" select e.*, 0 as totalProduction,ifnull(f.price,0) as univalence, 0 as shelfProduction ,uuid() as id,0 as wage, 1 as staffNumber from  (\n" +
+            "select  plantID,processID,c.lineID , worklocationID, staffName,staffID, classType1,classType2,dayTime ,extd1,d.materialName,d.materialID from (\n" +
+            "select  plantID,processID,lineID , worklocationID, staffName,staffID, classType1,classType2,dayTime ,extd1,b.nextObjectID from (\n" +
+            " select plantID,processID,lineID , worklocationID, staffName,staffID, classType1,classType2,DATE_FORMAT( dayTime,'%Y-%m-%d') as dayTime ,extd1 from tb_staffattendancedetail\n" +
+            " where plantID = #{plantID} and processID = #{processID} and classType1 = #{classType} and dayTime = #{dayTime}  ${lineFilter} ) a left join  \n" +
+            " sys_objectrelationdict b on a.lineID = b.previousObjectID and b.status = '1'  ) c left join\n" +
+            "( select lineID,materialID,materialName from  tb_chargingrackrecord  where putonDate =  #{dayTime} and plantID = #{plantID} group by lineID,materialID )\n" +
+            "d on c.nextObjectID = d.lineID\n" +
+            ") e left join tb_workcontentunivalence f on   e.materialID= f.materialID and e.plantID = f.plantID and e.processID = f.processID and e.extd1= f.workContentID" )
+    List<Map<Object,Object>>  JSProductionWageInfoByWorklocation(String plantID,String processID,  @Param("lineFilter") String lineFilter,String dayTime,String classType);
+
+
     @Select("select plantID,processID,lineID,worklocationID,totalProduction,staffName,shelfProduction,univalence,wage,extd1,classType1,classType2,DATE_FORMAT( dayTime,'%Y-%m-%d') as dayTime,verifierName," +
             " DATE_FORMAT( verifyTime,'%Y-%m-%d %H:%i:%s') as verifyTime,materialID,materialName  from tb_dailyproductionandwagedetail" +
             " where  plantID = #{plantID} and processID = #{processID} and dayTime =#{dayTime} and classType1 =#{classType}  order by lineID,worklocationID")
@@ -89,4 +101,9 @@ public interface DailyProductionAndWageDetailMapper {
 
     @Select("select * from tb_dailyproductionandwagedetail  where  plantID = #{plantID} and processID = #{processID} and dayTime =#{dayTime} and classType1 =#{classType}")
     List<DailyProductionAndWageDetail> getConfirmRecord(String plantID,String processID,String dayTime,String classType);
+
+    @Select("select a.*,b.name from (\n" +
+            "select staffName,staffID,shelfProduction,materialName,DATE_FORMAT( dayTime,'%Y-%m-%d') as dayTime,DATE_FORMAT( verifyTime,'%Y-%m-%d %H:%i:%s') as verifyTime,classType1,classType2,verifierName,extd1\n" +
+            " from tb_dailyproductionandwagedetail where dayTime >= #{startTime} and dayTime <= #{endTime} and staffID = #{staffID}  ) a left join tb_workcontent b on a.extd1 = b.id order by dayTime,materialName")
+    List<Map<Object,Object>>   getShelfWageDetail(String staffID,String startTime,String endTime);
 }
