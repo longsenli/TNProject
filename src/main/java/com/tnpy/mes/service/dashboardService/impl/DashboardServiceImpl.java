@@ -1089,7 +1089,9 @@ public class DashboardServiceImpl implements IDashboardService {
 					stmp32.append("tmp3.`" + fdate + "日` +");
 				}
 			}
-			String sqlfilter ="SELECT\r\n" + 
+			StringBuilder sqlfilter = new StringBuilder();
+					
+			sqlfilter.append("SELECT\r\n" + 
 					"	* "+
 					"FROM\r\n" + 
 					"	(\r\n" + 
@@ -1106,38 +1108,6 @@ public class DashboardServiceImpl implements IDashboardService {
 					+ "round(	sum(d.shelfProduction) * d.univalence,	2) AS '各型号工资',"
 					+ "tmp2.`总产量`,\r\n" + 
 					"	tmp2.`合计工资`\r\n" + 
-//					"				sum(\r\n" + 
-//					"					CASE d.dayTime\r\n" + 
-//					"					WHEN DATE_FORMAT('2019-11-26', '%Y-%m-%d') THEN\r\n" + 
-//					"						d.shelfProduction\r\n" + 
-//					"					ELSE\r\n" + 
-//					"						0\r\n" + 
-//					"					END\r\n" + 
-//					"				) AS '2019-11-26日',\r\n" + 
-//					"				sum(\r\n" + 
-//					"					CASE d.dayTime\r\n" + 
-//					"					WHEN DATE_FORMAT('2019-11-27', '%Y-%m-%d') THEN\r\n" + 
-//					"						d.shelfProduction\r\n" + 
-//					"					ELSE\r\n" + 
-//					"						0\r\n" + 
-//					"					END\r\n" + 
-//					"				) AS '2019-11-27日',\r\n" + 
-//					"				sum(\r\n" + 
-//					"					CASE d.dayTime\r\n" + 
-//					"					WHEN DATE_FORMAT('2019-11-28', '%Y-%m-%d') THEN\r\n" + 
-//					"						d.shelfProduction\r\n" + 
-//					"					ELSE\r\n" + 
-//					"						0\r\n" + 
-//					"					END\r\n" + 
-//					"				) AS '2019-11-28日',\r\n" + 
-//					"				sum(\r\n" + 
-//					"					CASE d.dayTime\r\n" + 
-//					"					WHEN DATE_FORMAT('2019-11-29', '%Y-%m-%d') THEN\r\n" + 
-//					"						d.shelfProduction\r\n" + 
-//					"					ELSE\r\n" + 
-//					"						0\r\n" + 
-//					"					END\r\n" + 
-//					"				) AS '2019-11-29日'\r\n" + 
 					"			FROM\r\n" + 
 					"				tb_dailyproductionandwagedetail d\r\n" + 
 					"			LEFT JOIN sys_industrialplant s ON d.plantID = s.id\r\n" + 
@@ -1159,22 +1129,16 @@ public class DashboardServiceImpl implements IDashboardService {
 					"			FROM\r\n" + 
 					"				tb_dailyproductionandwagedetail td\r\n" + 
 					"			WHERE\r\n" + 
-					"				1 = 1\r\n" ;
+					"				1 = 1\r\n" );
 					if (!"-1".equals(plantID)) {
-						sqlfilter += " and  td.plantID = '" + plantID + "' ";
+						sqlfilter.append( " and  td.plantID = '" + plantID + "' ");
 					}
 					if (!"-1".equals(processID)) {
-						sqlfilter += " and td.processID = '" + processID + "' ";
+						sqlfilter.append(" and td.processID = '" + processID + "' ");
 					}
-					sqlfilter += " AND td.daytime >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
+					sqlfilter .append( " AND td.daytime >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
 							+ " AND td.daytime <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d') " +
-//					"				1 = 1\r\n" + 
-//					"			AND td.plantID = '1003'\r\n" + 
-//					"			AND td.daytime >= DATE_FORMAT('2019-11-24', '%Y-%m-%d')\r\n" + 
-//					"			AND td.daytime <= DATE_FORMAT(\r\n" + 
-//					"				'2019-11-30 23:59:59',\r\n" + 
-//					"				'%Y-%m-%d'\r\n" + 
-//					"			)\r\n" + 
+
 					"			GROUP BY\r\n" + 
 					"				td.staffID,\r\n" + 
 					"				td.materialID\r\n" + 
@@ -1183,22 +1147,17 @@ public class DashboardServiceImpl implements IDashboardService {
 					"		tmp.staffID\r\n" + 
 					") tmp2 ON d.staffID = tmp2.staffID" + 
 					"			WHERE\r\n" + 
-					"				1 = 1\r\n" ;
+					"				1 = 1\r\n" );
 					if (!"-1".equals(plantID)) {
-						sqlfilter += " and  d.plantID = '" + plantID + "' ";
+						sqlfilter .append(" and  d.plantID = '" + plantID + "' ");
 					}
 					if (!"-1".equals(processID)) {
-						sqlfilter += " and d.processID = '" + processID + "' ";
+						sqlfilter .append(" and d.processID = '" + processID + "' ");
 					}
-					sqlfilter += " AND d.daytime >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
+					sqlfilter.append( " AND d.daytime >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
 							+ " AND d.daytime <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d') " +
 					
-//					"			AND d.plantID = '1003' -- 	AND d.processID = '1003'\r\n" + 
-//					"			AND d.daytime >= DATE_FORMAT('2019-11-26', '%Y-%m-%d')\r\n" + 
-//					"			AND d.daytime <= DATE_FORMAT(\r\n" + 
-//					"				'2019-11-28 23:59:59',\r\n" + 
-//					"				'%Y-%m-%d'\r\n" + 
-//					"			)\r\n" + 
+
 					"			GROUP BY\r\n" + 
 					"				d.plantID,\r\n" + 
 					"				d.processID,\r\n" + 
@@ -1220,65 +1179,22 @@ public class DashboardServiceImpl implements IDashboardService {
 					"					t.verifierName AS '产量确认人(班长)',\r\n" + 
 					"					'考勤' AS '型号', '0' as orderflag , \r\n" +  stb2 +
 					"					'' as '合计', '' AS '工价' , '' as '各型号工资', '' as '总产量' , '' as '合计工资'\r\n" +
-//					"					MAX(\r\n" + 
-//					"						CASE\r\n" + 
-//					"						WHEN t.classType2 = '全班'\r\n" + 
-//					"						AND t.dayTime = '2019-11-26 00:00:00' THEN\r\n" + 
-//					"							'1'\r\n" + 
-//					"						WHEN t.classType2 = '上半班'\r\n" + 
-//					"						AND t.dayTime = '2019-11-26 00:00:00' THEN\r\n" + 
-//					"							'0.5'\r\n" + 
-//					"						WHEN t.classType2 = '下半班'\r\n" + 
-//					"						AND t.dayTime = '2019-11-26 00:00:00' THEN\r\n" + 
-//					"							'0.5'\r\n" + 
-//					"						ELSE\r\n" + 
-//					"							0\r\n" + 
-//					"						END\r\n" + 
-//					"					) AS '2019-11-26日',\r\n" + 
-//					"\r\n" + 
-//					"				IF (\r\n" + 
-//					"					t.classType2 = '全班'\r\n" + 
-//					"					AND t.dayTime = '2019-11-27',\r\n" + 
-//					"					1,\r\n" + 
-//					"					0\r\n" + 
-//					"				) AS '2019-11-27日',\r\n" + 
-//					"\r\n" + 
-//					"			IF (\r\n" + 
-//					"				t.classType2 = '全班'\r\n" + 
-//					"				AND t.dayTime = '2019-11-28',\r\n" + 
-//					"				1,\r\n" + 
-//					"				0\r\n" + 
-//					"			) AS '2019-11-28日',\r\n" + 
-//					"\r\n" + 
-//					"		IF (\r\n" + 
-//					"			t.classType2 = '全班'\r\n" + 
-//					"			AND t.dayTime = '2019-11-29',\r\n" + 
-//					"			1,\r\n" + 
-//					"			0\r\n" + 
-//					"		) AS '2019-11-29日'\r\n" + 
+
 					"		FROM\r\n" + 
 					"			tb_staffattendancedetail t\r\n" + 
 					"		LEFT JOIN sys_industrialplant s ON t.plantID = s.id\r\n" + 
 					"		LEFT JOIN sys_productionprocess p ON t.processID = p.id\r\n" + 
 					"		WHERE\r\n" + 
 					"			1 = 1\r\n" + 
-					"		AND t.`status` = '1'\r\n";
+					"		AND t.`status` = '1'\r\n");
 					if (!"-1".equals(plantID)) {
-						sqlfilter += " and  t.plantID = '" + plantID + "' ";
+						sqlfilter .append(" and  t.plantID = '" + plantID + "' ");
 					}
 					if (!"-1".equals(processID)) {
-						sqlfilter += " and t.processID = '" + processID + "' ";
+						sqlfilter.append( " and t.processID = '" + processID + "' ");
 					}
-					sqlfilter += " AND t.daytime >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
+					sqlfilter.append( " AND t.daytime >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
 							+ " AND t.daytime <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d') " +
-					
-//					"		AND t.plantID = '1003'\r\n" + 
-//					"		AND t.processID = '1003'\r\n" + 
-//					"		AND t.daytime >= DATE_FORMAT('2019-11-26', '%Y-%m-%d')\r\n" + 
-//					"		AND t.daytime <= DATE_FORMAT(\r\n" + 
-//					"			'2019-11-28 23:59:59',\r\n" + 
-//					"			'%Y-%m-%d'\r\n" + 
-//					"		)\r\n" + 
 					"		GROUP BY\r\n" + 
 					"			t.plantID,\r\n" + 
 					"			t.processID,\r\n" + 
@@ -1288,9 +1204,9 @@ public class DashboardServiceImpl implements IDashboardService {
 					"	) rsall\r\n" +
 					"ORDER BY\r\n" + 
 					"	rsall.`工序`,\r\n" + 
-					"	rsall.`班别` ,rsall.`产量确认人(班长)` desc, rsall.`姓名` desc ,rsall.orderflag asc";
-			System.out.println(sqlfilter);
-			List<LinkedHashMap<Object, Object>> rlnmapList = dashboardMapper.queryDef(sqlfilter);
+					"	rsall.`班别` ,rsall.`产量确认人(班长)` desc, rsall.`姓名` desc ,rsall.orderflag asc");
+//			System.out.println(sqlfilter);
+			List<LinkedHashMap<Object, Object>> rlnmapList = dashboardMapper.queryDef(sqlfilter.toString());
 			result.setStatus(1);
 			result.setData(JSONObject.toJSON(rlnmapList).toString());
 			return result;
@@ -1301,7 +1217,60 @@ public class DashboardServiceImpl implements IDashboardService {
 		}
 	}
 	
-	
+	//已员工为基础查询条件报表汇总
+		@Override
+		public TNPYResponse getprocessproductAccountSummaryPlant(String plantID, String processID, String startTime,
+				String endTime) {
+			TNPYResponse result = new TNPYResponse();
+
+			try {
+				// 判断日期是否合法
+				if (!DateUtilsDef.isDateCheck(startTime) && !DateUtilsDef.isDateCheck(endTime)) {
+					result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+					result.setMessage("日期不合法");
+					return result;
+				}
+				String processsql = "select * from sys_productionprocess where status!='-1'";
+				List<LinkedHashMap<Object, Object>> processList = dashboardMapper.queryDef(processsql);
+				StringBuilder stb = new StringBuilder();
+				for(int i=0;i<processList.size()-1;i++) {
+					if(i==processList.size()-2) {
+						stb.append("sum( case processID when '"+processList.get(i).get("id")+"' then td.production end ) as '"+processList.get(i).get("name")+"'");
+					}else {
+						stb.append("sum( case processID when '"+processList.get(i).get("id")+"' then td.production end ) as '"+processList.get(i).get("name")+"',");
+					}
+				}
+				StringBuilder sqlfilter = new StringBuilder();
+				sqlfilter.append("SELECT\r\n" + 
+						"DATE_FORMAT(td.dayTime, '%Y-%m-%d') as '日期',\r\n" + stb +
+						"FROM\r\n" + 
+						"	tb_dailyproductionsummaryprocess td LEFT JOIN\r\n" + 
+						"sys_productionprocess s on td.processID = s.id\r\n");
+				sqlfilter.append("WHERE\r\n" + 
+						"	1 = 1  AND td.`status` = '1'\r\n" );
+				if (!"-1".equals(plantID)) {
+					sqlfilter.append(" and  td.plantID = '" + plantID + "' ");
+				}
+				if (!"-1".equals(processID)) {
+					sqlfilter.append( " and td.processID = '" + processID + "' ");
+				}
+				sqlfilter.append( " AND td.daytime >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
+						+ " AND td.daytime <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d') " +
+
+						"GROUP BY td.plantID,td.dayTime\r\n" + 
+						"ORDER BY td.dayTime asc, td.processID asc\r\n" );
+						
+//				System.out.println(sqlfilter);
+				List<LinkedHashMap<Object, Object>> rlnmapList = dashboardMapper.queryDef(sqlfilter.toString());
+				result.setStatus(1);
+				result.setData(JSONObject.toJSON(rlnmapList).toString());
+				return result;
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				result.setMessage("查询出错！" + ex.getMessage());
+				return result;
+			}
+		}
 	
 	
 }
