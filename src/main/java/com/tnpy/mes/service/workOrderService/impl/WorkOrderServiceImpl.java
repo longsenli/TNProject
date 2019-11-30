@@ -1082,6 +1082,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             materialRecord.setInputplantid(onlineMaterialRecord.getPlantid());
             materialRecord.setInputprocessid(onlineMaterialRecord.getProcessid());
             materialRecord.setInputlineid(onlineMaterialRecord.getLineid());
+            materialRecord.setMaterialnameinfo(onlineMaterialRecordList.get(0).getOperator());
             materialRecordMapper.insertSelective(materialRecord);
 
             onlineMaterialRecordMapper.updateStatus(mergeIDList, "2");
@@ -1133,8 +1134,6 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             materialRecord.setOutputer("");
             materialRecord.setOutputtime(new Date(0));
             int res = materialRecordMapper.updateCancelInputSuborder(materialRecord);
-
-
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return result;
         } catch (Exception ex) {

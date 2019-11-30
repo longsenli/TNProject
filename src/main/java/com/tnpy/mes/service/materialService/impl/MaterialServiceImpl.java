@@ -244,6 +244,7 @@ public class MaterialServiceImpl implements IMaterialService {
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 return result;
             }
+
             TNPYResponse materialUseable = judgeAvailable(materialOrderID, expendOrderID);
             if (materialUseable.getStatus() != StatusEnum.ResponseStatus.Success.getIndex()) {
                 return materialUseable;
@@ -530,7 +531,6 @@ public class MaterialServiceImpl implements IMaterialService {
         TNPYResponse result = new TNPYResponse();
         try {
 
-
             if(("_" + ConfigParamEnum.BasicProcessEnum.BZProcessID.getName() + "_").equals(expendOrderID))
             {
                 List<Map<Object, Object>> materialRecordList = materialRecordMapper.selectPilePackageRecord(qrCode);
@@ -559,7 +559,7 @@ public class MaterialServiceImpl implements IMaterialService {
                 return result;
             }
 
-            if(ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(materialRecord.getInputprocessid()) && ConfigParamEnum.BasicPlantEnum.TNPY1B.getName().equals(expendOrderID))
+            if(ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(materialRecord.getInputprocessid()))
             {
                 List<CustomMaterialRecord> materialRecordList = materialRecordMapper.selectBySubOrderID(qrCode);
 

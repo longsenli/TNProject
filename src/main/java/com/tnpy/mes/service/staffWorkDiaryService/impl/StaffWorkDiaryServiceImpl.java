@@ -207,7 +207,12 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                     lineFilter = " and inputLineID = '" + lineID + "' ";
                 }
                 productionWageTMP = dailyProductionAndWageDetailMapper.orderProductionWageInfoByWorklocation(plantID, processID, lineFilter, orderInfo, dayString, classType);
-            } else {
+            } else if ( ConfigParamEnum.BasicProcessEnum.BBProcessID.getName().equals(processID))
+            { if (!"-1".equals(lineID)) {
+                lineFilter = " and inputLineID = '" + lineID + "' ";
+            }
+                productionWageTMP = dailyProductionAndWageDetailMapper.orderProductionWageInfoByLineAVGProduction(plantID, processID, lineFilter, orderInfo, dayString, classType);
+            }else {
                 if (!"-1".equals(lineID)) {
                     lineFilter = " and inputLineID = '" + lineID + "' ";
                 }
