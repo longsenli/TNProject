@@ -18,10 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @Description: TODO
@@ -196,7 +193,13 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             dayString = dateFormat2.format(date);
             List<Map<Object, Object>> productionWageTMP;
             String lineFilter = "";
-            if (ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID)) {
+            if (ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(processID)) {
+                if (!"-1".equals(lineID)) {
+                    lineFilter = " and lineID = '" + lineID + "' ";
+                }
+
+                productionWageTMP = dailyProductionAndWageDetailMapper.JSProductionWageInfoByWorklocation(plantID, processID, lineFilter, dayString, classType);
+            } else if (ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID)) {
                 if (!"-1".equals(lineID)) {
                     lineFilter = " and lineID = '" + lineID + "' ";
                 }
@@ -207,16 +210,16 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                     lineFilter = " and inputLineID = '" + lineID + "' ";
                 }
                 productionWageTMP = dailyProductionAndWageDetailMapper.orderProductionWageInfoByWorklocation(plantID, processID, lineFilter, orderInfo, dayString, classType);
-            } else if ( ConfigParamEnum.BasicProcessEnum.BBProcessID.getName().equals(processID))
-            { if (!"-1".equals(lineID)) {
-                lineFilter = " and inputLineID = '" + lineID + "' ";
-            }
-                productionWageTMP = dailyProductionAndWageDetailMapper.orderProductionWageInfoByLineAVGProduction(plantID, processID, lineFilter, orderInfo, dayString, classType);
-            }else {
+            } else if (ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(processID)) {
                 if (!"-1".equals(lineID)) {
                     lineFilter = " and inputLineID = '" + lineID + "' ";
                 }
                 productionWageTMP = dailyProductionAndWageDetailMapper.orderProductionWageInfoByLine(plantID, processID, lineFilter, orderInfo, dayString, classType);
+            } else {
+                if (!"-1".equals(lineID)) {
+                    lineFilter = " and inputLineID = '" + lineID + "' ";
+                }
+                productionWageTMP = dailyProductionAndWageDetailMapper.orderProductionWageInfoByLineAVGProduction(plantID, processID, lineFilter, orderInfo, dayString, classType);
             }
 
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -271,7 +274,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             String conformedRecordList = "";
             List<DailyProductionAndWageDetail> dailyProductionAndWageDetailList = dailyProductionAndWageDetailMapper.getConfirmRecord(recordList.get(0).getPlantid(), recordList.get(0).getProcessid(),
                     dateFormat.format(recordList.get(0).getDaytime()), recordList.get(0).getClasstype1());
-            if ((ConfigParamEnum.BasicProcessEnum.JZProcessID.getName() + " " + ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName()).contains(recordList.get(0).getProcessid())) {
+            if ((ConfigParamEnum.BasicProcessEnum.JZProcessID.getName() + " " + ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName()+ " " + ConfigParamEnum.BasicProcessEnum.JSProcessID.getName()).contains(recordList.get(0).getProcessid())) {
                 for (int i = 0; i < dailyProductionAndWageDetailList.size(); i++) {
                     conformedRecordList += dailyProductionAndWageDetailList.get(i).getWorklocationid() + "_" + dailyProductionAndWageDetailList.get(i).getStaffid() + " ";
                 }
@@ -289,7 +292,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             int successNumber = 0;
             String alreadyConfirmedName = "";
             for (int i = 0; i < recordList.size(); i++) {
-                if ((ConfigParamEnum.BasicProcessEnum.JZProcessID.getName() + " " + ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName()).contains(recordList.get(0).getProcessid())) {
+                if ((ConfigParamEnum.BasicProcessEnum.JZProcessID.getName() + " " + ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName()+ " " + ConfigParamEnum.BasicProcessEnum.JSProcessID.getName()).contains(recordList.get(0).getProcessid())) {
                     if (conformedRecordList.contains(recordList.get(i).getWorklocationid() + "_" + recordList.get(i).getStaffid())) {
                         alreadyConfirmedName += recordList.get(i).getStaffname() + ",";
                         continue;
@@ -332,6 +335,105 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSONString(qrCodeInfoList));
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse getShelfWageDetail(String staffID,String startTime,String endTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+
+            List<Map<Object, Object>> wageDetailList = dailyProductionAndWageDetailMapper.getShelfWageDetail(staffID,startTime,endTime);
+
+            if(wageDetailList.size() < 1)
+            {
+                result.setMessage("未找到该员工的工资信息，请联系班长是否确认产量！" );
+                return result;
+            }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSONString(wageDetailList));
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse getShelfDailyTMPDetail(String staffID,String dayTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+
+            List<Map<Object, Object>> wageDetailList = dailyProductionAndWageDetailMapper.getShelfWageDetail(staffID,dayTime,dayTime);
+            if(wageDetailList.size() > 0)
+            {
+                System.out.println(wageDetailList);
+                System.out.println(wageDetailList.size());
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setData(JSONObject.toJSONString(wageDetailList));
+                return result;
+            }
+
+            List<StaffAttendanceDetail> staffAttendanceDetailList = staffAttendanceDetailMapper.selectAttendceRecord(staffID,dayTime,dayTime);
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = dateFormat2.parse(dayTime);//取时间
+            String orderInfo = "";
+            String dayString = dateFormat2.format(date);
+
+
+            if(staffAttendanceDetailList.size() < 1)
+            {
+                result.setMessage("未找到当日出勤信息，请联系班长是否确认出勤！" + dayTime );
+                return result;
+            }
+
+            List<Map<Object, Object>> shelfProductionWageTMP = new LinkedList<>();
+            for(int i=0;i<staffAttendanceDetailList.size() ;i++)
+            {
+                if ("白班".equals(staffAttendanceDetailList.get(i).getClasstype1())) {
+                    orderInfo = "'%BB" + dateFormat.format(date) + "'";
+                } else {
+                    orderInfo = "'%YB" + dateFormat.format(date) + "'";
+                }
+                List<Map<Object, Object>> productionWageTMP;
+                String lineFilter = "";
+                if (ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(staffAttendanceDetailList.get(i).getProcessid())) {
+
+                        lineFilter = " and lineID = '" + staffAttendanceDetailList.get(i).getLineid() + "' ";
+
+
+                    productionWageTMP = dailyProductionAndWageDetailMapper.JSProductionWageInfoByWorklocation(staffAttendanceDetailList.get(i).getPlantid(), staffAttendanceDetailList.get(i).getProcessid(), lineFilter, dayString, staffAttendanceDetailList.get(i).getClasstype1());
+                } else if (ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(staffAttendanceDetailList.get(i).getProcessid())) {
+
+                        lineFilter = " and lineID = '" +  staffAttendanceDetailList.get(i).getLineid() + "' ";
+
+                    productionWageTMP = dailyProductionAndWageDetailMapper.ZHQDProductionWageInfoByWorklocation(staffAttendanceDetailList.get(i).getPlantid(), staffAttendanceDetailList.get(i).getProcessid(), lineFilter, orderInfo, dayString, staffAttendanceDetailList.get(i).getClasstype1());
+                } else if (ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(staffAttendanceDetailList.get(i).getProcessid())) {
+
+                        lineFilter = " and inputLineID = '" +  staffAttendanceDetailList.get(i).getLineid() + "' ";
+
+                    productionWageTMP = dailyProductionAndWageDetailMapper.orderProductionWageInfoByWorklocation(staffAttendanceDetailList.get(i).getPlantid(), staffAttendanceDetailList.get(i).getProcessid(), lineFilter, orderInfo, dayString, staffAttendanceDetailList.get(i).getClasstype1());
+                } else if (ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(staffAttendanceDetailList.get(i).getProcessid())) {
+
+                        lineFilter = " and inputLineID = '" +  staffAttendanceDetailList.get(i).getLineid() + "' ";
+
+                    productionWageTMP = dailyProductionAndWageDetailMapper.orderProductionWageInfoByLine(staffAttendanceDetailList.get(i).getPlantid(), staffAttendanceDetailList.get(i).getProcessid(), lineFilter, orderInfo, dayString, staffAttendanceDetailList.get(i).getClasstype1());
+                } else {
+
+                        lineFilter = " and inputLineID = '" +  staffAttendanceDetailList.get(i).getLineid() + "' ";
+
+                    productionWageTMP = dailyProductionAndWageDetailMapper.orderProductionWageInfoByLineAVGProduction(staffAttendanceDetailList.get(i).getPlantid(), staffAttendanceDetailList.get(i).getProcessid(), lineFilter, orderInfo, dayString, staffAttendanceDetailList.get(i).getClasstype1());
+                }
+                shelfProductionWageTMP.addAll(productionWageTMP);
+            }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSONString(shelfProductionWageTMP));
             return result;
         } catch (Exception ex) {
             result.setMessage("查询出错！" + ex.getMessage());
