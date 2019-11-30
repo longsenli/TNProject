@@ -185,13 +185,13 @@ public interface MaterialRecordMapper {
     @Update("update ${tableName} set ${updateStr} where id= #{id}")
     int updateMaterialInventoryData(@Param("tableName") String tableName,@Param("updateStr")String updateStr,String id);
 
-    @Select("(select  '总计' as orderName,sum(number) as number,CONCAT('二维码数量',count(1)) as operator ,'' as grantTime ,name,'' as usedstatus from (  select orderName,number,operator,date_format(grantTime,'%Y-%m-%d %H:%i') as grantTime,name from (\n" +
-            "select batteryType,orderName,number,operator,grantTime from tb_grantmaterialrecord \n" +
+    @Select("(select  '总计' as orderName,sum(number) as number,CONCAT('二维码数量',count(1)) as operator ,'' as grantTime ,name,'' as usedstatus,acceptPlantID from (  select orderName,number,operator,date_format(grantTime,'%Y-%m-%d %H:%i') as grantTime,name,acceptPlantID from (\n" +
+            "select batteryType,orderName,number,operator,grantTime,acceptPlantID from tb_grantmaterialrecord \n" +
             "where plantID = #{plantID} and processID = #{processID}  and grantTime >= #{startTime}  and grantTime <= #{endTime} ) \n" +
-            " a left join  sys_material b on a.batteryType = b.id  ) c group by name limit 100)" +
+            " a left join  sys_material b on a.batteryType = b.id  ) c group by name,acceptPlantID limit 100)" +
             " union all " +
-            " ( select orderName,number,operator,grantTime,name,case inOrOut when '2' then '已投料' else '未投料' end as usedstatus from ( select orderName,number,operator,date_format(grantTime,'%Y-%m-%d %H:%i') as grantTime,name from (\n" +
-            "select batteryType,orderName,number,operator,grantTime from tb_grantmaterialrecord \n" +
+            " ( select orderName,number,operator,grantTime,name,case inOrOut when '2' then '已投料' else '未投料' end as usedstatus ,acceptPlantID from ( select orderName,number,operator,date_format(grantTime,'%Y-%m-%d %H:%i') as grantTime,name,acceptPlantID from (\n" +
+            "select batteryType,orderName,number,operator,grantTime,acceptPlantID from tb_grantmaterialrecord \n" +
             "where plantID = #{plantID} and processID = #{processID}  and grantTime >= #{startTime}  and grantTime <= #{endTime} ) \n" +
             " a left join  sys_material b on a.batteryType = b.id )  m left join ( select id,inOrOut from tb_materialrecord where outputTime > #{startTime}) n on m.orderName = n.id order by grantTime desc limit 1000 )")
     List<Map<Object, Object>> getGrantMaterialRecord(  String startTime,String endTime,String plantID,String processID);
