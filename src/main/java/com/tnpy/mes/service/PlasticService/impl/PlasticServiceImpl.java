@@ -177,7 +177,8 @@ public class PlasticServiceImpl  implements IPlasticService {
                 date = calendar.getTime();   //这个时间就是日期往后推一天的结果
                 timeFinish = dateFormat.format(date) + " 7:00:00";
             }
-            int finishedNumber = plasticUsedRecordMapper.selectPlasticUsedNumber(locationID,timeStart,timeFinish);
+            int finishedNumber = plasticUsedRecordMapper.selectPlasticUsedNumberByOrder(locationID,"'%" + orderIDZH.substring(orderIDZH.length() - 10) +"'");
+            System.out.println(orderIDZH.substring(orderIDZH.length() - 10,10));
             result.setData(JSONObject.toJSON(grantResult).toString());
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setMessage((remainNumber - currentUsedNumber) + "___" +finishedNumber);

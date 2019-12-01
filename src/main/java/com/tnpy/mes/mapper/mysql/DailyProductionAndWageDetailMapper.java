@@ -103,7 +103,7 @@ public interface DailyProductionAndWageDetailMapper {
     List<DailyProductionAndWageDetail> getConfirmRecord(String plantID,String processID,String dayTime,String classType);
 
     @Select("select a.*,b.name from (\n" +
-            "select staffName,staffID,shelfProduction,materialName,DATE_FORMAT( dayTime,'%Y-%m-%d') as dayTime,DATE_FORMAT( verifyTime,'%Y-%m-%d %H:%i:%s') as verifyTime,classType1,classType2,verifierName,extd1\n" +
+            "select staffName,staffID,shelfProduction,materialName,DATE_FORMAT( dayTime,'%Y-%m-%d') as dayTime,DATE_FORMAT( verifyTime,'%Y-%m-%d %H:%i:%s') as  ,classType1,classType2,verifierName,extd1\n" +
             " from tb_dailyproductionandwagedetail where dayTime >= #{startTime} and dayTime <= #{endTime} and staffID = #{staffID}  ) a left join tb_workcontent b on a.extd1 = b.id order by dayTime,materialName")
     List<Map<Object,Object>>   getShelfWageDetail(String staffID,String startTime,String endTime);
 }

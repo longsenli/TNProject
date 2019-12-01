@@ -39,6 +39,9 @@ public interface PlasticUsedRecordMapper {
     @Select("select count(*) from tb_plasticUsedRecord  where workLocation = #{locationID} and usedTime > #{startTime} and usedTime < #{endTime}")
     int selectPlasticUsedNumber(String locationID,String startTime,String endTime);
 
+    @Select("select count(*) from tb_plasticUsedRecord  where workLocation = #{locationID} and usedOrderID like ${orderFilter}")
+    int selectPlasticUsedNumberByOrder(String locationID,@Param("orderFilter") String orderFilter);
+
     @Update("update tb_plasticUsedRecord set status = '2' ,extend1 = #{repairReason} where id = #{id}")
     int updateScrapInfo(String id,String repairReason);
 }
