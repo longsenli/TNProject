@@ -78,9 +78,9 @@ public class SolidifyRecordController {
     }
 
     @RequestMapping(value = "/getSolidifyWorkDetail")
-    public TNPYResponse getSolidifyWorkDetail(String plantID,String lineID,String startTime,String endTime)
+    public TNPYResponse getSolidifyWorkDetail(String plantID,String roomID,String startTime,String endTime)
     {
-        return solidifyRecordService.getSolidifyWorkDetail(plantID,lineID,startTime,endTime);
+        return solidifyRecordService.getSolidifyWorkDetail(plantID,roomID,startTime,endTime);
     }
 }
 

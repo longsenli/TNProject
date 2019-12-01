@@ -397,13 +397,13 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
     }
 
 
-    public TNPYResponse getSolidifyWorkDetail(String plantID,String lineID,String startTime,String endTime)
+    public TNPYResponse getSolidifyWorkDetail(String plantID,String roomID,String startTime,String endTime)
     {
         TNPYResponse result = new TNPYResponse();
         try {
             String solidifyFilter = "  ";
-            if ("-1".equals(lineID)) {
-                solidifyFilter += "  solidifyRoomID = '" +lineID + "'  ";
+            if (!"-1".equals(roomID)) {
+                solidifyFilter += "  solidifyRoomID = '" +roomID + "'  ";
             }
             List<Map<Object, Object>> solidifyRoomDetailList = solidifyRecordMapper.getSolidifyWorkRecordDetail(plantID,solidifyFilter,startTime,endTime);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
