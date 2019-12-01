@@ -816,11 +816,21 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 result.setMessage("该工单已发料，不能取消！");
                 return result;
             }
-            orderSplitMapper.cancelFinishStatus(subOrdderID);
+            //orderSplitMapper.cancelFinishStatus(subOrdderID);
+            if( workOrderMapper.cancelFinishWorkOrder(subOrdderID) < 1)
+            {
+                result.setMessage("取消失败，该工单尚未完工或已被使用！");
+                return result;
+            }
+            orderSplitMapper.updateStatus(subOrdderID,StatusEnum.WorkOrderStatus.ordered.getIndex() + "");
+
             //浇铸时效硬化窑
             String jzflag = subOrdderID.substring(1, 10);
             if (jzflag.contains("JZ")) {
                 dryingKilnJZRecordMapper.deleteBySubOrderId(subOrdderID);
+            }
+            if (jzflag.contains("TB")) {
+                solidifyRecordMapper.deleteByPrimaryKey(subOrdderID);
             }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return result;

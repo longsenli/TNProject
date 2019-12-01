@@ -76,4 +76,30 @@ public interface SolidifyRecordMapper {
         "sum( if( status = '3' , productionNum, 0)) as total3D   FROM tb_solidifyrecord  \n" +
         "where status < '9' and  plantID = #{plantID} group by materialName,solidifyRoomID order by solidifyRoomID  ) m left join sys_productionline n on m.solidifyRoomID = n.id limit 1000)")
     List<Map<Object, Object>>  getSolidifyRoomDetail(String plantID ,String monthStr );
+
+
+    @Select(  "select solidifyRoomID,solidifyRoomName , materialName ,sum(totalNumber)  as totalNumber ,sum(totalProduction)  as totalProduction, sum(phaseNumber1)  as phaseNumber1 ,sum(phaseProduction1) as phaseProduction1,\n" +
+            "sum(phaseNumber2) as phaseNumber2, sum(phaseProduction2) as phaseProduction2,sum(phaseNumber3) as phaseNumber3, sum(phaseProduction3) as phaseProduction3,  sum(phaseNumber4) as phaseNumber4, sum(phaseProduction4) as phaseProduction4\n" +
+            "from (\n" +
+            "(select solidifyRoomID,solidifyRoomName , materialName ,count(1)  as totalNumber ,sum(productionNum)  as totalProduction, 0  as phaseNumber1 ,0 as phaseProduction1,\n" +
+            " 0 as phaseNumber2, 0 as phaseProduction2, 0 as phaseNumber3, 0 as phaseProduction3, 0 as phaseNumber4, 0 as phaseProduction4\n" +
+            "from tb_solidifyrecord where  status != '9' and plantID = #{plantID} ${lineFilter} group by materialName,solidifyRoomID )\n" +
+            "union all\n" +
+            "(select solidifyRoomID,solidifyRoomName , materialName ,0  as totalNumber ,0 as totalProduction, count(1)  as phaseNumber1 ,sum(productionNum)  as phaseProduction1,\n" +
+            " 0 as phaseNumber2, 0 as phaseProduction2, 0 as phaseNumber3, 0 as phaseProduction3, 0 as phaseNumber4, 0 as phaseProduction4\n" +
+            "from tb_solidifyrecord where starttime1 > #{startTime} and starttime1 < #{endTime} and plantID = #{plantID} ${lineFilter} group by materialName,solidifyRoomID )\n" +
+            "union all\n" +
+            "(select solidifyRoomID,solidifyRoomName , materialName ,0  as totalNumber ,0 as totalProduction,0  as phaseNumber1 ,0  as phaseProduction1,\n" +
+            " count(1) as phaseNumber2, sum(productionNum) as phaseProduction2, 0 as phaseNumber3, 0 as phaseProduction3, 0 as phaseNumber4, 0 as phaseProduction4\n" +
+            "from tb_solidifyrecord where starttime2 > #{startTime} and starttime2 < #{endTime} and plantID = #{plantID} ${lineFilter} group by materialName,solidifyRoomID )\n" +
+            "union all\n" +
+            "( select solidifyRoomID,solidifyRoomName , materialName ,0  as totalNumber ,0 as totalProduction,0  as phaseNumber1 ,0  as phaseProduction1,\n" +
+            "0 as phaseNumber2, 0 as phaseProduction2,  count(1) as phaseNumber3, sum(productionNum) as phaseProduction3, 0 as phaseNumber4, 0 as phaseProduction4\n" +
+            "from tb_solidifyrecord where starttime3 > #{startTime} and starttime3 < #{endTime} and plantID = #{plantID} ${lineFilter} group by materialName,solidifyRoomID )\n" +
+            "union all\n" +
+            "( select solidifyRoomID,solidifyRoomName , materialName ,0  as totalNumber ,0 as totalProduction,0  as phaseNumber1 ,0  as phaseProduction1,\n" +
+            "0 as phaseNumber2, 0 as phaseProduction2,  0 as phaseNumber3, 0 as phaseProduction3, count(1) as phaseNumber4, sum(productionNum)  as phaseProduction4\n" +
+            "from tb_solidifyrecord where endtime3 > #{startTime} and endtime3 < #{endTime} and plantID = #{plantID} ${lineFilter} group by materialName,solidifyRoomID )\n" +
+            ") a group by solidifyRoomID,materialName order by solidifyRoomID,materialName ")
+    List<Map<Object, Object>>  getSolidifyWorkRecordDetail(String plantID,@Param("lineFilter") String lineID,String startTime,String endTime);
 }

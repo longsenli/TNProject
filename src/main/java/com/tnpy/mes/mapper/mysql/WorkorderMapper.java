@@ -126,4 +126,8 @@ public interface WorkorderMapper {
             " from  ( select id,totalProduction,batchNum from tb_workorder where scheduledStartTime  = #{startOrderTime}   and status < '5' and plantID = #{plantID} and" +
             " processID = #{processID} ) a left join  tb_ordersplit b on a.id = b.orderID ")
     int insertAutoSubOrder(String startOrderTime, @Param("timeStartString") String timeStartString, @Param("timeEndString") String timeEndString, String plantID, String processID);
+
+
+    @Update("delete from tb_materialrecord  where id =#{id}  and inOrOut != '2'")
+    int cancelFinishWorkOrder(String id );
 }

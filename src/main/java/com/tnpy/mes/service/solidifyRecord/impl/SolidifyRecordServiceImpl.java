@@ -395,4 +395,23 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
             return result;
         }
     }
+
+
+    public TNPYResponse getSolidifyWorkDetail(String plantID,String lineID,String startTime,String endTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            String solidifyFilter = "  ";
+            if ("-1".equals(lineID)) {
+                solidifyFilter += "  solidifyRoomID = '" +lineID + "'  ";
+            }
+            List<Map<Object, Object>> solidifyRoomDetailList = solidifyRecordMapper.getSolidifyWorkRecordDetail(plantID,solidifyFilter,startTime,endTime);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSONString(solidifyRoomDetailList, SerializerFeature.WriteMapNullValue).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
 }

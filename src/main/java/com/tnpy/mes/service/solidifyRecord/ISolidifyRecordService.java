@@ -21,4 +21,6 @@ public interface ISolidifyRecordService {
 
     public TNPYResponse uninputSolidifyRoom(String plantID,String startTime,String endTime);
     public TNPYResponse getSolidifyRoomDetail(String plantID);
+
+    public TNPYResponse getSolidifyWorkDetail(String plantID,String lineID,String startTime,String endTime);
 }
