@@ -200,8 +200,9 @@ public interface MaterialRecordMapper {
     List<Map<Object, Object>> getMaterialRecordDetailBySubOrderID(@Param("subOrderID") String subOrderID);
 
     int updateCancelInputSuborder(MaterialRecord record);
-    
-    
+
+    @Update( "update tb_materialrecord set inputWorkLocationID = inputWorkLocationID + 1 where id = #{orderID}")
+    int updateJQByBottomScrapNumber(String orderID );
     /**
    	 * 批量出窑使用
      * @param dryingkilnid

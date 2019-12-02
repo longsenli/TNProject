@@ -225,7 +225,7 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
                 result.setMessage("未找到该底壳的信息！" + id);
                 return result;
             }
-            plasticUsedRecordMapper.updateScrapInfo(id,repairReason);
+            plasticUsedRecordMapper.updateScrapInfo(id,"2",repairReason);
             MaterialScrapRecord materialScrapRecord = new MaterialScrapRecord();
             materialScrapRecord.setId(id);
             materialScrapRecord.setOperatetype("电池底壳");

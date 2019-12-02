@@ -57,7 +57,7 @@ public class PlasticServiceImpl  implements IPlasticService {
             {
                 filter += " and workLocation = '" + locationID + "' ";
             }
-            filter += " group by workLocation,materialName ";
+            filter += " and status != '9' group by workLocation,materialName ";
 
             List<Map<Object,Object>> plasticUsedRecordList = plasticUsedRecordMapper.selectByParam(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -178,7 +178,7 @@ public class PlasticServiceImpl  implements IPlasticService {
                 timeFinish = dateFormat.format(date) + " 7:00:00";
             }
             int finishedNumber = plasticUsedRecordMapper.selectPlasticUsedNumberByOrder(locationID,"'%" + orderIDZH.substring(orderIDZH.length() - 10) +"'");
-            System.out.println(orderIDZH.substring(orderIDZH.length() - 10,10));
+
             result.setData(JSONObject.toJSON(grantResult).toString());
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setMessage((remainNumber - currentUsedNumber) + "___" +finishedNumber);
@@ -233,7 +233,7 @@ public class PlasticServiceImpl  implements IPlasticService {
             {
                 filter += " and workLocation = '" + locationID + "' ";
             }
-            filter += " group by workLocation,materialName ";
+            filter += " and status != '9' group by workLocation,materialName ";
 
             List<Map<Object,Object>> plasticUsedRecordList = plasticUsedRecordMapper.selectByParam(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -243,5 +243,61 @@ public class PlasticServiceImpl  implements IPlasticService {
             result.setMessage("查询出错！" + ex.getMessage());
             return result;
         }
+    }
+
+    public TNPYResponse scrapBatteryBottom(String listID,String userID,String userName,String plantID,String lineID,String locationID, String workOrder)
+    {
+        TNPYResponse result = new TNPYResponse();
+        List<Map<String, String>> grantResult = new  ArrayList<Map<String, String>>();
+        String[] orderArray = listID.split("###");
+        for(int i =0;i<orderArray.length;i++)
+        {
+            Map<String, String> mapResult = new HashMap<String, String>();
+            mapResult.put("orderID",orderArray[i]);
+            mapResult.put("status","失败");
+            mapResult.put("returnMessage","失败!");
+
+            try
+            {
+               PlasticUsedRecord plasticUsedRecord = plasticUsedRecordMapper.selectByPrimaryKey(orderArray[i]);
+               if(plasticUsedRecord != null)
+               {
+                   if("9".equals(plasticUsedRecord.getStatus()))
+                   {
+                       mapResult.put("status","失败");
+                       mapResult.put("returnMessage","已报废!");
+                       grantResult.add(mapResult);
+                       continue;
+                   }
+                   materialRecordMapper.updateJQByBottomScrapNumber(plasticUsedRecord.getJqid());
+                   plasticUsedRecordMapper.updateScrapInfo(plasticUsedRecord.getId(),"9","底壳报废");
+               }
+               else
+               {
+                   plasticUsedRecord = new PlasticUsedRecord();
+                   plasticUsedRecord.setId(orderArray[i]);
+                   plasticUsedRecord.setPlantid(plantID);
+                   plasticUsedRecord.setLineid(lineID);
+                   plasticUsedRecord.setWorklocation(locationID);
+                   plasticUsedRecord.setUsedtime(new Date());
+                   plasticUsedRecord.setUsedorderid(workOrder);
+                   plasticUsedRecord.setStaffname(userName);
+                   plasticUsedRecord.setStaffid(userID);
+                   plasticUsedRecord.setStatus("9");
+                   plasticUsedRecordMapper.insert(plasticUsedRecord);
+               }
+                mapResult.put("status","成功");
+                mapResult.put("returnMessage","成功!");
+            }
+            catch (Exception ex)
+            {
+                    mapResult.put("returnMessage",ex.getMessage());
+            }
+
+            grantResult.add(mapResult);
+        }
+        result.setData(JSONObject.toJSON(grantResult).toString());
+        result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+        return  result;
     }
 }

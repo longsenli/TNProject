@@ -25,10 +25,10 @@ public interface PlasticUsedRecordMapper {
 
     int updateByPrimaryKey(PlasticUsedRecord record);
 
-    @Select("select count(1) as productionNumb,lineID,workLocation,materialName from tb_plasticUsedRecord ${filter}")
+    @Select("select count(1) as productionNumb,lineID,workLocation,materialName from tb_plasticUsedRecord ${filter} ")
     List<Map<Object,Object>> selectByParam(@Param("filter") String filter);
 
-    @Select("select count(*) from tb_plasticUsedRecord  where JQID = #{orderID}")
+    @Select("select count(*) from tb_plasticUsedRecord  where JQID = #{orderID} and status != '9'")
     int selectJQUsedNumber(String orderID);
 
 
@@ -36,12 +36,12 @@ public interface PlasticUsedRecordMapper {
             "select distinct inMaterialID from sys_materialrelation where outMaterialID = #{outMaterialID} )\n")
     int checkMaterialUsable(String inOrderID,String outMaterialID);
 
-    @Select("select count(*) from tb_plasticUsedRecord  where workLocation = #{locationID} and usedTime > #{startTime} and usedTime < #{endTime}")
+    @Select("select count(*) from tb_plasticUsedRecord  where workLocation = #{locationID} and usedTime > #{startTime} and usedTime < #{endTime} and status != '9'")
     int selectPlasticUsedNumber(String locationID,String startTime,String endTime);
 
-    @Select("select count(*) from tb_plasticUsedRecord  where workLocation = #{locationID} and usedOrderID like ${orderFilter}")
+    @Select("select count(*) from tb_plasticUsedRecord  where workLocation = #{locationID} and usedOrderID like ${orderFilter} and status != '9'")
     int selectPlasticUsedNumberByOrder(String locationID,@Param("orderFilter") String orderFilter);
 
-    @Update("update tb_plasticUsedRecord set status = '2' ,extend1 = #{repairReason} where id = #{id}")
-    int updateScrapInfo(String id,String repairReason);
+    @Update("update tb_plasticUsedRecord set status = #{status} ,extend1 = #{repairReason} where id = #{id}")
+    int updateScrapInfo(String id,String status,String repairReason);
 }

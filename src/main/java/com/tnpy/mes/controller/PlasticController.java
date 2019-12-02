@@ -38,4 +38,10 @@ public class PlasticController {
     {
         return  plasticService.getgetInputTotalNumberByClass(plantID,lineID,locationID,workOrder );
     }
+
+    @RequestMapping(value = "/scrapBatteryBottom")
+    public TNPYResponse scrapBatteryBottom(String listID,String userID,String userName,String plantID,String lineID,String locationID, String workOrder)
+    {
+        return  plasticService.scrapBatteryBottom(listID,userID,userName,plantID,lineID,locationID ,workOrder);
+    }
 }
