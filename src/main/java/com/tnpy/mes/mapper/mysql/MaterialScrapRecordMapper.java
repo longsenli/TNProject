@@ -48,12 +48,18 @@ public interface MaterialScrapRecordMapper {
     @Select(" SELECT materialID as id,materialNameInfo as name FROM tb_materialrecord where outputLineID = #{lineID} and outputTime > #{startTime} and outputTime < #{endTime} group by materialID,materialNameInfo " )
     List<Map<Object, Object>> getJSUsedMaterialInfoWithExpend(String lineID,String startTime, String endTime);
 
+    @Select( " SELECT materialID as id,b.name FROM ilpsdb.sys_materialbasicinfo  a left join sys_material b on a.materialID = b.id  where plantID = #{plantID} " +
+            " and b.typeID in ('1022','1025','1023','1024') group by materialID,name order by name")
+    List<Map<Object, Object>> getFBAndBBMaterialInfo(String plantID);
 
     @Select("  SELECT materialID as id,materialNameInfo as name FROM tb_materialrecord where outputPlantID = #{plantID} and outputProcessID = #{processID}  and outputTime > #{productTime}  and outputTime < #{endTime}  group by materialID,materialNameInfo ")
     List<Map<Object, Object>> getUsedMaterialInfoByProcess(String plantID,String processID, String productTime,String endTime);
 
-    @Select("SELECT id,lineID,date_format(productDay, '%Y-%m-%d %H:%i:%s') as productDay ,orderID,classType,materialName,value,updateStaff,date_format(updateTime, '%Y-%m-%d %H:%i:%s') as updateTime,remark FROM tb_materialscraprecord" +
+    @Select("SELECT id,lineID,date_format(productDay, '%Y-%m-%d %H:%i:%s') as productDay ,orderID,classType,materialName,value,updateStaff,date_format(updateTime, '%Y-%m-%d %H:%i:%s') as updateTime,remark,weight FROM tb_materialscraprecord" +
             "  where productDay >= #{startTime} and productDay <= #{endTime} ${filter}  order by productDay,classType,lineID")
     List<Map<Object, Object>> getMaterialScrapRecord(@Param("filter") String filter, String startTime, String endTime);
 
+
+    @Select("SELECT materialID,basicInfo1 from sys_materialbasicinfo where plantID = #{plantID} and ifnull(basicInfo1,0) > 0 group by materialID")
+    List<Map<Object, Object>> getMaterialWeightInfo(String plantID);
 }

@@ -103,13 +103,23 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
         TNPYResponse result = new TNPYResponse();
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String startTime = "";
+            String endTime = "";
             Date tmp = dateFormat.parse(productDate);
             String productionTime = dateFormat.format(tmp);
             if ("白班".equals(classType)) {
                 productionTime += " 07:00";
+                startTime = productionTime + " 06:00";
+                endTime = productionTime + " 19:00";
             }
             if ("夜班".equals(classType)) {
+                Calendar calendar = new GregorianCalendar();
+                calendar.setTime(tmp);
+                calendar.add(Calendar.DATE, 1);
+                Date date = calendar.getTime();   //这个时间就是日期往后推一天的结果
                 productionTime += " 19:00";
+                startTime  =  productionTime + " 18:00";
+                endTime = dateFormat.format(date) + " 07:00";
             }
 
             if(ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(processID))
@@ -125,6 +135,14 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 return result;
             }
+            if(ConfigParamEnum.BasicProcessEnum.FBProcessID.getName().equals(processID) || ConfigParamEnum.BasicProcessEnum.BBProcessID.getName().equals(processID))
+            {
+                List<Map<Object, Object>> usedMaterialInfoList = materialScrapRecordMapper.getFBAndBBMaterialInfo(plantID);
+                result.setData(JSONObject.toJSONString(usedMaterialInfoList, SerializerFeature.WriteMapNullValue));
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                return result;
+            }
+
             List<Map<Object, Object>> usedMaterialInfoList = materialScrapRecordMapper.getUsedMaterialInfo(lineID, productionTime);
             result.setData(JSONObject.toJSONString(usedMaterialInfoList, SerializerFeature.WriteMapNullValue));
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -161,10 +179,16 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
     public TNPYResponse saveMaterialScrapRecord(String strJson) {
         TNPYResponse result = new TNPYResponse();
         try {
-
-            //System.out.println(strJson);
             JSONObject jso = JSONObject.parseObject(strJson);
             Map<String, String> jsonMap = JSONObject.toJavaObject(jso, Map.class);
+
+            List<Map<Object, Object>>  materialWeightList = materialScrapRecordMapper.getMaterialWeightInfo(jsonMap.get("plantID"));
+            Map<String, Double> materialWeightMap = new HashMap<>();
+            for(int i =0;i< materialWeightList.size();i++)
+            {
+                materialWeightMap.put(materialWeightList.get(0).get("materialID").toString(),Double.valueOf(materialWeightList.get(0).get("basicInfo1").toString()));
+            }
+
             MaterialScrapRecord materialScrapRecord = new MaterialScrapRecord();
             materialScrapRecord.setPlantid(jsonMap.get("plantID"));
             materialScrapRecord.setProcessid(jsonMap.get("processID"));
@@ -185,7 +209,16 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
                     continue;
                 materialScrapRecord.setMaterialid(entry.getKey().split("###")[0]);
                 materialScrapRecord.setMaterialname(entry.getKey().split("###")[1]);
-                materialScrapRecord.setValue(Float.parseFloat(entry.getValue()));
+                if(materialWeightMap.containsKey(materialScrapRecord.getMaterialid()))
+                {
+                    materialScrapRecord.setWeight(Double.parseDouble(entry.getValue()));
+                    materialScrapRecord.setValue((float)Math.ceil((1000 * Double.valueOf(entry.getValue()) / materialWeightMap.get(materialScrapRecord.getMaterialid()))));
+                }
+                else
+                {
+                    materialScrapRecord.setValue(Float.parseFloat(entry.getValue()));
+                }
+
                 materialScrapRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 if (materialScrapRecord.getValue() <= 0) {
                     continue;

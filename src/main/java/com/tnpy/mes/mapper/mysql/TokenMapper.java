@@ -25,7 +25,7 @@ public interface TokenMapper {
     int updateToken(Token record);
     @Insert(" insert into tb_token (tokenid, userid, token, buildtime) values (#{tokenid}, #{userid}, #{token}, #{buildtime})")
     int insertToken(Token record);
-    @Select("select * from tb_token where userid = #{userid}")
+    @Select("select * from tb_token where userid = #{userid} order by buildtime desc limit 1")
     Token findByUserId(String userid);
 
 }

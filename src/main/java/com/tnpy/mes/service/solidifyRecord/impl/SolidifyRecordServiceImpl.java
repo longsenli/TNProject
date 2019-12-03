@@ -303,11 +303,25 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();//取时间
             String dateStr = dateFormat.format(date);
+
+            int inRoomIDNumber = 0;
             if ("1".equals(status)) {
+                inRoomIDNumber = solidifyRecordMapper.selectInNumber(roomID,"2");
+                if(inRoomIDNumber > 2 && !roomID.contains("1B"))
+                {
+                    result.setMessage("转段出错！第二段内的物料未转移！请先进行第二段转段！" + roomID);
+                    return result;
+                }
                 valueUpdate = " set status = '2',endtime1 = '" + dateStr + "' ,starttime2 = '" + dateStr + "' ,recorder2 = '" + operatorName + "' ";
             }
 
             if ("2".equals(status)) {
+                inRoomIDNumber = solidifyRecordMapper.selectInNumber(roomID,"3");
+                if(inRoomIDNumber > 2&& !roomID.contains("1B"))
+                {
+                    result.setMessage("转段出错！第三段内的物料未转移！请先进行第三段转段！" + roomID);
+                    return result;
+                }
                 valueUpdate = " set status = '3',endtime2 = '" + dateStr + "' ,starttime3 = '" + dateStr + "' ,recorder3 = '" + operatorName + "' ";
             }
 
