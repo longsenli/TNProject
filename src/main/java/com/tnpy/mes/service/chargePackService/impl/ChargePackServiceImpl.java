@@ -40,6 +40,9 @@ public class ChargePackServiceImpl implements IChargePackService {
 
     @Autowired
     private  PackageDetailRecordMapper packageDetailRecordMapper;
+
+    @Autowired
+    private  LoginRecordMapper loginRecordMapper ;
     //onRack 在架数据 pulloffhistory 下架历史数据 putonhistory 上架历史数据
     public TNPYResponse getChargingRackRecord(String plantID, String processID,String lineID,String locationID,String startTime,String endTime,String selectType)
     {
@@ -116,6 +119,14 @@ public class ChargePackServiceImpl implements IChargePackService {
         TNPYResponse result = new TNPYResponse();
         try
         {
+
+            ChargingRackRecord chargingRackRecord = chargingRackRecordMapper.selectByPrimaryKey(id);
+            LoginRecord loginRecord = new LoginRecord();
+            loginRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+            loginRecord.setLogintime(new Date());
+            loginRecord.setUserid(id);
+            loginRecord.setLoginip(JSONObject.toJSON(chargingRackRecord).toString().substring(0,195));
+            loginRecordMapper.insert(loginRecord);
             chargingRackRecordMapper.deleteByPrimaryKey(id);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             return  result;
@@ -134,6 +145,13 @@ public class ChargePackServiceImpl implements IChargePackService {
         {
             if(StringUtils.isEmpty(chargingRackRecord.getId()))
             {
+                LoginRecord loginRecord = new LoginRecord();
+                loginRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                loginRecord.setLogintime(new Date());
+                loginRecord.setUserid(chargingRackRecord.getStaffid());
+                loginRecord.setLoginip(jsonStr.substring(0,195));
+                loginRecordMapper.insert(loginRecord);
+
                 chargingRackRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 chargingRackRecord.setStatus("1");
                 List<Map<Object,Object>> numberRight = chargingRackRecordMapper.selectOnRackNumber(chargingRackRecord.getWorklocation());
