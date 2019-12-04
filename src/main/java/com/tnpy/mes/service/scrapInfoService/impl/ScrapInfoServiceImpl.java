@@ -326,10 +326,10 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
         TNPYResponse result = new TNPYResponse();
         try {
             String filter = " where status = '1' and sendTime > '" + startTime + "' and sendTime < '" + endTime +"' ";
-            if ("-1".equals(originalPlantID)) {
-                filter += " and originPlant = '" + originalPlantID + "' ";
+            if (!"-1".equals(originalPlantID)) {
+                filter += " and originalPlantID = '" + originalPlantID + "' ";
             }
-            if ("-1".equals(destinationPlantID)) {
+            if (!"-1".equals(destinationPlantID)) {
                 filter +=  " and destinationPlantID = '" + destinationPlantID + "'";
             }
             if (!"-1".equals(processID)) {
@@ -359,6 +359,7 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
             {
                 materialCirculationRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 materialCirculationRecord.setSendtime(new Date());
+                materialCirculationRecord.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
                 materialCirculationRecordMapper.insert(materialCirculationRecord);
             }
             else
@@ -384,6 +385,21 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
             return result;
         } catch (Exception ex) {
             result.setMessage("删除失败！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse confirmMaterialCirculationRecord( String id,String confirmStaff )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+          
+            materialCirculationRecordMapper.confirmMaterialCirculationRecord(id,confirmStaff);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData("确认成功！");
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("确认失败！" + ex.getMessage());
             return result;
         }
     }

@@ -25,15 +25,17 @@ public interface MaterialCirculationRecordMapper {
 
     int updateByPrimaryKey(MaterialCirculationRecord record);
 
-    @Select( "(SELECT '' as id, originalPlantID,processID,destinationPlantID, materialName,sum(number) as number , '' as sender,'' as sendTime ,'' as saccepter,\n" +
+    @Select( "(SELECT '' as id, originalPlantID,processID,destinationPlantID, materialName,sum(number) as number , '' as sender,'' as sendTime ,'' as accepter,\n" +
             "''  as acceptTime ,'总计' as circulationType,'' as circulationDescription FROM tb_materialcirculationrecord  ${filter}  group by originalPlantID,processID,destinationPlantID, materialName \n" +
-            "order by originalPlantID,processID,destinationPlantID, materialName)\n" +
+            " order by originalPlantID,processID,destinationPlantID, materialName limit 1000)\n" +
             "union all\n" +
             "( SELECT id,originalPlantID,processID,destinationPlantID, materialName,number,sender,date_format(sendTime, '%Y-%m-%d %H:%i:%s') as sendTime ,accepter,\n" +
-            "date_format(acceptTime, '%Y-%m-%d %H:%i:%s') as acceptTime ,circulationType,circulationDescription FROM tb_materialcirculationrecord ${filter} order by sendTime)")
+            "date_format(acceptTime, '%Y-%m-%d %H:%i:%s') as acceptTime ,circulationType,circulationDescription FROM tb_materialcirculationrecord ${filter} order by sendTime limit 1000)")
     List<Map<Object, Object>> getMaterialCirculationRecord(@Param("filter") String filter);
 
     @Update("update tb_materialcirculationrecord set status = '-1' where id = #{id} ")
     int deleteByChangeStatusWithPrimaryKey(String id);
 
+    @Update("update tb_materialcirculationrecord set accepter = #{confirmStaff},acceptTime = now() where id = #{id} ")
+    int confirmMaterialCirculationRecord(String id,String confirmStaff);
 }

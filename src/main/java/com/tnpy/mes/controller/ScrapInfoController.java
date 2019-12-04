@@ -40,13 +40,11 @@ public class ScrapInfoController {
     }
     @RequestMapping(value = "/saveMaterialScrapRecord")
     public TNPYResponse saveMaterialScrapRecord(@RequestBody String strJson ) {
-
         return scrapInfoService.saveMaterialScrapRecord(strJson);
     }
 
     @RequestMapping(value = "/deleteMaterialScrapRecord")
     public TNPYResponse deleteMaterialScrapRecord( String id ) {
-
         return scrapInfoService.deleteMaterialScrapRecord(id);
     }
 
@@ -75,5 +73,10 @@ public class ScrapInfoController {
     public TNPYResponse deleteMaterialCirculationRecord( String id ) {
 
         return scrapInfoService.deleteMaterialCirculationRecord(id);
+    }
+    @RequestMapping(value = "/confirmMaterialCirculationRecord")
+    public TNPYResponse confirmMaterialCirculationRecord( String id,String confirmStaff )
+    {
+        return scrapInfoService.confirmMaterialCirculationRecord(id,confirmStaff);
     }
 }

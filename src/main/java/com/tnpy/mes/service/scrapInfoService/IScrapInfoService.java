@@ -22,4 +22,5 @@ public interface IScrapInfoService {
     public TNPYResponse getMaterialCirculationRecord( String originalPlantID ,String destinationPlantID,String processID,String circulationType,String startTime,String endTime);
     public TNPYResponse saveMaterialCirculationRecord( String strJson );
     public TNPYResponse deleteMaterialCirculationRecord( String id );
+    public TNPYResponse confirmMaterialCirculationRecord( String id,String confirmStaff );
 }
