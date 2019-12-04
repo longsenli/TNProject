@@ -52,6 +52,10 @@ public interface MaterialScrapRecordMapper {
             " and b.typeID in ('1022','1025','1023','1024') group by materialID,name order by name")
     List<Map<Object, Object>> getFBAndBBMaterialInfo(String plantID);
 
+    @Select( "  SELECT materialID as id,b.name FROM ilpsdb.sys_materialbasicinfo  a left join sys_material b on a.materialID = b.id  " +
+            "where plantID = #{plantID} and b.typeID in ('2001') order by b.name")
+    List<Map<Object, Object>> getCDAndBZMaterialInfo(String plantID);
+
     @Select("  SELECT materialID as id,materialNameInfo as name FROM tb_materialrecord where outputPlantID = #{plantID} and outputProcessID = #{processID}  and outputTime > #{productTime}  and outputTime < #{endTime}  group by materialID,materialNameInfo ")
     List<Map<Object, Object>> getUsedMaterialInfoByProcess(String plantID,String processID, String productTime,String endTime);
 

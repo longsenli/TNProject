@@ -205,8 +205,9 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
                                 materialRecord.setInputplantid(workorder.getPlantid());
                                 materialRecord.setInputprocessid(workorder.getProcessid());
                                 materialRecord.setInputlineid(workorder.getLineid());
-                                if (!materialRecord.getInputprocessid().equals(ConfigParamEnum.BasicProcessEnum.TBProcessID.getName())  ) {
-                                        mapResult.put("returnMessage", "只有涂板工序的工单才能入窑！" + orderSplitID);
+                                if (!materialRecord.getInputprocessid().equals(ConfigParamEnum.BasicProcessEnum.TBProcessID.getName())
+                                        && !materialRecord.getInputprocessid().equals(ConfigParamEnum.BasicProcessEnum.LTProcessID.getName())   ) {
+                                        mapResult.put("returnMessage", "只有涂板、连涂工序的工单才能入窑！" + orderSplitID);
                                         break;
                                 }
                             }
@@ -252,8 +253,9 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
                         mapResult.put("returnMessage", "未获取到入库信息！请重试或者重新入库！" + orderSplitID);
                         break;
                     }
-                    if (!materialRecord.getInputprocessid().equals(ConfigParamEnum.BasicProcessEnum.TBProcessID.getName())  ) {
-                            mapResult.put("returnMessage", "只有涂板工序的工单才能入窑！" + orderSplitID);
+                    if (!materialRecord.getInputprocessid().equals(ConfigParamEnum.BasicProcessEnum.TBProcessID.getName())
+                            && !materialRecord.getInputprocessid().equals(ConfigParamEnum.BasicProcessEnum.LTProcessID.getName() ) ) {
+                            mapResult.put("returnMessage", "只有涂板、连涂工序的工单才能入窑！" + orderSplitID);
                             break;
                     }
 

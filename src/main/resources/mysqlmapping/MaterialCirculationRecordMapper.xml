@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.MaterialCirculationRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.MaterialCirculationRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="originalPlantID" jdbcType="VARCHAR" property="originalplantid" />
+    <result column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="destinationPlantID" jdbcType="VARCHAR" property="destinationplantid" />
+    <result column="materialID" jdbcType="VARCHAR" property="materialid" />
+    <result column="materialName" jdbcType="VARCHAR" property="materialname" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="sender" jdbcType="VARCHAR" property="sender" />
+    <result column="sendTime" jdbcType="TIMESTAMP" property="sendtime" />
+    <result column="accepter" jdbcType="VARCHAR" property="accepter" />
+    <result column="acceptTime" jdbcType="TIMESTAMP" property="accepttime" />
+    <result column="circulationType" jdbcType="VARCHAR" property="circulationtype" />
+    <result column="circulationDescription" jdbcType="VARCHAR" property="circulationdescription" />
+    <result column="extd1" jdbcType="VARCHAR" property="extd1" />
+    <result column="extd2" jdbcType="VARCHAR" property="extd2" />
+    <result column="extd3" jdbcType="VARCHAR" property="extd3" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, originalPlantID, processID, destinationPlantID, materialID, materialName, number, 
+    sender, sendTime, accepter, acceptTime, circulationType, circulationDescription, 
+    extd1, extd2, extd3, remark, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_materialcirculationrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_materialcirculationrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.MaterialCirculationRecord">
+    insert into tb_materialcirculationrecord (id, originalPlantID, processID, 
+      destinationPlantID, materialID, materialName, 
+      number, sender, sendTime, 
+      accepter, acceptTime, circulationType, 
+      circulationDescription, extd1, extd2, 
+      extd3, remark, status
+      )
+    values (#{id,jdbcType=VARCHAR}, #{originalplantid,jdbcType=VARCHAR}, #{processid,jdbcType=VARCHAR}, 
+      #{destinationplantid,jdbcType=VARCHAR}, #{materialid,jdbcType=VARCHAR}, #{materialname,jdbcType=VARCHAR}, 
+      #{number,jdbcType=INTEGER}, #{sender,jdbcType=VARCHAR}, #{sendtime,jdbcType=TIMESTAMP}, 
+      #{accepter,jdbcType=VARCHAR}, #{accepttime,jdbcType=TIMESTAMP}, #{circulationtype,jdbcType=VARCHAR}, 
+      #{circulationdescription,jdbcType=VARCHAR}, #{extd1,jdbcType=VARCHAR}, #{extd2,jdbcType=VARCHAR}, 
+      #{extd3,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.MaterialCirculationRecord">
+    insert into tb_materialcirculationrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="originalplantid != null">
+        originalPlantID,
+      </if>
+      <if test="processid != null">
+        processID,
+      </if>
+      <if test="destinationplantid != null">
+        destinationPlantID,
+      </if>
+      <if test="materialid != null">
+        materialID,
+      </if>
+      <if test="materialname != null">
+        materialName,
+      </if>
+      <if test="number != null">
+        number,
+      </if>
+      <if test="sender != null">
+        sender,
+      </if>
+      <if test="sendtime != null">
+        sendTime,
+      </if>
+      <if test="accepter != null">
+        accepter,
+      </if>
+      <if test="accepttime != null">
+        acceptTime,
+      </if>
+      <if test="circulationtype != null">
+        circulationType,
+      </if>
+      <if test="circulationdescription != null">
+        circulationDescription,
+      </if>
+      <if test="extd1 != null">
+        extd1,
+      </if>
+      <if test="extd2 != null">
+        extd2,
+      </if>
+      <if test="extd3 != null">
+        extd3,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="originalplantid != null">
+        #{originalplantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="destinationplantid != null">
+        #{destinationplantid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null">
+        #{number,jdbcType=INTEGER},
+      </if>
+      <if test="sender != null">
+        #{sender,jdbcType=VARCHAR},
+      </if>
+      <if test="sendtime != null">
+        #{sendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="accepter != null">
+        #{accepter,jdbcType=VARCHAR},
+      </if>
+      <if test="accepttime != null">
+        #{accepttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="circulationtype != null">
+        #{circulationtype,jdbcType=VARCHAR},
+      </if>
+      <if test="circulationdescription != null">
+        #{circulationdescription,jdbcType=VARCHAR},
+      </if>
+      <if test="extd1 != null">
+        #{extd1,jdbcType=VARCHAR},
+      </if>
+      <if test="extd2 != null">
+        #{extd2,jdbcType=VARCHAR},
+      </if>
+      <if test="extd3 != null">
+        #{extd3,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.MaterialCirculationRecord">
+    update tb_materialcirculationrecord
+    <set>
+      <if test="originalplantid != null">
+        originalPlantID = #{originalplantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        processID = #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="destinationplantid != null">
+        destinationPlantID = #{destinationplantid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialid != null">
+        materialID = #{materialid,jdbcType=VARCHAR},
+      </if>
+      <if test="materialname != null">
+        materialName = #{materialname,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null">
+        number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="sender != null">
+        sender = #{sender,jdbcType=VARCHAR},
+      </if>
+      <if test="sendtime != null">
+        sendTime = #{sendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="accepter != null">
+        accepter = #{accepter,jdbcType=VARCHAR},
+      </if>
+      <if test="accepttime != null">
+        acceptTime = #{accepttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="circulationtype != null">
+        circulationType = #{circulationtype,jdbcType=VARCHAR},
+      </if>
+      <if test="circulationdescription != null">
+        circulationDescription = #{circulationdescription,jdbcType=VARCHAR},
+      </if>
+      <if test="extd1 != null">
+        extd1 = #{extd1,jdbcType=VARCHAR},
+      </if>
+      <if test="extd2 != null">
+        extd2 = #{extd2,jdbcType=VARCHAR},
+      </if>
+      <if test="extd3 != null">
+        extd3 = #{extd3,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.MaterialCirculationRecord">
+    update tb_materialcirculationrecord
+    set originalPlantID = #{originalplantid,jdbcType=VARCHAR},
+      processID = #{processid,jdbcType=VARCHAR},
+      destinationPlantID = #{destinationplantid,jdbcType=VARCHAR},
+      materialID = #{materialid,jdbcType=VARCHAR},
+      materialName = #{materialname,jdbcType=VARCHAR},
+      number = #{number,jdbcType=INTEGER},
+      sender = #{sender,jdbcType=VARCHAR},
+      sendTime = #{sendtime,jdbcType=TIMESTAMP},
+      accepter = #{accepter,jdbcType=VARCHAR},
+      acceptTime = #{accepttime,jdbcType=TIMESTAMP},
+      circulationType = #{circulationtype,jdbcType=VARCHAR},
+      circulationDescription = #{circulationdescription,jdbcType=VARCHAR},
+      extd1 = #{extd1,jdbcType=VARCHAR},
+      extd2 = #{extd2,jdbcType=VARCHAR},
+      extd3 = #{extd3,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -18,4 +18,8 @@ public interface IScrapInfoService {
     public TNPYResponse deleteMaterialScrapRecord( String id );
 
     public TNPYResponse scrapByBatteryQrcode( String id ,String scrapPlant,String scrapProcess,String repairReason,String updateStaffID,String updateStaff) ;
+
+    public TNPYResponse getMaterialCirculationRecord( String originalPlantID ,String destinationPlantID,String processID,String circulationType,String startTime,String endTime);
+    public TNPYResponse saveMaterialCirculationRecord( String strJson );
+    public TNPYResponse deleteMaterialCirculationRecord( String id );
 }

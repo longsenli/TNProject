@@ -5,14 +5,8 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
-import com.tnpy.mes.mapper.mysql.MaterialScrapRecordMapper;
-import com.tnpy.mes.mapper.mysql.ObjectRelationDictMapper;
-import com.tnpy.mes.mapper.mysql.PlasticUsedRecordMapper;
-import com.tnpy.mes.mapper.mysql.WorkOrderScrapInfoMapper;
-import com.tnpy.mes.model.mysql.Material;
-import com.tnpy.mes.model.mysql.MaterialScrapRecord;
-import com.tnpy.mes.model.mysql.PlasticUsedRecord;
-import com.tnpy.mes.model.mysql.WorkOrderScrapInfo;
+import com.tnpy.mes.mapper.mysql.*;
+import com.tnpy.mes.model.mysql.*;
 import com.tnpy.mes.service.scrapInfoService.IScrapInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +34,8 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
     @Autowired
     private PlasticUsedRecordMapper plasticUsedRecordMapper;
 
+    @Autowired
+    private MaterialCirculationRecordMapper materialCirculationRecordMapper;
     public TNPYResponse getScrapInfo(String plantID, String processID, String lineID, String startTime, String endTime) {
         TNPYResponse result = new TNPYResponse();
         try {
@@ -138,6 +134,14 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
             if(ConfigParamEnum.BasicProcessEnum.FBProcessID.getName().equals(processID) || ConfigParamEnum.BasicProcessEnum.BBProcessID.getName().equals(processID))
             {
                 List<Map<Object, Object>> usedMaterialInfoList = materialScrapRecordMapper.getFBAndBBMaterialInfo(plantID);
+                result.setData(JSONObject.toJSONString(usedMaterialInfoList, SerializerFeature.WriteMapNullValue));
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                return result;
+            }
+
+            if(ConfigParamEnum.BasicProcessEnum.CDProcessID.getName().equals(processID) || ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(processID))
+            {
+                List<Map<Object, Object>> usedMaterialInfoList = materialScrapRecordMapper.getCDAndBZMaterialInfo(plantID);
                 result.setData(JSONObject.toJSONString(usedMaterialInfoList, SerializerFeature.WriteMapNullValue));
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 return result;
@@ -313,6 +317,73 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
             {
                 result.setMessage("报修失败！" + ex.getMessage());
             }
+            return result;
+        }
+    }
+
+    public TNPYResponse getMaterialCirculationRecord( String originalPlantID ,String destinationPlantID,String processID,String circulationType,String startTime,String endTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            String filter = " where status = '1' and sendTime > '" + startTime + "' and sendTime < '" + endTime +"' ";
+            if ("-1".equals(originalPlantID)) {
+                filter += " and originPlant = '" + originalPlantID + "' ";
+            }
+            if ("-1".equals(destinationPlantID)) {
+                filter +=  " and destinationPlantID = '" + destinationPlantID + "'";
+            }
+            if (!"-1".equals(processID)) {
+                filter += " and processID = '" + processID + "' ";
+            }
+            if (!"-1".equals(circulationType)) {
+                filter += " and circulationType = '" + circulationType + "' ";
+            }
+            List<Map<Object, Object>> materialCirculationRecordList = materialCirculationRecordMapper.getMaterialCirculationRecord(filter);
+            result.setData(JSONObject.toJSON(materialCirculationRecordList).toString());
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询失败！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse saveMaterialCirculationRecord( String strJson )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+
+            MaterialCirculationRecord materialCirculationRecord = (MaterialCirculationRecord) JSONObject.toJavaObject(JSONObject.parseObject(strJson), MaterialCirculationRecord.class);
+
+            if(StringUtils.isEmpty(materialCirculationRecord.getId()))
+            {
+                materialCirculationRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                materialCirculationRecord.setSendtime(new Date());
+                materialCirculationRecordMapper.insert(materialCirculationRecord);
+            }
+            else
+            {
+                materialCirculationRecord.setAccepttime(new Date());
+                materialCirculationRecordMapper.updateByPrimaryKeySelective(materialCirculationRecord);
+            }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return result;
+        } catch (Exception ex) {
+            // System.out.println("====完成工单失败！====" + jsonStr + "====" + name);
+            result.setMessage("操作失败！" + ex.getMessage().substring(0, 100));
+            return result;
+        }
+    }
+    public TNPYResponse deleteMaterialCirculationRecord( String id )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            materialCirculationRecordMapper.deleteByChangeStatusWithPrimaryKey(id);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData("删除成功！");
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("删除失败！" + ex.getMessage());
             return result;
         }
     }

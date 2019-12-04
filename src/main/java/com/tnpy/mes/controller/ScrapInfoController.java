@@ -59,4 +59,21 @@ public class ScrapInfoController {
     public TNPYResponse scrapByBatteryQrcode( String id ,String scrapPlant,String scrapProcess,String repairReason,String updateStaffID,String updateStaff) {
         return scrapInfoService.scrapByBatteryQrcode(id,scrapPlant,scrapProcess,repairReason,updateStaffID,updateStaff);
     }
+
+    @RequestMapping(value = "/getMaterialCirculationRecord")
+    public TNPYResponse getMaterialCirculationRecord( String originalPlantID ,String destinationPlantID,String processID,String circulationType,String startTime,String endTime) {
+        return scrapInfoService.getMaterialCirculationRecord(originalPlantID,destinationPlantID,processID,circulationType,startTime,endTime);
+    }
+
+    @RequestMapping(value = "/saveMaterialCirculationRecord")
+    public TNPYResponse saveMaterialCirculationRecord(@RequestBody String strJson ) {
+
+        return scrapInfoService.saveMaterialCirculationRecord(strJson);
+    }
+
+    @RequestMapping(value = "/deleteMaterialCirculationRecord")
+    public TNPYResponse deleteMaterialCirculationRecord( String id ) {
+
+        return scrapInfoService.deleteMaterialCirculationRecord(id);
+    }
 }
