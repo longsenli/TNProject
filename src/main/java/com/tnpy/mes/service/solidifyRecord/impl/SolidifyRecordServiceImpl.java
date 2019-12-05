@@ -95,6 +95,11 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
     public TNPYResponse getInSolidifyRoomByParamNew(String plantID, String roomID, String status) {
         TNPYResponse result = new TNPYResponse();
         try {
+            if("9".equals(status))
+            {
+                result.setMessage("查询出错！请正确选择1至3段！"  );
+                return result;
+            }
             String solidifyFilter = " where  ";
             if ("-1".equals(status)) {
                 solidifyFilter += "  status != '9'  ";

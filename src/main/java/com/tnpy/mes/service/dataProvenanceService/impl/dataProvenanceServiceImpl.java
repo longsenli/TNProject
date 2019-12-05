@@ -32,7 +32,6 @@ public class dataProvenanceServiceImpl implements IDataProvenanceService {
 
         Set<String> orderList = new HashSet<>();
         orderList.add(orderID);
-
         try
         {
             List<String> tmpOrderList = new ArrayList<>();
@@ -57,7 +56,6 @@ public class dataProvenanceServiceImpl implements IDataProvenanceService {
             orderFilter = "'" + orderID +"'";
             while(true)
             {
-                System.out.println(orderFilter);
                 tmpOrderList.clear();
                 tmpOrderList = dataProvenanceRelationMapper.selectOutOrderIDByInOrderID(orderFilter);
                 if(tmpOrderList.size() < 1)
@@ -86,9 +84,7 @@ public class dataProvenanceServiceImpl implements IDataProvenanceService {
                 orderFilter +=  "'" + iterator.next()+"',";
             }
             orderFilter = orderFilter.substring(0,orderFilter.length()-1);
-
             List<Map<Object, Object>> materialRecordList = materialRecordMapper.selectByOrderIDList(orderFilter);
-
             materialRecordList.addAll(dcdkList);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(materialRecordList).toString());

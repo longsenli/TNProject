@@ -393,7 +393,7 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
     {
         TNPYResponse result = new TNPYResponse();
         try {
-          
+
             materialCirculationRecordMapper.confirmMaterialCirculationRecord(id,confirmStaff);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData("确认成功！");
