@@ -2,7 +2,6 @@ package com.tnpy.mes.service.timedTask;
 
 import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
-import com.tnpy.common.utils.SMSManage.SMSTN;
 import com.tnpy.mes.mapper.mysql.*;
 import com.tnpy.mes.model.mysql.IndustrialPlant;
 import com.tnpy.mes.model.mysql.ProductionProcess;
@@ -462,8 +461,8 @@ public class AutomaticSchedulingTimer {
                 {
                     String[] phoneList = {};
                     phoneList = userPhone.toArray(phoneList);
-                    SMSTN.sendMessage(phoneList,messageDetail);
-                   // System.out.println("testOK ====" +phoneList);
+                  //  SMSTN.sendMessage(phoneList,messageDetail);
+
                 }
                // System.out.println("testOK ====");
             }
