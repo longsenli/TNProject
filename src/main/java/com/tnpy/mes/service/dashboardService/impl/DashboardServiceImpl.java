@@ -1202,10 +1202,12 @@ public class DashboardServiceImpl implements IDashboardService {
 					"			t.staffName\r\n" + 
 					"			) tmp3)\r\n" + 
 					"	) rsall\r\n" +
+//					"	) rsall where rsall.`姓名`='王自鑫' or rsall.`姓名`='韩立重' or rsall.`姓名`='靳业雷' or rsall.`姓名`='郭振垒'     \r\n" +
 					"ORDER BY\r\n" + 
-					"	rsall.`工序`,\r\n" + 
-					"	rsall.`班别` ,rsall.`产量确认人(班长)` desc, rsall.`姓名` desc ,rsall.orderflag asc");
-//			System.out.println(sqlfilter);
+					"rsall.`班别` desc, rsall.`姓名` desc ,rsall.orderflag asc");
+//					"	rsall.`工序`,\r\n" + 
+//					"	rsall.`班别` ,rsall.`产量确认人(班长)` desc, rsall.`姓名` desc ,rsall.orderflag asc");
+			//System.out.println(sqlfilter);
 			List<LinkedHashMap<Object, Object>> rlnmapList = dashboardMapper.queryDef(sqlfilter.toString());
 			result.setStatus(1);
 			result.setData(JSONObject.toJSON(rlnmapList).toString());
