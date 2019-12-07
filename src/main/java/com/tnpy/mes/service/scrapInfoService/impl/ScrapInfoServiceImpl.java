@@ -190,9 +190,8 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
             Map<String, Double> materialWeightMap = new HashMap<>();
             for(int i =0;i< materialWeightList.size();i++)
             {
-                materialWeightMap.put(materialWeightList.get(0).get("materialID").toString(),Double.valueOf(materialWeightList.get(0).get("basicInfo1").toString()));
+                materialWeightMap.put(materialWeightList.get(i).get("materialID").toString(),Double.valueOf(materialWeightList.get(i).get("basicInfo1").toString()));
             }
-
             MaterialScrapRecord materialScrapRecord = new MaterialScrapRecord();
             materialScrapRecord.setPlantid(jsonMap.get("plantID"));
             materialScrapRecord.setProcessid(jsonMap.get("processID"));
