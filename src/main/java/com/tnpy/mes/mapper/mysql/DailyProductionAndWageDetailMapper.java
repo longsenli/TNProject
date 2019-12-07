@@ -70,7 +70,7 @@ public interface DailyProductionAndWageDetailMapper {
     @Select("  select c.*,uuid() as id,ifnull(d.price,0) as univalence,round(c.shelfProduction * ifnull(d.price,0),2) as wage from (\n" +
             "select a.plantID,a.processID,a.lineID,a.worklocationID,a.materialName,a.materialID,a.totalProduction,b.staffID,b.staffName,b.extd1,b.classType1,b.classType2,DATE_FORMAT( b.dayTime,'%Y-%m-%d') as dayTime,a.totalProduction as shelfProduction from (\n" +
             "select plantID,#{processID} as processID,lineID,workLocation as worklocationID,materialID,materialName,count(1) as totalProduction  from tb_plasticusedrecord " +
-            " where plantID = #{plantID} and  usedOrderID like  ${orderInfo} ${lineFilter} and status != '9' and materialName is not null group by workLocation,materialName\n" +
+            " where plantID = #{plantID} and  usedOrderID like  ${orderInfo} ${lineFilter} and status != '9'   group by workLocation,materialName\n" +
             " ) a left join  tb_staffattendancedetail b \n" +
             " on a.worklocationID = b.worklocationID and b.verifierID is not null and b.classType1 = #{classType} and b.dayTime = #{dayTime} ) c left join tb_workcontentunivalence d on  c.materialID= d.materialID and c.plantID = d.plantID and c.processID = d.processID" +
             " and c.extd1 = d.workContentID order by worklocationID\n" )
