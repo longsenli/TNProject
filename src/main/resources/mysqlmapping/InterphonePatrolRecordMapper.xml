@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.InterphonePatrolRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.InterphonePatrolRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="patrolLocationID" jdbcType="VARCHAR" property="patrollocationid" />
+    <result column="patrolLocationName" jdbcType="VARCHAR" property="patrollocationname" />
+    <result column="dayTime" jdbcType="VARCHAR" property="daytime" />
+    <result column="ordinal" jdbcType="INTEGER" property="ordinal" />
+    <result column="onlineFlag" jdbcType="VARCHAR" property="onlineflag" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="patrolTime" jdbcType="TIMESTAMP" property="patroltime" />
+    <result column="patrolStaff" jdbcType="VARCHAR" property="patrolstaff" />
+    <result column="patrolStaffID" jdbcType="VARCHAR" property="patrolstaffid" />
+    <result column="extd1" jdbcType="VARCHAR" property="extd1" />
+    <result column="extd2" jdbcType="VARCHAR" property="extd2" />
+    <result column="extd3" jdbcType="VARCHAR" property="extd3" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, plantID, processID, patrolLocationID, patrolLocationName, dayTime, ordinal, onlineFlag, 
+    content, status, patrolTime, patrolStaff, patrolStaffID, extd1, extd2, extd3, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_interphonepatrolrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_interphonepatrolrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.InterphonePatrolRecord">
+    insert into tb_interphonepatrolrecord (id, plantID, processID, 
+      patrolLocationID, patrolLocationName, dayTime, 
+      ordinal, onlineFlag, content, 
+      status, patrolTime, patrolStaff, 
+      patrolStaffID, extd1, extd2, 
+      extd3, remark)
+    values (#{id,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{processid,jdbcType=VARCHAR}, 
+      #{patrollocationid,jdbcType=VARCHAR}, #{patrollocationname,jdbcType=VARCHAR}, #{daytime,jdbcType=VARCHAR}, 
+      #{ordinal,jdbcType=INTEGER}, #{onlineflag,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{patroltime,jdbcType=TIMESTAMP}, #{patrolstaff,jdbcType=VARCHAR}, 
+      #{patrolstaffid,jdbcType=VARCHAR}, #{extd1,jdbcType=VARCHAR}, #{extd2,jdbcType=VARCHAR}, 
+      #{extd3,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.InterphonePatrolRecord">
+    insert into tb_interphonepatrolrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="processid != null">
+        processID,
+      </if>
+      <if test="patrollocationid != null">
+        patrolLocationID,
+      </if>
+      <if test="patrollocationname != null">
+        patrolLocationName,
+      </if>
+      <if test="daytime != null">
+        dayTime,
+      </if>
+      <if test="ordinal != null">
+        ordinal,
+      </if>
+      <if test="onlineflag != null">
+        onlineFlag,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="patroltime != null">
+        patrolTime,
+      </if>
+      <if test="patrolstaff != null">
+        patrolStaff,
+      </if>
+      <if test="patrolstaffid != null">
+        patrolStaffID,
+      </if>
+      <if test="extd1 != null">
+        extd1,
+      </if>
+      <if test="extd2 != null">
+        extd2,
+      </if>
+      <if test="extd3 != null">
+        extd3,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="patrollocationid != null">
+        #{patrollocationid,jdbcType=VARCHAR},
+      </if>
+      <if test="patrollocationname != null">
+        #{patrollocationname,jdbcType=VARCHAR},
+      </if>
+      <if test="daytime != null">
+        #{daytime,jdbcType=VARCHAR},
+      </if>
+      <if test="ordinal != null">
+        #{ordinal,jdbcType=INTEGER},
+      </if>
+      <if test="onlineflag != null">
+        #{onlineflag,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="patroltime != null">
+        #{patroltime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="patrolstaff != null">
+        #{patrolstaff,jdbcType=VARCHAR},
+      </if>
+      <if test="patrolstaffid != null">
+        #{patrolstaffid,jdbcType=VARCHAR},
+      </if>
+      <if test="extd1 != null">
+        #{extd1,jdbcType=VARCHAR},
+      </if>
+      <if test="extd2 != null">
+        #{extd2,jdbcType=VARCHAR},
+      </if>
+      <if test="extd3 != null">
+        #{extd3,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.InterphonePatrolRecord">
+    update tb_interphonepatrolrecord
+    <set>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        processID = #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="patrollocationid != null">
+        patrolLocationID = #{patrollocationid,jdbcType=VARCHAR},
+      </if>
+      <if test="patrollocationname != null">
+        patrolLocationName = #{patrollocationname,jdbcType=VARCHAR},
+      </if>
+      <if test="daytime != null">
+        dayTime = #{daytime,jdbcType=VARCHAR},
+      </if>
+      <if test="ordinal != null">
+        ordinal = #{ordinal,jdbcType=INTEGER},
+      </if>
+      <if test="onlineflag != null">
+        onlineFlag = #{onlineflag,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="patroltime != null">
+        patrolTime = #{patroltime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="patrolstaff != null">
+        patrolStaff = #{patrolstaff,jdbcType=VARCHAR},
+      </if>
+      <if test="patrolstaffid != null">
+        patrolStaffID = #{patrolstaffid,jdbcType=VARCHAR},
+      </if>
+      <if test="extd1 != null">
+        extd1 = #{extd1,jdbcType=VARCHAR},
+      </if>
+      <if test="extd2 != null">
+        extd2 = #{extd2,jdbcType=VARCHAR},
+      </if>
+      <if test="extd3 != null">
+        extd3 = #{extd3,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.InterphonePatrolRecord">
+    update tb_interphonepatrolrecord
+    set plantID = #{plantid,jdbcType=VARCHAR},
+      processID = #{processid,jdbcType=VARCHAR},
+      patrolLocationID = #{patrollocationid,jdbcType=VARCHAR},
+      patrolLocationName = #{patrollocationname,jdbcType=VARCHAR},
+      dayTime = #{daytime,jdbcType=VARCHAR},
+      ordinal = #{ordinal,jdbcType=INTEGER},
+      onlineFlag = #{onlineflag,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      patrolTime = #{patroltime,jdbcType=TIMESTAMP},
+      patrolStaff = #{patrolstaff,jdbcType=VARCHAR},
+      patrolStaffID = #{patrolstaffid,jdbcType=VARCHAR},
+      extd1 = #{extd1,jdbcType=VARCHAR},
+      extd2 = #{extd2,jdbcType=VARCHAR},
+      extd3 = #{extd3,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
