@@ -9,4 +9,9 @@ import com.tnpy.common.utils.web.TNPYResponse;
  */
 public interface IInterphonePatrolService {
     public TNPYResponse getInterphonePatrolLocationInfo(String plantID, String processID);
+    public TNPYResponse addInterphonePatrolRecord( String recordJson);
+    public TNPYResponse deleteInterphonePatrolRecord(String id);
+
+    public TNPYResponse getInterphonePatrolRecordDetail(String plantID,String startTime,String endTime);
+    public TNPYResponse getInterphonePatrolRecordReport(String plantID,String startTime,String endTime);
 }

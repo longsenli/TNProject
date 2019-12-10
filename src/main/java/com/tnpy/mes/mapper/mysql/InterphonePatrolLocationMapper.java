@@ -24,6 +24,7 @@ public interface InterphonePatrolLocationMapper {
 
     int updateByPrimaryKey(InterphonePatrolLocation record);
 
-    @Select(" select id,name,plantID,processID from tb_interphonepatrollocation ${filter} ")
+
+    @Select(" select id,locationName as name,plantID,processID from tb_interphonepatrollocation ${filter} ")
     List<Map<Object,Object>> selectLocationInfoDetail(@Param("filter") String filter);
 }

@@ -177,4 +177,25 @@ public class OrderController {
     public TNPYResponse orderOutOfDryingKiln( String plantID,String processID,String startTime,String endTime ) {
         return  workOrderService.orderOutOfDryingKiln( plantID,processID,startTime, endTime);
     }
+
+    @RequestMapping(value = "/addWorkorderTemplateBatch")
+    public TNPYResponse addWorkorderTemplateBatch( String orderForepart ,String orderMidpiece ,String orderPosterior ,String creator ,String recordJsonString ) {
+        return  workOrderService.addWorkorderTemplateBatch(orderForepart , orderMidpiece , orderPosterior , creator , recordJsonString);
+    }
+
+    @RequestMapping(value = "/addWorkorderTemplate")
+    public TNPYResponse addWorkorderTemplate(  String jsonStr ) {
+        return  workOrderService.addWorkorderTemplate(jsonStr);
+    }
+
+    @RequestMapping(value = "/deleteWorkorderTemplate")
+    public TNPYResponse deleteWorkorderTemplate( String id ) {
+        return  workOrderService.deleteWorkorderTemplate(id);
+    }
+
+    @RequestMapping(value = "/getWorkorderTemplate")
+    public TNPYResponse getWorkorderTemplate( String plantID,String processID,String lineID ) {
+        return  workOrderService.getWorkorderTemplate(plantID,processID,lineID);
+    }
+
 }

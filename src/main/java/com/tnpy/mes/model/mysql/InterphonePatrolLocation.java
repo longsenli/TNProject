@@ -11,9 +11,9 @@ public class InterphonePatrolLocation {
 
     private String status;
 
-    private String ordinal;
+    private Integer ordinal;
 
-    private Integer locationname;
+    private String locationname;
 
     private Date createtime;
 
@@ -59,20 +59,20 @@ public class InterphonePatrolLocation {
         this.status = status == null ? null : status.trim();
     }
 
-    public String getOrdinal() {
+    public Integer getOrdinal() {
         return ordinal;
     }
 
-    public void setOrdinal(String ordinal) {
-        this.ordinal = ordinal == null ? null : ordinal.trim();
+    public void setOrdinal(Integer ordinal) {
+        this.ordinal = ordinal;
     }
 
-    public Integer getLocationname() {
+    public String getLocationname() {
         return locationname;
     }
 
-    public void setLocationname(Integer locationname) {
-        this.locationname = locationname;
+    public void setLocationname(String locationname) {
+        this.locationname = locationname == null ? null : locationname.trim();
     }
 
     public Date getCreatetime() {

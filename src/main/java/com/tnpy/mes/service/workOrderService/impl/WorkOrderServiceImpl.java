@@ -1,5 +1,6 @@
 package com.tnpy.mes.service.workOrderService.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
@@ -71,6 +72,9 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
 
     @Autowired
     private TidyBatteryRecordMapper tidyBatteryRecordMapper;
+
+    @Autowired
+    private WorkOrderTemplateMapper workOrderTemplateMapper;
 
     public TNPYResponse getWorkOrder() {
         TNPYResponse result = new TNPYResponse();
@@ -817,12 +821,11 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 return result;
             }
             //orderSplitMapper.cancelFinishStatus(subOrdderID);
-            if( workOrderMapper.cancelFinishWorkOrder(subOrdderID) < 1)
-            {
+            if (workOrderMapper.cancelFinishWorkOrder(subOrdderID) < 1) {
                 result.setMessage("取消失败，该工单尚未完工或已被使用！");
                 return result;
             }
-            orderSplitMapper.updateStatus(subOrdderID,StatusEnum.WorkOrderStatus.ordered.getIndex() + "");
+            orderSplitMapper.updateStatus(subOrdderID, StatusEnum.WorkOrderStatus.ordered.getIndex() + "");
 
             //浇铸时效硬化窑
             String jzflag = subOrdderID.substring(1, 10);
@@ -887,10 +890,9 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
     public TNPYResponse getPlanProductionRecord(String plantID, String processID, String startTime, String endTime, String slctType) {
         TNPYResponse result = new TNPYResponse();
         try {
-            if("1".equals(slctType))
-            {
-                startTime = startTime.substring(0,7);
-                endTime = endTime.substring(0,7);
+            if ("1".equals(slctType)) {
+                startTime = startTime.substring(0, 7);
+                endTime = endTime.substring(0, 7);
             }
             String filter = " where planMonth >= '" + startTime + "' and planMonth <= '" + endTime + "' and status = '" + slctType + "' ";
             if (!"-1".equals(plantID)) {
@@ -1400,6 +1402,143 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             }
 
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse addWorkorderTemplateBatch(String orderForepart, String orderMidpiece, String orderPosterior, String creator, String recordJsonString) {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            List<WorkOrderTemplate> workOrderTemplateList = JSON.parseArray(recordJsonString, WorkOrderTemplate.class);
+
+            if (workOrderTemplateList.size() < 1) {
+                result.setMessage("模板信息为空，请确认信息！");
+                return result;
+            }
+            String timeStart = "";
+            if (orderPosterior.startsWith("BB")) {
+                timeStart = orderPosterior.substring(2, 6) + "-" + orderPosterior.substring(6, 8) + "-" + orderPosterior.substring(8, 10) + " 07:00:00";
+            } else {
+                timeStart = orderPosterior.substring(2, 6) + "-" + orderPosterior.substring(6, 8) + "-" + orderPosterior.substring(8, 10) + " 19:00:00";
+            }
+
+            List<Map<Object, Object>> lineInfoList = workOrderMapper.getLineShortNameList(workOrderTemplateList.get(0).getPlantid(), workOrderTemplateList.get(0).getProcessid());
+            List<String> idList = workOrderMapper.selectOrderIDListByProcess(workOrderTemplateList.get(0).getProcessid(), timeStart);
+
+            Map<String, String> lineShortNameMap = new HashMap<>();
+            for (int j = 0; j < lineInfoList.size(); j++) {
+                lineShortNameMap.put(lineInfoList.get(0).get("id").toString(), lineInfoList.get(0).get("shortname").toString());
+            }
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            List<OrderSplit> orderSplitList = new ArrayList<>();
+            Workorder workorder = new Workorder();
+            String numStr = "";
+            for (int i = 0; i < workOrderTemplateList.size(); i++) {
+                orderSplitList.clear();
+                numStr ="";
+                workorder.setStatus(StatusEnum.WorkOrderStatus.ordered.getIndex() + "");
+                workorder.setCreatetime(new Date());
+                workorder.setOpenstaff(creator);
+                workorder.setScheduledstarttime(dateFormat.parse(timeStart));
+                workorder.setBatchnum(workOrderTemplateList.get(i).getBatchnum());
+                workorder.setTotalproduction(workOrderTemplateList.get(i).getTotalproduction());
+                workorder.setMaterialid(workOrderTemplateList.get(i).getMaterialid());
+                workorder.setUnits(orderMidpiece);
+                workorder.setPlantid(workOrderTemplateList.get(i).getPlantid());
+                workorder.setProcessid(workOrderTemplateList.get(i).getProcessid());
+                workorder.setLineid(workOrderTemplateList.get(i).getLineid());
+
+                for (int m = 0; ; m++) {
+                    numStr = orderForepart + lineShortNameMap.get(workOrderTemplateList.get(i).getLineid()) + orderMidpiece + String.valueOf(m + 1)
+                            + orderPosterior;
+                    if (idList.contains(numStr)) {
+                        continue;
+                    } else
+                        break;
+                }
+                if (numStr.length() < 3) {
+                    result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                    result.setMessage("自定义工单失败！");
+                    return result;
+                }
+                workorder.setOrderid(numStr);
+                workorder.setId(numStr);
+                workOrderMapper.insertSelective(workorder);
+                idList.add(numStr);
+
+                for (int n = 0; n < workorder.getBatchnum(); n++) {
+                    OrderSplit orderSplit = new OrderSplit();
+                    orderSplit.setOrderid(workorder.getId());
+                    orderSplit.setStatus(StatusEnum.WorkOrderStatus.ordered.getIndex() + "");
+                    orderSplit.setMaterialid(workorder.getMaterialid());
+                    orderSplit.setOrdersplitid(workorder.getOrderid() + getOrderNumber(n + 1, 3));
+                    orderSplit.setId(orderSplit.getOrdersplitid());
+                    orderSplit.setProductionnum(workorder.getTotalproduction() / workorder.getBatchnum() * 1.0);
+                    orderSplitList.add(orderSplit);
+                }
+                orderSplitMapper.insertManyOrder(orderSplitList, workorder.getId());
+
+            }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setMessage("修改成功！");
+            return result;
+        } catch (Exception ex) {
+
+            result.setMessage("修改出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse addWorkorderTemplate(String jsonStr) {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            WorkOrderTemplate workOrderTemplate = (WorkOrderTemplate) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), WorkOrderTemplate.class);
+
+            if (StringUtils.isEmpty(workOrderTemplate.getId())) {
+
+                workOrderTemplate.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                workOrderTemplate.setCreatetime(new Date());
+                workOrderTemplate.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
+                workOrderTemplateMapper.insertSelective(workOrderTemplate);
+            } else {
+                workOrderTemplateMapper.updateByPrimaryKey(workOrderTemplate);
+            }
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setMessage("修改成功！");
+            return result;
+        } catch (Exception ex) {
+
+            result.setMessage("修改出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse deleteWorkorderTemplate(String id) {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            workOrderTemplateMapper.deleteByPrimaryKey(id);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse getWorkorderTemplate(String plantID, String processID, String lineID) {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            String filter = "where status != '-1' and  plantID ='" + plantID + "' and processID = '" + processID + "' ";
+            if (!"-1".equals(lineID)) {
+                filter += " and lineID = '" + lineID + "' ";
+            }
+            List<Map<Object, Object>> workorderTemplateList = workOrderTemplateMapper.selectWorkOrderTemplateByFilter(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSONString(workorderTemplateList).toString());
             return result;
         } catch (Exception ex) {
             result.setMessage("查询出错！" + ex.getMessage());

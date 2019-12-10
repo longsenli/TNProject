@@ -22,4 +22,28 @@ public class InterphonePatrolController {
 
         return  interphonePatrolService.getInterphonePatrolLocationInfo(plantID,processID);
     }
+
+    @RequestMapping(value = "/addInterphonePatrolRecord")
+    public TNPYResponse addInterphonePatrolRecord( String recordJson) {
+
+        return  interphonePatrolService.addInterphonePatrolRecord(recordJson);
+    }
+
+    @RequestMapping(value = "/deleteInterphonePatrolRecord")
+    public TNPYResponse deleteInterphonePatrolRecord(String id) {
+
+        return  interphonePatrolService.deleteInterphonePatrolRecord(id);
+    }
+
+    @RequestMapping(value = "/getInterphonePatrolRecordDetail")  // 实际中是查询某一天全部的信息
+    public TNPYResponse getInterphonePatrolRecordDetail(String plantID,String startTime,String endTime) {
+
+        return  interphonePatrolService.getInterphonePatrolRecordDetail(plantID,startTime,endTime);
+    }
+
+    @RequestMapping(value = "/getInterphonePatrolRecordReport")// 实际中是查询某一天全部的信息
+    public TNPYResponse getInterphonePatrolRecordReport(String plantID,String startTime,String endTime) {
+
+        return  interphonePatrolService.getInterphonePatrolRecordReport(plantID,startTime,endTime);
+    }
 }

@@ -110,6 +110,9 @@ public interface WorkorderMapper {
     @Select("select id from tb_workorder where lineID = #{lineID}  and scheduledStartTime =  #{startDate}")
     List<String> selectOrderIDList(String lineID, String startDate);
 
+    @Select("select id from tb_workorder where processID = #{processID}  and scheduledStartTime =  #{startDate}")
+    List<String> selectOrderIDListByProcess(String processID, String startDate);
+
     @Select("select count(1) from tb_workorder where status !='5' and  plantID = #{plantID} and processID = #{processID} and scheduledStartTime =  #{time}")
     int selectOrderInfo(String plantID, String processID, String time);
 
@@ -130,4 +133,8 @@ public interface WorkorderMapper {
 
     @Update("delete from tb_materialrecord  where id =#{id}  and inOrOut != '2'")
     int cancelFinishWorkOrder(String id );
+
+    @Select(" select id,shortname from sys_productionline where plantID = #{plantID} and processID = #{processID} and status = '1'")
+    List<Map<Object, Object>> getLineShortNameList(String plantID, String processID);
+
 }
