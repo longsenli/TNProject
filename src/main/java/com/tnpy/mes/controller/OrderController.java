@@ -184,7 +184,7 @@ public class OrderController {
     }
 
     @RequestMapping(value = "/addWorkorderTemplate")
-    public TNPYResponse addWorkorderTemplate(  String jsonStr ) {
+    public TNPYResponse addWorkorderTemplate( @RequestBody  String jsonStr ) {
         return  workOrderService.addWorkorderTemplate(jsonStr);
     }
 

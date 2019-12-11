@@ -65,7 +65,7 @@ public interface WorkorderMapper {
 
     @Select("select ifnull(c.realProduction,0) as realProduction,c.materialName,d.name as lineName from ( select count(1) as realProduction ,materialName,lineID from (\n" +
             "select id from tb_workorder  where plantID = #{plantID} and processID = #{processID} and status < '5' and scheduledStartTime >= #{startTime} and scheduledStartTime <= #{endTime} ) a \n" +
-            "left join tb_plasticusedrecord b on a.id = b.usedOrderID group by materialName,lineID ) c left join sys_productionline d on c.lineID = d.id  order by lineName")
+            "left join tb_plasticusedrecord b on a.id = b.usedOrderID and b.status != '9' group by materialName,lineID ) c left join sys_productionline d on c.lineID = d.id  order by lineName")
     List<Map<Object, Object>> getZHQDRealtimeProductionDashboard(String plantID, String processID, String startTime, String endTime);
 
     @Select("select sum(totalNumber) as realProduction ,materialName,lineName from tb_packagedetailrecord where dayTime >= #{startTime} and dayTime <= #{endTime} and " +
