@@ -1292,7 +1292,7 @@ public class DashboardServiceImpl implements IDashboardService {
 						"		sum(\r\n" + 
 						"			IFNULL(t.planDailyProduction, 0)\r\n" + 
 						"		) AS '计划数量',\r\n" + 
-						"		sum(IFNULL(production, 0)) AS '实际数量'\r\n" + 
+						"		sum(IFNULL(production, 0)) AS '实际数量'  , IFNULL(CONCAT(ROUND(sum(IFNULL(production, 0))/sum(IFNULL(t.planDailyProduction, 0)) * 100 , 2),'','%'),'100%') as '完成率'\r\n" + 
 						"	FROM\r\n" + 
 						"		tb_dailyproductionsummaryprocess p\r\n" + 
 						"	LEFT JOIN (\r\n" + 
@@ -1330,7 +1330,7 @@ public class DashboardServiceImpl implements IDashboardService {
 						"			sum(\r\n" + 
 						"				IFNULL(t.planDailyProduction, 0)\r\n" + 
 						"			) - sum(production) AS '未完成',\r\n" + 
-						"			sum(production) AS '实际'\r\n" + 
+						"			sum(production) AS '实际' , ''\r\n" + 
 						"		FROM\r\n" + 
 						"			tb_dailyproductionsummaryprocess p\r\n" + 
 						"		LEFT JOIN (\r\n" + 
