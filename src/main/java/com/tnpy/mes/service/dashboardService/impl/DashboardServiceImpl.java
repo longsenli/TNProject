@@ -1261,7 +1261,104 @@ public class DashboardServiceImpl implements IDashboardService {
 
 						"GROUP BY td.plantID,td.dayTime\r\n" + 
 						"ORDER BY td.dayTime asc, td.processID asc\r\n" );
+//				System.out.println(sqlfilter);
+				List<LinkedHashMap<Object, Object>> rlnmapList = dashboardMapper.queryDef(sqlfilter.toString());
+				result.setStatus(1);
+				result.setData(JSONObject.toJSON(rlnmapList).toString());
+				return result;
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				result.setMessage("查询出错！" + ex.getMessage());
+				return result;
+			}
+		}
+
+		@Override
+		public TNPYResponse getmonthproductAccountSummaryPlant(String plantID, String processID, String startTime,
+				String endTime) {
+			TNPYResponse result = new TNPYResponse();
+
+			try {
+				// 判断日期是否合法
+				if (!DateUtilsDef.isDateCheck(startTime) && !DateUtilsDef.isDateCheck(endTime)) {
+					result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+					result.setMessage("日期不合法");
+					return result;
+				}
+				StringBuilder sqlfilter = new StringBuilder();
+				sqlfilter.append("select * from ( (\r\n" + 
+						"	SELECT\r\n" + 
+						"		DATE_FORMAT(p.dayTime, '%Y-%m-%d') AS '时间',\r\n" + 
+						"		sum(\r\n" + 
+						"			IFNULL(t.planDailyProduction, 0)\r\n" + 
+						"		) AS '计划数量',\r\n" + 
+						"		sum(IFNULL(production, 0)) AS '实际数量'\r\n" + 
+						"	FROM\r\n" + 
+						"		tb_dailyproductionsummaryprocess p\r\n" + 
+						"	LEFT JOIN (\r\n" + 
+						"		SELECT\r\n" + 
+						"			planDailyProduction,\r\n" + 
+						"			planmonth\r\n" + 
+						"		FROM\r\n" + 
+						"			tb_planproductionrecord\r\n") ;
 						
+						sqlfilter.append("WHERE\r\n	1 = 1  " );
+						if (!"-1".equals(plantID)) {
+							sqlfilter.append(" and  plantID = '" + plantID + "'   ");
+						}
+						if (!"-1".equals(processID)) {
+							sqlfilter.append( " and processID = '" + processID + "' ");
+						}
+						sqlfilter.append( "		AND `status` = '2'  AND planmonth >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
+								+ " AND planmonth <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d')   ORDER BY planmonth ) " +" t ON t.planmonth = p.dayTime\r\n" );
+						sqlfilter.append("WHERE\r\n	1 = 1  " );
+						if (!"-1".equals(plantID)) {
+							sqlfilter.append(" and  p.plantID = '" + plantID + "' ");
+						}
+						if (!"-1".equals(processID)) {
+							sqlfilter.append( " and p.processID = '" + processID + "' ");
+						}
+						sqlfilter.append( " AND p.daytime >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
+								+ " AND p.daytime <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d') " +
+		
+								"GROUP BY p.dayTime\r\n" + 
+								" )\r\n " );
+						sqlfilter.append("UNION ALL\r\n" + 
+						"	(\r\n" + 
+						"		SELECT\r\n" + 
+						"			'other',\r\n" + 
+						"			sum(\r\n" + 
+						"				IFNULL(t.planDailyProduction, 0)\r\n" + 
+						"			) - sum(production) AS '未完成',\r\n" + 
+						"			sum(production) AS '实际'\r\n" + 
+						"		FROM\r\n" + 
+						"			tb_dailyproductionsummaryprocess p\r\n" + 
+						"		LEFT JOIN (\r\n" + 
+						"			SELECT\r\n" + 
+						"				planDailyProduction,\r\n" + 
+						"				planmonth\r\n" + 
+						"			FROM\r\n" + 
+						"				tb_planproductionrecord\r\n" );
+						sqlfilter.append("WHERE\r\n	1 = 1  " );
+						if (!"-1".equals(plantID)) {
+							sqlfilter.append(" and  plantID = '" + plantID + "'   ");
+						}
+						if (!"-1".equals(processID)) {
+							sqlfilter.append( " and processID = '" + processID + "' ");
+						}
+						sqlfilter.append( "		AND `status` = '2'  AND planmonth >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
+								+ " AND planmonth <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d')   ORDER BY planmonth ) " +" t ON t.planmonth = p.dayTime\r\n" );
+
+						sqlfilter.append("WHERE\r\n	1 = 1  " );
+						if (!"-1".equals(plantID)) {
+							sqlfilter.append(" and  p.plantID = '" + plantID + "' ");
+						}
+						if (!"-1".equals(processID)) {
+							sqlfilter.append( " and p.processID = '" + processID + "' ");
+						}
+						sqlfilter.append( " AND p.daytime >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
+								+ " AND p.daytime <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d') ) ) rsall order by rsall.`时间`" );
+		
 //				System.out.println(sqlfilter);
 				List<LinkedHashMap<Object, Object>> rlnmapList = dashboardMapper.queryDef(sqlfilter.toString());
 				result.setStatus(1);

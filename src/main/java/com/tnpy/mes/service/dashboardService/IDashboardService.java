@@ -26,7 +26,9 @@ public interface IDashboardService {
     public TNPYResponse getDailyProductionSummaryPlant(String plantID ,String startTime,String endTime);
     
     public TNPYResponse getproductAccountSummaryPlant(String plantID ,String processID,String startTime,String endTime);
-	TNPYResponse getstaffproductAccountSummaryPlant(String plantID, String processID, String startTime, String endTime);
-	TNPYResponse getprocessproductAccountSummaryPlant(String plantID, String processID, String startTime,
+	public TNPYResponse getstaffproductAccountSummaryPlant(String plantID, String processID, String startTime, String endTime);
+	public TNPYResponse getprocessproductAccountSummaryPlant(String plantID, String processID, String startTime,
+			String endTime);
+	public TNPYResponse getmonthproductAccountSummaryPlant(String plantID, String processID, String startTime,
 			String endTime);
 }
