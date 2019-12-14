@@ -279,13 +279,13 @@ public class AutomaticSchedulingTimer {
         } catch (Exception ex) {
         }
     }
-
-    @Scheduled(cron = "0 52 6 * * ?")
+  @Scheduled(cron = "0 52 6 * * ?")
     public void automaticInventoryStatistics() {
         try {
             if(!serviceIPJudge())
                 return;
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyyMMdd");
             Date date = new Date();//取时间
             dateFormat.format(date);
             String timeFinish = "";
@@ -297,7 +297,7 @@ public class AutomaticSchedulingTimer {
             calendar.add(Calendar.DATE, -1);
             date = calendar.getTime();   //这个时间就是日期往后推一天的结果
             timeStart = dateFormat.format(date) + " 07:00:00";
-           // timeStart = dateFormat.format(date);
+            // timeStart = dateFormat.format(date);
             List<IndustrialPlant> industrialPlantList = industrialPlantMapper.selectAll();
             List<ProductionProcess> productionProcessList = productionProcessMapper.selectAll();
 
@@ -324,9 +324,9 @@ public class AutomaticSchedulingTimer {
                             materialInventoryRecordMapper.insertFBInventoryStatistics(timeStart, timeFinish + " 06:59", industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j + 1).getId(), dateFormat.format(date) );
                         }
 
-                        if (ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(productionProcessList.get(j).getId())) {
-                            materialInventoryRecordMapper.insertZHInventoryStatistics(timeStart, timeFinish, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j + 1).getId(), dateFormat.format(date) );
-                        }
+//                        if (ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(productionProcessList.get(j).getId())) {
+//                            materialInventoryRecordMapper.insertZHInventoryStatistics(timeStart, timeFinish, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j + 1).getId(), dateFormat.format(date) );
+//                        }
 
                         if (ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(productionProcessList.get(j).getId())) {
                             materialInventoryRecordMapper.insertJZInventoryStatistics(timeStart, timeFinish, industrialPlantList.get(i).getId(), productionProcessList.get(j).getId(), productionProcessList.get(j + 1).getId(), dateFormat.format(date) );
@@ -337,6 +337,9 @@ public class AutomaticSchedulingTimer {
                     }
                 }
             }
+
+            materialInventoryRecordMapper.insertZHInventoryStatistics(timeStart, timeFinish + " 07:00",timeStart.substring(0,10),timeFinish,ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName(),"'%" + dateFormat2.format(date)  + "'"  );
+
 
             materialInventoryRecordMapper.insertCDInventoryStatistics(timeStart.split(" ")[0],timeFinish,ConfigParamEnum.BasicProcessEnum.CDProcessID.getName());
 
@@ -514,6 +517,7 @@ public class AutomaticSchedulingTimer {
                 {
                     continue;
                 }
+
 
                 for (int j = 0; j < productionProcessList.size(); j++) {
                     try {

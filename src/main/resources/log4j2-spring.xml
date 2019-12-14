@@ -63,7 +63,7 @@
     <Loggers>
         <!--过滤掉spring和mybatis的一些无用的DEBUG信息-->
         <logger name="org.springframework" level="WARN"></logger>
-        <logger name="org.mybatis" level="DEBUG"></logger>
+        <logger name="org.mybatis" level="WARN"></logger>
         <!-- 第三方日志系统 -->
         <logger name="org.springframework.core" level="WARN" />
         <logger name="org.springframework.beans" level="WARN" />
@@ -72,7 +72,7 @@
         <logger name="org.jboss.netty" level="warn" />
         <logger name="org.apache.http" level="warn" />
         <!-- 配置日志的根节点 -->
-        <root level="debug">
+        <root level="WARN">
             <appender-ref ref="Console"/>
             <appender-ref ref="log"/>
             <appender-ref ref="RollingFileInfo"/>

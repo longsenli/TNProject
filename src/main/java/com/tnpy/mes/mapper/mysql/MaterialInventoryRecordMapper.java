@@ -3,6 +3,7 @@ package com.tnpy.mes.mapper.mysql;
 import com.tnpy.mes.model.mysql.MaterialInventoryRecord;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 @Mapper
@@ -20,22 +21,51 @@ public interface MaterialInventoryRecordMapper {
 
     int updateByPrimaryKey(MaterialInventoryRecord record);
 
-    @Insert(" insert into tb_materialinventoryrecord  (id, materialID, plantID, processID, currentNum, lastStorage, updateTime, productionNum,\n" +
-            "    inNum, expendNum, outNum, operator, status,onlineStorageInNum,remark)\n" +
-            " select  UUID(),g.id ,#{plantID},#{processID},(ifnull(currentNum,0) + ifnull(productionNum,0) + ifnull(onlineInnum,0) - ifnull(grantNum,0)   + ifnull(scrapNum,0) ) as newNum," +
-            " ifnull(currentNum,0),now(),ifnull(productionNum,0),ifnull(scrapNum,0),ifnull(grantNum,0),0 ,'system','1',ifnull(onlineInnum,0),'' from (\n" +
-            " select e.*,f.currentNum from ( select c.*,d.productionNum from ( select m.*  ,n.number as onlineInnum from ( select a.id,a.name,b.grantNum from (\n" +
-            " select id,name from sys_material where typeID in ( select materialTypeID from sys_processmaterial where processID = #{processID} and inOrout = 2) )a left join \n" +
-            " ( select batteryType,sum(number) as grantNum from tb_grantmaterialrecord where plantID = #{plantID} and processID = #{processID} \n" +
-            "and grantTime > #{lastStatisTime} and  grantTime <= #{endTime} group by batteryType) b on a.id =b.batteryType) m left join ( select materialID,number from tb_materialrecord \n" +
-            "where subOrderID in ( select id from  tb_onlinematerialrecord where  updateTime >=  #{startTime}  and  updateTime <= #{endTime}  and  plantID = #{plantID} and processID = #{processID}) ) n on m.id = n.materialID ) c left join \n" +
-            "( select materialID,sum(number) as productionNum from tb_materialrecord where  orderID in (select id from tb_workorder where  scheduledStartTime >=  #{startTime} \n" +
-            " and  scheduledStartTime < #{endTime} and plantID = #{plantID} and processID = #{processID} and status < '6' )  group by materialID ) d on c.id =d.materialID ) e left join  \n" +
-            " ( select materialID,max(currentNum) as currentNum from tb_materialinventoryrecord where plantID = #{plantID} and processID = #{processID} and updateTime >= #{lastStatisTime} and updateTime <= #{startTime} group by  materialID  ) f on e.id = f.materialID ) g left join\n" +
-            " ( select materialID,sum(value) as scrapNum from tb_workorderscrapinfo where orderID in (select id from tb_workorder where  scheduledStartTime >=  #{startTime} \n" +
-            " and  scheduledStartTime < #{endTime} and plantID = #{plantID} and processID = #{nextProcessID} ) group by materialID ) h on g.id = h.materialID where (ifnull(currentNum,0) + ifnull(productionNum,0)  + ifnull(grantNum,0)   + ifnull(scrapNum,0) + ifnull(onlineInnum,0)) != 0")
-    int insertZHInventoryStatistics( String startTime,String endTime,String plantID,String processID,String nextProcessID,String lastStatisTime);
+//    @Insert(" insert into tb_materialinventoryrecord  (id, materialID, plantID, processID, currentNum, lastStorage, updateTime, productionNum,\n" +
+//            "    inNum, expendNum, outNum, operator, status,onlineStorageInNum,remark)\n" +
+//            " select  UUID(),g.id ,#{plantID},#{processID},(ifnull(currentNum,0) + ifnull(productionNum,0) + ifnull(onlineInnum,0) - ifnull(grantNum,0)   + ifnull(scrapNum,0) ) as newNum," +
+//            " ifnull(currentNum,0),now(),ifnull(productionNum,0),ifnull(scrapNum,0),ifnull(grantNum,0),0 ,'system','1',ifnull(onlineInnum,0),'' from (\n" +
+//            " select e.*,f.currentNum from ( select c.*,d.productionNum from ( select m.*  ,n.number as onlineInnum from ( select a.id,a.name,b.grantNum from (\n" +
+//            " select id,name from sys_material where typeID in ( select materialTypeID from sys_processmaterial where processID = #{processID} and inOrout = 2) )a left join \n" +
+//            " ( select batteryType,sum(number) as grantNum from tb_grantmaterialrecord where plantID = #{plantID} and processID = #{processID} \n" +
+//            "and grantTime > #{lastStatisTime} and  grantTime <= #{endTime} group by batteryType) b on a.id =b.batteryType) m left join ( select materialID,number from tb_materialrecord \n" +
+//            "where subOrderID in ( select id from  tb_onlinematerialrecord where  updateTime >=  #{startTime}  and  updateTime <= #{endTime}  and  plantID = #{plantID} and processID = #{processID}) ) n on m.id = n.materialID ) c left join \n" +
+//            "( select materialID,sum(number) as productionNum from tb_materialrecord where  orderID in (select id from tb_workorder where  scheduledStartTime >=  #{startTime} \n" +
+//            " and  scheduledStartTime < #{endTime} and plantID = #{plantID} and processID = #{processID} and status < '6' )  group by materialID ) d on c.id =d.materialID ) e left join  \n" +
+//            " ( select materialID,max(currentNum) as currentNum from tb_materialinventoryrecord where plantID = #{plantID} and processID = #{processID} and updateTime >= #{lastStatisTime} and updateTime <= #{startTime} group by  materialID  ) f on e.id = f.materialID ) g left join\n" +
+//            " ( select materialID,sum(value) as scrapNum from tb_workorderscrapinfo where orderID in (select id from tb_workorder where  scheduledStartTime >=  #{startTime} \n" +
+//            " and  scheduledStartTime < #{endTime} and plantID = #{plantID} and processID = #{nextProcessID} ) group by materialID ) h on g.id = h.materialID where (ifnull(currentNum,0) + ifnull(productionNum,0)  + ifnull(grantNum,0)   + ifnull(scrapNum,0) + ifnull(onlineInnum,0)) != 0")
+//    int insertZHInventoryStatistics( String startTime,String endTime,String plantID,String processID,String nextProcessID,String lastStatisTime);
 
+    @Insert("insert into tb_materialinventoryrecord  (id, materialID, plantID, processID, currentNum, lastStorage, updateTime, productionNum,\n" +
+            "            inNum, expendNum, outNum, operator, status,onlineStorageInNum)\n" +
+            "       select uuid(),  materialID,plantID,processID,currentNumber + productionNumber + inNum -expendNum -outNum,currentNumber,now(),productionNumber,inNum,expendNum,outNum,'system','1',onlineStorageInNum\n" +
+            "       from (\n" +
+            "      select materialID,plantID,processID,sum(currentNumber) as currentNumber ,sum(productionNumber) as productionNumber,sum(inNum) as inNum,sum(expendNum) as expendNum ,\n" +
+            "      sum(outNum) as outNum,sum(onlineStorageInNum) as onlineStorageInNum from (\n" +
+            "( select materialID,inputPlantID as plantID,inputProcessID as processID, 0 as currentNumber,sum(number) as productionNumber,0 as inNum,0 as expendNum,0 as outNum, 0 as onlineStorageInNum\n" +
+            "from tb_materialrecord where orderID like ${orderLike} and inputProcessID = #{processID} group by materialID,inputPlantID\n" +
+            ") union all (\n" +
+            "select materialID,originalPlantID as plantID, processID, 0 as currentNumber,0 as productionNumber,0 as inNum, 0 as expendNum,sum(number) as outNum, 0 as onlineStorageInNum\n" +
+            "from tb_materialcirculationrecord where  processID =  #{processID} and sendTime > #{startTimeWith7} and sendTime <#{endTimeWith7} group by materialID,originalPlantID \n" +
+            ") union all (\n" +
+            "select materialID,destinationPlantID as plantID, processID, 0 as currentNumber,0 as productionNumber,sum(number) as inNum,0 as expendNum,0 as outNum, 0 as onlineStorageInNum\n" +
+            "from tb_materialcirculationrecord where  processID =  #{processID} and sendTime >  #{startTimeWith7} and sendTime < #{endTimeWith7}  group by materialID,destinationPlantID\n" +
+            ") union all (\n" +
+            "select materialID, plantID, processID, 0 as currentNumber,0 as productionNumber,sum(materialNum) as inNum,0 as expendNum,0 as outNum, 0 as onlineStorageInNum\n" +
+            "from tb_onlinematerialrecord where  processID = #{processID} and updateTime >  #{startTimeWith7}  and updateTime < #{endTimeWith7}  and status = '3'  group by materialID,plantID\n" +
+            ") union all (\n" +
+            "select materialID, plantID, processID, 0 as currentNumber,0 as productionNumber,0 as inNum,0 as expendNum,0 as outNum, sum(materialNum) as onlineStorageInNum\n" +
+            "from tb_onlinematerialrecord where  processID = #{processID} and  status = '1'  group by materialID,plantID\n" +
+            ") union all (\n" +
+            "select batteryType as  materialID, plantID, processID, 0 as currentNumber,0 as productionNumber,0 as inNum,sum(number)  as expendNum,0 as outNum, 0 as onlineStorageInNum\n" +
+            "from tb_grantmaterialrecord where  processID = #{processID} and grantTime >  #{startTimeWithout7} and grantTime < #{endTimeWithout7} and status = '1'  group by batteryType,plantID\n" +
+            ") union all (\n" +
+            "select  materialID, plantID, processID, max(currentNum) as  currentNumber,0 as productionNumber,0 as inNum,0  as expendNum,0 as outNum, 0 as onlineStorageInNum\n" +
+            "from tb_materialinventoryrecord where  processID =  #{processID} and updateTime > #{startTimeWithout7} and updateTime < #{startTimeWith7} and status = '1'  group by materialID, plantID\n" +
+            ") \n" +
+            ") a group by materialID,plantID,processID ) b ")
+    int insertZHInventoryStatistics(String startTimeWith7, String endTimeWith7, String startTimeWithout7, String endTimeWithout7, String processID, @Param("orderLike") String orderLikeString);
     @Insert(" insert into tb_materialinventoryrecord (id, materialID, plantID, processID, currentNum, lastStorage, updateTime, productionNum,\n" +
             "    inNum, expendNum, outNum, operator, status, onlineStorageInNum,remark)\n" +
             " select  UUID(),g.id ,#{plantID},#{processID},(ifnull(currentNum,0) + ifnull(productionNum,0) + ifnull(onlineInnum,0) - ifnull(grantNum,0)   + ifnull(scrapNum,0) ) as newNum,ifnull(currentNum,0)," +

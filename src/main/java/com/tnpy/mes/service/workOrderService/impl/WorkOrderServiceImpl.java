@@ -1051,9 +1051,9 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 return result;
             }
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
             Date now = new Date();
-            String orderName = onlineMaterialRecordList.get(0).getPlantid().split("###")[1] + onlineMaterialRecordList.get(0).getProcessid().split("###")[1] + onlineMaterialRecordList.get(0).getLineid().split("###")[1] + dateFormat.format(now);
+            String orderName = onlineMaterialRecordList.get(0).getPlantid().split("###")[1] + onlineMaterialRecordList.get(0).getProcessid().split("###")[1] + onlineMaterialRecordList.get(0).getLineid().split("###")[1]+ "WXRK" + dateFormat.format(now);
             if ("-1".equals(inputNumber)) {
                 inputNumber = onlineMaterialRecordList.get(0).getMaterialnum().toString();
             }
@@ -1083,10 +1083,11 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             orderSplitMapper.insertSelective(orderSplit);
 
             MaterialRecord materialRecord = new MaterialRecord();
-            materialRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+            materialRecord.setId(orderName);
             materialRecord.setNumber(orderSplit.getProductionnum());
             materialRecord.setInorout(StatusEnum.InOutStatus.Input.getIndex());
             materialRecord.setInputer(operator);
+            materialRecord.setOrderid(orderName.substring(0,orderName.length()-6));
             materialRecord.setSuborderid(orderName);
             materialRecord.setMaterialid(orderSplit.getMaterialid());
             materialRecord.setInputtime(new Date());
