@@ -124,7 +124,15 @@ public class ChargePackServiceImpl implements IChargePackService {
             loginRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
             loginRecord.setLogintime(new Date());
             loginRecord.setUserid(id);
-            loginRecord.setLoginip(JSONObject.toJSON(chargingRackRecord).toString().substring(0,395));
+
+            if(JSONObject.toJSON(chargingRackRecord).toString().length() > 396)
+            {
+                loginRecord.setLoginip(JSONObject.toJSON(chargingRackRecord).toString().substring(0,395));
+            }
+            else
+            {
+                loginRecord.setLoginip(JSONObject.toJSON(chargingRackRecord).toString());
+            }
             loginRecordMapper.insert(loginRecord);
             chargingRackRecordMapper.deleteByPrimaryKey(id);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -152,7 +160,15 @@ public class ChargePackServiceImpl implements IChargePackService {
                 loginRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 loginRecord.setLogintime(new Date());
                 loginRecord.setUserid(chargingRackRecord.getStaffid());
-                loginRecord.setLoginip(jsonStr.substring(0,395));
+                if(jsonStr.length() > 396)
+                {
+                    loginRecord.setLoginip(jsonStr.substring(0,395));
+                }
+                else
+                {
+                    loginRecord.setLoginip(jsonStr);
+                }
+
                 loginRecordMapper.insert(loginRecord);
 
 
