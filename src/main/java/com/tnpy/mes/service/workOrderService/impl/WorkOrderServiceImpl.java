@@ -870,6 +870,10 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
 
                     planProductionRecord.setStatus("1");
 
+                    if(planProductionRecord.getPlandailyproduction()  ==null ||  planProductionRecord.getPlandailyproduction() < 1)
+                    {
+                        planProductionRecord.setPlandailyproduction(planProductionRecord.getPlanproduction()/30);
+                    }
                     planProductionRecordMapper.insertSelective(planProductionRecord);
                 }
             } else {
@@ -901,7 +905,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             if (!"-1".equals(processID)) {
                 filter += " and processID ='" + processID + "' ";
             }
-            filter += " order by planMonth desc";
+            filter += " order by plantID,processID,materialName,planMonth desc";
 
             List<PlanProductionRecord> planProductionRecordList = planProductionRecordMapper.getPlanProductionRecordByFilter(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
