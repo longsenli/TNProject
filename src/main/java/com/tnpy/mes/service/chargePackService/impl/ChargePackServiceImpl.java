@@ -119,13 +119,12 @@ public class ChargePackServiceImpl implements IChargePackService {
         TNPYResponse result = new TNPYResponse();
         try
         {
-
             ChargingRackRecord chargingRackRecord = chargingRackRecordMapper.selectByPrimaryKey(id);
             LoginRecord loginRecord = new LoginRecord();
             loginRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
             loginRecord.setLogintime(new Date());
             loginRecord.setUserid(id);
-            loginRecord.setLoginip(JSONObject.toJSON(chargingRackRecord).toString().substring(0,195));
+            loginRecord.setLoginip(JSONObject.toJSON(chargingRackRecord).toString().substring(0,395));
             loginRecordMapper.insert(loginRecord);
             chargingRackRecordMapper.deleteByPrimaryKey(id);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -145,15 +144,18 @@ public class ChargePackServiceImpl implements IChargePackService {
         {
             if(StringUtils.isEmpty(chargingRackRecord.getId()))
             {
+                chargingRackRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                chargingRackRecord.setStatus("1");
+
                 LoginRecord loginRecord = new LoginRecord();
+                loginRecord.setUsername(chargingRackRecord.getId());
                 loginRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 loginRecord.setLogintime(new Date());
                 loginRecord.setUserid(chargingRackRecord.getStaffid());
-                loginRecord.setLoginip(jsonStr.substring(0,195));
+                loginRecord.setLoginip(jsonStr.substring(0,395));
                 loginRecordMapper.insert(loginRecord);
 
-                chargingRackRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
-                chargingRackRecord.setStatus("1");
+
                 List<Map<Object,Object>> numberRight = chargingRackRecordMapper.selectOnRackNumber(chargingRackRecord.getWorklocation());
 
                 if(numberRight != null && numberRight.size() ==1 && numberRight.get(0) != null)
