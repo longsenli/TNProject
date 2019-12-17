@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.DailyProcessReceiveMaterialRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.DailyProcessReceiveMaterialRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="lineID" jdbcType="VARCHAR" property="lineid" />
+    <result column="worklocationID" jdbcType="VARCHAR" property="worklocationid" />
+    <result column="teamType" jdbcType="VARCHAR" property="teamtype" />
+    <result column="classType" jdbcType="VARCHAR" property="classtype" />
+    <result column="dayTime" jdbcType="VARCHAR" property="daytime" />
+    <result column="receiveMaterialID" jdbcType="VARCHAR" property="receivematerialid" />
+    <result column="receiveMaterialName" jdbcType="VARCHAR" property="receivematerialname" />
+    <result column="receiveMaterialNumber1" jdbcType="INTEGER" property="receivematerialnumber1" />
+    <result column="receiveMaterialNumber2" jdbcType="INTEGER" property="receivematerialnumber2" />
+    <result column="receiveMaterialNumber3" jdbcType="INTEGER" property="receivematerialnumber3" />
+    <result column="reveiveType" jdbcType="VARCHAR" property="reveivetype" />
+    <result column="extend1" jdbcType="VARCHAR" property="extend1" />
+    <result column="extend2" jdbcType="VARCHAR" property="extend2" />
+    <result column="extend3" jdbcType="VARCHAR" property="extend3" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, plantID, processID, lineID, worklocationID, teamType, classType, dayTime, receiveMaterialID, 
+    receiveMaterialName, receiveMaterialNumber1, receiveMaterialNumber2, receiveMaterialNumber3, 
+    reveiveType, extend1, extend2, extend3, remark, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_dailyprocessreceivematerialrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_dailyprocessreceivematerialrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.DailyProcessReceiveMaterialRecord">
+    insert into tb_dailyprocessreceivematerialrecord (id, plantID, processID, 
+      lineID, worklocationID, teamType, 
+      classType, dayTime, receiveMaterialID, 
+      receiveMaterialName, receiveMaterialNumber1, 
+      receiveMaterialNumber2, receiveMaterialNumber3, 
+      reveiveType, extend1, extend2, 
+      extend3, remark, status
+      )
+    values (#{id,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{processid,jdbcType=VARCHAR}, 
+      #{lineid,jdbcType=VARCHAR}, #{worklocationid,jdbcType=VARCHAR}, #{teamtype,jdbcType=VARCHAR}, 
+      #{classtype,jdbcType=VARCHAR}, #{daytime,jdbcType=VARCHAR}, #{receivematerialid,jdbcType=VARCHAR}, 
+      #{receivematerialname,jdbcType=VARCHAR}, #{receivematerialnumber1,jdbcType=INTEGER}, 
+      #{receivematerialnumber2,jdbcType=INTEGER}, #{receivematerialnumber3,jdbcType=INTEGER}, 
+      #{reveivetype,jdbcType=VARCHAR}, #{extend1,jdbcType=VARCHAR}, #{extend2,jdbcType=VARCHAR}, 
+      #{extend3,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.DailyProcessReceiveMaterialRecord">
+    insert into tb_dailyprocessreceivematerialrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="processid != null">
+        processID,
+      </if>
+      <if test="lineid != null">
+        lineID,
+      </if>
+      <if test="worklocationid != null">
+        worklocationID,
+      </if>
+      <if test="teamtype != null">
+        teamType,
+      </if>
+      <if test="classtype != null">
+        classType,
+      </if>
+      <if test="daytime != null">
+        dayTime,
+      </if>
+      <if test="receivematerialid != null">
+        receiveMaterialID,
+      </if>
+      <if test="receivematerialname != null">
+        receiveMaterialName,
+      </if>
+      <if test="receivematerialnumber1 != null">
+        receiveMaterialNumber1,
+      </if>
+      <if test="receivematerialnumber2 != null">
+        receiveMaterialNumber2,
+      </if>
+      <if test="receivematerialnumber3 != null">
+        receiveMaterialNumber3,
+      </if>
+      <if test="reveivetype != null">
+        reveiveType,
+      </if>
+      <if test="extend1 != null">
+        extend1,
+      </if>
+      <if test="extend2 != null">
+        extend2,
+      </if>
+      <if test="extend3 != null">
+        extend3,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="worklocationid != null">
+        #{worklocationid,jdbcType=VARCHAR},
+      </if>
+      <if test="teamtype != null">
+        #{teamtype,jdbcType=VARCHAR},
+      </if>
+      <if test="classtype != null">
+        #{classtype,jdbcType=VARCHAR},
+      </if>
+      <if test="daytime != null">
+        #{daytime,jdbcType=VARCHAR},
+      </if>
+      <if test="receivematerialid != null">
+        #{receivematerialid,jdbcType=VARCHAR},
+      </if>
+      <if test="receivematerialname != null">
+        #{receivematerialname,jdbcType=VARCHAR},
+      </if>
+      <if test="receivematerialnumber1 != null">
+        #{receivematerialnumber1,jdbcType=INTEGER},
+      </if>
+      <if test="receivematerialnumber2 != null">
+        #{receivematerialnumber2,jdbcType=INTEGER},
+      </if>
+      <if test="receivematerialnumber3 != null">
+        #{receivematerialnumber3,jdbcType=INTEGER},
+      </if>
+      <if test="reveivetype != null">
+        #{reveivetype,jdbcType=VARCHAR},
+      </if>
+      <if test="extend1 != null">
+        #{extend1,jdbcType=VARCHAR},
+      </if>
+      <if test="extend2 != null">
+        #{extend2,jdbcType=VARCHAR},
+      </if>
+      <if test="extend3 != null">
+        #{extend3,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.DailyProcessReceiveMaterialRecord">
+    update tb_dailyprocessreceivematerialrecord
+    <set>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        processID = #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        lineID = #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="worklocationid != null">
+        worklocationID = #{worklocationid,jdbcType=VARCHAR},
+      </if>
+      <if test="teamtype != null">
+        teamType = #{teamtype,jdbcType=VARCHAR},
+      </if>
+      <if test="classtype != null">
+        classType = #{classtype,jdbcType=VARCHAR},
+      </if>
+      <if test="daytime != null">
+        dayTime = #{daytime,jdbcType=VARCHAR},
+      </if>
+      <if test="receivematerialid != null">
+        receiveMaterialID = #{receivematerialid,jdbcType=VARCHAR},
+      </if>
+      <if test="receivematerialname != null">
+        receiveMaterialName = #{receivematerialname,jdbcType=VARCHAR},
+      </if>
+      <if test="receivematerialnumber1 != null">
+        receiveMaterialNumber1 = #{receivematerialnumber1,jdbcType=INTEGER},
+      </if>
+      <if test="receivematerialnumber2 != null">
+        receiveMaterialNumber2 = #{receivematerialnumber2,jdbcType=INTEGER},
+      </if>
+      <if test="receivematerialnumber3 != null">
+        receiveMaterialNumber3 = #{receivematerialnumber3,jdbcType=INTEGER},
+      </if>
+      <if test="reveivetype != null">
+        reveiveType = #{reveivetype,jdbcType=VARCHAR},
+      </if>
+      <if test="extend1 != null">
+        extend1 = #{extend1,jdbcType=VARCHAR},
+      </if>
+      <if test="extend2 != null">
+        extend2 = #{extend2,jdbcType=VARCHAR},
+      </if>
+      <if test="extend3 != null">
+        extend3 = #{extend3,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.DailyProcessReceiveMaterialRecord">
+    update tb_dailyprocessreceivematerialrecord
+    set plantID = #{plantid,jdbcType=VARCHAR},
+      processID = #{processid,jdbcType=VARCHAR},
+      lineID = #{lineid,jdbcType=VARCHAR},
+      worklocationID = #{worklocationid,jdbcType=VARCHAR},
+      teamType = #{teamtype,jdbcType=VARCHAR},
+      classType = #{classtype,jdbcType=VARCHAR},
+      dayTime = #{daytime,jdbcType=VARCHAR},
+      receiveMaterialID = #{receivematerialid,jdbcType=VARCHAR},
+      receiveMaterialName = #{receivematerialname,jdbcType=VARCHAR},
+      receiveMaterialNumber1 = #{receivematerialnumber1,jdbcType=INTEGER},
+      receiveMaterialNumber2 = #{receivematerialnumber2,jdbcType=INTEGER},
+      receiveMaterialNumber3 = #{receivematerialnumber3,jdbcType=INTEGER},
+      reveiveType = #{reveivetype,jdbcType=VARCHAR},
+      extend1 = #{extend1,jdbcType=VARCHAR},
+      extend2 = #{extend2,jdbcType=VARCHAR},
+      extend3 = #{extend3,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

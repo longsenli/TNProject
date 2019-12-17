@@ -23,4 +23,8 @@ public interface IStaffWorkDiaryService {
 
     public TNPYResponse getShelfWageDetail(String staffID,String startTime,String endTime);
     public TNPYResponse getShelfDailyTMPDetail(String staffID,String dayTime);
+
+    public TNPYResponse getTMPDailyProductionDetailRecord(String plantID,String processID,String dayTime,String classType);
+    public TNPYResponse getTMPDailyProductionSummaryRecord(String plantID,String processID,String dayTime,String classType);
+
 }

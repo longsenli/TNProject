@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.DailyProcessUsedMaterialRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.DailyProcessUsedMaterialRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="plantID" jdbcType="VARCHAR" property="plantid" />
+    <result column="processID" jdbcType="VARCHAR" property="processid" />
+    <result column="lineID" jdbcType="VARCHAR" property="lineid" />
+    <result column="worklocationID" jdbcType="VARCHAR" property="worklocationid" />
+    <result column="teamType" jdbcType="VARCHAR" property="teamtype" />
+    <result column="classType" jdbcType="VARCHAR" property="classtype" />
+    <result column="dayTime" jdbcType="VARCHAR" property="daytime" />
+    <result column="usedMaterialID" jdbcType="VARCHAR" property="usedmaterialid" />
+    <result column="usedMaterialName" jdbcType="VARCHAR" property="usedmaterialname" />
+    <result column="usedMaterialNumber1" jdbcType="DOUBLE" property="usedmaterialnumber1" />
+    <result column="usedMaterialNumber2" jdbcType="DOUBLE" property="usedmaterialnumber2" />
+    <result column="usedMaterialNumber3" jdbcType="DOUBLE" property="usedmaterialnumber3" />
+    <result column="lastClassSurplus" jdbcType="INTEGER" property="lastclasssurplus" />
+    <result column="thisClassSurplus" jdbcType="INTEGER" property="thisclasssurplus" />
+    <result column="extend1" jdbcType="VARCHAR" property="extend1" />
+    <result column="extend2" jdbcType="VARCHAR" property="extend2" />
+    <result column="extend3" jdbcType="VARCHAR" property="extend3" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, plantID, processID, lineID, worklocationID, teamType, classType, dayTime, usedMaterialID, 
+    usedMaterialName, usedMaterialNumber1, usedMaterialNumber2, usedMaterialNumber3, 
+    lastClassSurplus, thisClassSurplus, extend1, extend2, extend3, remark, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_dailyprocessusedmaterialrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_dailyprocessusedmaterialrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.DailyProcessUsedMaterialRecord">
+    insert into tb_dailyprocessusedmaterialrecord (id, plantID, processID, 
+      lineID, worklocationID, teamType, 
+      classType, dayTime, usedMaterialID, 
+      usedMaterialName, usedMaterialNumber1, usedMaterialNumber2, 
+      usedMaterialNumber3, lastClassSurplus, thisClassSurplus, 
+      extend1, extend2, extend3, 
+      remark, status)
+    values (#{id,jdbcType=VARCHAR}, #{plantid,jdbcType=VARCHAR}, #{processid,jdbcType=VARCHAR}, 
+      #{lineid,jdbcType=VARCHAR}, #{worklocationid,jdbcType=VARCHAR}, #{teamtype,jdbcType=VARCHAR}, 
+      #{classtype,jdbcType=VARCHAR}, #{daytime,jdbcType=VARCHAR}, #{usedmaterialid,jdbcType=VARCHAR}, 
+      #{usedmaterialname,jdbcType=VARCHAR}, #{usedmaterialnumber1,jdbcType=DOUBLE}, #{usedmaterialnumber2,jdbcType=DOUBLE}, 
+      #{usedmaterialnumber3,jdbcType=DOUBLE}, #{lastclasssurplus,jdbcType=INTEGER}, #{thisclasssurplus,jdbcType=INTEGER}, 
+      #{extend1,jdbcType=VARCHAR}, #{extend2,jdbcType=VARCHAR}, #{extend3,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.DailyProcessUsedMaterialRecord">
+    insert into tb_dailyprocessusedmaterialrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="plantid != null">
+        plantID,
+      </if>
+      <if test="processid != null">
+        processID,
+      </if>
+      <if test="lineid != null">
+        lineID,
+      </if>
+      <if test="worklocationid != null">
+        worklocationID,
+      </if>
+      <if test="teamtype != null">
+        teamType,
+      </if>
+      <if test="classtype != null">
+        classType,
+      </if>
+      <if test="daytime != null">
+        dayTime,
+      </if>
+      <if test="usedmaterialid != null">
+        usedMaterialID,
+      </if>
+      <if test="usedmaterialname != null">
+        usedMaterialName,
+      </if>
+      <if test="usedmaterialnumber1 != null">
+        usedMaterialNumber1,
+      </if>
+      <if test="usedmaterialnumber2 != null">
+        usedMaterialNumber2,
+      </if>
+      <if test="usedmaterialnumber3 != null">
+        usedMaterialNumber3,
+      </if>
+      <if test="lastclasssurplus != null">
+        lastClassSurplus,
+      </if>
+      <if test="thisclasssurplus != null">
+        thisClassSurplus,
+      </if>
+      <if test="extend1 != null">
+        extend1,
+      </if>
+      <if test="extend2 != null">
+        extend2,
+      </if>
+      <if test="extend3 != null">
+        extend3,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="plantid != null">
+        #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="worklocationid != null">
+        #{worklocationid,jdbcType=VARCHAR},
+      </if>
+      <if test="teamtype != null">
+        #{teamtype,jdbcType=VARCHAR},
+      </if>
+      <if test="classtype != null">
+        #{classtype,jdbcType=VARCHAR},
+      </if>
+      <if test="daytime != null">
+        #{daytime,jdbcType=VARCHAR},
+      </if>
+      <if test="usedmaterialid != null">
+        #{usedmaterialid,jdbcType=VARCHAR},
+      </if>
+      <if test="usedmaterialname != null">
+        #{usedmaterialname,jdbcType=VARCHAR},
+      </if>
+      <if test="usedmaterialnumber1 != null">
+        #{usedmaterialnumber1,jdbcType=DOUBLE},
+      </if>
+      <if test="usedmaterialnumber2 != null">
+        #{usedmaterialnumber2,jdbcType=DOUBLE},
+      </if>
+      <if test="usedmaterialnumber3 != null">
+        #{usedmaterialnumber3,jdbcType=DOUBLE},
+      </if>
+      <if test="lastclasssurplus != null">
+        #{lastclasssurplus,jdbcType=INTEGER},
+      </if>
+      <if test="thisclasssurplus != null">
+        #{thisclasssurplus,jdbcType=INTEGER},
+      </if>
+      <if test="extend1 != null">
+        #{extend1,jdbcType=VARCHAR},
+      </if>
+      <if test="extend2 != null">
+        #{extend2,jdbcType=VARCHAR},
+      </if>
+      <if test="extend3 != null">
+        #{extend3,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.DailyProcessUsedMaterialRecord">
+    update tb_dailyprocessusedmaterialrecord
+    <set>
+      <if test="plantid != null">
+        plantID = #{plantid,jdbcType=VARCHAR},
+      </if>
+      <if test="processid != null">
+        processID = #{processid,jdbcType=VARCHAR},
+      </if>
+      <if test="lineid != null">
+        lineID = #{lineid,jdbcType=VARCHAR},
+      </if>
+      <if test="worklocationid != null">
+        worklocationID = #{worklocationid,jdbcType=VARCHAR},
+      </if>
+      <if test="teamtype != null">
+        teamType = #{teamtype,jdbcType=VARCHAR},
+      </if>
+      <if test="classtype != null">
+        classType = #{classtype,jdbcType=VARCHAR},
+      </if>
+      <if test="daytime != null">
+        dayTime = #{daytime,jdbcType=VARCHAR},
+      </if>
+      <if test="usedmaterialid != null">
+        usedMaterialID = #{usedmaterialid,jdbcType=VARCHAR},
+      </if>
+      <if test="usedmaterialname != null">
+        usedMaterialName = #{usedmaterialname,jdbcType=VARCHAR},
+      </if>
+      <if test="usedmaterialnumber1 != null">
+        usedMaterialNumber1 = #{usedmaterialnumber1,jdbcType=DOUBLE},
+      </if>
+      <if test="usedmaterialnumber2 != null">
+        usedMaterialNumber2 = #{usedmaterialnumber2,jdbcType=DOUBLE},
+      </if>
+      <if test="usedmaterialnumber3 != null">
+        usedMaterialNumber3 = #{usedmaterialnumber3,jdbcType=DOUBLE},
+      </if>
+      <if test="lastclasssurplus != null">
+        lastClassSurplus = #{lastclasssurplus,jdbcType=INTEGER},
+      </if>
+      <if test="thisclasssurplus != null">
+        thisClassSurplus = #{thisclasssurplus,jdbcType=INTEGER},
+      </if>
+      <if test="extend1 != null">
+        extend1 = #{extend1,jdbcType=VARCHAR},
+      </if>
+      <if test="extend2 != null">
+        extend2 = #{extend2,jdbcType=VARCHAR},
+      </if>
+      <if test="extend3 != null">
+        extend3 = #{extend3,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.DailyProcessUsedMaterialRecord">
+    update tb_dailyprocessusedmaterialrecord
+    set plantID = #{plantid,jdbcType=VARCHAR},
+      processID = #{processid,jdbcType=VARCHAR},
+      lineID = #{lineid,jdbcType=VARCHAR},
+      worklocationID = #{worklocationid,jdbcType=VARCHAR},
+      teamType = #{teamtype,jdbcType=VARCHAR},
+      classType = #{classtype,jdbcType=VARCHAR},
+      dayTime = #{daytime,jdbcType=VARCHAR},
+      usedMaterialID = #{usedmaterialid,jdbcType=VARCHAR},
+      usedMaterialName = #{usedmaterialname,jdbcType=VARCHAR},
+      usedMaterialNumber1 = #{usedmaterialnumber1,jdbcType=DOUBLE},
+      usedMaterialNumber2 = #{usedmaterialnumber2,jdbcType=DOUBLE},
+      usedMaterialNumber3 = #{usedmaterialnumber3,jdbcType=DOUBLE},
+      lastClassSurplus = #{lastclasssurplus,jdbcType=INTEGER},
+      thisClassSurplus = #{thisclasssurplus,jdbcType=INTEGER},
+      extend1 = #{extend1,jdbcType=VARCHAR},
+      extend2 = #{extend2,jdbcType=VARCHAR},
+      extend3 = #{extend3,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

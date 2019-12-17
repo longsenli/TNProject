@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
-import com.tnpy.mes.mapper.mysql.DailyProductionAndWageDetailMapper;
-import com.tnpy.mes.mapper.mysql.ProductionLineMapper;
-import com.tnpy.mes.mapper.mysql.StaffAttendanceDetailMapper;
-import com.tnpy.mes.mapper.mysql.WorkLocationMapper;
+import com.tnpy.mes.mapper.mysql.*;
 import com.tnpy.mes.model.mysql.DailyProductionAndWageDetail;
 import com.tnpy.mes.model.mysql.ProductionLine;
 import com.tnpy.mes.model.mysql.StaffAttendanceDetail;
@@ -38,6 +35,9 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
 
     @Autowired
     DailyProductionAndWageDetailMapper dailyProductionAndWageDetailMapper;
+
+    @Autowired
+    DailyProductionDetailRecordMapper dailyProductionDetailRecordMapper;
 
     public TNPYResponse getStaffAttendanceInfo(String plantID, String processID, String lineID, String classType, String staffID, String startTime, String endTime) {
         TNPYResponse result = new TNPYResponse();
@@ -434,6 +434,52 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSONString(shelfProductionWageTMP));
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+
+    public TNPYResponse getTMPDailyProductionDetailRecord(String plantID,String processID,String dayTime,String classType)
+    {
+
+        TNPYResponse result = new TNPYResponse();
+        try {
+            String orderString = "";
+            if("白班".equals(classType))
+            {
+                orderString = "'%BB" + dayTime.replaceAll("-","") +"'";
+            }
+            else
+            {
+                orderString = "'%YB" + dayTime.replaceAll("-","") + "'";
+            }
+            String teamType =dailyProductionDetailRecordMapper.getTeamType(plantID,processID,orderString);
+            List<Map<Object,Object>> dailyProductionDetailRecordTMP =  dailyProductionDetailRecordMapper.getTMPDailyProductionDetailRecord(plantID,processID,orderString,dayTime,classType,teamType);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSONString(dailyProductionDetailRecordTMP));
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+    public TNPYResponse getTMPDailyProductionSummaryRecord(String plantID,String processID,String dayTime,String classType)
+    {
+
+        TNPYResponse result = new TNPYResponse();
+        try {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = dateFormat2.parse(dayTime);//取时间
+            String orderInfo = "";
+            String dayString = dateFormat2.format(date);
+
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+           // result.setData(JSONObject.toJSONString(shelfProductionWageTMP));
             return result;
         } catch (Exception ex) {
             result.setMessage("查询出错！" + ex.getMessage());

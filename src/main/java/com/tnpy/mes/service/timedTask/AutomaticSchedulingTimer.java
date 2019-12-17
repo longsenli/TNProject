@@ -283,7 +283,8 @@ public class AutomaticSchedulingTimer {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyyMMdd");
             Date date = new Date();//取时间
-            dateFormat.format(date);
+            Date endDate = new Date();
+
             String timeFinish = "";
             String timeStart = "";
             Calendar calendar = new GregorianCalendar();
@@ -334,8 +335,8 @@ public class AutomaticSchedulingTimer {
                 }
             }
             SimpleDateFormat dateFormatMonth = new SimpleDateFormat("yyyy-MM");
-            int dayNumber = getMonthDayNumber(Integer.parseInt(dateFormatMonth.format(date).substring(0, 4)), Integer.parseInt(dateFormatMonth.format(date).substring(5, 7)));
-            planProductionRecordMapper.insertDailyPlanProduction(dateFormatMonth.format(date), dateFormat.format(date), String.valueOf(dayNumber));
+            int dayNumber = getMonthDayNumber(Integer.parseInt(dateFormatMonth.format(endDate).substring(0, 4)), Integer.parseInt(dateFormatMonth.format(endDate).substring(5, 7)));
+            planProductionRecordMapper.insertDailyPlanProduction(dateFormatMonth.format(endDate), dateFormat.format(endDate), String.valueOf(dayNumber));
 
             materialInventoryRecordMapper.insertZHInventoryStatistics(timeStart, timeFinish + " 07:00", timeStart.substring(0, 10), timeFinish, ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName(), "'%" + dateFormat2.format(date) + "'");
 
