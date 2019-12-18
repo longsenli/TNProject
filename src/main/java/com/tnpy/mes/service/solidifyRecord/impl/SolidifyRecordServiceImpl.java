@@ -37,6 +37,11 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
     @Autowired
     private BatchrelationcontrolMapper batchrelationcontrolMapper;
 
+    @Autowired
+    private  DataProvenanceRelationMapper dataProvenanceRelationMapper;
+
+    @Autowired
+    private  MaterialRelationMapper materialRelationMapper;
     public TNPYResponse getSolidifyRecordByRoom(String plantID, String roomID) {
         TNPYResponse result = new TNPYResponse();
         try {
@@ -187,7 +192,6 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
                     orderSplitID = orderSplit.getId();
                     try {
                         if (!(StatusEnum.WorkOrderStatus.finished.getIndex() + "").equals(orderSplit.getStatus())) {
-
                             MaterialRecord materialRecord = new MaterialRecord();
                             materialRecord.setId(orderSplit.getId());
                             materialRecord.setInorout(StatusEnum.InOutStatus.Input.getIndex());
@@ -216,13 +220,13 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
                                         break;
                                 }
                             }
-
                             // orderSplit.setStatus(StatusEnum.WorkOrderStatus.finished.getIndex() + "");
                             // System.out.println(  "==============" +JSONObject.toJSON(orderSplit).toString());
                             orderSplitMapper.updateStatus(orderSplit.getId(), StatusEnum.WorkOrderStatus.finished.getIndex() + "");
 
                             materialRecordMapper.insert(materialRecord);
 
+                            updateDataProvenance(materialRecord);
                             try {
                                 String batchID = batchrelationcontrolMapper.selectTBBatchByOrderID(orderSplit.getOrderid());
 
@@ -301,6 +305,51 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
         }
     }
 
+
+    private void updateDataProvenance(MaterialRecord materialRecord) {
+        try {
+            String materialFilte = " where outOrderID = '" + materialRecord.getOrderid() + "' and productionNum > 10 and outSubOrderID is null order by inputTime ";
+            List<DataProvenanceRelation> dataProvenanceRelationList = dataProvenanceRelationMapper.selectByFilter(materialFilte);
+            List<MaterialRelation> materialRelationList = materialRelationMapper.selectByOutMaterial(materialRecord.getMaterialid());
+
+            double leftNum = 0;
+            String[] listRelation;
+            for (int i = 0; i < materialRelationList.size(); i++) {
+                if (!materialRelationList.get(i).getProportionality().contains(":")) {
+                    continue;
+                }
+                for (int j = 0; j < dataProvenanceRelationList.size(); j++) {
+                    if (!dataProvenanceRelationList.get(j).getInputmaterialid().equals(materialRelationList.get(i).getInmaterialid())) {
+                        continue;
+                    }
+                    listRelation = materialRelationList.get(i).getProportionality().split(":");
+                    leftNum = dataProvenanceRelationList.get(j).getLeftnumber() - (Double.valueOf(listRelation[0]) * materialRecord.getNumber()) / Double.valueOf(listRelation[1]);
+                    if (leftNum > 10) {
+                        String jsonStr = JSONObject.toJSON(dataProvenanceRelationList.get(j)).toString();
+                        // OrderSplit orderSplit=(OrderSplit) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), OrderSplit.class);
+                        DataProvenanceRelation dataProvenanceRelation = (DataProvenanceRelation) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), DataProvenanceRelation.class);
+                        dataProvenanceRelation.setLeftnumber(leftNum);
+                        dataProvenanceRelation.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                        dataProvenanceRelationMapper.insertSelective(dataProvenanceRelation);
+                    }
+
+                    dataProvenanceRelationList.get(j).setOutsuborderid(materialRecord.getSuborderid());
+                    dataProvenanceRelationList.get(j).setOutputername(materialRecord.getInputer());
+                    //dataProvenanceRelationList.get(j).setOutputnumber();
+                    dataProvenanceRelationList.get(j).setOutputtime(materialRecord.getInputtime());
+                    dataProvenanceRelationMapper.updateByPrimaryKeySelective(dataProvenanceRelationList.get(j));
+
+                    if (leftNum < -10) {
+                        materialRecord.setNumber(materialRecord.getNumber() - (Double.valueOf(listRelation[1]) * dataProvenanceRelationList.get(j).getLeftnumber()) / Double.valueOf(listRelation[0]));
+                    } else {
+                        break;
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println("============= 产出关联出错！ =======" + ex.getMessage());
+        }
+    }
     public TNPYResponse changeSolidifyStatus(String roomID, String orderIDList, String operatorName, String status) {
 
         TNPYResponse result = new TNPYResponse();
