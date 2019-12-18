@@ -223,11 +223,9 @@ public class SolidifyRecordServiceImpl implements ISolidifyRecordService {
                             // orderSplit.setStatus(StatusEnum.WorkOrderStatus.finished.getIndex() + "");
                             // System.out.println(  "==============" +JSONObject.toJSON(orderSplit).toString());
                             orderSplitMapper.updateStatus(orderSplit.getId(), StatusEnum.WorkOrderStatus.finished.getIndex() + "");
-
                             materialRecordMapper.insert(materialRecord);
-
-                            updateDataProvenance(materialRecord);
                             try {
+                                updateDataProvenance(materialRecord);
                                 String batchID = batchrelationcontrolMapper.selectTBBatchByOrderID(orderSplit.getOrderid());
 
                                 if (StringUtil.isEmpty(batchID) || batchID.length() < 6) {
