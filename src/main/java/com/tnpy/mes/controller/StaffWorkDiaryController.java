@@ -3,6 +3,7 @@ package com.tnpy.mes.controller;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.service.staffWorkDiaryService.IStaffWorkDiaryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -85,6 +86,41 @@ public class StaffWorkDiaryController {
     public TNPYResponse getShelfDailyTMPDetail(String staffID,String dayTime)
     {
         return  staffWorkDiaryService.getShelfDailyTMPDetail(staffID,dayTime);
+    }
+
+    @RequestMapping(value = "/getTMPDailyProductionDetailRecord")
+    public TNPYResponse getTMPDailyProductionDetailRecord(String plantID,String processID,String dayTime,String classType)
+    {
+        return  staffWorkDiaryService.getTMPDailyProductionDetailRecord(plantID,processID,dayTime,classType);
+    }
+    @RequestMapping(value = "/getTMPDailyProductionSummaryRecord")
+    public TNPYResponse getTMPDailyProductionSummaryRecord(String plantID,String processID,String dayTime,String classType)
+    {
+        return  staffWorkDiaryService.getTMPDailyProductionSummaryRecord(plantID,processID,dayTime,classType);
+    }
+
+    @RequestMapping(value = "/saveDailyLineProductionDetailRecord")
+    public TNPYResponse saveDailyLineProductionDetailRecord(@RequestBody String jsonStr)
+    {
+        return  staffWorkDiaryService.saveDailyLineProductionDetailRecord(jsonStr);
+    }
+
+    @RequestMapping(value = "/saveDailyProcessProductionDetailRecord")
+    public TNPYResponse saveDailyProcessProductionDetailRecord(@RequestBody String jsonStr)
+    {
+        return  staffWorkDiaryService.saveDailyProcessProductionDetailRecord(jsonStr);
+    }
+
+    @RequestMapping(value = "/getDailyLineProductionDetailRecord")
+    public TNPYResponse getDailyLineProductionDetailRecord(String plantID,String processID,String dayTime,String classType)
+    {
+        return  staffWorkDiaryService.getDailyLineProductionDetailRecord(plantID,processID,dayTime,classType);
+    }
+
+    @RequestMapping(value = "/getDailyProcessProductionDetailRecord")
+    public TNPYResponse getDailyProcessProductionDetailRecord(String plantID,String processID,String dayTime,String classType)
+    {
+        return  staffWorkDiaryService.getDailyProcessProductionDetailRecord(plantID,processID,dayTime,classType);
     }
 }
 

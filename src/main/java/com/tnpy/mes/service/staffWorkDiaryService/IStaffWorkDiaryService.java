@@ -27,4 +27,9 @@ public interface IStaffWorkDiaryService {
     public TNPYResponse getTMPDailyProductionDetailRecord(String plantID,String processID,String dayTime,String classType);
     public TNPYResponse getTMPDailyProductionSummaryRecord(String plantID,String processID,String dayTime,String classType);
 
+    public TNPYResponse saveDailyLineProductionDetailRecord( String jsonStr);
+    public TNPYResponse saveDailyProcessProductionDetailRecord( String jsonStr);
+
+    public TNPYResponse getDailyLineProductionDetailRecord(String plantID,String processID,String dayTime,String classType);
+    public TNPYResponse getDailyProcessProductionDetailRecord(String plantID,String processID,String dayTime,String classType);
 }
