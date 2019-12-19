@@ -589,7 +589,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             if (lastProcessID.size() < 1) {
                 lastProcessID.add("-1");
             }
-            List<Map<Object, Object>> dailyProductionSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyProductionSummaryRecord(plantID, processID, orderString, dayTime,lastDay,lastClassType);
+            List<Map<Object, Object>> dailyProductionSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyProductionSummaryRecord(plantID, processID, orderString, dayTime, lastDay, lastClassType);
             List<Map<Object, Object>> dailyUsedInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyUsedInfoSummaryRecord(plantID, processID, orderString);
             List<Map<Object, Object>> dailyScrapInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyScrapInfoSummaryRecord(plantID, processID, dayTime, classType);
             List<Map<Object, Object>> dailyRecieveInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyRecieveInfoSummaryRecord(plantID, lastProcessID.get(0), startTime, endTime);
@@ -612,7 +612,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                 recordMap.put("attendanceNumber", attendanceInfo.get(0));
                 recordMap.put("machineNumber", attendanceInfo.get(1));
                 recordMap.put("actualMachineNumber", attendanceInfo.get(2));
-                 recordMap.put("productionMachineRatio", dataFormat.format(attendanceInfo.get(2) * 1.0 / attendanceInfo.get(1) * 100));
+                recordMap.put("productionMachineRatio", dataFormat.format(attendanceInfo.get(2) * 1.0 / attendanceInfo.get(1) * 100));
 
                 if (i < dailyProductionSummaryRecordTMP.size()) {
                     recordMap.put("productionMaterialID", dailyProductionSummaryRecordTMP.get(i).get("materialID"));
@@ -622,23 +622,19 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                     recordMap.put("ratioFinish", dailyProductionSummaryRecordTMP.get(i).get("ratioFinish"));
 
                     recordMap.put("lastInventory", dailyProductionSummaryRecordTMP.get(i).get("lastInventory"));
-                    currentInventory =Double.valueOf(dailyProductionSummaryRecordTMP.get(i).get("lastInventory").toString() ).intValue()
-                            + Double.valueOf(dailyProductionSummaryRecordTMP.get(i).get("productionNumber").toString() ).intValue();
+                    currentInventory = Double.valueOf(dailyProductionSummaryRecordTMP.get(i).get("lastInventory").toString()).intValue()
+                            + Double.valueOf(dailyProductionSummaryRecordTMP.get(i).get("productionNumber").toString()).intValue();
 
 
-
-                        if(dailyGrantInfoSummaryRecordTMP.size() > i && dailyGrantInfoSummaryRecordTMP.get(i).get("materialID").equals(dailyProductionSummaryRecordTMP.get(i).get("materialID")))
-                        {
-                            currentInventory = currentInventory - Double.valueOf(dailyGrantInfoSummaryRecordTMP.get(i).get("grantNumber").toString() ).intValue();
-                        }
-                        else
-                        {
-                            Map<Object, Object> grantMap = new HashMap<>();
-                            grantMap.put("materialID", dailyProductionSummaryRecordTMP.get(i).get("materialID"));
-                            grantMap.put("materialName", dailyProductionSummaryRecordTMP.get(i).get("materialName"));
-                            grantMap.put("grantNumber", 0);
-                            dailyGrantInfoSummaryRecordTMP.add(i,grantMap);
-                        }
+                    if (dailyGrantInfoSummaryRecordTMP.size() > i && dailyGrantInfoSummaryRecordTMP.get(i).get("materialID").equals(dailyProductionSummaryRecordTMP.get(i).get("materialID"))) {
+                        currentInventory = currentInventory - Double.valueOf(dailyGrantInfoSummaryRecordTMP.get(i).get("grantNumber").toString()).intValue();
+                    } else {
+                        Map<Object, Object> grantMap = new HashMap<>();
+                        grantMap.put("materialID", dailyProductionSummaryRecordTMP.get(i).get("materialID"));
+                        grantMap.put("materialName", dailyProductionSummaryRecordTMP.get(i).get("materialName"));
+                        grantMap.put("grantNumber", 0);
+                        dailyGrantInfoSummaryRecordTMP.add(i, grantMap);
+                    }
                     recordMap.put("currentInventory", currentInventory);
                 }
 
@@ -738,11 +734,10 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
         }
     }
 
-    public TNPYResponse getDailyLineProductionDetailRecord(String plantID,String processID,String dayTime,String classType)
-    {
+    public TNPYResponse getDailyLineProductionDetailRecord(String plantID, String processID, String dayTime, String classType) {
         TNPYResponse result = new TNPYResponse();
         try {
-            List<Map<Object, Object>> dailyLineProductionDetailRecord = dailyLineProductionDetailRecordMapper.getDailyLineProductionDetailRecord(plantID,processID,dayTime,classType);
+            List<Map<Object, Object>> dailyLineProductionDetailRecord = dailyLineProductionDetailRecordMapper.getDailyLineProductionDetailRecord(plantID, processID, dayTime, classType);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSONString(dailyLineProductionDetailRecord));
             return result;
@@ -751,11 +746,11 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             return result;
         }
     }
-    public TNPYResponse getDailyProcessProductionDetailRecord(String plantID,String processID,String dayTime,String classType)
-    {
+
+    public TNPYResponse getDailyProcessProductionDetailRecord(String plantID, String processID, String dayTime, String classType) {
         TNPYResponse result = new TNPYResponse();
         try {
-            List<Map<Object, Object>> dailyProcessProductionDetailRecord = dailyProcessProductionDetailRecordMapper.getDailyProcessProductionDetailRecord(plantID,processID,dayTime,classType);
+            List<Map<Object, Object>> dailyProcessProductionDetailRecord = dailyProcessProductionDetailRecordMapper.getDailyProcessProductionDetailRecord(plantID, processID, dayTime, classType);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSONString(dailyProcessProductionDetailRecord));
             return result;
