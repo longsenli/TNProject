@@ -43,12 +43,17 @@ public interface DailyProductionDetailRecordMapper {
     List<Map<Object,Object>> getTMPDailyProductionDetailRecord(String plantID, String processID, @Param("orderString") String orderString, String dayTime, String classType,String teamType);
 
 
-    @Select("select a.*,b.planDailyProduction,ROUND(a.productionNumber * 100 /ifnull(b.planDailyProduction,1),2) as ratioFinish from ( " +
-            " SELECT inputPlantID as plantID,inputProcessID as processID  ,materialID,materialNameInfo as materialName,sum(number)   as productionNumber \n" +
-           "FROM tb_materialrecord where inputPlantID = #{plantID} and inputProcessID=  #{processID} and orderID like ${orderString} and status = '1' group by inputPlantID,inputProcessID,materialID" +
-            ") a left join ( select materialID,ROUND(planDailyProduction/2 ) as planDailyProduction from tb_planproductionrecord where plantID =  #{plantID} and processID = #{processID} and planMonth = #{dayString})" +
-            " b on a.materialID  = b.materialID order by materialName ")
-    List<Map<Object,Object>> getTMPDailyProductionSummaryRecord(String plantID, String processID,@Param("orderString") String orderString,String dayString);
+    @Select("select  plantID,processID,materialID,materialName,sum(productionNumber) as productionNumber,sum(planDailyProduction) as planDailyProduction ,sum(ratioFinish) as ratioFinish,sum(lastInventory) as lastInventory\n" +
+            " from ( ( select a.plantID,a.processID,a.materialID,a.materialName,a.productionNumber,b.planDailyProduction,ROUND(a.productionNumber * 100 /ifnull(b.planDailyProduction,1),2) as ratioFinish ,0 as lastInventory from (  \n" +
+            "  SELECT inputPlantID as plantID,inputProcessID as processID  ,materialID,materialNameInfo as materialName,sum(number)   as productionNumber  \n" +
+            "         FROM tb_materialrecord  where inputPlantID = #{plantID} and inputProcessID=  #{processID} and orderID like ${orderString} and status = '1' group by inputPlantID,inputProcessID,materialID \n" +
+            " ) a left join ( select materialID,ROUND(planDailyProduction/2 ) as planDailyProduction from tb_planproductionrecord where  plantID =  #{plantID} and processID = #{processID} and planMonth = #{dayString} ) \n" +
+            "    b on a.materialID  = b.materialID order by materialName )\n" +
+            "    union all\n" +
+            "   ( select plantID,processID,productionMaterialID,productionMaterialName,0 as productionNumber,0 as planDailyProduction,0 as ratioFinish,lastInventory  from tb_dailyprocessproductiondetailrecord\n" +
+            "    where plantID = #{plantID} and processID =  #{processID}  and dayTime = #{lastDay} and classType = #{lastClassType} and  productionMaterialID is not null )\n" +
+            "    )  a group by plantID,processID,materialID order by materialName ")
+    List<Map<Object,Object>> getTMPDailyProductionSummaryRecord(String plantID, String processID,@Param("orderString") String orderString,String dayString,String lastDay,String lastClassType);
 
     @Select("SELECT outputPlantID as plantID,outputProcessID as processID,materialID as usedMaterialID,materialNameInfo as usedMaterialName,sum(number)   as usedNumber \n" +
             " FROM tb_materialrecord where outputPlantID = #{plantID} and outputProcessID=  #{processID} and expendOrderID like ${orderString}  group by outputPlantID,outputProcessID,materialID order by materialNameInfo  ")
@@ -68,7 +73,7 @@ public interface DailyProductionDetailRecordMapper {
 
     @Select( "(select count(1) as attendanceNumber from tb_staffattendancedetail where plantID = #{plantID} and processID =#{processID}  and dayTime =#{dayTime} and classType1 = #{classType} and status ='1' )\n" +
             "union all\n" +
-            "(select count(1) as totalLine from sys_productionline where  plantID = #{plantID} and processID =#{processID} and status = '1' ) \n" +
+            "(select count(1) as totalLine from sys_productionline where  plantID = #{plantID} and processID = #{processID} and status = '1' ) \n" +
             "union all\n" +
             "( select count(distinct lineID ) as runningLine from tb_staffattendancedetail where plantID = #{plantID} and processID =#{processID} and dayTime =#{dayTime} and classType1 = #{classType} and status ='1' )\n ")
     List<Integer> getTMPDailyAttendanceSummaryRecord(String plantID, String processID,String dayTime,String classType);

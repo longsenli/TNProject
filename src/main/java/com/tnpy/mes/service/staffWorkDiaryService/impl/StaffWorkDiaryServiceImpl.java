@@ -558,6 +558,8 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             String orderString = "";
             String startTime = "";
             String endTime = "";
+            String lastDay = "";
+            String lastClassType = "";
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
             Date date = dateFormat.parse(dayTime);//取时间
@@ -566,10 +568,16 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             calendar.setTime(date);
 
             if ("白班".equals(classType)) {
+                lastClassType = "夜班";
                 orderString = "'%BB" + dayTime.replaceAll("-", "") + "'";
                 startTime = dayTime + " 07:00";
                 endTime = dayTime + " 19:00";
+                calendar.add(Calendar.DATE, -1);
+                date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+                lastDay = dateFormat.format(date);
             } else {
+                lastClassType = "白班";
+                lastDay = dayTime;
                 orderString = "'%YB" + dayTime.replaceAll("-", "") + "'";
                 startTime = dayTime + " 19:00";
                 calendar.add(Calendar.DATE, 1);
@@ -581,7 +589,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             if (lastProcessID.size() < 1) {
                 lastProcessID.add("-1");
             }
-            List<Map<Object, Object>> dailyProductionSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyProductionSummaryRecord(plantID, processID, orderString, dayTime);
+            List<Map<Object, Object>> dailyProductionSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyProductionSummaryRecord(plantID, processID, orderString, dayTime,lastDay,lastClassType);
             List<Map<Object, Object>> dailyUsedInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyUsedInfoSummaryRecord(plantID, processID, orderString);
             List<Map<Object, Object>> dailyScrapInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyScrapInfoSummaryRecord(plantID, processID, dayTime, classType);
             List<Map<Object, Object>> dailyRecieveInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyRecieveInfoSummaryRecord(plantID, lastProcessID.get(0), startTime, endTime);
@@ -589,6 +597,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             List<Integer> attendanceInfo = dailyProductionDetailRecordMapper.getTMPDailyAttendanceSummaryRecord(plantID, processID, dayTime, classType);
             List<Map<Object, Object>> finalDailyProductionSummaryRecordTMP = new ArrayList<>();
             DecimalFormat dataFormat = new DecimalFormat(".00");
+            int currentInventory = 0;
             for (int i = 0; ; i++) {
                 if (i >= dailyProductionSummaryRecordTMP.size() && i >= dailyUsedInfoSummaryRecordTMP.size() && i >= dailyScrapInfoSummaryRecordTMP.size() && i >= dailyRecieveInfoSummaryRecordTMP.size() && i >= dailyGrantInfoSummaryRecordTMP.size()) {
 
@@ -601,22 +610,45 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                 recordMap.put("teamType", teamType);
                 recordMap.put("dayTime", dayTime);
                 recordMap.put("attendanceNumber", attendanceInfo.get(0));
-                recordMap.put("workingLineNumber", attendanceInfo.get(1));
-                recordMap.put("totalLineNumber", attendanceInfo.get(2));
-                recordMap.put("workingRatio", dataFormat.format(attendanceInfo.get(1) / attendanceInfo.get(2) * 100));
+                recordMap.put("machineNumber", attendanceInfo.get(1));
+                recordMap.put("actualMachineNumber", attendanceInfo.get(2));
+                 recordMap.put("productionMachineRatio", dataFormat.format(attendanceInfo.get(2) * 1.0 / attendanceInfo.get(1) * 100));
+
                 if (i < dailyProductionSummaryRecordTMP.size()) {
                     recordMap.put("productionMaterialID", dailyProductionSummaryRecordTMP.get(i).get("materialID"));
                     recordMap.put("productionMaterialName", dailyProductionSummaryRecordTMP.get(i).get("materialName"));
                     recordMap.put("productionNumber", dailyProductionSummaryRecordTMP.get(i).get("productionNumber"));
                     recordMap.put("planDailyProduction", dailyProductionSummaryRecordTMP.get(i).get("planDailyProduction"));
                     recordMap.put("ratioFinish", dailyProductionSummaryRecordTMP.get(i).get("ratioFinish"));
+
+                    recordMap.put("lastInventory", dailyProductionSummaryRecordTMP.get(i).get("lastInventory"));
+                    currentInventory =Double.valueOf(dailyProductionSummaryRecordTMP.get(i).get("lastInventory").toString() ).intValue()
+                            + Double.valueOf(dailyProductionSummaryRecordTMP.get(i).get("productionNumber").toString() ).intValue();
+
+
+
+                        if(dailyGrantInfoSummaryRecordTMP.size() > i && dailyGrantInfoSummaryRecordTMP.get(i).get("materialID").equals(dailyProductionSummaryRecordTMP.get(i).get("materialID")))
+                        {
+                            currentInventory = currentInventory - Double.valueOf(dailyGrantInfoSummaryRecordTMP.get(i).get("grantNumber").toString() ).intValue();
+                        }
+                        else
+                        {
+                            Map<Object, Object> grantMap = new HashMap<>();
+                            grantMap.put("materialID", dailyProductionSummaryRecordTMP.get(i).get("materialID"));
+                            grantMap.put("materialName", dailyProductionSummaryRecordTMP.get(i).get("materialName"));
+                            grantMap.put("grantNumber", 0);
+                            dailyGrantInfoSummaryRecordTMP.add(i,grantMap);
+                        }
+                    recordMap.put("currentInventory", currentInventory);
                 }
+
                 if (i < dailyUsedInfoSummaryRecordTMP.size()) {
                     recordMap.put("usedMaterialID", dailyUsedInfoSummaryRecordTMP.get(i).get("usedMaterialID"));
                     recordMap.put("usedMaterialName", dailyUsedInfoSummaryRecordTMP.get(i).get("usedMaterialName"));
                     recordMap.put("usedNumber", dailyUsedInfoSummaryRecordTMP.get(i).get("usedNumber"));
 
                 }
+
                 if (i < dailyScrapInfoSummaryRecordTMP.size()) {
                     recordMap.put("scrapMaterialID", dailyScrapInfoSummaryRecordTMP.get(i).get("materialID"));
                     recordMap.put("scrapMaterialName", dailyScrapInfoSummaryRecordTMP.get(i).get("materialName"));

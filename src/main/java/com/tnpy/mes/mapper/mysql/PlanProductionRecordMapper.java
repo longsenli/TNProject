@@ -35,7 +35,7 @@ public interface PlanProductionRecordMapper {
     int updateFinishRate(String month);
 
     @Update(" insert into tb_planproductionrecord (id,materialID,materialName,plantID,processID,planProduction,planDailyProduction,planMonth,operator,status)\n" +
-            "select uuid(),a.materialID,a.materialName,a.plantID,a.processID,a.planProduction ,CEILING(a.planProduction/ ${dayNumber}) as planProductionDaily,#{dayString},'管理员','1' from \n" +
+            "select uuid(),a.materialID,a.materialName,a.plantID,a.processID,a.planProduction ,CEILING(a.planProduction/ ${dayNumber}) as planProductionDaily,#{dayString},'管理员','2' from \n" +
             "(select materialID,materialName,plantID,processID,planProduction from tb_planproductionrecord where planMonth = #{monthString} ) a left join \n" +
             "(select materialID,materialName,plantID,processID,planProduction from tb_planproductionrecord where planMonth = #{dayString}) b \n" +
             "on a.materialID = b.materialID and a.plantID = b.plantID and a.processID = b.processID  and b.planProduction is null \n")
