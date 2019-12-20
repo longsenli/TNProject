@@ -47,6 +47,10 @@ public class dataProvenanceServiceImpl implements IDataProvenanceService {
                 orderFilter = "";
                 for(int i = 0;i<tmpOrderList.size();i++)
                 {
+                    if(orderList.contains(tmpOrderList.get(i)))
+                    {
+                        continue;
+                    }
                     orderList.add(tmpOrderList.get(i));
                     orderFilter += "'" + tmpOrderList.get(i) +"',";
                 }
@@ -66,6 +70,10 @@ public class dataProvenanceServiceImpl implements IDataProvenanceService {
                 for(int i = 0;i<tmpOrderList.size();i++)
                 {
                     if(StringUtils.isEmpty(tmpOrderList.get(i)))
+                    {
+                        continue;
+                    }
+                    if(orderList.contains(tmpOrderList.get(i)))
                     {
                         continue;
                     }

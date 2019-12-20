@@ -216,7 +216,7 @@ public interface MaterialRecordMapper {
 
     @Select("select b.* from ( \n" +
             "(select subOrderID,inputer,DATE_FORMAT(inputTime, '%Y-%m-%d %H:%i:%s') as inputTime,materialNameInfo,inputPlantID,inputProcessID,inputLineID from tb_materialrecord\n" +
-            " where subOrderID in ( ${orderList} ) )\n" +
+            " where id in ( ${orderList} ) )\n" +
             " union all  \n" +
             " (select id as subOrderID ,recorder1 as inputer,CONCAT( DATE_FORMAT(starttime1, '%Y-%m-%d %H:%i:%s') ,' —' ,ifnull( DATE_FORMAT(ifnull(endTime3,'-'), '%Y-%m-%d %H:%i:%s'),'-') ) as inputTime,\n" +
             " materialName as materialNameInfo,plantID as inputPlantID,'1004' as inputProcessID ,solidifyRoomID as inputLineID from tb_solidifyrecord  \n" +
