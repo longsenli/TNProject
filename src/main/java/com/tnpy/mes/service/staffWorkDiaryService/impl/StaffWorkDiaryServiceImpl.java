@@ -682,6 +682,8 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
 
         TNPYResponse result = new TNPYResponse();
         try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String timeNow = dateFormat.format(new Date());
             List<DailyLineProductionDetailRecord> recordList = JSON.parseArray(jsonStr, DailyLineProductionDetailRecord.class);
             if (recordList.size() > 0) {
 
@@ -696,6 +698,8 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             for (int i = 0; i < recordList.size(); i++) {
                 recordList.get(i).setStatus("1");
                 recordList.get(i).setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                recordList.get(i).setExtend1(recordList.get(0).getExtend1());
+                recordList.get(i).setExtend2(timeNow);
                 dailyLineProductionDetailRecordMapper.insertSelective(recordList.get(i));
             }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -710,6 +714,8 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
     public TNPYResponse saveDailyProcessProductionDetailRecord(String jsonStr) {
         TNPYResponse result = new TNPYResponse();
         try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String timeNow = dateFormat.format(new Date());
             List<DailyProcessProductionDetailRecord> recordList = JSON.parseArray(jsonStr, DailyProcessProductionDetailRecord.class);
             if (recordList.size() > 0) {
                 if (dailyProcessProductionDetailRecordMapper.selectConfirmNumber(recordList.get(0).getPlantid(), recordList.get(0).getProcessid(), recordList.get(0).getDaytime(), recordList.get(0).getClasstype()) > 0) {
@@ -723,6 +729,8 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             for (int i = 0; i < recordList.size(); i++) {
                 recordList.get(i).setStatus("1");
                 recordList.get(i).setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+                recordList.get(i).setExtend1(recordList.get(0).getExtend1());
+                recordList.get(i).setExtend2(timeNow);
                 dailyProcessProductionDetailRecordMapper.insertSelective(recordList.get(i));
             }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
