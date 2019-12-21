@@ -77,7 +77,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
     }
 
     // 1 上机扫码  2 下机扫码
-    public TNPYResponse insertStaffComeAttendanceInfo(String qrCode, String staffID, String staffName, String classType1, String classType2, String dayTime, String workContent) {
+    public TNPYResponse insertStaffComeAttendanceInfo(String qrCode, String staffID, String staffName, String classType1, String classType2, String dayTime, String workContent, String teamType) {
         TNPYResponse result = new TNPYResponse();
         try {
 
@@ -127,6 +127,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             staffAttendanceDetail.setDaytime(dateFormat2.parse(dayTime));
             staffAttendanceDetail.setCometime(new Date());
             staffAttendanceDetail.setExtd1(workContent);
+            staffAttendanceDetail.setExtd2(teamType);
             staffAttendanceDetail.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
             staffAttendanceDetailMapper.insert(staffAttendanceDetail);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -453,8 +454,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             }
             String teamType = dailyProductionDetailRecordMapper.getTeamType(plantID, processID, orderString);
 
-            if(ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(processID))
-            {
+            if (ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(processID)) {
                 List<Map<Object, Object>> dailyProductionDetailRecordTMP = dailyProductionDetailRecordMapper.getJZTMPDailyProductionDetailRecord(plantID, processID, orderString, dayTime, classType, teamType);
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 result.setData(JSONObject.toJSONString(dailyProductionDetailRecordTMP));
@@ -604,12 +604,9 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             List<Map<Object, Object>> dailyRecieveInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyRecieveInfoSummaryRecord(plantID, lastProcessID.get(0), startTime, endTime);
             List<Map<Object, Object>> dailyGrantInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyGrantInfoSummaryRecord(plantID, processID, startTime, endTime);
             List<Integer> attendanceInfo = new ArrayList<>();
-            if(ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(processID))
-            {
+            if (ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(processID)) {
                 attendanceInfo = dailyProductionDetailRecordMapper.getJZTMPDailyAttendanceSummaryRecord(plantID, processID, dayTime, classType);
-            }
-            else
-            {
+            } else {
                 attendanceInfo = dailyProductionDetailRecordMapper.getTMPDailyAttendanceSummaryRecord(plantID, processID, dayTime, classType);
             }
 
@@ -780,6 +777,87 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             List<Map<Object, Object>> dailyProcessProductionDetailRecord = dailyProcessProductionDetailRecordMapper.getDailyProcessProductionDetailRecord(plantID, processID, dayTime, classType);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSONString(dailyProcessProductionDetailRecord));
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+
+    public TNPYResponse getStaffAttendanceSummary(String plantID, String processID, String lineID, String startTime, String endTime, String teamType) {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            String filter = " where dayTime >= '" + startTime + "'  and  dayTime <= '" + endTime + "'  and verifierName is not null  ";
+            if (!"-1".equals(plantID)) {
+                filter += " and plantID = '" + plantID + "' ";
+            }
+            if (!"-1".equals(processID)) {
+                filter += " and processID = '" + processID + "' ";
+            }
+            if (!"-1".equals(lineID)) {
+                filter += " and lineID = '" + lineID + "' ";
+            }
+            if (!"-1".equals(teamType)) {
+                filter += " and extd2 = '" + teamType + "' ";
+            }
+
+            List<Map<Object, Object>> dailyAttendanceDetailRecord = staffAttendanceDetailMapper.getStaffAttendanceSummary(filter);
+
+            List<Map<Object, Object>> staffAttendanceSummaryRecord = new ArrayList<>();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date startDay = dateFormat.parse(startTime);
+
+            Calendar calendar = new GregorianCalendar();
+
+            String addedStaff = " ";
+            String currentStaff = "";
+            int attendanceNumber = 0;
+            Map<Object, Object> staffAttendanceSummaryMap = new HashMap<>();
+            staffAttendanceSummaryMap.put("staffName", "总计");
+            for (; ; ) {
+                if (dateFormat.format(startDay).compareTo(endTime) > 0) {
+                    break;
+                }
+                staffAttendanceSummaryMap.put(dateFormat.format(startDay), 0);
+                calendar.setTime(startDay);
+                calendar.add(Calendar.DATE, 1);
+                startDay = calendar.getTime();   //这个时间就是日期往后推一天的结果
+            }
+            staffAttendanceSummaryMap.put("totalAttendance", 0);
+
+            for (int i = 0; i < dailyAttendanceDetailRecord.size(); ) {
+                if (!addedStaff.contains(dailyAttendanceDetailRecord.get(i).get("staffName").toString())) {
+                    addedStaff += " " + dailyAttendanceDetailRecord.get(i).get("staffName").toString();
+                    currentStaff = dailyAttendanceDetailRecord.get(i).get("staffName").toString();
+                    startDay = dateFormat.parse(startTime);
+                    attendanceNumber = 0;
+                    Map<Object, Object> staffAttendanceMap = new HashMap<>();
+                    staffAttendanceMap.put("staffName", dailyAttendanceDetailRecord.get(i).get("staffName").toString());
+                     for (; ; ) {
+                        if (dateFormat.format(startDay).compareTo(endTime) > 0) {
+                            break;
+                        }
+                        if (i < dailyAttendanceDetailRecord.size() && dateFormat.format(startDay).equals(dailyAttendanceDetailRecord.get(i).get("dayTime").toString()) && currentStaff.equals(dailyAttendanceDetailRecord.get(i).get("staffName").toString())) {
+                            staffAttendanceMap.put(dateFormat.format(startDay), "1");
+                            staffAttendanceSummaryMap.put(dateFormat.format(startDay),Integer.parseInt(staffAttendanceSummaryMap.get(dateFormat.format(startDay)).toString() ) + 1);
+                            attendanceNumber ++;
+                            i++;
+                        } else {
+                            staffAttendanceMap.put(dateFormat.format(startDay), "0");
+                        }
+                        calendar.setTime(startDay);
+                        calendar.add(Calendar.DATE, 1);
+                        startDay = calendar.getTime();   //这个时间就是日期往后推一天的结果
+                    }
+                    staffAttendanceMap.put("totalAttendance", attendanceNumber);
+                    staffAttendanceSummaryMap.put("totalAttendance",Integer.parseInt(staffAttendanceSummaryMap.get("totalAttendance").toString() ) + attendanceNumber);
+                    staffAttendanceSummaryRecord.add(staffAttendanceMap);
+                }
+            }
+            staffAttendanceSummaryRecord.add(staffAttendanceSummaryMap);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSONString(staffAttendanceSummaryRecord));
             return result;
         } catch (Exception ex) {
             result.setMessage("查询出错！" + ex.getMessage());

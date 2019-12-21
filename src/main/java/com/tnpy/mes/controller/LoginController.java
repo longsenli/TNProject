@@ -176,14 +176,14 @@ public class LoginController {
 			response.setData("1");  //表示已经扫过工作位置
 			response.setMessage(myUser.getName() + " ### " + myUser.getRoleid() + " ### " + staffAttendanceDetail.getPlantid()
 					+ " ### " +  staffAttendanceDetail.getProcessid() + " ### " + staffAttendanceDetail.getLineid() + "###" + staffAttendanceDetail.getWorklocationid()
-					+ "###" + staffAttendanceDetail.getExtd1());
+					+ "###" + staffAttendanceDetail.getExtd1()+ "###" + staffAttendanceDetail.getExtd2());
 
 		}
 		else
 		{
 			response.setData("2");//表示未扫过工作位置
 			response.setMessage(myUser.getName() + " ### " + myUser.getRoleid() + " ### " + myUser.getIndustrialplant_id()
-					+ " ### " +  myUser.getProductionprocess_id() + " ### " + myUser.getProductionline_id() + "###" + myUser.getWorklocation_id() + "###-1" );
+					+ " ### " +  myUser.getProductionprocess_id() + " ### " + myUser.getProductionline_id() + "###" + myUser.getWorklocation_id() + "###-1###-1" );
 
 		}
 		response.setStatus(StatusEnum.ResponseStatus.Success.getIndex());

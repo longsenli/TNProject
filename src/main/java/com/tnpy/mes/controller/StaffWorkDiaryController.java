@@ -5,6 +5,7 @@ import com.tnpy.mes.service.staffWorkDiaryService.IStaffWorkDiaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -25,9 +26,9 @@ public class StaffWorkDiaryController {
     }
 
     @RequestMapping(value = "/insertStaffComeAttendanceInfo")
-    public TNPYResponse insertStaffComeAttendanceInfo(String qrCode,String staffID,String staffName,String classType1,String classType2,String dayTime,String workContent)  // 1 上机扫码，  2 下机扫码
+    public TNPYResponse insertStaffComeAttendanceInfo(String qrCode,String staffID,String staffName,String classType1,String classType2,String dayTime,String workContent,@RequestParam(defaultValue = "-1") String teamType)  // 1 上机扫码，  2 下机扫码
     {
-        return  staffWorkDiaryService.insertStaffComeAttendanceInfo(qrCode, staffID,staffName,classType1,classType2,dayTime,workContent);
+        return  staffWorkDiaryService.insertStaffComeAttendanceInfo(qrCode, staffID,staffName,classType1,classType2,dayTime,workContent,teamType);
     }
     @RequestMapping(value = "/insertStaffGoAttendanceInfo")
     public TNPYResponse insertStaffGoAttendanceInfo(String qrCode,String staffID)  // 1 上机扫码，  2 下机扫码
@@ -121,6 +122,12 @@ public class StaffWorkDiaryController {
     public TNPYResponse getDailyProcessProductionDetailRecord(String plantID,String processID,String dayTime,String classType)
     {
         return  staffWorkDiaryService.getDailyProcessProductionDetailRecord(plantID,processID,dayTime,classType);
+    }
+
+    @RequestMapping(value = "/getStaffAttendanceSummary")
+    public TNPYResponse getStaffAttendanceSummary(String plantID,String processID,String lineID,String startTime,String endTime,String teamType)
+    {
+        return  staffWorkDiaryService.getStaffAttendanceSummary(plantID,processID,lineID,startTime,endTime,teamType);
     }
 }
 

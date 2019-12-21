@@ -47,4 +47,9 @@ public interface StaffAttendanceDetailMapper {
 
     @Select("select * from tb_staffattendancedetail where staffID = #{staffID} and dayTime >= #{startTime} and dayTime <= #{endTime} and verifierName is not null order by dayTime ")
     List<StaffAttendanceDetail>  selectAttendceRecord(String staffID,String startTime,String endTime);
+
+
+    @Select("select staffName,date_format(dayTime, '%Y-%m-%d') as dayTime FROM tb_staffattendancedetail " +
+            " ${filter} group by staffName,dayTime   order by CONVERT(staffName using gbk) ,dayTime")
+    List<Map<Object,Object>> getStaffAttendanceSummary(@Param("filter") String filter);
 }
