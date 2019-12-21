@@ -255,7 +255,6 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
     public TNPYResponse deleteConfirmProductionWageRecord(String plantID, String processID, String dayString, String classType) {
         TNPYResponse result = new TNPYResponse();
         try {
-
             dailyProductionAndWageDetailMapper.deleteConfirmProductionWageRecord(plantID, processID, dayString, classType);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setMessage("删除成功！");
@@ -453,6 +452,16 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                 orderString = "'%YB" + dayTime.replaceAll("-", "") + "'";
             }
             String teamType = dailyProductionDetailRecordMapper.getTeamType(plantID, processID, orderString);
+
+            if(ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(processID))
+            {
+                List<Map<Object, Object>> dailyProductionDetailRecordTMP = dailyProductionDetailRecordMapper.getJZTMPDailyProductionDetailRecord(plantID, processID, orderString, dayTime, classType, teamType);
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setData(JSONObject.toJSONString(dailyProductionDetailRecordTMP));
+                return result;
+            }
+
+
             List<Map<Object, Object>> dailyProductionDetailRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyProductionDetailRecord(plantID, processID, orderString, dayTime, classType, teamType);
             List<Map<Object, Object>> finalDailyProductionDetailRecordTMP = new ArrayList<>();
             Map<String, String> lineProductionMap = new HashMap<>();
@@ -594,7 +603,17 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             List<Map<Object, Object>> dailyScrapInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyScrapInfoSummaryRecord(plantID, processID, dayTime, classType);
             List<Map<Object, Object>> dailyRecieveInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyRecieveInfoSummaryRecord(plantID, lastProcessID.get(0), startTime, endTime);
             List<Map<Object, Object>> dailyGrantInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyGrantInfoSummaryRecord(plantID, processID, startTime, endTime);
-            List<Integer> attendanceInfo = dailyProductionDetailRecordMapper.getTMPDailyAttendanceSummaryRecord(plantID, processID, dayTime, classType);
+            List<Integer> attendanceInfo = new ArrayList<>();
+            if(ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(processID))
+            {
+                attendanceInfo = dailyProductionDetailRecordMapper.getJZTMPDailyAttendanceSummaryRecord(plantID, processID, dayTime, classType);
+            }
+            else
+            {
+                attendanceInfo = dailyProductionDetailRecordMapper.getTMPDailyAttendanceSummaryRecord(plantID, processID, dayTime, classType);
+            }
+
+
             List<Map<Object, Object>> finalDailyProductionSummaryRecordTMP = new ArrayList<>();
             DecimalFormat dataFormat = new DecimalFormat(".00");
             int currentInventory = 0;

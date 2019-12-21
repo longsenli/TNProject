@@ -42,6 +42,22 @@ public interface DailyProductionDetailRecordMapper {
             "d on  c.plantID = d.plantID and c.processID = d.processID and c.lineID = d.lineID and c.usedMaterialID = d.materialID order by c.lineID,c.materialID")
     List<Map<Object,Object>> getTMPDailyProductionDetailRecord(String plantID, String processID, @Param("orderString") String orderString, String dayTime, String classType,String teamType);
 
+    //plantID,processID,lineID,materialID,materialName,productionNumber,usedMaterialID,usedMaterialName,usedNumber,scrapNumber,weightNumber,classType,teamType,dayTime
+    @Select("select c.*,d.scrapNumber,d.weightNumber ,#{classType} as classType ,#{teamType} as teamType,#{dayTime} as dayTime from (\n" +
+            "select a.plantID,a.processID,a.lineID,a.worklocationID,a.materialID,a.materialName,a.number as productionNumber, usedMaterialID,usedMaterialName, usedNumber  from \n" +
+            "(\n" +
+            "SELECT inputPlantID as plantID,inputProcessID as processID ,inputLineID as lineID ,inputWorkLocationID as worklocationID,materialID,materialNameInfo as materialName,sum(number)   as number\n" +
+            "FROM tb_materialrecord where inputPlantID =#{plantID} and inputProcessID=  #{processID} and orderID like ${orderString} and status = '1' group by inputPlantID,inputProcessID,inputWorkLocationID,materialID\n" +
+            ") a left join \n" +
+            " ( SELECT outputPlantID as plantID,outputProcessID as processID,outputLineID as lineID,materialID as usedMaterialID,materialNameInfo as usedMaterialName,sum(number)   as usedNumber\n" +
+            "FROM tb_materialrecord where outputPlantID = #{plantID} and outputProcessID=  #{processID} and expendOrderID like ${orderString}  group by outputPlantID,outputProcessID,outputLineID,materialID )\n" +
+            "b on a.plantID = b.plantID and a.processID = b.processID and a.lineID = b.lineID\n" +
+            ") c left join \n" +
+            "( SELECT plantID,processID,lineID,materialID,materialName,sum(value) as scrapNumber ,sum(weight) as weightNumber\n" +
+            "FROM tb_materialscraprecord where plantID = #{plantID} and processID= #{processID} and productDay = #{dayTime} and classType =#{classType}   and status = '1' group by plantID,processID,lineID,materialID )\n" +
+            "d on  c.plantID = d.plantID and c.processID = d.processID and c.lineID = d.lineID and c.usedMaterialID = d.materialID order by c.lineID,c.worklocationID,c.materialID")
+    List<Map<Object,Object>> getJZTMPDailyProductionDetailRecord(String plantID, String processID, @Param("orderString") String orderString, String dayTime, String classType,String teamType);
+
 
     @Select("select  plantID,processID,materialID,materialName,sum(productionNumber) as productionNumber,sum(planDailyProduction) as planDailyProduction ,sum(ratioFinish) as ratioFinish,sum(lastInventory) as lastInventory\n" +
             " from ( ( select a.plantID,a.processID,a.materialID,a.materialName,a.productionNumber,b.planDailyProduction,ROUND(a.productionNumber * 100 /ifnull(b.planDailyProduction,1),2) as ratioFinish ,0 as lastInventory from (  \n" +
@@ -80,4 +96,10 @@ public interface DailyProductionDetailRecordMapper {
 
 
 
+    @Select( "(select count(1) as attendanceNumber from tb_staffattendancedetail where plantID = #{plantID} and processID =#{processID}  and dayTime =#{dayTime} and classType1 = #{classType} and status ='1' )\n" +
+            "union all\n" +
+            "(select count(1) as totalLine from tb_worklocation where  plantID = #{plantID} and processID = #{processID} and status = '1' ) \n" +
+            "union all\n" +
+            "( select count(distinct worklocationID ) as runningLine from tb_staffattendancedetail where plantID = #{plantID} and processID =#{processID} and dayTime =#{dayTime} and classType1 = #{classType} and status ='1' )\n ")
+    List<Integer> getJZTMPDailyAttendanceSummaryRecord(String plantID, String processID,String dayTime,String classType);
 }
