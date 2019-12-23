@@ -44,7 +44,7 @@ public interface MaterialInventoryRecordMapper {
             "      select materialID,plantID,processID,sum(currentNumber) as currentNumber ,sum(productionNumber) as productionNumber,sum(inNum) as inNum,sum(expendNum) as expendNum ,\n" +
             "      sum(outNum) as outNum,sum(onlineStorageInNum) as onlineStorageInNum from (\n" +
             "( select materialID,inputPlantID as plantID,inputProcessID as processID, 0 as currentNumber,sum(number) as productionNumber,0 as inNum,0 as expendNum,0 as outNum, 0 as onlineStorageInNum\n" +
-            "from tb_materialrecord where orderID like ${orderLike} and inputProcessID = #{processID} group by materialID,inputPlantID\n" +
+            "from tb_materialrecord where orderID like ${orderLike} and inputProcessID = #{processID} and status = '1' group by materialID,inputPlantID\n" +
             ") union all (\n" +
             "select materialID,originalPlantID as plantID, processID, 0 as currentNumber,0 as productionNumber,0 as inNum, 0 as expendNum,sum(number) as outNum, 0 as onlineStorageInNum\n" +
             "from tb_materialcirculationrecord where  processID =  #{processID} and sendTime > #{startTimeWith7} and sendTime <#{endTimeWith7} group by materialID,originalPlantID \n" +
@@ -62,7 +62,7 @@ public interface MaterialInventoryRecordMapper {
             "from tb_grantmaterialrecord where  processID = #{processID} and grantTime >  #{startTimeWithout7} and grantTime < #{endTimeWithout7} and status = '1'  group by batteryType,plantID\n" +
             ") union all (\n" +
             "select  materialID, plantID, processID, max(currentNum) as  currentNumber,0 as productionNumber,0 as inNum,0  as expendNum,0 as outNum, 0 as onlineStorageInNum\n" +
-            "from tb_materialinventoryrecord where  processID =  #{processID} and updateTime > #{startTimeWithout7} and updateTime < #{startTimeWith7} and status = '1'  group by materialID, plantID\n" +
+            "from tb_materialinventoryrecord where  processID =  #{processID} and updateTime > #{startTimeWith7} and updateTime < #{endTimeWithout7} and status = '1'  group by materialID, plantID\n" +
             ") \n" +
             ") a group by materialID,plantID,processID ) b ")
     int insertZHInventoryStatistics(String startTimeWith7, String endTimeWith7, String startTimeWithout7, String endTimeWithout7, String processID, @Param("orderLike") String orderLikeString);
@@ -77,7 +77,7 @@ public interface MaterialInventoryRecordMapper {
             "where subOrderID in ( select id from  tb_onlinematerialrecord where  updateTime >=  #{startTime}  and  updateTime <= #{endTime}  and  plantID = #{plantID} and processID = #{processID}) ) n on m.id = n.materialID ) c left join \n" +
             "( select materialID,sum(number) as productionNum from tb_materialrecord where  orderID in (select id from tb_workorder where  scheduledStartTime >=  #{startTime} \n" +
             " and  scheduledStartTime < #{endTime} and plantID = #{plantID} and processID = #{processID}  and status < '6' )  group by materialID ) d on c.id =d.materialID ) e left join  \n" +
-            " ( select materialID,max(currentNum) as currentNum from tb_materialinventoryrecord where plantID = #{plantID} and processID = #{processID} and updateTime >= #{lastStatisTime} and updateTime <= #{startTime} group by  materialID  ) f on e.id = f.materialID ) g left join\n" +
+            " ( select materialID,max(currentNum) as currentNum from tb_materialinventoryrecord where plantID = #{plantID} and processID = #{processID} and updateTime >= #{startTime} and updateTime <= #{endTime} group by  materialID  ) f on e.id = f.materialID ) g left join\n" +
             " ( select materialID,sum(materialNumber) as scrapNum from tb_unqualifiedmaterialreturn where returnTime >  #{startTime} \n" +
             " and  returnTime < #{endTime} and inputPlantID = #{plantID} and inputProcessID = #{processID} group by materialID ) h on g.id = h.materialID where (ifnull(currentNum,0) + ifnull(productionNum,0)  + ifnull(grantNum,0)   + ifnull(scrapNum,0) + ifnull(onlineInnum,0)) != 0")
     int insertJZInventoryStatistics( String startTime,String endTime,String plantID,String processID,String nextProcessID,String lastStatisTime);
@@ -111,8 +111,8 @@ public interface MaterialInventoryRecordMapper {
             " ( select  materialID, 0 as productionNumber, sum(number) as outputNumber   from tb_materialrecord where\n" +
             " outputTime >=  #{startTime}  and  outputTime < #{endTime}  and inputPlantID = #{plantID} and inputProcessID = #{processID} group by materialID )\n" +
             " )  n on m.id = n.materialID    group by m.id ) p left join ( select materialID,max(currentNum) as currentNum from tb_materialinventoryrecord\n" +
-            " where plantID = #{plantID} and processID = #{processID} and updateTime >=  #{lastStatisTime}  \n" +
-            "and updateTime <=  #{startTime} group by  materialID) q on p.id = q.materialID ) y where totalIn + totalOut +currentNum <> 0")
+            " where plantID = #{plantID} and processID = #{processID} and updateTime >=  #{startTime}  \n" +
+            "and updateTime <=  #{endTime} group by  materialID) q on p.id = q.materialID ) y where totalIn + totalOut +currentNum <> 0")
     int insertFBInventoryStatistics( String startTime,String endTime,String plantID,String processID,String nextProcessID,String lastStatisTime);
 
     //涂板只计算产量

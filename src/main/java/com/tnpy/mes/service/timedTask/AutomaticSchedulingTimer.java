@@ -268,14 +268,14 @@ public class AutomaticSchedulingTimer {
                 materialSecondaryInventoryRecordMapper.insertTBSecondaryInventory(timeStart, timeFinish, ConfigParamEnum.BasicProcessEnum.TBProcessID.getName(), ConfigParamEnum.BasicProcessEnum.JZProcessID.getName(), dateFormat.format(date) + " 06:00:00");
             } else {
                 materialSecondaryInventoryRecordMapper.insertJSSecondaryInventoryNew(timeStart.split(" ")[0], timeFinish.split(" ")[0], ConfigParamEnum.BasicProcessEnum.JSProcessID.getName(),
-                        ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName(), timeStart.split(" ")[0] + " 08:45", timeFinish.split(" ")[0] + " 08:45");
+                        ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName(), timeStart.split(" ")[0] + " 08:40", timeFinish.split(" ")[0] + " 08:45");
             }
 
         } catch (Exception ex) {
         }
     }
 
-    @Scheduled(cron = "0 52 6 * * ?")
+    @Scheduled(cron = "0 52 7 * * ?")
     public void automaticInventoryStatistics() {
         try {
             if (!serviceIPJudge())

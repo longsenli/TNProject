@@ -58,6 +58,35 @@ public interface DailyProductionDetailRecordMapper {
             "d on  c.plantID = d.plantID and c.processID = d.processID and c.lineID = d.lineID and c.usedMaterialID = d.materialID order by c.lineID,c.worklocationID,c.materialID")
     List<Map<Object,Object>> getJZTMPDailyProductionDetailRecord(String plantID, String processID, @Param("orderString") String orderString, String dayTime, String classType,String teamType);
 
+    @Select( " select plantID,#{processID},lineID,workLocation as worklocationID ,materialID,materialName,count(1) as productionNumber  ,'' as usedMaterialID, '' as usedMaterialName,0 as usedNumber, " +
+            " 0 as scrapNumber,0 as weightNumber ,#{classType} as classType ,#{teamType} as teamType,#{dayTime} as dayTime " +
+            " from tb_plasticusedrecord where  plantID = #{plantID} and  usedOrderID like ${orderString} and status ='1' group by workLocation,materialName order by workLocation")
+    List<Map<Object,Object>> getZHQDTMPDailyProductionDetailRecord(String plantID, String processID, @Param("orderString") String orderString, String dayTime, String classType,String teamType);
+
+
+
+    //plantID,processID,lineID,materialID,materialName,productionNumber,usedMaterialID,usedMaterialName,usedNumber,scrapNumber,weightNumber,classType,teamType,dayTime
+    @Select("select a.*,b.usedMaterialID, b.usedMaterialName,b.usedNumber, 0 as scrapNumber,0 as weightNumber ,#{classType} as classType ,#{teamType} as teamType,#{dayTime} as dayTime  from \n" +
+            " ( select plantID,#{processID},solidifyRoomID as lineID,materialID,materialName,sum(productionNum) as productionNumber \n" +
+            "from tb_solidifyrecord where plantID = #{plantID} and  endtime3 > #{startTime} and endtime3 <  #{endTime} group by solidifyRoomID,materialName )\n" +
+            "a left join \n" +
+            "( select plantID,#{processID},solidifyRoomID as lineID,materialID as usedMaterialID, materialName as usedMaterialName, sum(productionNum) as usedNumber \n" +
+            "from tb_solidifyrecord where plantID = #{plantID} and  starttime1 >#{startTime} and starttime1 < #{endTime} group by solidifyRoomID,materialName  \n" +
+            ") b on a.lineID = b.lineID order by a.lineID")
+    List<Map<Object,Object>> getGHSTMPDailyProductionDetailRecord(String plantID, String processID, String startTime,String endTime, String dayTime, String classType,String teamType);
+
+    @Select("select  plantID,processID,materialID,materialName,sum(productionNumber) as productionNumber,sum(planDailyProduction) as planDailyProduction ,sum(ratioFinish) as ratioFinish,sum(lastInventory) as lastInventory\n" +
+            " from ( ( select a.plantID,a.processID,a.materialID,a.materialName,a.productionNumber,b.planDailyProduction,ROUND(a.productionNumber * 100 /ifnull(b.planDailyProduction,1),2) as ratioFinish ,0 as lastInventory from (  \n" +
+            " select plantID, #{processID} as processID,materialID,materialName,count(1) as productionNumber from tb_plasticusedrecord where plantID = #{plantID}" +
+            " and usedOrderID    like ${orderString} and status ='1' group by materialName" +
+            " ) a left join ( select materialID,ROUND(planDailyProduction/2 ) as planDailyProduction from tb_planproductionrecord where  plantID =  #{plantID} and processID = #{processID} and planMonth = #{dayString} ) \n" +
+            "    b on a.materialID  = b.materialID order by materialName )\n" +
+            "    union all\n" +
+            "   ( select plantID,processID,productionMaterialID,productionMaterialName,0 as productionNumber,0 as planDailyProduction,0 as ratioFinish,lastInventory  from tb_dailyprocessproductiondetailrecord\n" +
+            "    where plantID = #{plantID} and processID =  #{processID}  and dayTime = #{lastDay} and classType = #{lastClassType} and  productionMaterialID is not null )\n" +
+            "    )  a group by plantID,processID,materialID order by materialName ")
+    List<Map<Object,Object>> getZHQDTMPDailyProductionSummaryRecord(String plantID, String processID,@Param("orderString") String orderString,String dayString,String lastDay,String lastClassType);
+
 
     @Select("select  plantID,processID,materialID,materialName,sum(productionNumber) as productionNumber,sum(planDailyProduction) as planDailyProduction ,sum(ratioFinish) as ratioFinish,sum(lastInventory) as lastInventory\n" +
             " from ( ( select a.plantID,a.processID,a.materialID,a.materialName,a.productionNumber,b.planDailyProduction,ROUND(a.productionNumber * 100 /ifnull(b.planDailyProduction,1),2) as ratioFinish ,0 as lastInventory from (  \n" +
@@ -101,5 +130,17 @@ public interface DailyProductionDetailRecordMapper {
             "(select count(1) as totalLine from tb_worklocation where  plantID = #{plantID} and processID = #{processID} and status = '1' ) \n" +
             "union all\n" +
             "( select count(distinct worklocationID ) as runningLine from tb_staffattendancedetail where plantID = #{plantID} and processID =#{processID} and dayTime =#{dayTime} and classType1 = #{classType} and status ='1' )\n ")
-    List<Integer> getJZTMPDailyAttendanceSummaryRecord(String plantID, String processID,String dayTime,String classType);
+    List<Integer> getGWTMPDailyAttendanceSummaryRecord(String plantID, String processID,String dayTime,String classType);
+
+
+    @Select(  "select   #{plantID} as plantID, #{processID} as processID, #{classType} as classType, #{dayTime} as dayTime,materialID as productionMaterialID,materialName as productionMaterialName ," +
+            " sum(remainNumber) as receiveMaterialNumber1,sum(remainTS) as receiveMaterialNumber2,sum(totalInNumber) as productionNumber,sum(inTS) as productionTransition1,sum(totalOutNumber) as grantNumber,sum(outTS) as grantNumberTransition1 from (\n" +
+            "( SELECT materialID,materialName,sum(productionNum) as remainNumber,count(1) as remainTS,0 as totalInNumber, 0 as inTS,0 as totalOutNumber,0 as outTS  \n" +
+            "FROM tb_solidifyrecord where plantID = #{plantID} and status < '9' group by materialID,materialName) union all\n" +
+            "(SELECT materialID,materialName,0 as remainNumber,0 as remainTS, sum(productionNum) as totalInNumber,count(1) as inTS ,0 as totalOutNumber,0 as outTS \n" +
+            " FROM tb_solidifyrecord where plantID = #{plantID} and  starttime1> #{startTime} and  starttime1 < #{endTime} group by materialID,materialName) union all\n" +
+            "(SELECT materialID,materialName,0 as remainNumber,0 as remainTS,0 as totalInNumber, 0 as inTS,sum(productionNum) as totalOutNumber,count(1) as outTS \n" +
+            "FROM tb_solidifyrecord where plantID =#{plantID} and  endtime3> #{startTime} \n" +
+            "and  endtime3 <  #{endTime} group by materialID,materialName)  ) a group by materialID,materialName")
+    List<Map<Object, Object>>  getSolidifyTMPDailyProductionSummaryRecord(String plantID,String processID,String classType,String dayTime,  String startTime,String endTime);
 }

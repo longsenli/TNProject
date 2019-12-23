@@ -742,7 +742,7 @@ public class MaterialServiceImpl implements IMaterialService {
             for (int i = 0; i < orderArray.length; i++) {
                 Map<String, String> mapResult = new HashMap<String, String>();
                 mapResult.put("orderID", orderArray[i]);
-                mapResult.put("status", "失败");
+                mapResult.put("status", "发料失败");
                 mapResult.put("returnMessage", "未获取到订单信息!");
                 blAdded = false;
                 for (int m = 0; m < i; m++) {
@@ -822,10 +822,10 @@ public class MaterialServiceImpl implements IMaterialService {
                         }
 
                         grantMaterialRecordMapper.insert(newGrantMaterialRecord);
-                        mapResult.put("status", "成功");
+                        mapResult.put("status", "发料成功");
                         mapResult.put("returnMessage", "" + orderSplit.getProductionnum().intValue() + " " + materialRecord.getMaterialnameinfo());
                     } catch (Exception ex) {
-                        mapResult.put("status", "失败");
+                        mapResult.put("status", "发料失败");
                         mapResult.put("returnMessage", "该订单已发料" );
                     }
                 }
@@ -855,7 +855,7 @@ public class MaterialServiceImpl implements IMaterialService {
             for (int i = 0; i < orderArray.length; i++) {
                 Map<String, String> mapResult = new HashMap<String, String>();
                 mapResult.put("orderID", orderArray[i]);
-                mapResult.put("status", "失败");
+                mapResult.put("status", "取消发料失败");
                 mapResult.put("returnMessage", "未获取到订单信息!");
                 for (int j = 0; j < orderInfoList.size(); j++) {
                     if (!orderArray[i].equals(orderInfoList.get(j).get("subOrderID"))) {
@@ -890,7 +890,7 @@ public class MaterialServiceImpl implements IMaterialService {
                         break;
                     }
                     grantMaterialRecordMapper.deleteByPrimaryKey(grantMaterialRecord.getId());
-                    mapResult.put("status", "成功");
+                    mapResult.put("status", "取消发料成功");
                     mapResult.put("returnMessage", orderInfoList.get(j).get("materialNameInfo") + "   " + grantMaterialRecord.getNumber());
                 }
                 grantResult.add(mapResult);

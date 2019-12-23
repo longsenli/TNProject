@@ -447,22 +447,45 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
         TNPYResponse result = new TNPYResponse();
         try {
             String orderString = "";
+            String startTime = "";
+            String endTime = "";
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = dateFormat.parse(dayTime);//取时间
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(date);
+
             if ("白班".equals(classType)) {
                 orderString = "'%BB" + dayTime.replaceAll("-", "") + "'";
+                startTime = dayTime + " 07:00";
+                endTime = dayTime + " 19:00";
             } else {
                 orderString = "'%YB" + dayTime.replaceAll("-", "") + "'";
+                startTime = dayTime + " 19:00";
+                calendar.add(Calendar.DATE, 1);
+                date = calendar.getTime();   //这个时间就是日期往后推一天的结果
+                endTime = dateFormat.format(date) + " 07:00";
             }
             String teamType = dailyProductionDetailRecordMapper.getTeamType(plantID, processID, orderString);
-
+            List<Map<Object, Object>> dailyProductionDetailRecordTMP;
             if (ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(processID)) {
-                List<Map<Object, Object>> dailyProductionDetailRecordTMP = dailyProductionDetailRecordMapper.getJZTMPDailyProductionDetailRecord(plantID, processID, orderString, dayTime, classType, teamType);
+                dailyProductionDetailRecordTMP = dailyProductionDetailRecordMapper.getJZTMPDailyProductionDetailRecord(plantID, processID, orderString, dayTime, classType, teamType);
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 result.setData(JSONObject.toJSONString(dailyProductionDetailRecordTMP));
                 return result;
             }
 
+            if (ConfigParamEnum.BasicProcessEnum.GHProcessID.getName().equals(processID)) {
+                dailyProductionDetailRecordTMP = dailyProductionDetailRecordMapper.getGHSTMPDailyProductionDetailRecord(plantID, processID, startTime, endTime, dayTime, classType, teamType);
+            } else if (ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID)) {
+                dailyProductionDetailRecordTMP = dailyProductionDetailRecordMapper.getZHQDTMPDailyProductionDetailRecord(plantID, processID, orderString, dayTime, classType, teamType);
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setData(JSONObject.toJSONString(dailyProductionDetailRecordTMP));
+                return result;
+            }
+            else {
+                    dailyProductionDetailRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyProductionDetailRecord(plantID, processID, orderString, dayTime, classType, teamType);
+                }
 
-            List<Map<Object, Object>> dailyProductionDetailRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyProductionDetailRecord(plantID, processID, orderString, dayTime, classType, teamType);
             List<Map<Object, Object>> finalDailyProductionDetailRecordTMP = new ArrayList<>();
             Map<String, String> lineProductionMap = new HashMap<>();
             Map<String, String> lineUsedMap = new HashMap<>();
@@ -593,19 +616,37 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                 date = calendar.getTime();   //这个时间就是日期往后推一天的结果
                 endTime = dateFormat.format(date) + " 07:00";
             }
+
+            if(ConfigParamEnum.BasicProcessEnum.GHProcessID.getName().equals(processID))
+            {
+                List<Map<Object, Object>> dailyProductionSummaryRecordTMP = dailyProductionDetailRecordMapper.getSolidifyTMPDailyProductionSummaryRecord(plantID,processID,classType,dayTime, startTime,endTime);
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setData(JSONObject.toJSONString(dailyProductionSummaryRecordTMP));
+                return result;
+            }
             String teamType = dailyProductionDetailRecordMapper.getTeamType(plantID, processID, orderString);
             List<String> lastProcessID = objectRelationDictMapper.selectPreviousObjectID(processID, "1001");
             if (lastProcessID.size() < 1) {
                 lastProcessID.add("-1");
             }
-            List<Map<Object, Object>> dailyProductionSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyProductionSummaryRecord(plantID, processID, orderString, dayTime, lastDay, lastClassType);
+            List<Map<Object, Object>> dailyProductionSummaryRecordTMP ;
+            if (ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID)) {
+                dailyProductionSummaryRecordTMP = dailyProductionDetailRecordMapper.getZHQDTMPDailyProductionSummaryRecord(plantID, processID, orderString, dayTime, lastDay, lastClassType);
+            }
+            else
+            {
+                dailyProductionSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyProductionSummaryRecord(plantID, processID, orderString, dayTime, lastDay, lastClassType);
+
+            }
             List<Map<Object, Object>> dailyUsedInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyUsedInfoSummaryRecord(plantID, processID, orderString);
             List<Map<Object, Object>> dailyScrapInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyScrapInfoSummaryRecord(plantID, processID, dayTime, classType);
             List<Map<Object, Object>> dailyRecieveInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyRecieveInfoSummaryRecord(plantID, lastProcessID.get(0), startTime, endTime);
             List<Map<Object, Object>> dailyGrantInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyGrantInfoSummaryRecord(plantID, processID, startTime, endTime);
             List<Integer> attendanceInfo = new ArrayList<>();
             if (ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(processID)) {
-                attendanceInfo = dailyProductionDetailRecordMapper.getJZTMPDailyAttendanceSummaryRecord(plantID, processID, dayTime, classType);
+                attendanceInfo = dailyProductionDetailRecordMapper.getGWTMPDailyAttendanceSummaryRecord(plantID, processID, dayTime, classType);
+            } else  if (ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID)) {
+                attendanceInfo = dailyProductionDetailRecordMapper.getGWTMPDailyAttendanceSummaryRecord(plantID, processID, dayTime, classType);
             } else {
                 attendanceInfo = dailyProductionDetailRecordMapper.getTMPDailyAttendanceSummaryRecord(plantID, processID, dayTime, classType);
             }
@@ -834,14 +875,14 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                     attendanceNumber = 0;
                     Map<Object, Object> staffAttendanceMap = new HashMap<>();
                     staffAttendanceMap.put("staffName", dailyAttendanceDetailRecord.get(i).get("staffName").toString());
-                     for (; ; ) {
+                    for (; ; ) {
                         if (dateFormat.format(startDay).compareTo(endTime) > 0) {
                             break;
                         }
                         if (i < dailyAttendanceDetailRecord.size() && dateFormat.format(startDay).equals(dailyAttendanceDetailRecord.get(i).get("dayTime").toString()) && currentStaff.equals(dailyAttendanceDetailRecord.get(i).get("staffName").toString())) {
                             staffAttendanceMap.put(dateFormat.format(startDay), "1");
-                            staffAttendanceSummaryMap.put(dateFormat.format(startDay),Integer.parseInt(staffAttendanceSummaryMap.get(dateFormat.format(startDay)).toString() ) + 1);
-                            attendanceNumber ++;
+                            staffAttendanceSummaryMap.put(dateFormat.format(startDay), Integer.parseInt(staffAttendanceSummaryMap.get(dateFormat.format(startDay)).toString()) + 1);
+                            attendanceNumber++;
                             i++;
                         } else {
                             staffAttendanceMap.put(dateFormat.format(startDay), "0");
@@ -851,7 +892,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         startDay = calendar.getTime();   //这个时间就是日期往后推一天的结果
                     }
                     staffAttendanceMap.put("totalAttendance", attendanceNumber);
-                    staffAttendanceSummaryMap.put("totalAttendance",Integer.parseInt(staffAttendanceSummaryMap.get("totalAttendance").toString() ) + attendanceNumber);
+                    staffAttendanceSummaryMap.put("totalAttendance", Integer.parseInt(staffAttendanceSummaryMap.get("totalAttendance").toString()) + attendanceNumber);
                     staffAttendanceSummaryRecord.add(staffAttendanceMap);
                 }
             }

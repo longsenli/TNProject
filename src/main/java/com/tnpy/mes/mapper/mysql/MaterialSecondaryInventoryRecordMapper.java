@@ -59,7 +59,7 @@ public interface MaterialSecondaryInventoryRecordMapper {
             " SELECT materialID,plantID,  currentNum,0 as gainNum, 0 as inNum,0 as expendNum,0 as outNum ,0 as onlineNum ,0 as todayRepair,0 as extend1,0  as extend2 \n" +
             " FROM tb_materialsecondaryinventoryrecord  where processID = #{processID} and updateTime > #{startTime} and updateTime< #{endTime} group by plantID,materialID\n" +
             ")\n" +
-            " ) a group by plantID,materialID ) b")
+            " ) a group by plantID,materialID ) b where currentNum +gainNum-expendNum-outNum + todayRepair != 0")
     int insertJSSecondaryInventoryNew( String startTime,String endTime,String processID,String lastProcessID,String scrapStartTime,String scrapEndTime);
 
     @Insert("insert into tb_materialsecondaryinventoryrecord (id, materialID, plantID, processID, currentNum, lastStorage, updateTime, gainNum,\n" +
