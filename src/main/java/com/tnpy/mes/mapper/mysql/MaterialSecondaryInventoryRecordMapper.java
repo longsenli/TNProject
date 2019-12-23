@@ -73,10 +73,10 @@ public interface MaterialSecondaryInventoryRecordMapper {
             "               FROM tb_materialrecord  where  outputProcessID =#{processID} and outputTime > #{startTime} and outputTime <  #{endTime}   group by outputProcessID,materialID    \n" +
             "               ) union all  (    \n" +
             "              SELECT materialID,plantID, 0 as currentNum,0 as gainNum, 0 as inNum,0 as expendNum,sum(value) as outNum\n" +
-            "               FROM tb_materialscraprecord where processID = '1003' and updateTime > #{startTime} and updateTime< #{endTime}  group by plantID,materialID    \n" +
+            "               FROM tb_materialscraprecord where  updateTime > #{startTime} and updateTime< #{endTime}  group by plantID,materialID    \n" +
             "               ) union all (    \n" +
             "               SELECT materialID,plantID,  currentNum,0 as gainNum, 0 as inNum,0 as expendNum,0 as outNum\n" +
-            "               FROM tb_materialsecondaryinventoryrecord  where processID = #{processID} and updateTime > '2019-11-28' and updateTime< '2019-11-29' group by plantID,materialID    \n" +
+            "               FROM tb_materialsecondaryinventoryrecord  where processID = #{processID} and updateTime > #{lastInventoryTime} and updateTime<#{startTime}group by plantID,materialID    \n" +
             "              )    \n" +
             "               ) a group by plantID,materialID   ) b ")
     int insertTBSecondaryInventory( String startTime,String endTime,String processID,String lastProcessID,String lastInventoryTime);
