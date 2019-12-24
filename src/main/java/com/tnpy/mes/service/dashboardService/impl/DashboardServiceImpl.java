@@ -430,10 +430,10 @@ public class DashboardServiceImpl implements IDashboardService {
                 Date newStartTime = sdf.parse(startTime); //new Date(startTime);
                 Date newEndTime = sdf.parse(endTime); // new Date(endTime);
 
-                querySQL = "( SELECT materialName,sum(value) as scrapNumber,sum(weight) as weightNumber,'合计' as classType,'' as  productDayStr FROM ilpsdb.tb_materialscraprecord \n" +
+                querySQL = "( SELECT materialName,round(sum(value) ,2) as scrapNumber,round(sum(weight),2) as weightNumber,'合计' as classType,'' as  productDayStr FROM tb_materialscraprecord \n" +
                         " where plantID = '" + plantID + "' and processID = '" + processID + "' and productDay >= '" + sdf.format(newStartTime) + "'  and productDay <= '" + sdf.format(newEndTime) + "' group by materialName order by materialName limit 100)\n" +
                         " union all \n" +
-                        " ( SELECT materialName,sum(value) as scrapNumber,sum(weight) as weightNumber,classType,DATE_FORMAT(productDay, '%Y-%m-%d') as productDayStr FROM ilpsdb.tb_materialscraprecord \n" +
+                        " ( SELECT materialName,round(sum(value),2) as scrapNumber,round(sum(weight),2) as weightNumber,classType,DATE_FORMAT(productDay, '%Y-%m-%d') as productDayStr FROM tb_materialscraprecord \n" +
                         " where plantID = '" + plantID + "' and processID = '" + processID + "' and productDay >= '" + sdf.format(newStartTime) + "'  and productDay <= '" + sdf.format(newEndTime) + "'  group by productDayStr,classType,materialName order by productDayStr,classType,materialName  limit 1000)";
             }
 
