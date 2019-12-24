@@ -244,6 +244,9 @@ public interface MaterialRecordMapper {
 
     @Update("update tb_materialrecord set inputWorkLocationID = #{numberRemain} where id =#{id} ")
     int updateJQNumber(String id,String numberRemain );
+
+    @Select("select count(1) from sys_usedmaterialnumberlimit where plantID = #{plantID} and processID = #{processID}  and status = '1' ")
+    int usedMaterialNumberLimitFlag(String plantID,String processID );
 }
 
 

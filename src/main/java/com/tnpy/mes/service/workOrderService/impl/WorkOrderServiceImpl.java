@@ -519,6 +519,7 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 return result;
             }
+            Workorder workorder = workOrderMapper.selectByPrimaryKey(orderSplit.getOrderid());
 
             OrderSplit orderSplitTMP = orderSplitMapper.selectByPrimaryKey(orderSplit.getId());
             if (orderSplitTMP.getStatus().equals(StatusEnum.WorkOrderStatus.finished.getIndex() + "")) {
@@ -529,11 +530,16 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             if (orderSplit.getProductionnum() == null) {
                 orderSplit.setProductionnum(orderSplitTMP.getProductionnum());
             }
-            TNPYResponse judgeResult = judgeEnoughMaterial(orderSplit.getMaterialid(), orderSplit.getOrderid(), orderSplit.getProductionnum());
-            if (judgeResult.getStatus() != StatusEnum.ResponseStatus.Success.getIndex()) {
-                // System.out.println(JSONObject.toJSON(judgeResult).toString());
-                return judgeResult;
+
+            if( materialRecordMapper.usedMaterialNumberLimitFlag( workorder.getPlantid(), workorder.getProcessid()) > 0)
+            {
+                TNPYResponse judgeResult = judgeEnoughMaterial(orderSplit.getMaterialid(), orderSplit.getOrderid(), orderSplit.getProductionnum());
+                if (judgeResult.getStatus() != StatusEnum.ResponseStatus.Success.getIndex()) {
+                    // System.out.println(JSONObject.toJSON(judgeResult).toString());
+                    return judgeResult;
+                }
             }
+
 
             orderSplit.setStatus(StatusEnum.WorkOrderStatus.finished.getIndex() + "");
             orderSplitMapper.updateByPrimaryKeySelective(orderSplit);
@@ -554,7 +560,6 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                 materialRecord.setInputworklocationid(inputterInfo[2]);
                 materialRecord.setMaterialnameinfo(inputterInfo[3]);
             }
-            Workorder workorder = workOrderMapper.selectByPrimaryKey(orderSplit.getOrderid());
             if (workorder != null) {
                 materialRecord.setInputplantid(workorder.getPlantid());
                 materialRecord.setInputprocessid(workorder.getProcessid());
@@ -682,7 +687,6 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
                     } else {
                         break;
                     }
-
                 }
                 if (inputRecordMap.get(entry.getKey()) + 1.0 < entry.getValue() * productionALl) {
                     result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
