@@ -142,15 +142,40 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
 
     public TNPYResponse insertStaffGoAttendanceInfo(String qrCode, String staffID) {
         TNPYResponse result = new TNPYResponse();
-        try {
-            if (staffAttendanceDetailMapper.updateStaffGoAttendanceInfo(qrCode, staffID) < 1) {
+        try
+        {
+            Date dateNow = new Date();
+
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(dateNow);
+
+            calendar.add(Calendar.HOUR,-24);
+            dateNow = calendar.getTime();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String filter = " where staffID = '"+staffID+"' and comeTime > '" + dateFormat.format(dateNow) + "' and  (lineID = '"+qrCode+"' or worklocationID =  '"+qrCode+"' ) order by dayTime desc";
+
+            List<StaffAttendanceDetail> staffAttendanceDetailList = staffAttendanceDetailMapper.selectRecordByFilter(filter);
+
+            if(staffAttendanceDetailList.size() <1 )
+            {
                 result.setMessage("下机出错！，未找到上机记录！" + qrCode);
                 return result;
             }
-            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
-            result.setMessage("下机成功！");
+            if( null == staffAttendanceDetailList.get(0).getGotime())
+            {
+                if (staffAttendanceDetailMapper.updateStaffGoAttendanceInfo(qrCode, staffID) < 1) {
+                    result.setMessage("下机出错！，未找到上机记录！" + qrCode);
+                    return result;
+                }
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setMessage("下机成功！");
+                return result;
+
+            }
+            result.setMessage("您已经下机，无需重复扫码！" + qrCode +dateFormat.format(staffAttendanceDetailList.get(0).getGotime()));
             return result;
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             result.setMessage("下机出错！" + ex.getMessage());
             return result;
         }

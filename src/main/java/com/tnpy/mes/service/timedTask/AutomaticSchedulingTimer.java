@@ -646,15 +646,8 @@ public class AutomaticSchedulingTimer {
         }
     }
 
-   // @Scheduled(cron = "0 12 8 * * ?")
+   // @Scheduled(cron = "0 38 10 * * ?")
     public void testFunction() {
-
-  //      dailyProductionSummaryLineMapper.insertDailyProductionSummaryLineCD("","白班","2019-12-23");
-  //      dailyProductionSummaryLineMapper.insertDailyProductionSummaryProcessCD("","白班","2019-12-23");
-
-//        String time = "2019-05";
-//        int dayNumber = getMonthDayNumber(Integer.parseInt(time.substring(0,4)),Integer.parseInt(time.substring(5,7)));
-//        planProductionRecordMapper.insertDailyPlanProduction("2019-05","2019-05-03",String.valueOf(dayNumber));
 
         //      materialSecondaryInventoryRecordMapper.insertJSSecondaryInventoryNew("2019-11-27","2019-11-28",ConfigParamEnum.BasicProcessEnum.JSProcessID.getName(),ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName());
         //     materialInventoryRecordMapper.insertCDInventoryStatistics("2019-11-28","2019-11-29",ConfigParamEnum.BasicProcessEnum.CDProcessID.getName());
