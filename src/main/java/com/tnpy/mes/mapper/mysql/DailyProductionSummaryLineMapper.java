@@ -36,6 +36,11 @@ public interface DailyProductionSummaryLineMapper {
     int insertDailyProductionSummaryLineZHQD(@Param("orderID") String orderID, String classType,String dayString);
 
 
+    @Insert("insert into tb_dailyproductionsummaryline (id,plantID,processID,lineID,materialID,materialName,production,extd1,classType1,dayTime,status)\n" +
+            "   select uuid(),plantID,processID,lineID,materialID,materialName,sum(productionNumber) ,materialType ,#{classType},#{dayString},'1' \n" +
+            "   from tb_chargingrackrecord where status = '1' and putonDate = #{dayString} group by lineID,materialID,materialType ")
+    int insertDailyProductionSummaryLineCD(@Param("orderID") String orderID, String classType,String dayString);
+
     @Insert(" insert into tb_dailyproductionsummaryworklocation (id,plantID,processID,lineID,workLocation,materialID,materialName,production,classType1,dayTime,status)\n" +
             "select uuid(),inputPlantID,inputProcessID,inputLineID,inputWorkLocationID,materialID,materialNameInfo,sum(number),#{classType},#{dayString},'1' " +
             " from tb_materialrecord where orderID like ${orderID} and status = '1'\n" +
@@ -47,6 +52,11 @@ public interface DailyProductionSummaryLineMapper {
             "where usedOrderID like ${orderID} group by workLocation,materialName")
     int insertDailyProductionSummaryWorklocationZHQD(@Param("orderID") String orderID, String classType,String dayString);
 
+
+    @Insert("insert into tb_dailyproductionsummaryprocess (id,plantID,processID,materialID,materialName,production,extd1,classType1,dayTime,status)\n" +
+            "  select uuid(),plantID,processID,materialID,materialName,sum(productionNumber) ,materialType,#{classType},#{dayString},'1' \n" +
+            "   from tb_chargingrackrecord where status = '1' and putonDate = #{dayString} group by plantID,materialID,materialType ")
+    int insertDailyProductionSummaryProcessCD(@Param("orderID") String orderID, String classType,String dayString);
 
     @Insert("insert into tb_dailyproductionsummaryprocess (id,plantID,processID,materialID,materialName,production,classType1,dayTime,status)\n" +
             " select uuid(),inputPlantID,inputProcessID,materialID,materialNameInfo,sum(number) ,#{classType},#{dayString},'1' \n" +

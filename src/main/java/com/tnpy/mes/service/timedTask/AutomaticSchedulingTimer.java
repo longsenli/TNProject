@@ -605,6 +605,10 @@ public class AutomaticSchedulingTimer {
             dailyProductionSummaryLineMapper.insertDailyProductionSummaryProcess(timeOrder, classTpe, dayString);
             dailyProductionSummaryLineMapper.insertDailyProductionSummaryProcessZHQD(timeOrder, classTpe, dayString);
 
+            if (calendar.get(Calendar.HOUR_OF_DAY) > 20) {
+                dailyProductionSummaryLineMapper.insertDailyProductionSummaryLineCD(timeOrder,classTpe,dayString);
+                dailyProductionSummaryLineMapper.insertDailyProductionSummaryProcessCD(timeOrder,classTpe,dayString);
+            }
         } catch (Exception ex) {
             System.out.println("盘点出错" + ex.getMessage());
         }
@@ -642,8 +646,12 @@ public class AutomaticSchedulingTimer {
         }
     }
 
-    // @Scheduled(cron = "0 23 8 * * ?")
+   // @Scheduled(cron = "0 12 8 * * ?")
     public void testFunction() {
+
+  //      dailyProductionSummaryLineMapper.insertDailyProductionSummaryLineCD("","白班","2019-12-23");
+  //      dailyProductionSummaryLineMapper.insertDailyProductionSummaryProcessCD("","白班","2019-12-23");
+
 //        String time = "2019-05";
 //        int dayNumber = getMonthDayNumber(Integer.parseInt(time.substring(0,4)),Integer.parseInt(time.substring(5,7)));
 //        planProductionRecordMapper.insertDailyPlanProduction("2019-05","2019-05-03",String.valueOf(dayNumber));
