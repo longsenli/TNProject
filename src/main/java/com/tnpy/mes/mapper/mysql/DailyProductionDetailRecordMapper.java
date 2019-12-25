@@ -63,6 +63,13 @@ public interface DailyProductionDetailRecordMapper {
             " from tb_plasticusedrecord where  plantID = #{plantID} and  usedOrderID like ${orderString} and status ='1' group by workLocation,materialName order by workLocation")
     List<Map<Object,Object>> getZHQDTMPDailyProductionDetailRecord(String plantID, String processID, @Param("orderString") String orderString, String dayTime, String classType,String teamType);
 
+    @Select( " select a.*,b.usedMaterialID,b.usedMaterialName,b.usedNumber,b.scrapNumber,b.usedNumberTransition1 ,#{classType} as classType ,#{teamType} as teamType,#{dayTime} as dayTime  from (            \n" +
+            "select plantID,#{processID},lineID,materialID,materialName,sum(productionNumber) as productionNumber,materialType as productionTransition1 from tb_chargingrackrecord \n" +
+            "where plantID = #{plantID} and putonDate = #{dayTime} and status  = '1' group by lineID,materialID,materialType\n" +
+            ") a left join (\n" +
+            "select lineID,materialID as usedMaterialID ,materialName as usedMaterialName,sum(realNumber) as usedNumber,sum(repairNumber) as scrapNumber,materialType as usedNumberTransition1 from tb_chargingrackrecord \n" +
+            "where plantID = #{plantID} and pulloffDate >#{startTime} and pulloffDate < #{endTime} and status  = '1' group by lineID,materialID,materialType ) b on a.lineID = b.lineID  order by a.lineID,a.materialName,b.usedMaterialName ")
+    List<Map<Object,Object>> getCDTMPDailyProductionDetailRecord(String plantID, String processID, String startTime,String endTime, String dayTime, String classType,String teamType);
 
 
     //plantID,processID,lineID,materialID,materialName,productionNumber,usedMaterialID,usedMaterialName,usedNumber,scrapNumber,weightNumber,classType,teamType,dayTime
@@ -86,6 +93,18 @@ public interface DailyProductionDetailRecordMapper {
             "    where plantID = #{plantID} and processID =  #{processID}  and dayTime = #{lastDay} and classType = #{lastClassType} and  productionMaterialID is not null )\n" +
             "    )  a group by plantID,processID,materialID order by materialName ")
     List<Map<Object,Object>> getZHQDTMPDailyProductionSummaryRecord(String plantID, String processID,@Param("orderString") String orderString,String dayString,String lastDay,String lastClassType);
+
+    @Select("select  plantID,processID,materialID,materialName,sum(productionNumber) as productionNumber,sum(planDailyProduction) as planDailyProduction ,sum(ratioFinish) as ratioFinish,sum(lastInventory) as lastInventory\n" +
+            " from ( ( select a.plantID,a.processID,a.materialID,a.materialName,a.productionNumber,b.planDailyProduction,ROUND(a.productionNumber * 100 /ifnull(b.planDailyProduction,1),2) as ratioFinish ,0 as lastInventory from (  \n" +
+            " select plantID,#{processID}as processID,materialID,materialName,sum(productionNumber) as productionNumber from tb_chargingrackrecord \n" +
+            "where plantID =#{plantID} and putonDate = #{dayString} and status  = '1' group by materialName" +
+            " ) a left join ( select materialID,ROUND(planDailyProduction/2 ) as planDailyProduction from tb_planproductionrecord where  plantID =  #{plantID} and processID = #{processID} and planMonth = #{dayString} ) \n" +
+            "    b on a.materialID  = b.materialID order by materialName )\n" +
+            "    union all\n" +
+            "   ( select plantID,processID,productionMaterialID,productionMaterialName,0 as productionNumber,0 as planDailyProduction,0 as ratioFinish,lastInventory  from tb_dailyprocessproductiondetailrecord\n" +
+            "    where plantID = #{plantID} and processID =  #{processID}  and dayTime = #{lastDay} and classType = #{lastClassType} and  productionMaterialID is not null )\n" +
+            "    )  a group by plantID,processID,materialID order by materialName ")
+    List<Map<Object,Object>> getCDTMPDailyProductionSummaryRecord(String plantID, String processID,@Param("orderString") String orderString,String dayString,String lastDay,String lastClassType);
 
 
     @Select("select  plantID,processID,materialID,materialName,sum(productionNumber) as productionNumber,sum(planDailyProduction) as planDailyProduction ,sum(ratioFinish) as ratioFinish,sum(lastInventory) as lastInventory\n" +
@@ -115,6 +134,10 @@ public interface DailyProductionDetailRecordMapper {
     @Select("select a.*,b.name as materialName  from (   SELECT batteryType as materialID, plantID,processID,sum(number) as grantNumber  FROM tb_grantmaterialrecord where plantID = #{plantID} and processID = #{processID} " +
             " and grantTime > #{startTime} and grantTime < #{endTime} group by batteryType ) a left join sys_material b on a.materialID = b.id  order by materialName ")
     List<Map<Object,Object>> getTMPDailyGrantInfoSummaryRecord(String plantID, String processID,String startTime,String endTime);
+
+    @Select(" select plantID,#{processID} as processID,materialID ,materialName ,sum(realNumber + repairNumber) as grantNumber from tb_chargingrackrecord \n" +
+            "where plantID = #{plantID} and pulloffDate > #{startTime} and pulloffDate < #{endTime} and status  = '1' group by materialName order by  materialName")
+    List<Map<Object,Object>> getCDTMPDailyGrantInfoSummaryRecord(String plantID, String processID,String startTime,String endTime);
 
     @Select( "(select count(1) as attendanceNumber from tb_staffattendancedetail where plantID = #{plantID} and processID =#{processID}  and dayTime =#{dayTime} and classType1 = #{classType} and status ='1' )\n" +
             "union all\n" +

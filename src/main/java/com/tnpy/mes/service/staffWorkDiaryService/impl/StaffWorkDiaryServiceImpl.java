@@ -142,27 +142,24 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
 
     public TNPYResponse insertStaffGoAttendanceInfo(String qrCode, String staffID) {
         TNPYResponse result = new TNPYResponse();
-        try
-        {
+        try {
             Date dateNow = new Date();
 
             Calendar calendar = new GregorianCalendar();
             calendar.setTime(dateNow);
 
-            calendar.add(Calendar.HOUR,-24);
+            calendar.add(Calendar.HOUR, -24);
             dateNow = calendar.getTime();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String filter = " where staffID = '"+staffID+"' and comeTime > '" + dateFormat.format(dateNow) + "' and  (lineID = '"+qrCode+"' or worklocationID =  '"+qrCode+"' ) order by dayTime desc";
+            String filter = " where staffID = '" + staffID + "' and comeTime > '" + dateFormat.format(dateNow) + "' and  (lineID = '" + qrCode + "' or worklocationID =  '" + qrCode + "' ) order by dayTime desc";
 
             List<StaffAttendanceDetail> staffAttendanceDetailList = staffAttendanceDetailMapper.selectRecordByFilter(filter);
 
-            if(staffAttendanceDetailList.size() <1 )
-            {
+            if (staffAttendanceDetailList.size() < 1) {
                 result.setMessage("下机出错！，未找到上机记录！" + qrCode);
                 return result;
             }
-            if( null == staffAttendanceDetailList.get(0).getGotime())
-            {
+            if (null == staffAttendanceDetailList.get(0).getGotime()) {
                 if (staffAttendanceDetailMapper.updateStaffGoAttendanceInfo(qrCode, staffID) < 1) {
                     result.setMessage("下机出错！，未找到上机记录！" + qrCode);
                     return result;
@@ -172,10 +169,9 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                 return result;
 
             }
-            result.setMessage("您已经下机，无需重复扫码！" + qrCode +dateFormat.format(staffAttendanceDetailList.get(0).getGotime()));
+            result.setMessage("您已经下机，无需重复扫码！" + qrCode + dateFormat.format(staffAttendanceDetailList.get(0).getGotime()));
             return result;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             result.setMessage("下机出错！" + ex.getMessage());
             return result;
         }
@@ -506,17 +502,19 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 result.setData(JSONObject.toJSONString(dailyProductionDetailRecordTMP));
                 return result;
+            } else if (ConfigParamEnum.BasicProcessEnum.CDProcessID.getName().equals(processID)) {
+                dailyProductionDetailRecordTMP = dailyProductionDetailRecordMapper.getCDTMPDailyProductionDetailRecord(plantID, processID, dayTime, dayTime + " 23:59", dayTime, classType, teamType);
+            } else {
+                dailyProductionDetailRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyProductionDetailRecord(plantID, processID, orderString, dayTime, classType, teamType);
             }
-            else {
-                    dailyProductionDetailRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyProductionDetailRecord(plantID, processID, orderString, dayTime, classType, teamType);
-                }
 
             List<Map<Object, Object>> finalDailyProductionDetailRecordTMP = new ArrayList<>();
             Map<String, String> lineProductionMap = new HashMap<>();
             Map<String, String> lineUsedMap = new HashMap<>();
             Map<String, List<Object>> lineRowProductionMap = new HashMap<>();
             Map<String, List<Object>> lineRowUsedMap = new HashMap<>();
-
+            int productionListNumber = 4; //产量数组有每3个是一条记录
+            int usedListNumber = 6;   //投料数组有每5个是一条记录
 
             for (int i = 0; i < dailyProductionDetailRecordTMP.size(); i++) {
                 //  System.out.println(lineRowProductionMap.keySet().toString() + " ===" + i);
@@ -528,6 +526,11 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         lineRowInfo.add(dailyProductionDetailRecordTMP.get(i).get("materialID"));
                         lineRowInfo.add(dailyProductionDetailRecordTMP.get(i).get("materialName"));
                         lineRowInfo.add(dailyProductionDetailRecordTMP.get(i).get("productionNumber"));
+                        if (dailyProductionDetailRecordTMP.get(i).containsKey("productionTransition1")) {
+                            lineRowInfo.add(dailyProductionDetailRecordTMP.get(i).get("productionTransition1"));
+                        } else {
+                            lineRowInfo.add("-");
+                        }
                         lineRowProductionMap.put(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("lineID")), lineRowInfo);
                         lineProductionMap.put(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("lineID")), lineProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")) + " " + dailyProductionDetailRecordTMP.get(i).get("materialID"));
                     }
@@ -535,6 +538,11 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                     lineRowInfo.add(dailyProductionDetailRecordTMP.get(i).get("materialID"));
                     lineRowInfo.add(dailyProductionDetailRecordTMP.get(i).get("materialName"));
                     lineRowInfo.add(dailyProductionDetailRecordTMP.get(i).get("productionNumber"));
+                    if (dailyProductionDetailRecordTMP.get(i).containsKey("productionTransition1")) {
+                        lineRowInfo.add(dailyProductionDetailRecordTMP.get(i).get("productionTransition1"));
+                    } else {
+                        lineRowInfo.add("-");
+                    }
                     lineRowProductionMap.put(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("lineID")), lineRowInfo);
                     lineProductionMap.put(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("lineID")), " " + dailyProductionDetailRecordTMP.get(i).get("materialID"));
                 }
@@ -550,6 +558,11 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("usedNumber"));
                         lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("scrapNumber"));
                         lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("weightNumber"));
+                        if (dailyProductionDetailRecordTMP.get(i).containsKey("usedNumberTransition1")) {
+                            lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("usedNumberTransition1"));
+                        } else {
+                            lineRowUsedInfo.add("-");
+                        }
                         lineRowUsedMap.put(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("lineID")), lineRowUsedInfo);
                         lineUsedMap.put(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("lineID")), lineUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")) + " " + dailyProductionDetailRecordTMP.get(i).get("usedMaterialID"));
                     }
@@ -559,6 +572,11 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                     lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("usedNumber"));
                     lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("scrapNumber"));
                     lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("weightNumber"));
+                    if (dailyProductionDetailRecordTMP.get(i).containsKey("usedNumberTransition1")) {
+                        lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("usedNumberTransition1"));
+                    } else {
+                        lineRowUsedInfo.add("-");
+                    }
                     lineRowUsedMap.put(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("lineID")), lineRowUsedInfo);
                     lineUsedMap.put(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("lineID")), " " + dailyProductionDetailRecordTMP.get(i).get("usedMaterialID"));
                 }
@@ -572,7 +590,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                 //plantID,processID,lineID,materialID,materialName,productionNumber,usedMaterialID,usedMaterialName,usedNumber,scrapNumber,weightNumber,classType,teamType,dayTime
 
                 for (int j = 0; ; j++) {
-                    if (lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).size() < j * 3 + 1 && lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).size() < j * 5 + 1) {
+                    if (lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).size() < j * productionListNumber + 1 && lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).size() < j * usedListNumber + 1) {
                         break;
                     }
                     Map<Object, Object> recordMap = new HashMap<>();
@@ -582,17 +600,19 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                     recordMap.put("classType", dailyProductionDetailRecordTMP.get(i).get("classType"));
                     recordMap.put("teamType", dailyProductionDetailRecordTMP.get(i).get("teamType"));
                     recordMap.put("dayTime", dailyProductionDetailRecordTMP.get(i).get("dayTime"));
-                    if (lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).size() > j * 3) {
-                        recordMap.put("materialID", lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * 3));
-                        recordMap.put("materialName", lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * 3 + 1));
-                        recordMap.put("productionNumber", lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * 3 + 2));
+                    if (lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).size() > j * productionListNumber) {
+                        recordMap.put("materialID", lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * productionListNumber));
+                        recordMap.put("materialName", lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * productionListNumber + 1));
+                        recordMap.put("productionNumber", lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * productionListNumber + 2));
+                        recordMap.put("productionTransition1", lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * productionListNumber + 3));
                     }
-                    if (lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).size() > j * 5) {
-                        recordMap.put("usedMaterialID", lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * 5));
-                        recordMap.put("usedMaterialName", lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * 5 + 1));
-                        recordMap.put("usedNumber", lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * 5 + 2));
-                        recordMap.put("scrapNumber", lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * 5 + 3));
-                        recordMap.put("weightNumber", lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * 5 + 4));
+                    if (lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).size() > j * usedListNumber) {
+                        recordMap.put("usedMaterialID", lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * usedListNumber));
+                        recordMap.put("usedMaterialName", lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * usedListNumber + 1));
+                        recordMap.put("usedNumber", lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * usedListNumber + 2));
+                        recordMap.put("scrapNumber", lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * usedListNumber + 3));
+                        recordMap.put("weightNumber", lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * usedListNumber + 4));
+                        recordMap.put("usedNumberTransition1", lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * usedListNumber + 5));
                     }
                     if (recordMap.containsKey("usedMaterialID") || recordMap.containsKey("materialID")) {
                         finalDailyProductionDetailRecordTMP.add(recordMap);
@@ -618,7 +638,8 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             String lastDay = "";
             String lastClassType = "";
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
+            boolean blGrantInfo = false;
+            String grantRecordList = "";
             Date date = dateFormat.parse(dayTime);//取时间
 
             Calendar calendar = new GregorianCalendar();
@@ -642,9 +663,8 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                 endTime = dateFormat.format(date) + " 07:00";
             }
 
-            if(ConfigParamEnum.BasicProcessEnum.GHProcessID.getName().equals(processID))
-            {
-                List<Map<Object, Object>> dailyProductionSummaryRecordTMP = dailyProductionDetailRecordMapper.getSolidifyTMPDailyProductionSummaryRecord(plantID,processID,classType,dayTime, startTime,endTime);
+            if (ConfigParamEnum.BasicProcessEnum.GHProcessID.getName().equals(processID)) {
+                List<Map<Object, Object>> dailyProductionSummaryRecordTMP = dailyProductionDetailRecordMapper.getSolidifyTMPDailyProductionSummaryRecord(plantID, processID, classType, dayTime, startTime, endTime);
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 result.setData(JSONObject.toJSONString(dailyProductionSummaryRecordTMP));
                 return result;
@@ -654,29 +674,34 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             if (lastProcessID.size() < 1) {
                 lastProcessID.add("-1");
             }
-            List<Map<Object, Object>> dailyProductionSummaryRecordTMP ;
+            List<Map<Object, Object>> dailyProductionSummaryRecordTMP;
             if (ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID)) {
                 dailyProductionSummaryRecordTMP = dailyProductionDetailRecordMapper.getZHQDTMPDailyProductionSummaryRecord(plantID, processID, orderString, dayTime, lastDay, lastClassType);
-            }
-            else
-            {
+            } else if (ConfigParamEnum.BasicProcessEnum.CDProcessID.getName().equals(processID)) {
+                dailyProductionSummaryRecordTMP = dailyProductionDetailRecordMapper.getCDTMPDailyProductionSummaryRecord(plantID, processID, orderString, dayTime, lastDay, lastClassType);
+            } else {
                 dailyProductionSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyProductionSummaryRecord(plantID, processID, orderString, dayTime, lastDay, lastClassType);
-
             }
             List<Map<Object, Object>> dailyUsedInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyUsedInfoSummaryRecord(plantID, processID, orderString);
+            ;
+
             List<Map<Object, Object>> dailyScrapInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyScrapInfoSummaryRecord(plantID, processID, dayTime, classType);
             List<Map<Object, Object>> dailyRecieveInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyRecieveInfoSummaryRecord(plantID, lastProcessID.get(0), startTime, endTime);
-            List<Map<Object, Object>> dailyGrantInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyGrantInfoSummaryRecord(plantID, processID, startTime, endTime);
+            List<Map<Object, Object>> dailyGrantInfoSummaryRecordTMP;
+            if (ConfigParamEnum.BasicProcessEnum.CDProcessID.getName().equals(processID)) {
+                dailyGrantInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getCDTMPDailyGrantInfoSummaryRecord(plantID, processID, startTime.split(" ")[0], endTime.split(" ")[0] + " 23:59");
+            } else {
+                dailyGrantInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyGrantInfoSummaryRecord(plantID, processID, startTime, endTime);
+
+            }
             List<Integer> attendanceInfo = new ArrayList<>();
             if (ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(processID)) {
                 attendanceInfo = dailyProductionDetailRecordMapper.getGWTMPDailyAttendanceSummaryRecord(plantID, processID, dayTime, classType);
-            } else  if (ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID)) {
+            } else if (ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID)) {
                 attendanceInfo = dailyProductionDetailRecordMapper.getGWTMPDailyAttendanceSummaryRecord(plantID, processID, dayTime, classType);
             } else {
                 attendanceInfo = dailyProductionDetailRecordMapper.getTMPDailyAttendanceSummaryRecord(plantID, processID, dayTime, classType);
             }
-
-
             List<Map<Object, Object>> finalDailyProductionSummaryRecordTMP = new ArrayList<>();
             DecimalFormat dataFormat = new DecimalFormat(".00");
             int currentInventory = 0;
@@ -697,6 +722,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                 recordMap.put("productionMachineRatio", dataFormat.format(attendanceInfo.get(2) * 1.0 / attendanceInfo.get(1) * 100));
 
                 if (i < dailyProductionSummaryRecordTMP.size()) {
+                    blGrantInfo = false;
                     recordMap.put("productionMaterialID", dailyProductionSummaryRecordTMP.get(i).get("materialID"));
                     recordMap.put("productionMaterialName", dailyProductionSummaryRecordTMP.get(i).get("materialName"));
                     recordMap.put("productionNumber", dailyProductionSummaryRecordTMP.get(i).get("productionNumber"));
@@ -706,18 +732,36 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                     recordMap.put("lastInventory", dailyProductionSummaryRecordTMP.get(i).get("lastInventory"));
                     currentInventory = Double.valueOf(dailyProductionSummaryRecordTMP.get(i).get("lastInventory").toString()).intValue()
                             + Double.valueOf(dailyProductionSummaryRecordTMP.get(i).get("productionNumber").toString()).intValue();
-
-
-                    if (dailyGrantInfoSummaryRecordTMP.size() > i && dailyGrantInfoSummaryRecordTMP.get(i).get("materialID").equals(dailyProductionSummaryRecordTMP.get(i).get("materialID"))) {
-                        currentInventory = currentInventory - Double.valueOf(dailyGrantInfoSummaryRecordTMP.get(i).get("grantNumber").toString()).intValue();
-                    } else {
-                        Map<Object, Object> grantMap = new HashMap<>();
-                        grantMap.put("materialID", dailyProductionSummaryRecordTMP.get(i).get("materialID"));
-                        grantMap.put("materialName", dailyProductionSummaryRecordTMP.get(i).get("materialName"));
-                        grantMap.put("grantNumber", 0);
-                        dailyGrantInfoSummaryRecordTMP.add(i, grantMap);
+                    for (int j = 0; j < dailyGrantInfoSummaryRecordTMP.size(); j++) {
+                        if (dailyGrantInfoSummaryRecordTMP.get(j).get("materialID").equals(dailyProductionSummaryRecordTMP.get(i).get("materialID"))) {
+                            currentInventory = currentInventory - Double.valueOf(dailyGrantInfoSummaryRecordTMP.get(j).get("grantNumber").toString()).intValue();
+                            recordMap.put("grantMaterialID", dailyGrantInfoSummaryRecordTMP.get(j).get("materialID"));
+                            recordMap.put("grantMaterialName", dailyGrantInfoSummaryRecordTMP.get(j).get("materialName"));
+                            recordMap.put("grantNumber", dailyGrantInfoSummaryRecordTMP.get(j).get("grantNumber"));
+                            grantRecordList += " " + dailyGrantInfoSummaryRecordTMP.get(j).get("materialID");
+                            blGrantInfo = true;
+                            break;
+                        }
                     }
+                    if (!blGrantInfo) {
+                        recordMap.put("grantMaterialID", dailyProductionSummaryRecordTMP.get(i).get("materialID"));
+                        recordMap.put("grantMaterialName", dailyProductionSummaryRecordTMP.get(i).get("materialName"));
+                        recordMap.put("grantNumber", 0);
+                    }
+
                     recordMap.put("currentInventory", currentInventory);
+
+//                    if (dailyGrantInfoSummaryRecordTMP.size() > i && dailyGrantInfoSummaryRecordTMP.get(i).get("materialID").equals(dailyProductionSummaryRecordTMP.get(i).get("materialID"))) {
+//                        currentInventory = currentInventory - Double.valueOf(dailyGrantInfoSummaryRecordTMP.get(i).get("grantNumber").toString()).intValue();
+//                    } else {
+//                        Map<Object, Object> grantMap = new HashMap<>();
+//                        grantMap.put("materialID", dailyProductionSummaryRecordTMP.get(i).get("materialID"));
+//                        grantMap.put("materialName", dailyProductionSummaryRecordTMP.get(i).get("materialName"));
+//                        grantMap.put("grantNumber", 0);
+//                        dailyGrantInfoSummaryRecordTMP.add(i, grantMap);
+//                        System.out.println(dailyProductionSummaryRecordTMP.get(i).get("materialName") + "====" + 0);
+//                    }
+//                    recordMap.put("currentInventory", currentInventory);
                 }
 
                 if (i < dailyUsedInfoSummaryRecordTMP.size()) {
@@ -739,15 +783,24 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                     recordMap.put("receiveMaterialID", dailyRecieveInfoSummaryRecordTMP.get(i).get("materialID"));
                     recordMap.put("receiveMaterialName", dailyRecieveInfoSummaryRecordTMP.get(i).get("materialName"));
                     recordMap.put("receiveMaterialNumber1", dailyRecieveInfoSummaryRecordTMP.get(i).get("recieveNumber"));
-
                 }
-
-                if (i < dailyGrantInfoSummaryRecordTMP.size()) {
-                    recordMap.put("grantMaterialID", dailyGrantInfoSummaryRecordTMP.get(i).get("materialID"));
-                    recordMap.put("grantMaterialName", dailyGrantInfoSummaryRecordTMP.get(i).get("materialName"));
-                    recordMap.put("grantNumber", dailyGrantInfoSummaryRecordTMP.get(i).get("grantNumber"));
-
+                if (!recordMap.containsKey("grantMaterialID")) {
+                    for (int j = 0; j < dailyGrantInfoSummaryRecordTMP.size(); j++) {
+                        if (grantRecordList.contains(dailyGrantInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
+                            continue;
+                        }
+                        grantRecordList += " " + dailyGrantInfoSummaryRecordTMP.get(j).get("materialID");
+                        recordMap.put("grantMaterialID", dailyGrantInfoSummaryRecordTMP.get(j).get("materialID"));
+                        recordMap.put("grantMaterialName", dailyGrantInfoSummaryRecordTMP.get(j).get("materialName"));
+                        recordMap.put("grantNumber", dailyGrantInfoSummaryRecordTMP.get(j).get("grantNumber"));
+                        break;
+                    }
                 }
+//                if (i < dailyGrantInfoSummaryRecordTMP.size()) {
+//                    recordMap.put("grantMaterialID", dailyGrantInfoSummaryRecordTMP.get(i).get("materialID"));
+//                    recordMap.put("grantMaterialName", dailyGrantInfoSummaryRecordTMP.get(i).get("materialName"));
+//                    recordMap.put("grantNumber", dailyGrantInfoSummaryRecordTMP.get(i).get("grantNumber"));
+//                }
                 finalDailyProductionSummaryRecordTMP.add(recordMap);
             }
 
