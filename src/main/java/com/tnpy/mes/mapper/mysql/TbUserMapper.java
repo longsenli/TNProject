@@ -42,6 +42,36 @@ public interface TbUserMapper {
 	@Select("select ${columnList} from tb_user ${filter} ")
 	List<Map<Object, Object>> selecUserInfoByfilter(@Param("columnList") String columnList,@Param("filter")String filter);
 	
-	@Select("select * from tb_user")
+	@Select("SELECT\r\n" + 
+			"	ifnull(userID,' ') userID,\r\n" + 
+			"	ifnull(NAME,' ') NAME,\r\n" + 
+			"	ifnull(PASSWORD,' ') PASSWORD,\r\n" + 
+			"	ifnull(roleID,' ') roleID,\r\n" + 
+			"	ifnull(sex,' ') sex,\r\n" + 
+			"	 birthday,\r\n" + 
+			"	ifnull(dutyID,' ') dutyID,\r\n" + 
+			"	ifnull(workplace,' ') workplace,\r\n" + 
+			"	createdate,\r\n" + 
+			"	ifnull(createuser,' ') createuser,\r\n" + 
+			"	updatedate,\r\n" + 
+			"	ifnull(updateuser,' ') updateuser,\r\n" + 
+			"	 deletedate,\r\n" + 
+			"	ifnull(deleteuser,' ') deleteuser,\r\n" + 
+			"	 state,\r\n" + 
+			"	ifnull(email,' ') email,\r\n" + 
+			"	ifnull(mobilephone,' ') mobilephone,\r\n" + 
+			"	ifnull(telephone,' ') telephone,\r\n" + 
+			"	ifnull(organID,' ') organID,\r\n" + 
+			"	ifnull(industrialplant_id,' ') industrialplant_id,\r\n" + 
+			"	ifnull(industrialplant_name,' ') industrialplant_name,\r\n" + 
+			"	ifnull(productionline_id,' ') productionline_id,\r\n" + 
+			"	ifnull(productionline_name,' ') productionline_name,\r\n" + 
+			"	ifnull(productionprocess_id,' ') productionprocess_id,\r\n" + 
+			"	ifnull(productionprocess_name,' ') productionprocess_name,\r\n" + 
+			"	ifnull(worklocation_id,' ') worklocation_id,\r\n" + 
+			"	ifnull(worklocation_name,' ') worklocation_name,\r\n" + 
+			"	ifnull(cardno,' ') cardno\r\n" + 
+			"FROM\r\n" + 
+			"	tb_user")
 	List<TbUser> selectAllUser();
 }

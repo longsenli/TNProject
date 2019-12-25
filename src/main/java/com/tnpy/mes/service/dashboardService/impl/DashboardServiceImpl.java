@@ -948,8 +948,8 @@ public class DashboardServiceImpl implements IDashboardService {
 			String sqlfilter = "select * , " + stbtotal + " from (( SELECT\r\n" +
 //                    		"	p.plantID,\r\n" + 
 //                    		"	p.processID,\r\n" + 
-					" i.`name` AS '厂区',\r\n" + "			s.`name` AS '工序',\r\n"
-					+ "CONCAT(s.`name`,p.classType1) as '班组',\r\n" + "	p.materialName as '型号',\r\n" + stb.toString()
+					" i.`name` AS '厂区',\r\n" + "			s.`name` AS '工序', s.ordinal,\r\n"
+					+ "CONCAT(s.`name`,p.classType1) as '班组',\r\n" + "  '1' as flag,	p.materialName as '型号',\r\n" + stb.toString()
 					+ " FROM\r\n"
 					+ "	tb_dailyproductionsummaryline p LEFT JOIN sys_material m ON p.materialID = m.id\r\n"
 					+ "	LEFT JOIN sys_productionprocess s ON s.id = p.processID\r\n"
@@ -972,8 +972,8 @@ public class DashboardServiceImpl implements IDashboardService {
 					"UNION all \r\n" + "(\r\n" + "	SELECT\r\n" +
 //                    		"		p.plantID,\r\n" + 
 //                    		"		p.processID,\r\n" + 
-					"		i.`name` AS '厂区',\r\n" + "		s.`name` AS '工序',\r\n"
-					+ "		CONCAT(s.`name`,p.classType1) as '班组' ,\r\n" + "		'合计'  AS '型号',\r\n" + "		\r\n"
+					"		i.`name` AS '厂区',\r\n" + "		s.`name` AS '工序', s.ordinal,\r\n"
+					+ "		CONCAT(s.`name`,p.classType1) as '班组' ,\r\n" + "	'2' as flag,	'合计'  AS '型号',\r\n" + "		\r\n"
 					+ stb.toString() + "	FROM\r\n" + "		tb_dailyproductionsummaryline p\r\n"
 					+ "	LEFT JOIN sys_material m ON p.materialID = m.id\r\n"
 					+ "	LEFT JOIN sys_productionprocess s ON s.id = p.processID\r\n"
@@ -998,9 +998,9 @@ public class DashboardServiceImpl implements IDashboardService {
 					+ "UNION ALL\r\n" + "	(\r\n" + "		SELECT\r\n" +
 //                    		"			p.plantID,\r\n" + 
 //                    		"			p.processID,\r\n" + 
-					"			i.`name` AS '厂区',\r\n" + "			s.`name` AS '工序',\r\n" +
+					"			i.`name` AS '厂区',\r\n" + "			s.`name` AS '工序',  s.ordinal,\r\n" +
 //                    		"			'' AS '班组',\r\n" + 
-					"		CONCAT(s.`name`,'夜班') as '班组' ,\r\n" + "			' 总计'  AS '型号',\r\n" + "\r\n" + "\r\n"
+					"		CONCAT(s.`name`,'夜班') as '班组' ,\r\n" + "	 '3' as flag,			' 总计'  AS '型号',\r\n" + "\r\n" + "\r\n"
 					+ stb.toString() + "		FROM\r\n" + "			tb_dailyproductionsummaryline p\r\n"
 					+ "		LEFT JOIN sys_material m ON p.materialID = m.id\r\n"
 					+ "		LEFT JOIN sys_productionprocess s ON s.id = p.processID\r\n"
@@ -1023,7 +1023,7 @@ public class DashboardServiceImpl implements IDashboardService {
 //                    		"			'%Y-%m-%d'\r\n" + 
 //                    		"		)\r\n" + 
 					"		GROUP BY\r\n" + "			processID\r\n" + "	)\r\n" + "\r\n"
-					+ "ORDER BY `厂区`  asc, `工序`  asc,  `班组`  desc, `型号` desc ) rsall";
+					+ "ORDER BY `厂区`  asc, ordinal asc,  `班组`  desc, flag, `型号` desc ) rsall";
 			List<LinkedHashMap<Object, Object>> rlnmapList = dashboardMapper.queryDef(sqlfilter);
 			result.setStatus(1);
 			result.setData(JSONObject.toJSON(rlnmapList).toString());
