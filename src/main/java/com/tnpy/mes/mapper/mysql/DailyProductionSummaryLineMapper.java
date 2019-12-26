@@ -61,7 +61,7 @@ public interface DailyProductionSummaryLineMapper {
     @Insert("insert into tb_dailyproductionsummaryprocess (id,plantID,processID,materialID,materialName,production,classType1,dayTime,status)\n" +
             " select uuid(),inputPlantID,inputProcessID,materialID,materialNameInfo,sum(number) ,#{classType},#{dayString},'1' \n" +
             " from tb_materialrecord where orderID like ${orderID} and status = '1'\n" +
-            " and inputProcessID is not null and inputProcessID != '-1'   group by inputProcessID, materialNameInfo")
+            " and inputProcessID is not null and inputProcessID != '-1'   group by inputPlantID,inputProcessID, materialNameInfo")
     int insertDailyProductionSummaryProcess(@Param("orderID") String orderID, String classType,String dayString);
 
     @Insert(" insert into tb_dailyproductionsummaryprocess (id,plantID,processID,materialID,materialName,production,classType1,dayTime,status)\n" +
