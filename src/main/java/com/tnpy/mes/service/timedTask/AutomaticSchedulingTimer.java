@@ -19,6 +19,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * @Description: TODO
@@ -673,6 +674,67 @@ public class AutomaticSchedulingTimer {
 //       {
 //           System.out.println(ex.getMessage() + "============");
 //       }
+    }
+
+  //  @Scheduled(cron = "0 9 8 * * ?")
+    private  void function()
+    {
+        String[] nameArray  = new String[]{"%孙 美倩","赵 德%明 ","钱=鸿煊","孙 美*倩","#赵%%德%明","李小-.蕊","孙。冰真。","孙-冰-真。","#赵德%明"," 孙#怀 薇","李-子-昂"};
+        List<String> nameList = new ArrayList<>();
+        String reg = "[`~!@#$%^&*()+=|{} \\-':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+        Pattern p = Pattern.compile(reg);
+        for(int i=0;i< nameArray.length;i++)
+        {
+            //            nameList.add(nameArray[i].replace("%","").replace(" ","").replace("。","").
+            //                    replace("=","").replace("*","").replace("#","").replace("-","").replace(".",""));
+            nameList.add(p.matcher(nameArray[i]).replaceAll("").trim());
+        }
+        System.out.println(nameList);
+        Map<String,String> nameMap = new HashMap<>();
+        Map<String,Integer> nameNumberMap = new HashMap<>();
+        String firstName = "";
+        String nameResult = "";
+        for(int i=0;i<nameList.size();i++)
+        {
+            firstName = nameList.get(i).substring(0,1);
+            if(nameMap.containsKey(firstName))
+            {
+                nameResult = nameMap.get(firstName);
+                if(nameResult.contains(nameList.get(i)))
+                {
+                    continue;
+                }
+                nameMap.put(firstName,nameResult + "," + nameList.get(i));
+                nameNumberMap.put(firstName,nameNumberMap.get(firstName) + 1);
+            }
+            else
+            {
+                nameMap.put(firstName, nameList.get(i));
+                nameNumberMap.put(firstName, 1);
+            }
+        }
+        ArrayList<Integer> sortNumber = new ArrayList<>();
+        ArrayList<String> sortName = new ArrayList<>();
+        int flagNumber = 0;
+        for(String first : nameNumberMap.keySet())
+        {
+            flagNumber = 0;
+            for(int i =0;i< sortNumber.size();i++)
+            {
+                if(nameNumberMap.get(first) > sortNumber.get(i))
+                {
+                    flagNumber = i;
+                    break;
+                }
+                flagNumber = i+1;
+            }
+            sortNumber.add(flagNumber,nameNumberMap.get(first));
+            sortName.add(flagNumber,first);
+        }
+        for(String first: sortName)
+        {
+            System.out.println(first + "  " + nameNumberMap.get(first) + "  " + nameMap.get(first));
+        }
     }
 
 }

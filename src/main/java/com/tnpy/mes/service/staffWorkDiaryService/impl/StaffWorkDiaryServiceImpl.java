@@ -290,8 +290,6 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
     public TNPYResponse confirmProductionWageInfo(String recordJsonString, String verifierID, String verifierName) {
         TNPYResponse result = new TNPYResponse();
         try {
-
-
             List<DailyProductionAndWageDetail> recordList = JSON.parseArray(recordJsonString, DailyProductionAndWageDetail.class);
 
             if (recordList.size() < 1) {
@@ -535,19 +533,24 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         lineProductionMap.put(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("lineID")), lineProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")) + " " + dailyProductionDetailRecordTMP.get(i).get("materialID"));
                     }
                 } else {
-                    lineRowInfo.add(dailyProductionDetailRecordTMP.get(i).get("materialID"));
-                    lineRowInfo.add(dailyProductionDetailRecordTMP.get(i).get("materialName"));
-                    lineRowInfo.add(dailyProductionDetailRecordTMP.get(i).get("productionNumber"));
-                    if (dailyProductionDetailRecordTMP.get(i).containsKey("productionTransition1")) {
-                        lineRowInfo.add(dailyProductionDetailRecordTMP.get(i).get("productionTransition1"));
-                    } else {
-                        lineRowInfo.add("-");
+                    //  System.out.println(dailyProductionDetailRecordTMP.get(i).get("materialName") + "===34234=== " + dailyProductionDetailRecordTMP.get(i).get("usedMaterialID"));
+
+                    if (!"-".equals(dailyProductionDetailRecordTMP.get(i).get("materialID"))) {
+                        //   System.out.println(dailyProductionDetailRecordTMP.get(i).get("materialName") + "=== " + dailyProductionDetailRecordTMP.get(i).get("lineID"));
+                        lineRowInfo.add(dailyProductionDetailRecordTMP.get(i).get("materialID"));
+                        lineRowInfo.add(dailyProductionDetailRecordTMP.get(i).get("materialName"));
+                        lineRowInfo.add(dailyProductionDetailRecordTMP.get(i).get("productionNumber"));
+                        if (dailyProductionDetailRecordTMP.get(i).containsKey("productionTransition1")) {
+                            lineRowInfo.add(dailyProductionDetailRecordTMP.get(i).get("productionTransition1"));
+                        } else {
+                            lineRowInfo.add("-");
+                        }
+                        lineRowProductionMap.put(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("lineID")), lineRowInfo);
+                        lineProductionMap.put(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("lineID")), " - " + dailyProductionDetailRecordTMP.get(i).get("materialID"));
                     }
-                    lineRowProductionMap.put(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("lineID")), lineRowInfo);
-                    lineProductionMap.put(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("lineID")), " " + dailyProductionDetailRecordTMP.get(i).get("materialID"));
                 }
 
-//判断投料信息数量
+                //判断投料信息数量
                 List<Object> lineRowUsedInfo = new ArrayList<>();
                 if (lineUsedMap.containsKey(dailyProductionDetailRecordTMP.get(i).get("lineID"))) {
                     if (!lineUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).contains(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("usedMaterialID")))) {
@@ -567,30 +570,42 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         lineUsedMap.put(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("lineID")), lineUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")) + " " + dailyProductionDetailRecordTMP.get(i).get("usedMaterialID"));
                     }
                 } else {
-                    lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("usedMaterialID"));
-                    lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("usedMaterialName"));
-                    lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("usedNumber"));
-                    lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("scrapNumber"));
-                    lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("weightNumber"));
-                    if (dailyProductionDetailRecordTMP.get(i).containsKey("usedNumberTransition1")) {
-                        lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("usedNumberTransition1"));
-                    } else {
-                        lineRowUsedInfo.add("-");
+                    if (!"-".equals(dailyProductionDetailRecordTMP.get(i).get("usedMaterialID"))) {
+                        lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("usedMaterialID"));
+                        lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("usedMaterialName"));
+                        lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("usedNumber"));
+                        lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("scrapNumber"));
+                        lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("weightNumber"));
+                        if (dailyProductionDetailRecordTMP.get(i).containsKey("usedNumberTransition1")) {
+                            lineRowUsedInfo.add(dailyProductionDetailRecordTMP.get(i).get("usedNumberTransition1"));
+                        } else {
+                            lineRowUsedInfo.add("-");
+                        }
+                        lineRowUsedMap.put(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("lineID")), lineRowUsedInfo);
+                        lineUsedMap.put(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("lineID")), " - " + dailyProductionDetailRecordTMP.get(i).get("usedMaterialID"));
                     }
-                    lineRowUsedMap.put(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("lineID")), lineRowUsedInfo);
-                    lineUsedMap.put(String.valueOf(dailyProductionDetailRecordTMP.get(i).get("lineID")), " " + dailyProductionDetailRecordTMP.get(i).get("usedMaterialID"));
                 }
             }
+
             List<String> lineList = new ArrayList<>();
+            int productionListTotalNumber = 0;
+            int usedListTotalNumber = 0;
             for (int i = 0; i < dailyProductionDetailRecordTMP.size(); i++) {
                 if (lineList.contains(dailyProductionDetailRecordTMP.get(i).get("lineID"))) {
                     continue;
                 }
                 lineList.add(dailyProductionDetailRecordTMP.get(i).get("lineID").toString());
+                productionListTotalNumber = 0;
+                usedListTotalNumber = 0;
+                if (lineRowProductionMap.containsKey(dailyProductionDetailRecordTMP.get(i).get("lineID"))) {
+                    productionListTotalNumber = lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).size();
+                }
+                if (lineRowUsedMap.containsKey(dailyProductionDetailRecordTMP.get(i).get("lineID"))) {
+                    usedListTotalNumber = lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).size();
+                }
                 //plantID,processID,lineID,materialID,materialName,productionNumber,usedMaterialID,usedMaterialName,usedNumber,scrapNumber,weightNumber,classType,teamType,dayTime
-
                 for (int j = 0; ; j++) {
-                    if (lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).size() < j * productionListNumber + 1 && lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).size() < j * usedListNumber + 1) {
+                    if (productionListTotalNumber < (j * productionListNumber + 1) && usedListTotalNumber < (j * usedListNumber + 1)) {
                         break;
                     }
                     Map<Object, Object> recordMap = new HashMap<>();
@@ -600,13 +615,13 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                     recordMap.put("classType", dailyProductionDetailRecordTMP.get(i).get("classType"));
                     recordMap.put("teamType", dailyProductionDetailRecordTMP.get(i).get("teamType"));
                     recordMap.put("dayTime", dailyProductionDetailRecordTMP.get(i).get("dayTime"));
-                    if (lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).size() > j * productionListNumber) {
+                    if (productionListTotalNumber >= (j + 1) * productionListNumber) {
                         recordMap.put("materialID", lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * productionListNumber));
                         recordMap.put("materialName", lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * productionListNumber + 1));
                         recordMap.put("productionNumber", lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * productionListNumber + 2));
                         recordMap.put("productionTransition1", lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * productionListNumber + 3));
                     }
-                    if (lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).size() > j * usedListNumber) {
+                    if (usedListTotalNumber >= (j + 1) * usedListNumber) {
                         recordMap.put("usedMaterialID", lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * usedListNumber));
                         recordMap.put("usedMaterialName", lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * usedListNumber + 1));
                         recordMap.put("usedNumber", lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * usedListNumber + 2));

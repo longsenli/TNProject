@@ -73,14 +73,25 @@ public interface DailyProductionDetailRecordMapper {
 
 
     //plantID,processID,lineID,materialID,materialName,productionNumber,usedMaterialID,usedMaterialName,usedNumber,scrapNumber,weightNumber,classType,teamType,dayTime
-    @Select("select a.*,b.usedMaterialID, b.usedMaterialName,b.usedNumber, 0 as scrapNumber,0 as weightNumber ,#{classType} as classType ,#{teamType} as teamType,#{dayTime} as dayTime  from \n" +
-            " ( select plantID,#{processID},solidifyRoomID as lineID,materialID,materialName,sum(productionNum) as productionNumber \n" +
-            "from tb_solidifyrecord where plantID = #{plantID} and  endtime3 > #{startTime} and endtime3 <  #{endTime} group by solidifyRoomID,materialName )\n" +
-            "a left join \n" +
-            "( select plantID,#{processID},solidifyRoomID as lineID,materialID as usedMaterialID, materialName as usedMaterialName, sum(productionNum) as usedNumber \n" +
-            "from tb_solidifyrecord where plantID = #{plantID} and  starttime1 >#{startTime} and starttime1 < #{endTime} group by solidifyRoomID,materialName  \n" +
-            ") b on a.lineID = b.lineID order by a.lineID")
+//    @Select("select a.*,b.usedMaterialID, b.usedMaterialName,b.usedNumber, 0 as scrapNumber,0 as weightNumber ,#{classType} as classType ,#{teamType} as teamType,#{dayTime} as dayTime  from \n" +
+//            " ( select plantID,#{processID},solidifyRoomID as lineID,materialID,materialName,sum(productionNum) as productionNumber \n" +
+//            "from tb_solidifyrecord where plantID = #{plantID} and  endtime3 > #{startTime} and endtime3 <  #{endTime} group by solidifyRoomID,materialName )\n" +
+//            "a left join \n" +
+//            "( select plantID,#{processID},solidifyRoomID as lineID,materialID as usedMaterialID, materialName as usedMaterialName, sum(productionNum) as usedNumber \n" +
+//            "from tb_solidifyrecord where plantID = #{plantID} and  starttime1 >#{startTime} and starttime1 < #{endTime} group by solidifyRoomID,materialName  \n" +
+//            ") b on a.lineID = b.lineID order by a.lineID")
+//    List<Map<Object,Object>> getGHSTMPDailyProductionDetailRecord(String plantID, String processID, String startTime,String endTime, String dayTime, String classType,String teamType);
+
+    @Select("  select plantID,#{processID} as processID,lineID,materialID,materialName,sum(productionNumber) as productionNumber,usedMaterialID,usedMaterialName,sum(usedNumber) as usedNumber, " +
+            " 0 as scrapNumber,0 as weightNumber ,#{classType} as classType ,#{teamType} as teamType,#{dayTime} as dayTime from (\n" +
+            "          (  select plantID, solidifyRoomID as lineID,materialID,materialName,sum(productionNum) as productionNumber ,'-' as usedMaterialID,'' as usedMaterialName, 0 as usedNumber\n" +
+            "            from tb_solidifyrecord where plantID = #{plantID} and  endtime3 > #{startTime}  and endtime3 < #{endTime} group by solidifyRoomID,materialName )\n" +
+            "            union all\n" +
+            "           ( select plantID, solidifyRoomID as lineID,'-' as materialID,'' as materialName ,0  as productionNumber,materialID as usedMaterialID, materialName as usedMaterialName, sum(productionNum) as usedNumber  \n" +
+            "            from tb_solidifyrecord where plantID = #{plantID} and  starttime1 >#{startTime} and starttime1 < #{endTime} group by solidifyRoomID,materialName order by materialName limit 200)\n" +
+            "            ) a group by lineID,materialID,usedMaterialID order by lineID,materialID desc")
     List<Map<Object,Object>> getGHSTMPDailyProductionDetailRecord(String plantID, String processID, String startTime,String endTime, String dayTime, String classType,String teamType);
+
 
     @Select("select  plantID,processID,materialID,materialName,sum(productionNumber) as productionNumber,sum(planDailyProduction) as planDailyProduction ,sum(ratioFinish) as ratioFinish,sum(lastInventory) as lastInventory\n" +
             " from ( ( select a.plantID,a.processID,a.materialID,a.materialName,a.productionNumber,b.planDailyProduction,ROUND(a.productionNumber * 100 /ifnull(b.planDailyProduction,1),2) as ratioFinish ,0 as lastInventory from (  \n" +
