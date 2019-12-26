@@ -1289,15 +1289,13 @@ public class DashboardServiceImpl implements IDashboardService {
 				sqlfilter.append("select * from ( (\r\n" + 
 						"	SELECT\r\n" + 
 						"		DATE_FORMAT(p.dayTime, '%Y-%m-%d') AS '时间',\r\n" + 
-						"		sum(\r\n" + 
-						"			IFNULL(t.planDailyProduction, 0)\r\n" + 
-						"		) AS '计划数量',\r\n" + 
-						"		sum(IFNULL(production, 0)) AS '实际数量'  , IFNULL(CONCAT(ROUND(sum(IFNULL(production, 0))/sum(IFNULL(t.planDailyProduction, 0)) * 100 , 2),'','%'),'100%') as '完成率'\r\n" + 
+						"		t.aaa AS '计划数量',\r\n" + 
+						"		sum(IFNULL(p.production, 0)) AS '实际数量'  , IFNULL(CONCAT(ROUND(sum(IFNULL(p.production, 0))/t.aaa * 100 , 2),'','%'),'100%') as '完成率'\r\n" + 
 						"	FROM\r\n" + 
 						"		tb_dailyproductionsummaryprocess p\r\n" + 
 						"	LEFT JOIN (\r\n" + 
 						"		SELECT\r\n" + 
-						"			planDailyProduction,\r\n" + 
+						"			sum(IFNULL(planDailyProduction, 0)) aaa," + 
 						"			planmonth\r\n" + 
 						"		FROM\r\n" + 
 						"			tb_planproductionrecord\r\n") ;
@@ -1310,7 +1308,8 @@ public class DashboardServiceImpl implements IDashboardService {
 							sqlfilter.append( " and processID = '" + processID + "' ");
 						}
 						sqlfilter.append( "		AND `status` = '2'  AND planmonth >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
-								+ " AND planmonth <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d')   ORDER BY planmonth ) " +" t ON t.planmonth = p.dayTime\r\n" );
+								+ " AND planmonth <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d')  GROUP BY\r\n" + 
+										"	planmonth  ORDER BY planmonth ) " +" t ON t.planmonth = p.dayTime\r\n" );
 						sqlfilter.append("WHERE\r\n	1 = 1  " );
 						if (!"-1".equals(plantID)) {
 							sqlfilter.append(" and  p.plantID = '" + plantID + "' ");
@@ -1327,15 +1326,13 @@ public class DashboardServiceImpl implements IDashboardService {
 						"	(\r\n" + 
 						"		SELECT\r\n" + 
 						"			'other',\r\n" + 
-						"			sum(\r\n" + 
-						"				IFNULL(t.planDailyProduction, 0)\r\n" + 
-						"			) - sum(production) AS '未完成',\r\n" + 
+						"			t.aaa - sum(p.production) AS '未完成',\r\n" + 
 						"			sum(production) AS '实际' , ''\r\n" + 
 						"		FROM\r\n" + 
 						"			tb_dailyproductionsummaryprocess p\r\n" + 
 						"		LEFT JOIN (\r\n" + 
 						"			SELECT\r\n" + 
-						"				planDailyProduction,\r\n" + 
+						"				sum(IFNULL(planDailyProduction, 0)) aaa,\r\n" + 
 						"				planmonth\r\n" + 
 						"			FROM\r\n" + 
 						"				tb_planproductionrecord\r\n" );
@@ -1347,7 +1344,8 @@ public class DashboardServiceImpl implements IDashboardService {
 							sqlfilter.append( " and processID = '" + processID + "' ");
 						}
 						sqlfilter.append( "		AND `status` = '2'  AND planmonth >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
-								+ " AND planmonth <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d')   ORDER BY planmonth ) " +" t ON t.planmonth = p.dayTime\r\n" );
+								+ " AND planmonth <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d') GROUP BY\r\n" + 
+										"	planmonth  ORDER BY planmonth ) " +" t ON t.planmonth = p.dayTime\r\n" );
 
 						sqlfilter.append("WHERE\r\n	1 = 1  " );
 						if (!"-1".equals(plantID)) {
