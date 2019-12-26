@@ -52,7 +52,7 @@ public class ChargePackServiceImpl implements IChargePackService {
             String filter = " where status != '-1' ";
             if("onRack".equals(selectType))
             {
-                filter += " and ifnull(pulloffStaffName,1) = 1  ";
+                filter += " and ifnull(pulloffStaffName,1) = 1 ";
             }
             if("pulloffhistory".equals(selectType))
             {
@@ -321,6 +321,83 @@ public class ChargePackServiceImpl implements IChargePackService {
         }
         return  result;
     }
+    
+    
+    /**
+	     * 充电架电池下架
+	*/
+	public TNPYResponse cancelChargingRackRecord( String id)
+	{
+		TNPYResponse result = new TNPYResponse();
+        try
+        {	
+        	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        	
+        	//取出所有记录
+            ChargingRackRecord chargingRackRecord = chargingRackRecordMapper.selectByFilterForCancel(id);
+            if(chargingRackRecord==null) {
+            	result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+            	result.setMessage("查询结果为null错误");
+                return  result;
+            }
+            
+            if(chargingRackRecord.getPulloffdate().toString().equals("")|| chargingRackRecord.getPulloffdate().toString().equals(ConfigParamEnum.InitDate.DefaultDate.getValue())) {
+            	result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+            	result.setMessage("该记录正在充电架，还未下架不能取消下架");
+                return  result;
+            }
+            if(!formatter.format(new Date()).equals(formatter.format(chargingRackRecord.getPulloffdate()))) {
+            	result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+            	result.setMessage("只能取消当天下架的电池");
+                return  result;
+            }
+            else{
+            	
+            	List<String> nextLineList = objectRelationDictMapper.selectNextObjectID(chargingRackRecord.getLineid(),"1002");
+                String nextLineID = "-1";
+                if(nextLineList.size() > 0)
+                {
+                    nextLineID = nextLineList.get(0);
+                }
+                
+               String tidyRecordFilter = " where status != '-1' and plantID = '" + chargingRackRecord.getPlantid()+ "' and lineID ='" + nextLineID
+                       +"' and materialID = '" + chargingRackRecord.getMaterialid() +"'  and materialType ='" + chargingRackRecord.getMaterialtype()+ "'  AND DATE_FORMAT(dayTime,'%m-%d-%Y') = DATE_FORMAT('"+formatter.format(chargingRackRecord.getPulloffdate())+"','%m-%d-%Y')   order by dayTime desc limit 1"  ;
+                TidyBatteryRecord tidyBatteryRecord = tidyBatteryRecordMapper.selectLatestRecordByFilter(tidyRecordFilter);
+               
+                if(tidyBatteryRecord == null)
+                {
+                	result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                	result.setMessage("出现未知错误！");
+                    return  result;
+                }
+                //删除数据
+                else if (formatter.format(tidyBatteryRecord.getDaytime()).equals(formatter.format(chargingRackRecord.getPulloffdate())))
+                {
+                    TidyBatteryRecord changeTidyBatteryRecord = new TidyBatteryRecord();
+                    changeTidyBatteryRecord.setId(tidyBatteryRecord.getId());
+                    changeTidyBatteryRecord.setCurrentnum(tidyBatteryRecord.getCurrentnum() -chargingRackRecord.getRealnumber());
+                    changeTidyBatteryRecord.setPulloffnum(tidyBatteryRecord.getPulloffnum() -chargingRackRecord.getRealnumber());
+                    
+                    
+                    chargingRackRecord.setPulloffdate(new Date(0));
+                	chargingRackRecord.setPulloffstaffid("");
+                	chargingRackRecord.setPulloffstaffname("");
+                    chargingRackRecordMapper.updateByPrimaryKeySelective(chargingRackRecord);
+                    tidyBatteryRecordMapper.updateByPrimaryKeySelective(changeTidyBatteryRecord);
+                    result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                	result.setMessage("取消下架成功");
+                    return  result;
+                }
+            }
+            result.setMessage("取消出现错误");
+            return  result;
+        }
+        catch (Exception ex)
+        {
+            result.setMessage("出现未知错误！" + ex.getMessage());
+            return  result;
+        }
+	}
 
     //onWorkbench 在工作台数据  workbenchHistory 工作台历史数据
     public TNPYResponse getTidyBatteryRecord(String plantID, String processID,String lineID,String startTime,String endTime,String selectType)

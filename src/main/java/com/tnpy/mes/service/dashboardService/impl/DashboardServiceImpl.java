@@ -1232,7 +1232,7 @@ public class DashboardServiceImpl implements IDashboardService {
 					result.setMessage("日期不合法");
 					return result;
 				}
-				String processsql = "select * from sys_productionprocess where status!='-1'";
+				String processsql = "select * from sys_productionprocess where status!='-1' ORDER BY ordinal";
 				List<LinkedHashMap<Object, Object>> processList = dashboardMapper.queryDef(processsql);
 				StringBuilder stb = new StringBuilder();
 				for(int i=0;i<processList.size()-1;i++) {

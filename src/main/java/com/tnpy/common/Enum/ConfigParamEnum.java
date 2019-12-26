@@ -211,4 +211,38 @@ public class ConfigParamEnum {
             this.num = num;
         }
     }
+    
+    public static  enum InitDate {
+    	DefaultDate("Original","1970-01-01");
+        // 成员变量
+        private String name;
+        private String value;
+        // 构造方法
+        private InitDate(String name, String value) {
+            this.name = name;
+            this.value = value;
+        }
+        // 普通方法
+        public static String getName(String typeID) {
+            for (ConfigParamEnum.EquipmentTypeEnum c : ConfigParamEnum.EquipmentTypeEnum.values()) {
+                if (c.getTypeID().equals(typeID) ) {
+                    return c.tableName;
+                }
+            }
+            return null;
+        }
+        // get set 方法
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+        public String getValue() {
+            return value;
+        }
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 }

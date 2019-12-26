@@ -12,6 +12,7 @@ public interface IChargePackService {
     public TNPYResponse deteteChargingRackRecord(String id);
     public TNPYResponse changeChargingRackRecord( String jsonStr);
     public TNPYResponse pulloffChargingRackRecord( String jsonStr);
+    public TNPYResponse cancelChargingRackRecord(String id);
 
     public TNPYResponse getTidyBatteryRecord(String plantID, String processID,String lineID,String startTime,String endTime,String selectType);
     public TNPYResponse changeTidyBatteryRecord( String jsonStr);

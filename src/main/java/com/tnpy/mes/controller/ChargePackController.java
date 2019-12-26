@@ -33,6 +33,11 @@ public class ChargePackController {
         return  chargePackService.changeChargingRackRecord(jsonStr);
     }
 
+    @RequestMapping(value = "/cancelchargingrackrecord")
+    public TNPYResponse cancelChargingRackRecord( String id) {
+        return  chargePackService.cancelChargingRackRecord(id);
+    }
+    
     @RequestMapping(value = "/pulloffchargingrackrecord")
     public TNPYResponse pulloffChargingRackRecord(@RequestBody String jsonStr) {
         return  chargePackService.pulloffChargingRackRecord(jsonStr);
