@@ -32,10 +32,10 @@ public interface DailyProductionAndWageDetailMapper {
 //            " and inputProcessID = #{processID} and status ='1' and orderID like ${orderInfo}  ${lineFilter}  group by inputLineID,materialNameInfo ) a left join tb_staffattendancedetail b \n" +
 //            " on a.lineID = b.lineID and b.verifierID is not null and b.classType1 = #{classType} and b.dayTime = #{dayTime} ) c left join tb_workcontentunivalence d on c.materialID= d.materialID and c.plantID = d.plantID and c.processID = d.processID" +
 //            " and c.extd1 = d.workContentID order by lineID\n" )
-@Select( "select c.plantID,c.processID,c.lineID,c.worklocationID,c.materialName,c.materialID,round(c.totalProduction /ifnull(d.extd1,1),0) as totalProduction,c.staffID,c.staffName,c.extd1,c.classType1,c.classType2,c.dayTime,round(c.totalProduction /(ifnull(d.extd1,1) * staffNumber),0) as shelfProduction ,uuid() as id,\n" +
+@Select( "select c.plantID,c.processID,c.lineID,c.worklocationID,c.materialName,c.materialID,round(c.totalProduction /ifnull(d.extd1,1),0) as totalProduction,c.staffID,c.staffName,c.extd1,c.extd2,c.classType1,c.classType2,c.dayTime,round(c.totalProduction /(ifnull(d.extd1,1) * staffNumber),0) as shelfProduction ,uuid() as id,\n" +
             "ifnull(d.price,0) as univalence,round(c.totalProduction /(ifnull(d.extd1,1) * staffNumber)  * ifnull(d.price,0),2) as wage ,c.staffNumber from (\n" +
             "select m.*,1 as staffNumber  from (\n" +
-            "  select a.plantID,a.processID,a.lineID,a.worklocationID,a.materialName,a.materialID,a.totalProduction,b.staffID,b.staffName,b.extd1,b.classType1,b.classType2,DATE_FORMAT( b.dayTime,'%Y-%m-%d') as dayTime,a.totalProduction as shelfProduction from (\n" +
+            "  select a.plantID,a.processID,a.lineID,a.worklocationID,a.materialName,a.materialID,a.totalProduction,b.staffID,b.staffName,b.extd1,b.extd2 ,b.classType1,b.classType2,DATE_FORMAT( b.dayTime,'%Y-%m-%d') as dayTime,a.totalProduction as shelfProduction from (\n" +
             " select inputPlantID as plantID,inputProcessID as processID,inputLineID as lineID,null as worklocationID,materialNameInfo as materialName ,materialID,sum(number) as totalProduction from tb_materialrecord where inputPlantID = #{plantID}\n" +
             "   and inputProcessID = #{processID} and status ='1' and orderID like  ${orderInfo}  ${lineFilter}   group by inputLineID,materialNameInfo ) a left join tb_staffattendancedetail b  \n" +
             " on a.lineID = b.lineID and b.verifierID is not null and b.classType1 = #{classType} and b.plantID = #{plantID}  and b.dayTime = #{dayTime} \n" +
@@ -45,10 +45,10 @@ public interface DailyProductionAndWageDetailMapper {
             " and c.extd1 = d.workContentID order by lineID\n" )
     List<Map<Object,Object>>  orderProductionWageInfoByLine(String plantID, String processID,  @Param("lineFilter") String lineFilter, @Param("orderInfo") String orderInfo, String dayTime, String classType);
 
-    @Select( "select c.plantID,c.processID,c.lineID,c.worklocationID,c.materialName,c.materialID,round(c.totalProduction /ifnull(d.extd1,1),0) as totalProduction,c.staffID,c.staffName,c.extd1,c.classType1,c.classType2,c.dayTime,round(c.totalProduction /(ifnull(d.extd1,1) * staffNumber),0) as shelfProduction ,uuid() as id,\n" +
+    @Select( "select c.plantID,c.processID,c.lineID,c.worklocationID,c.materialName,c.materialID,round(c.totalProduction /ifnull(d.extd1,1),0) as totalProduction,c.staffID,c.staffName,c.extd1,c.extd2,c.classType1,c.classType2,c.dayTime,round(c.totalProduction /(ifnull(d.extd1,1) * staffNumber),0) as shelfProduction ,uuid() as id,\n" +
             "ifnull(d.price,0) as univalence,round(c.totalProduction /(ifnull(d.extd1,1) * staffNumber)  * ifnull(d.price,0),2) as wage ,c.staffNumber from (\n" +
             "select m.*,ifnull(n.staffNumber,1) as staffNumber  from (\n" +
-            "  select a.plantID,a.processID,a.lineID,a.worklocationID,a.materialName,a.materialID,a.totalProduction,b.staffID,b.staffName,b.extd1,b.classType1,b.classType2,DATE_FORMAT( b.dayTime,'%Y-%m-%d') as dayTime,a.totalProduction as shelfProduction from (\n" +
+            "  select a.plantID,a.processID,a.lineID,a.worklocationID,a.materialName,a.materialID,a.totalProduction,b.staffID,b.staffName,b.extd1,b.extd2 ,b.classType1,b.classType2,DATE_FORMAT( b.dayTime,'%Y-%m-%d') as dayTime,a.totalProduction as shelfProduction from (\n" +
             " select inputPlantID as plantID,inputProcessID as processID,inputLineID as lineID,null as worklocationID,materialNameInfo as materialName ,materialID,sum(number) as totalProduction from tb_materialrecord where inputPlantID = #{plantID}\n" +
             "   and inputProcessID = #{processID} and status ='1' and orderID like  ${orderInfo}  ${lineFilter}   group by inputLineID,materialNameInfo ) a left join tb_staffattendancedetail b  \n" +
             " on a.lineID = b.lineID and b.verifierID is not null and b.classType1 = #{classType} and b.plantID = #{plantID}  and b.dayTime = #{dayTime} \n" +
@@ -60,7 +60,7 @@ public interface DailyProductionAndWageDetailMapper {
 
 
     @Select(" select c.*,uuid() as id,ifnull(d.price,0) as univalence,round(c.shelfProduction * ifnull(d.price,0),2) as wage from (\n" +
-            "select a.plantID,a.processID,a.lineID,a.worklocationID,a.materialName,a.materialID,a.totalProduction,b.staffID,b.staffName,b.extd1,b.classType1,b.classType2,DATE_FORMAT( b.dayTime,'%Y-%m-%d') as dayTime,a.totalProduction as shelfProduction from (\n" +
+            "select a.plantID,a.processID,a.lineID,a.worklocationID,a.materialName,a.materialID,a.totalProduction,b.staffID,b.staffName,b.extd1,b.extd2 ,b.classType1,b.classType2,DATE_FORMAT( b.dayTime,'%Y-%m-%d') as dayTime,a.totalProduction as shelfProduction from (\n" +
             "select inputPlantID as plantID,inputProcessID as processID,inputLineID as lineID,inputWorkLocationID as worklocationID,materialNameInfo as materialName ,materialID,sum(number) as totalProduction from tb_materialrecord where inputPlantID = #{plantID}\n" +
             " and inputProcessID = #{processID} and status ='1' and   orderID like ${orderInfo}  ${lineFilter} group by inputWorkLocationID,materialNameInfo ) a left join tb_staffattendancedetail b \n" +
             " on a.worklocationID = b.worklocationID and b.verifierID is not null and b.classType1 = #{classType} and b.dayTime = #{dayTime} ) c left join tb_workcontentunivalence d on c.materialID= d.materialID and c.plantID = d.plantID and c.processID = d.processID" +
@@ -68,7 +68,7 @@ public interface DailyProductionAndWageDetailMapper {
     List<Map<Object,Object>> orderProductionWageInfoByWorklocation(String plantID, String processID,   @Param("lineFilter") String lineFilter,@Param("orderInfo") String orderInfo, String dayTime, String classType);
 
     @Select("  select c.*,uuid() as id,ifnull(d.price,0) as univalence,round(c.shelfProduction * ifnull(d.price,0),2) as wage from (\n" +
-            "select a.plantID,a.processID,a.lineID,a.worklocationID,a.materialName,a.materialID,a.totalProduction,b.staffID,b.staffName,b.extd1,b.classType1,b.classType2,DATE_FORMAT( b.dayTime,'%Y-%m-%d') as dayTime,a.totalProduction as shelfProduction from (\n" +
+            "select a.plantID,a.processID,a.lineID,a.worklocationID,a.materialName,a.materialID,a.totalProduction,b.staffID,b.staffName,b.extd1,b.extd2 ,b.classType1,b.classType2,DATE_FORMAT( b.dayTime,'%Y-%m-%d') as dayTime,a.totalProduction as shelfProduction from (\n" +
             "select plantID,#{processID} as processID,lineID,workLocation as worklocationID,materialID,materialName,count(1) as totalProduction  from tb_plasticusedrecord " +
             " where plantID = #{plantID} and  usedOrderID like  ${orderInfo} ${lineFilter} and status != '9'   group by workLocation,materialName\n" +
             " ) a left join  tb_staffattendancedetail b \n" +
@@ -77,9 +77,9 @@ public interface DailyProductionAndWageDetailMapper {
     List<Map<Object,Object>>  ZHQDProductionWageInfoByWorklocation(String plantID,String processID,  @Param("lineFilter") String lineFilter,@Param("orderInfo") String orderInfo,String dayTime,String classType);
 
     @Select(" select e.*, 0 as totalProduction,ifnull(f.price,0) as univalence, 0 as shelfProduction ,uuid() as id,0 as wage, 1 as staffNumber from  (\n" +
-            "select  plantID,processID,c.lineID , worklocationID, staffName,staffID, classType1,classType2,dayTime ,extd1,d.materialName,d.materialID from (\n" +
-            "select  plantID,processID,lineID , worklocationID, staffName,staffID, classType1,classType2,dayTime ,extd1,b.nextObjectID from (\n" +
-            " select plantID,processID,lineID , worklocationID, staffName,staffID, classType1,classType2,DATE_FORMAT( dayTime,'%Y-%m-%d') as dayTime ,extd1 from tb_staffattendancedetail\n" +
+            "select  plantID,processID,c.lineID , worklocationID, staffName,staffID, classType1,classType2,dayTime ,extd1,extd2,d.materialName,d.materialID from (\n" +
+            "select  plantID,processID,lineID , worklocationID, staffName,staffID, classType1,classType2,dayTime ,extd1,extd2,b.nextObjectID from (\n" +
+            " select plantID,processID,lineID , worklocationID, staffName,staffID, classType1,classType2,DATE_FORMAT( dayTime,'%Y-%m-%d') as dayTime ,extd1,extd2  from tb_staffattendancedetail\n" +
             " where plantID = #{plantID} and processID = #{processID} and classType1 = #{classType}  and dayTime = #{dayTime}  ${lineFilter} ) a left join  \n" +
             " sys_objectrelationdict b on a.lineID = b.previousObjectID and b.status = '1'  ) c left join\n" +
             "( select lineID,materialID,materialName from  tb_chargingrackrecord  where putonDate =  #{dayTime} and plantID = #{plantID} group by lineID,materialID )\n" +

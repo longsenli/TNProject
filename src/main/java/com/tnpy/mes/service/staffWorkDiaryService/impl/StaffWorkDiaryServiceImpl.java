@@ -84,6 +84,10 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             String returnMsg = "";
             StaffAttendanceDetail staffAttendanceDetail = new StaffAttendanceDetail();
 
+            if("-1".equals(teamType))
+            {
+                teamType = null;
+            }
             SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
 
             WorkLocation workLocation = workLocationMapper.selectByPrimaryKey(qrCode);
@@ -335,7 +339,14 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                 dailyProductionAndWageDetailMapper.insertSelective(recordList.get(i));
             }
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
-            result.setMessage("成功确认" + successNumber + "人产量信息，失败" + (recordList.size() - successNumber) + "人,原因为产量已确认，" + alreadyConfirmedName);
+            if(recordList.size() - successNumber > 0)
+            {
+                result.setMessage("成功确认" + successNumber + "人产量信息，失败" + (recordList.size() - successNumber) + "人,原因为产量已确认，" + alreadyConfirmedName);
+            }
+            else
+            {
+                result.setMessage("成功确认" + successNumber + "人产量信息。");
+            }
             //  result.setData(JSONObject.toJSONString(productionWageTMP).toString());
             return result;
         } catch (Exception ex) {
