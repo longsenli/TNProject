@@ -1219,7 +1219,7 @@ public class DashboardServiceImpl implements IDashboardService {
 		}
 	}
 	
-	//已员工为基础查询条件报表汇总
+	//工艺产品月报表
 		@Override
 		public TNPYResponse getprocessproductAccountSummaryPlant(String plantID, String processID, String startTime,
 				String endTime) {
@@ -1232,14 +1232,14 @@ public class DashboardServiceImpl implements IDashboardService {
 					result.setMessage("日期不合法");
 					return result;
 				}
-				String processsql = "select * from sys_productionprocess where status!='-1' ORDER BY ordinal";
+				/*String processsql = "select * from sys_productionprocess where status!='-1' ORDER BY ordinal";
 				List<LinkedHashMap<Object, Object>> processList = dashboardMapper.queryDef(processsql);
 				StringBuilder stb = new StringBuilder();
 				for(int i=0;i<processList.size()-1;i++) {
 					if(i==processList.size()-2) {
-						stb.append("sum( case processID when '"+processList.get(i).get("id")+"' then td.production end ) as '"+processList.get(i).get("name")+"'");
+						stb.append("IFNULL( sum( case processID when '"+processList.get(i).get("id")+"' then td.production end ),0) as '"+processList.get(i).get("name")+"'");
 					}else {
-						stb.append("sum( case processID when '"+processList.get(i).get("id")+"' then td.production end ) as '"+processList.get(i).get("name")+"',");
+						stb.append("IFNULL(sum( case processID when '"+processList.get(i).get("id")+"' then td.production end ),0) as '"+processList.get(i).get("name")+"',");
 					}
 				}
 				StringBuilder sqlfilter = new StringBuilder();
@@ -1260,9 +1260,214 @@ public class DashboardServiceImpl implements IDashboardService {
 						+ " AND td.daytime <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d') " +
 
 						"GROUP BY td.plantID,td.dayTime\r\n" + 
-						"ORDER BY td.dayTime asc, td.processID asc\r\n" );
+						"ORDER BY td.dayTime asc, td.processID asc\r\n" );*/
 //				System.out.println(sqlfilter);
-				List<LinkedHashMap<Object, Object>> rlnmapList = dashboardMapper.queryDef(sqlfilter.toString());
+				
+				
+				
+				
+				
+				
+				String processsql = "select * from sys_productionprocess where status!='-1' ORDER BY ordinal";
+				List<LinkedHashMap<Object, Object>>  processList = dashboardMapper.queryDef(processsql);
+				StringBuilder stb = new StringBuilder();
+				StringBuilder stbunion = new StringBuilder();
+				
+				for(int i=0;i<processList.size()-1;i++) {
+					
+					//如果是全部工序
+					if(processID.trim().equals(String.valueOf(ConfigParamEnum.BasicProcessEnum.ALLProcessID.getIndex()))) {
+						if(i==processList.size()-2) {
+							//计划产量
+							stb.append("IFNULL(MAX( case processID when '"+processList.get(i).get("id")+"' then tp.tp_splanproduction end ),0) as '"+processList.get(i).get("name")+"计划产量',");
+							//实际产量
+							stb.append("IFNULL(sum( case processID when '"+processList.get(i).get("id")+"' then td.production end ),0) as '"+processList.get(i).get("name")+"实际产量',");
+							//完成率
+							stb.append("IFNULL( CONCAT( ROUND(( IFNULL( sum( CASE td.processID WHEN '"+processList.get(i).get("id")+"' then td.production end ),0) "
+									+ " ) /( IFNULL( MAX( CASE td.processID WHEN '"+processList.get(i).get("id")+"' THEN tp.tp_splanproduction END ), 0 ) ) * 100, 2 ), '', '%' ), '100%' ) AS '"+processList.get(i).get("name")+"完成率'");
+							
+							
+							
+							stbunion.append("ifnull(sum(rs.`"+processList.get(i).get("name")+"计划产量`)  -  sum(rs.`"+processList.get(i).get("name")+"实际产量`)  , 0)    ,");
+							stbunion.append("ifnull ( sum(rs.`"+processList.get(i).get("name")+"实际产量`) , 0)   ,  ");
+							stbunion.append(" '##' ");
+//							//未完成
+//							stbunion.append("CASE processID WHEN '"+processList.get(i).get("id")+"' THEN sum(t.aaa) - sum(p.production) END AS '未完成',");
+//							//实际
+//							stbunion.append("sum(production) AS '实际',");
+//							//空列
+//							stbunion.append("''");
+						}else {
+							//计划产量
+							stb.append("IFNULL(MAX( case processID when '"+processList.get(i).get("id")+"' then tp.tp_splanproduction end ),0) as '"+processList.get(i).get("name")+"计划产量',");
+							//实际产量
+							stb.append("IFNULL(sum( case processID when '"+processList.get(i).get("id")+"' then td.production end ),0) as '"+processList.get(i).get("name")+"实际产量',");
+							//完成率
+							stb.append("IFNULL( CONCAT( ROUND(( IFNULL( sum( CASE td.processID WHEN '"+processList.get(i).get("id")+"' then td.production end ),0) "
+									+ " ) /( IFNULL( MAX( CASE td.processID WHEN '"+processList.get(i).get("id")+"' THEN tp.tp_splanproduction END ), 0 ) ) * 100, 2 ), '', '%' ), '100%' ) AS '"+processList.get(i).get("name")+"完成率', ");
+							
+							
+							
+							stbunion.append("ifnull ( sum(rs.`"+processList.get(i).get("name")+"计划产量`)  -  sum(rs.`"+processList.get(i).get("name")+"实际产量`)  , 0)   ,");
+							stbunion.append("ifnull( sum(rs.`"+processList.get(i).get("name")+"实际产量`)  , 0)   ,  ");
+							stbunion.append(" '##' ,");
+							
+							
+							
+							
+//							//未完成
+//							stbunion.append("CASE processID WHEN '"+processList.get(i).get("id")+"' THEN sum(t.aaa) - sum(p.production) END AS '未完成',");
+//							//实际
+//							stbunion.append("sum(production) AS '实际',");
+//							//空列
+//							stbunion.append("'',");
+						}
+					}
+					
+					//如果是指定工序
+					if(processID.trim().equals(processList.get(i).get("id"))) {
+							//计划产量
+							stb.append("IFNULL(MAX( case processID when '"+processList.get(i).get("id")+"' then tp.tp_splanproduction end ),0) as '"+processList.get(i).get("name")+"计划产量',");
+							//实际产量
+							stb.append("IFNULL(sum( case processID when '"+processList.get(i).get("id")+"' then td.production end ),0) as '"+processList.get(i).get("name")+"实际产量',");
+							//完成率
+							stb.append("IFNULL( CONCAT( ROUND(( IFNULL( sum( CASE td.processID WHEN '"+processList.get(i).get("id")+"' then td.production end ),0) "
+									+ " ) /( IFNULL( MAX( CASE td.processID WHEN '"+processList.get(i).get("id")+"' THEN tp.tp_splanproduction END ), 0 ) ) * 100, 2 ), '', '%' ), '100%' ) AS '"+processList.get(i).get("name")+"完成率'");
+							
+							
+							
+							stbunion.append("ifnull ( sum(rs.`"+processList.get(i).get("name")+"计划产量`)  -  sum(rs.`"+processList.get(i).get("name")+"实际产量` ) , 0 )   ,");
+							stbunion.append("ifnull ( sum(rs.`"+processList.get(i).get("name")+"实际产量`) , 0 )   ,  ");
+							stbunion.append(" '##' ");
+							
+							
+//							//未完成
+//							stbunion.append("CASE processID WHEN '"+processList.get(i).get("id")+"' THEN sum(t.aaa) - sum(p.production) END AS '未完成',");
+//							//实际
+//							stbunion.append("sum(production) AS '实际',");
+//							//空列
+//							stbunion.append("''");
+					}
+					
+				}
+				StringBuilder sqlfilter = new StringBuilder();
+//				sqlfilter.append(" select * from ((SELECT\r\n" + 
+						sqlfilter.append(" ( SELECT\r\n" + 
+						"DATE_FORMAT(td.dayTime, '%Y-%m-%d') as '日期',\r\n" + stb +
+						"FROM\r\n" + 
+						"	tb_dailyproductionsummaryprocess td LEFT JOIN\r\n" + 
+						"sys_productionprocess s on td.processID = s.id   LEFT JOIN (\r\n" + 
+						"	SELECT\r\n" + 
+						"		plantID AS tp_plantID,\r\n" + 
+						"		processID AS tp_processID,\r\n" + 
+						"		sum(\r\n" + 
+						"			IFNULL(planDailyProduction, 0)\r\n" + 
+						"		) AS tp_splanproduction,\r\n" + 
+						"		planMonth AS tp_planmonth\r\n" + 
+						"	FROM\r\n" + 
+						"		tb_planproductionrecord\r\n" + 
+						"	WHERE\r\n" + 
+						"		1 = 1\r\n" + 
+						"	AND plantID = '" + plantID + "' \r\n" + 
+						"	AND `status` = '2'\r\n" + 
+						"	AND planmonth >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"+
+						"	AND planmonth <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d')"+
+						"	GROUP BY\r\n" + 
+						"		plantID,\r\n" + 
+						"		processID,\r\n" + 
+						"		planmonth\r\n" + 
+						"	ORDER BY\r\n" + 
+						"		plantID,\r\n" + 
+						"		processID,\r\n" + 
+						"		planmonth\r\n" + 
+						") tp ON tp.tp_plantID = td.plantID\r\n" + 
+						"AND tp.tp_processID = td.processID\r\n" + 
+						"AND tp.tp_planmonth = td.dayTime\r\n");
+				sqlfilter.append("WHERE\r\n" + 
+						"	1 = 1  AND td.`status` = '1'\r\n" );
+				if (!"-1".equals(plantID)) {
+					sqlfilter.append(" and  td.plantID = '" + plantID + "' ");
+				}
+				if (!"-1".equals(processID)) {
+					sqlfilter.append( " and td.processID = '" + processID + "' ");
+				}
+				sqlfilter.append( " AND td.daytime >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
+						+ " AND td.daytime <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d') " +
+
+						"GROUP BY td.plantID,td.dayTime\r\n" + 
+						"ORDER BY td.dayTime asc, td.processID asc )\r\n" );
+				
+				
+				StringBuilder sqlfilter1 = new StringBuilder();
+				
+				sqlfilter1.append(" ( select 'other' as '日期'   ,   ");
+				
+				sqlfilter1.append(stbunion + "  from  ( ");
+				sqlfilter1.append(sqlfilter + " ) as rs )");
+				
+				
+				
+				StringBuilder sqlfilter2 = new StringBuilder();
+				sqlfilter2.append("select * from (" );
+				sqlfilter2.append(sqlfilter);
+				sqlfilter2.append("union all ");
+				sqlfilter2.append(sqlfilter1);
+				sqlfilter2.append(" ) as rsall order by rsall.`日期` ") ;
+				List<LinkedHashMap<Object, Object>> rlnmapList = dashboardMapper.queryDef(sqlfilter2.toString());
+				
+				
+//				sqlfilter.append("UNION ALL\r\n" + 
+//						"	(\r\n" + 
+//						"		SELECT\r\n" + 
+//						"			'other',\r\n" + stbunion +
+//						
+//						"		FROM\r\n" + 
+//						"			tb_dailyproductionsummaryprocess p\r\n" + 
+//						"		LEFT JOIN (\r\n" + 
+//						"			SELECT\r\n" + 
+//						"				sum(IFNULL(planDailyProduction, 0)) aaa,\r\n" + 
+//						"				planmonth\r\n" + 
+//						"			FROM\r\n" + 
+//						"				tb_planproductionrecord\r\n" );
+//						sqlfilter.append("WHERE\r\n	1 = 1  " );
+//						if (!"-1".equals(plantID)) {
+//							sqlfilter.append(" and  plantID = '" + plantID + "'   ");
+//						}
+//						if (!"-1".equals(processID)) {
+//							sqlfilter.append( " and processID = '" + processID + "' ");
+//						}
+//						sqlfilter.append( "		AND `status` = '2'  AND planmonth >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
+//								+ " AND planmonth <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d') GROUP BY\r\n" + 
+//										"	planmonth  ORDER BY planmonth ) " +" t ON t.planmonth = p.dayTime\r\n" );
+//
+//						sqlfilter.append("WHERE\r\n	1 = 1  " );
+//						if (!"-1".equals(plantID)) {
+//							sqlfilter.append(" and  p.plantID = '" + plantID + "' ");
+//						}
+//						if (!"-1".equals(processID)) {
+//							sqlfilter.append( " and p.processID = '" + processID + "' ");
+//						}
+//						sqlfilter.append( " AND p.daytime >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
+//								+ " AND p.daytime <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d') ) ) rsall order by rsall.`日期`" );
+				
+				
+				
+//				List<LinkedHashMap<Object, Object>> rlnmapList = dashboardMapper.queryDef(sqlfilter.toString());
+				
+				for(int i=0; i<rlnmapList.size(); i++) {
+					rlnmapList.get(i).get(i);
+					
+					
+					
+					
+					
+				}
+				System.out.println(rlnmapList.get(0).size());
+				
+				
+				
+				
+				
 				result.setStatus(1);
 				result.setData(JSONObject.toJSON(rlnmapList).toString());
 				return result;
@@ -1326,7 +1531,7 @@ public class DashboardServiceImpl implements IDashboardService {
 						"	(\r\n" + 
 						"		SELECT\r\n" + 
 						"			'other',\r\n" + 
-						"			t.aaa - sum(p.production) AS '未完成',\r\n" + 
+						"			sum(t.aaa) - sum(p.production) AS '未完成',\r\n" + 
 						"			sum(production) AS '实际' , ''\r\n" + 
 						"		FROM\r\n" + 
 						"			tb_dailyproductionsummaryprocess p\r\n" + 
