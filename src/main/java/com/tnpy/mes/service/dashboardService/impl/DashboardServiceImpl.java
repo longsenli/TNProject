@@ -1102,6 +1102,7 @@ public class DashboardServiceImpl implements IDashboardService {
 //					"				d.staffID AS '工号',\r\n" + 
 					"				d.staffName AS '姓名',\r\n" + 
 					"				d.classType1 AS '班别',\r\n" + 
+					"				(CASE d.extd2 WHEN 'A' THEN 'A 班' WHEN 'B' THEN 'B 班' ELSE '无' END) as  '班组' ,\r\n"+
 					"				d.verifierName AS '产量确认人(班长)',\r\n" + 
 					"				d.materialName AS '型号', '1' as orderflag, \r\n" + stb1+
 					"			CONVERT( sum(d.shelfProduction) , char) AS '合计', 	d.univalence AS '工价',  "
@@ -1168,14 +1169,15 @@ public class DashboardServiceImpl implements IDashboardService {
 					"		UNION ALL\r\n" + 
 					"			(\r\n" + 
 //					"				 select * from "
-					"select tmp3.`厂区`,tmp3.`工序`,tmp3.`姓名`,tmp3.`班别`,tmp3.`产量确认人(班长)`,tmp3.`型号`,tmp3.orderflag," + stmp31
+					"select tmp3.`厂区`,tmp3.`工序`,tmp3.`姓名`,tmp3.`班别`,tmp3.`班组`,tmp3.`产量确认人(班长)`,tmp3.`型号`,tmp3.orderflag," + stmp31
 					+ " CONCAT("+stmp32+ ",'天') as '合计',tmp3.`工价`,tmp3.`各型号工资`,tmp3.`总产量`,tmp3.`合计工资` from "
 					+ "( SELECT\r\n" + 
 					"					s.`name` AS '厂区',\r\n" + 
 					"					p.`name` AS '工序',\r\n" + 
 //					"					t.staffID AS '工号',\r\n" + 
 					"					t.staffName AS '姓名',\r\n" + 
-					"					t.classType1 AS '班别',\r\n" + 
+					"					t.classType1 AS '班别',\r\n" +
+					"				(CASE t.extd2 WHEN 'A' THEN 'A 班' WHEN 'B' THEN 'B 班' ELSE '无' END) as  '班组' ,\r\n"+
 					"					t.verifierName AS '产量确认人(班长)',\r\n" + 
 					"					'考勤' AS '型号', '0' as orderflag , \r\n" +  stb2 +
 					"					'' as '合计', '' AS '工价' , '' as '各型号工资', '' as '总产量' , '' as '合计工资'\r\n" +
