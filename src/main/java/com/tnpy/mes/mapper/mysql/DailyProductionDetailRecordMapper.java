@@ -100,7 +100,7 @@ public interface DailyProductionDetailRecordMapper {
             " ) a left join ( select materialID,ROUND(planDailyProduction/2 ) as planDailyProduction from tb_planproductionrecord where  plantID =  #{plantID} and processID = #{processID} and planMonth = #{dayString} ) \n" +
             "    b on a.materialID  = b.materialID order by materialName )\n" +
             "    union all\n" +
-            "   ( select plantID,processID,productionMaterialID,productionMaterialName,0 as productionNumber,0 as planDailyProduction,0 as ratioFinish,lastInventory  from tb_dailyprocessproductiondetailrecord\n" +
+            "   ( select plantID,processID,productionMaterialID,productionMaterialName,0 as productionNumber,0 as planDailyProduction,0 as ratioFinish,currentInventory as lastInventory  from tb_dailyprocessproductiondetailrecord\n" +
             "    where plantID = #{plantID} and processID =  #{processID}  and dayTime = #{lastDay} and classType = #{lastClassType} and  productionMaterialID is not null )\n" +
             "    )  a group by plantID,processID,materialID order by materialName ")
     List<Map<Object,Object>> getZHQDTMPDailyProductionSummaryRecord(String plantID, String processID,@Param("orderString") String orderString,String dayString,String lastDay,String lastClassType);
@@ -112,7 +112,7 @@ public interface DailyProductionDetailRecordMapper {
             " ) a left join ( select materialID,ROUND(planDailyProduction/2 ) as planDailyProduction from tb_planproductionrecord where  plantID =  #{plantID} and processID = #{processID} and planMonth = #{dayString} ) \n" +
             "    b on a.materialID  = b.materialID order by materialName )\n" +
             "    union all\n" +
-            "   ( select plantID,processID,productionMaterialID,productionMaterialName,0 as productionNumber,0 as planDailyProduction,0 as ratioFinish,lastInventory  from tb_dailyprocessproductiondetailrecord\n" +
+            "   ( select plantID,processID,productionMaterialID,productionMaterialName,0 as productionNumber,0 as planDailyProduction,0 as ratioFinish,currentInventory as lastInventory  from tb_dailyprocessproductiondetailrecord\n" +
             "    where plantID = #{plantID} and processID =  #{processID}  and dayTime = #{lastDay} and classType = #{lastClassType} and  productionMaterialID is not null )\n" +
             "    )  a group by plantID,processID,materialID order by materialName ")
     List<Map<Object,Object>> getCDTMPDailyProductionSummaryRecord(String plantID, String processID,@Param("orderString") String orderString,String dayString,String lastDay,String lastClassType);
@@ -125,7 +125,7 @@ public interface DailyProductionDetailRecordMapper {
             " ) a left join ( select materialID,ROUND(planDailyProduction/2 ) as planDailyProduction from tb_planproductionrecord where  plantID =  #{plantID} and processID = #{processID} and planMonth = #{dayString} ) \n" +
             "    b on a.materialID  = b.materialID order by materialName )\n" +
             "    union all\n" +
-            "   ( select plantID,processID,productionMaterialID,productionMaterialName,0 as productionNumber,0 as planDailyProduction,0 as ratioFinish,lastInventory  from tb_dailyprocessproductiondetailrecord\n" +
+            "   ( select plantID,processID,productionMaterialID,productionMaterialName,0 as productionNumber,0 as planDailyProduction,0 as ratioFinish,currentInventory as lastInventory  from tb_dailyprocessproductiondetailrecord\n" +
             "    where plantID = #{plantID} and processID =  #{processID}  and dayTime = #{lastDay} and classType = #{lastClassType} and  productionMaterialID is not null )\n" +
             "    )  a group by plantID,processID,materialID order by materialName ")
     List<Map<Object,Object>> getTMPDailyProductionSummaryRecord(String plantID, String processID,@Param("orderString") String orderString,String dayString,String lastDay,String lastClassType);
