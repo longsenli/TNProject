@@ -1063,6 +1063,8 @@ public class DashboardServiceImpl implements IDashboardService {
 			/////////////////////////////////////// 方法二/////////////////////
 			StringBuilder stb1 = new StringBuilder();
 			StringBuilder stb2 = new StringBuilder();
+			StringBuilder stb3 = new StringBuilder();
+			StringBuilder stb4 = new StringBuilder();
 			StringBuilder stmp31 = new StringBuilder();
 			StringBuilder stmp32 = new StringBuilder();
 			for (String fdate : rangdate) {
@@ -1074,6 +1076,19 @@ public class DashboardServiceImpl implements IDashboardService {
 							+ "WHEN t.classType2 = '上半班'	AND t.dayTime = '"+fdate+"' THEN		'0.5'"
 							+ "	WHEN t.classType2 = '下半班'	AND t.dayTime = '"+fdate+"' THEN	'0.5'		"
 							+ "ELSE	0	END	) , char)  AS  '"+fdate+"日',");
+					stb3.append("convert( MAX( CASE	"
+							+ "WHEN t.classType1 = '白班' "+ "AND t.dayTime = '"+fdate+"' THEN	'白班'	"
+							+ "WHEN t.classType1 = '夜班班'	AND t.dayTime = '"+fdate+"' THEN	'夜班'"
+							
+							+ "ELSE	''	END	) , char)  AS  '"+fdate+"日',");
+					
+					stb4.append("convert( MAX( CASE	"
+							+ "WHEN t.classType2 = '全班' "
+							+ "AND t.dayTime = '"+fdate+"' THEN	'1'	"
+							+ "WHEN t.classType2 = '上半班'	AND t.dayTime = '"+fdate+"' THEN		'0.5'"
+							+ "	WHEN t.classType2 = '下半班'	AND t.dayTime = '"+fdate+"' THEN	'0.5'		"
+							+ "ELSE	0	END	) , char)  ");
+					
 					
 					stmp31.append("tmp3.`" + fdate + "日`,");
 					stmp32.append("tmp3.`" + fdate + "日`");
@@ -1085,6 +1100,22 @@ public class DashboardServiceImpl implements IDashboardService {
 							+ "WHEN t.classType2 = '上半班'	AND t.dayTime = '"+fdate+"' THEN		'0.5'"
 							+ "	WHEN t.classType2 = '下半班'	AND t.dayTime = '"+fdate+"' THEN	'0.5'		"
 							+ "ELSE	0	END	) , char) AS  '"+fdate+"日', ");
+					
+					
+					stb3.append("convert( MAX( CASE	"
+							+ "WHEN t.classType1 = '白班' "+ "AND t.dayTime = '"+fdate+"' THEN	'白班'	"
+							+ "WHEN t.classType1 = '夜班班'	AND t.dayTime = '"+fdate+"' THEN	'夜班'"
+							
+							+ "ELSE	''	END	) , char)  AS  '"+fdate+"日',");
+					
+					stb4.append("convert( MAX( CASE	"
+							+ "WHEN t.classType2 = '全班' "
+							+ "AND t.dayTime = '"+fdate+"' THEN	'1'	"
+							+ "WHEN t.classType2 = '上半班'	AND t.dayTime = '"+fdate+"' THEN		'0.5'"
+							+ "	WHEN t.classType2 = '下半班'	AND t.dayTime = '"+fdate+"' THEN	'0.5'		"
+							+ "ELSE	0	END	) , char) +  ");
+					
+					
 					stmp31.append("tmp3.`" + fdate + "日` , ");
 					stmp32.append("tmp3.`" + fdate + "日` +");
 				}
@@ -1101,7 +1132,7 @@ public class DashboardServiceImpl implements IDashboardService {
 					"				p.`name` AS '工序',\r\n" + 
 //					"				d.staffID AS '工号',\r\n" + 
 					"				d.staffName AS '姓名',\r\n" + 
-					"				d.classType1 AS '班别',\r\n" + 
+//					"				d.classType1 AS '班别',\r\n" + 
 					"				(CASE d.extd2 WHEN 'A' THEN 'A 班' WHEN 'B' THEN 'B 班' ELSE '无' END) as  '班组' ,\r\n"+
 					"				d.verifierName AS '产量确认人(班长)',\r\n" + 
 					"				d.materialName AS '型号', '1' as orderflag, \r\n" + stb1+
@@ -1169,17 +1200,54 @@ public class DashboardServiceImpl implements IDashboardService {
 					"		UNION ALL\r\n" + 
 					"			(\r\n" + 
 //					"				 select * from "
-					"select tmp3.`厂区`,tmp3.`工序`,tmp3.`姓名`,tmp3.`班别`,tmp3.`班组`,tmp3.`产量确认人(班长)`,tmp3.`型号`,tmp3.orderflag," + stmp31
-					+ " CONCAT("+stmp32+ ",'天') as '合计',tmp3.`工价`,tmp3.`各型号工资`,tmp3.`总产量`,tmp3.`合计工资` from "
+					"select tmp3.`厂区`,tmp3.`工序`,tmp3.`姓名`,"
+//					+ "tmp3.`班别`,"
+					+ "tmp3.`班组`,tmp3.`产量确认人(班长)`,tmp3.`型号`,tmp3.orderflag," + stmp31
+//					+ " CONCAT("+stmp32+ ",'天') as '合计',"
+							+ " tmp3.`合计` ,tmp3.`工价`,tmp3.`各型号工资`,tmp3.`总产量`,tmp3.`合计工资` from "
+					+ "( "
 					+ "( SELECT\r\n" + 
 					"					s.`name` AS '厂区',\r\n" + 
 					"					p.`name` AS '工序',\r\n" + 
 //					"					t.staffID AS '工号',\r\n" + 
 					"					t.staffName AS '姓名',\r\n" + 
-					"					t.classType1 AS '班别',\r\n" +
+//					"					t.classType1 AS '班别',\r\n" +
 					"				(CASE t.extd2 WHEN 'A' THEN 'A 班' WHEN 'B' THEN 'B 班' ELSE '无' END) as  '班组' ,\r\n"+
 					"					t.verifierName AS '产量确认人(班长)',\r\n" + 
 					"					'考勤' AS '型号', '0' as orderflag , \r\n" +  stb2 +
+					"					CONCAT(("+stb4+ "),'天') as '合计', '' AS '工价' , '' as '各型号工资', '' as '总产量' , '' as '合计工资'\r\n" +
+
+					"		FROM\r\n" + 
+					"			tb_staffattendancedetail t\r\n" + 
+					"		LEFT JOIN sys_industrialplant s ON t.plantID = s.id\r\n" + 
+					"		LEFT JOIN sys_productionprocess p ON t.processID = p.id\r\n" + 
+					"		WHERE\r\n" + 
+					"			1 = 1\r\n" + 
+					"		AND t.`status` = '1'\r\n");
+					if (!"-1".equals(plantID)) {
+						sqlfilter .append(" and  t.plantID = '" + plantID + "' ");
+					}
+					if (!"-1".equals(processID)) {
+						sqlfilter.append( " and t.processID = '" + processID + "' ");
+					}
+					sqlfilter.append( " AND t.daytime >= DATE_FORMAT('" + startTime + "',   '%Y-%m-%d')"
+							+ " AND t.daytime <= DATE_FORMAT('" + endTime + "',   '%Y-%m-%d') " +
+					"		GROUP BY\r\n" + 
+					"			t.plantID,\r\n" + 
+					"			t.processID,\r\n" + 
+					"			t.staffID,\r\n" + 
+					"			t.staffName\r\n  " + 
+					
+					"			) union all "
+					+ "( SELECT\r\n" + 
+					"					s.`name` AS '厂区',\r\n" + 
+					"					p.`name` AS '工序',\r\n" + 
+//					"					t.staffID AS '工号',\r\n" + 
+					"					t.staffName AS '姓名',\r\n" + 
+//					"					t.classType1 AS '班别',\r\n" +
+					"				(CASE t.extd2 WHEN 'A' THEN 'A 班' WHEN 'B' THEN 'B 班' ELSE '无' END) as  '班组' ,\r\n"+
+					"					t.verifierName AS '产量确认人(班长)',\r\n" + 
+					"					'班别' AS '型号', '-1' as orderflag , \r\n" +  stb3 +
 					"					'' as '合计', '' AS '工价' , '' as '各型号工资', '' as '总产量' , '' as '合计工资'\r\n" +
 
 					"		FROM\r\n" + 
@@ -1201,12 +1269,13 @@ public class DashboardServiceImpl implements IDashboardService {
 					"			t.plantID,\r\n" + 
 					"			t.processID,\r\n" + 
 					"			t.staffID,\r\n" + 
-					"			t.staffName\r\n" + 
-					"			) tmp3)\r\n" + 
+					"			t.staffName\r\n" +
+					")  ) tmp3)\r\n" + 
 					"	) rsall\r\n" +
 //					"	) rsall where rsall.`姓名`='王自鑫' or rsall.`姓名`='韩立重' or rsall.`姓名`='靳业雷' or rsall.`姓名`='郭振垒'     \r\n" +
 					"ORDER BY\r\n" + 
-					"rsall.`班别` desc, rsall.`姓名` desc ,rsall.orderflag asc");
+//					"rsall.`班别` desc,"
+					 "rsall.`班组` ASC , rsall.`姓名` desc ,rsall.orderflag asc");
 //					"	rsall.`工序`,\r\n" + 
 //					"	rsall.`班别` ,rsall.`产量确认人(班长)` desc, rsall.`姓名` desc ,rsall.orderflag asc");
 			//System.out.println(sqlfilter);
