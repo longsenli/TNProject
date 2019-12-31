@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
-
 @Mapper
 @Component
+
 public interface DailyLineProductionDetailRecordMapper {
     int deleteByPrimaryKey(String id);
 
@@ -27,5 +27,6 @@ public interface DailyLineProductionDetailRecordMapper {
     int selectConfirmNumber(String plantID,String processID,String dayTime,String classType );
 
     @Select("select * from tb_dailylineproductiondetailrecord where plantID = #{plantID} and processID = #{processID} and dayTime =#{dayTime} and classType =#{classType}")
-    List<Map<Object, Object>> getDailyLineProductionDetailRecord(String plantID,String processID,String dayTime,String classType);
+    List<Map<Object, Object>> getDailyLineProductionDetailRecord(String plantID, String processID, String dayTime, String classType);
+
 }

@@ -93,6 +93,8 @@ public class DailyProcessProductionDetailRecord {
 
     private Double scrapnumbertransition2;
 
+    private Double scrapnumbertransition3;
+
     private String grantmaterialid;
 
     private String grantmaterialname;
@@ -102,6 +104,8 @@ public class DailyProcessProductionDetailRecord {
     private Double grantnumbertransition1;
 
     private Double grantnumbertransition2;
+
+    private Double grantnumbertransition3;
 
     private String extend1;
 
@@ -481,6 +485,14 @@ public class DailyProcessProductionDetailRecord {
         this.scrapnumbertransition2 = scrapnumbertransition2;
     }
 
+    public Double getScrapnumbertransition3() {
+        return scrapnumbertransition3;
+    }
+
+    public void setScrapnumbertransition3(Double scrapnumbertransition3) {
+        this.scrapnumbertransition3 = scrapnumbertransition3;
+    }
+
     public String getGrantmaterialid() {
         return grantmaterialid;
     }
@@ -519,6 +531,14 @@ public class DailyProcessProductionDetailRecord {
 
     public void setGrantnumbertransition2(Double grantnumbertransition2) {
         this.grantnumbertransition2 = grantnumbertransition2;
+    }
+
+    public Double getGrantnumbertransition3() {
+        return grantnumbertransition3;
+    }
+
+    public void setGrantnumbertransition3(Double grantnumbertransition3) {
+        this.grantnumbertransition3 = grantnumbertransition3;
     }
 
     public String getExtend1() {
