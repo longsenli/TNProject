@@ -63,6 +63,8 @@ public class DailyProcessProductionDetailRecord {
 
     private String receivematerialname;
 
+    private Double receivenumber;
+
     private Integer receivematerialnumber1;
 
     private Double receivematerialnumber2;
@@ -363,6 +365,14 @@ public class DailyProcessProductionDetailRecord {
 
     public void setReceivematerialname(String receivematerialname) {
         this.receivematerialname = receivematerialname == null ? null : receivematerialname.trim();
+    }
+
+    public Double getReceivenumber() {
+        return receivenumber;
+    }
+
+    public void setReceivenumber(Double receivenumber) {
+        this.receivenumber = receivenumber;
     }
 
     public Integer getReceivematerialnumber1() {
