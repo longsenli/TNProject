@@ -64,6 +64,26 @@ public interface MaterialSecondaryInventoryRecordMapper {
 
     @Insert("insert into tb_materialsecondaryinventoryrecord (id, materialID, plantID, processID, currentNum, lastStorage, updateTime, gainNum,\n" +
             "  inNum, expendNum, outNum, operator, status )\n" +
+            "      select uuid(),materialID,plantID,#{processID},currentNum + gainNum - expendNum-outNum,currentNum,now(),gainNum,0,expendNum,outNum,'system','1' from (\n" +
+            "select materialID,plantID,sum(currentNum) as currentNum,sum(gainNum) as gainNum,sum(expendNum) as expendNum,sum(outNum) as outNum  from (\n" +
+            "( select materialID,plantID,currentNum ,0 as gainNum,0 as expendNum , 0 as outNum  from tb_materialsecondaryinventoryrecord where updateTime >#{lastInventoryTime} " +
+            " and updateTime < #{startTime}  and processID = #{processID}\n" +
+            ") union all (\n" +
+            "select batteryType as materialID,acceptPlantID as plantID, 0 as currentNum, sum(number) as gainNum,   0 as expendNum,0 as outNum \n" +
+            "      from tb_grantmaterialrecord where acceptPlantID is not null and  grantTime >#{startTime} and grantTime < #{endTime} and processID = #{lastProcessID} group by acceptPlantID,batteryType \n" +
+            "  ) union all (          \n" +
+            " SELECT materialID,plantID, 0 as currentNum,0 as gainNum, 0 as expendNum,sum(value) as outNum \n" +
+            " FROM tb_materialscraprecord where  updateTime >#{startTime}  and updateTime< #{endTime} and processID = #{processID} group by plantID,materialID\n" +
+            "   ) union all (\n" +
+            "select materialID,plantID, 0 as currentNum,0 as gainNum,count(1)  as expendNum , 0 as outNum\n" +
+            "from tb_plasticusedrecord where usedOrderID like #{dayString} group by  plantID,materialID\n" +
+            "   ) \n" +
+            " ) a ) b where currentNum + gainNum + expendNum+outNum <> 0 ")
+    int insertZHQDSecondaryInventory( String startTime,String endTime,String dayString,String processID,String lastProcessID,String lastInventoryTime);
+
+
+    @Insert("insert into tb_materialsecondaryinventoryrecord (id, materialID, plantID, processID, currentNum, lastStorage, updateTime, gainNum,\n" +
+            "  inNum, expendNum, outNum, operator, status )\n" +
             "          select uuid(), materialID,plantID,#{processID},currentNum - expendNum + gainNum,currentNum,now(),gainNum,inNum,expendNum,outNum,'system','1' from (  \n" +
             "             select  plantID,materialID,sum(currentNum) as currentNum,sum(gainNum) as gainNum,sum(inNum) as inNum,sum(expendNum) as expendNum,sum(outNum) as outNum from (               \n" +
             "              ( select batteryType as materialID,acceptPlantID as plantID, 0 as currentNum, sum(number) as gainNum, 0 as inNum, 0 as expendNum,0 as outNum\n" +
@@ -73,12 +93,12 @@ public interface MaterialSecondaryInventoryRecordMapper {
             "               FROM tb_materialrecord  where  outputProcessID =#{processID} and outputTime > #{startTime} and outputTime <  #{endTime}   group by outputProcessID,materialID    \n" +
             "               ) union all  (    \n" +
             "              SELECT materialID,plantID, 0 as currentNum,0 as gainNum, 0 as inNum,0 as expendNum,sum(value) as outNum\n" +
-            "               FROM tb_materialscraprecord where  updateTime > #{startTime} and updateTime< #{endTime}  group by plantID,materialID    \n" +
+            "               FROM tb_materialscraprecord where  updateTime > #{startTime} and updateTime< #{endTime} and processID = #{processID} group by plantID,materialID    \n" +
             "               ) union all (    \n" +
             "               SELECT materialID,plantID,  currentNum,0 as gainNum, 0 as inNum,0 as expendNum,0 as outNum\n" +
             "               FROM tb_materialsecondaryinventoryrecord  where processID = #{processID} and updateTime > #{lastInventoryTime} and updateTime<#{startTime}group by plantID,materialID    \n" +
             "              )    \n" +
-            "               ) a group by plantID,materialID   ) b ")
+            "               ) a group by plantID,materialID   ) b where currentNum+ expendNum+gainNum+ inNum +outNum != 0 ")
     int insertTBSecondaryInventory( String startTime,String endTime,String processID,String lastProcessID,String lastInventoryTime);
 
     //包板二级库存 ： 库存 = 上次结余 + 固化出库 + 借调 - 报废 -借出 - 极群消耗，统一规整为小片型号

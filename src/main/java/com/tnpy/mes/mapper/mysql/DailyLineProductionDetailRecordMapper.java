@@ -26,7 +26,7 @@ public interface DailyLineProductionDetailRecordMapper {
     @Select("select count(1) from tb_dailylineproductiondetailrecord where plantID = #{plantID} and processID = #{processID} and dayTime =#{dayTime} and classType =#{classType}")
     int selectConfirmNumber(String plantID,String processID,String dayTime,String classType );
 
-    @Select("select * from tb_dailylineproductiondetailrecord where plantID = #{plantID} and processID = #{processID} and dayTime =#{dayTime} and classType =#{classType} order by materialName")
+    @Select("select * from tb_dailylineproductiondetailrecord where plantID = #{plantID} and processID = #{processID} and dayTime =#{dayTime} and classType =#{classType} order by lineID,worklocationID")
     List<Map<Object, Object>> getDailyLineProductionDetailRecord(String plantID, String processID, String dayTime, String classType);
 
 }
