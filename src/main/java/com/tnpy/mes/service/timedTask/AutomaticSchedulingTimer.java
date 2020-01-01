@@ -267,7 +267,7 @@ public class AutomaticSchedulingTimer {
                 materialSecondaryInventoryRecordMapper.insertFBSecondaryInventory(timeStart, timeFinish, dayTimeString, dateFormat.format(date) + " 06:00:00");
 
                 materialSecondaryInventoryRecordMapper.insertTBSecondaryInventory(timeStart, timeFinish, ConfigParamEnum.BasicProcessEnum.TBProcessID.getName(), ConfigParamEnum.BasicProcessEnum.JZProcessID.getName(), dateFormat.format(date) + " 06:00:00");
-                materialSecondaryInventoryRecordMapper.insertZHQDSecondaryInventory(timeStart, timeFinish, dayTimeString,ConfigParamEnum.BasicProcessEnum.TBProcessID.getName(), ConfigParamEnum.BasicProcessEnum.JZProcessID.getName(), dateFormat.format(date) + " 06:00:00");
+                materialSecondaryInventoryRecordMapper.insertZHQDSecondaryInventory(timeStart, timeFinish, dayTimeString,ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName(), ConfigParamEnum.BasicProcessEnum.BBProcessID.getName(), dateFormat.format(date) + " 06:00:00");
 
             } else {
                 materialSecondaryInventoryRecordMapper.insertJSSecondaryInventoryNew(timeStart.split(" ")[0], timeFinish.split(" ")[0], ConfigParamEnum.BasicProcessEnum.JSProcessID.getName(),
@@ -649,12 +649,10 @@ public class AutomaticSchedulingTimer {
         }
     }
 
-   // @Scheduled(cron = "0 38 10 * * ?")
+    //@Scheduled(cron = "0 24 8 * * ?")
     public void testFunction() {
 
-        //      materialSecondaryInventoryRecordMapper.insertJSSecondaryInventoryNew("2019-11-27","2019-11-28",ConfigParamEnum.BasicProcessEnum.JSProcessID.getName(),ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName());
-        //     materialInventoryRecordMapper.insertCDInventoryStatistics("2019-11-28","2019-11-29",ConfigParamEnum.BasicProcessEnum.CDProcessID.getName());
-        //    materialSecondaryInventoryRecordMapper.insertTBSecondaryInventory("2019-11-28 07:00", "2019-11-29 07:00",ConfigParamEnum.BasicProcessEnum.TBProcessID.getName(),ConfigParamEnum.BasicProcessEnum.JZProcessID.getName(), "2019-11-28 06:00:00");
+       // materialSecondaryInventoryRecordMapper.insertZHQDSecondaryInventory("2019-12-31 07:00", "2020-01-01 07:00", "%20191231",ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName(), ConfigParamEnum.BasicProcessEnum.BBProcessID.getName(), "2019-12-31 06:00:00");
 
         //       String[] numPhone = new String[] {"15539392921"};
         //      SMSTN.sendMessage(numPhone,"消息提醒！有隐患排查");

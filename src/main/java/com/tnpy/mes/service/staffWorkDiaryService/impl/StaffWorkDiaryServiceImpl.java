@@ -819,6 +819,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         recordMap.put("grantNumberTransition2", 0);
                         recordMap.put("grantNumberTransition3", 0);
                     }
+                    currentInventory = currentInventory - Double.valueOf(recordMap.get("grantNumber").toString()).intValue();
                     recordMap.put("currentInventory", currentInventory);
                     recordMap.put("inventoryTransition1", currentInventory);
                     blGrantInfo = false;
@@ -1040,6 +1041,358 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         if (!blGrantInfo) {
                             recordMap.put("weightNumber", 0);
                         }
+                    }
+                    finalDailyProductionSummaryRecordTMP.add(recordMap);
+                }
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setData(JSONObject.toJSONString(finalDailyProductionSummaryRecordTMP));
+                return result;
+            }
+
+            if (ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID)) {
+                List<String> materialName = new ArrayList<>();
+                List<String> TBMaterialName = new ArrayList<>();
+                List<Map<Object, Object>> lastOnlineInventory = dailyProductionDetailRecordMapper.getTMPTBOnlineMterialSummaryRecord(plantID, processID, dayTime, lastClassType);
+
+                List<Map<Object, Object>> materialReturnRecord = dailyProductionDetailRecordMapper.getTBTMPReturnMaterialSummaryRecord(plantID, processID, startTime, endTime);
+
+                for (int i = 0; i < dailyProductionSummaryRecordTMP.size(); i++) {
+                    TBMaterialName.add(dailyProductionSummaryRecordTMP.get(i).get("materialName") + "___" + dailyProductionSummaryRecordTMP.get(i).get("materialID"));
+                }
+                for (int i = 0; ; i++) {
+                    if (i >= lastOnlineInventory.size() && i >= dailyUsedInfoSummaryRecordTMP.size() && i >= dailyScrapInfoSummaryRecordTMP.size()
+                            && i >= materialReturnRecord.size() && i >= dailyRecieveInfoSummaryRecordTMP.size() && i >= dailyGrantInfoSummaryRecordTMP.size()) {
+                        break;
+                    }
+                    if (lastOnlineInventory.size() > i && !materialName.contains(lastOnlineInventory.get(i).get("materialName") + "___" + lastOnlineInventory.get(i).get("materialID"))) {
+                        materialName.add(lastOnlineInventory.get(i).get("materialName") + "___" + lastOnlineInventory.get(i).get("materialID"));
+                    }
+                    if (dailyGrantInfoSummaryRecordTMP.size() > i && !materialName.contains(dailyGrantInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyGrantInfoSummaryRecordTMP.get(i).get("materialID"))) {
+                        materialName.add(dailyGrantInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyGrantInfoSummaryRecordTMP.get(i).get("materialID"));
+                    }
+                    if (dailyScrapInfoSummaryRecordTMP.size() > i && !materialName.contains(dailyScrapInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyScrapInfoSummaryRecordTMP.get(i).get("materialID"))
+                            && !TBMaterialName.contains(dailyScrapInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyScrapInfoSummaryRecordTMP.get(i).get("materialID"))) {
+                        materialName.add(dailyScrapInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyScrapInfoSummaryRecordTMP.get(i).get("materialID"));
+                    }
+                    if (dailyRecieveInfoSummaryRecordTMP.size() > i && !materialName.contains(dailyRecieveInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyRecieveInfoSummaryRecordTMP.get(i).get("materialID"))) {
+                        materialName.add(dailyRecieveInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyRecieveInfoSummaryRecordTMP.get(i).get("materialID"));
+                    }
+                    if (materialReturnRecord.size() > i && !materialName.contains(materialReturnRecord.get(i).get("materialName") + "___" + materialReturnRecord.get(i).get("materialID"))) {
+                        materialName.add(materialReturnRecord.get(i).get("materialName") + "___" + materialReturnRecord.get(i).get("materialID"));
+                    }
+                }
+                materialName.sort(Comparator.comparing(String::trim));
+                for (int i = 0; ; i++) {
+                    //System.out.println(i + "=====" + TBMaterialName.get(i) + "===" + materialName.get(i));
+                    if (i >= TBMaterialName.size() && i >= materialName.size()) {
+                        break;
+                    }
+                    Map<Object, Object> recordMap = new HashMap<>();
+                    recordMap.put("plantID", plantID);
+                    recordMap.put("processID", processID);
+                    recordMap.put("classType", classType);
+                    recordMap.put("teamType", teamType);
+                    recordMap.put("dayTime", dayTime);
+                    recordMap.put("attendanceNumber", attendanceInfo.get(0));
+                    recordMap.put("machineNumber", attendanceInfo.get(1));
+                    recordMap.put("actualMachineNumber", attendanceInfo.get(2));
+                    recordMap.put("productionMachineRatio", dataFormat.format(attendanceInfo.get(2) * 1.0 / attendanceInfo.get(1) * 100));
+
+                    if (i < dailyProductionSummaryRecordTMP.size()) {
+                        recordMap.put("productionMaterialID", dailyProductionSummaryRecordTMP.get(i).get("materialID"));
+                        recordMap.put("productionMaterialName", dailyProductionSummaryRecordTMP.get(i).get("materialName"));
+                        recordMap.put("productionNumber", dailyProductionSummaryRecordTMP.get(i).get("productionNumber"));
+                        recordMap.put("planDailyProduction", dailyProductionSummaryRecordTMP.get(i).get("planDailyProduction"));
+                        recordMap.put("ratioFinish", dailyProductionSummaryRecordTMP.get(i).get("ratioFinish"));
+                        blGrantInfo = false;
+                        for (int j = 0; j < dailyScrapInfoSummaryRecordTMP.size(); j++) {
+                            if (TBMaterialName.get(i).contains(dailyScrapInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
+
+                                recordMap.put("productionTransition1", dailyScrapInfoSummaryRecordTMP.get(j).get("scrapNumber"));
+                                blGrantInfo = true;
+                                break;
+                            }
+                        }
+                        if (!blGrantInfo) {
+                            recordMap.put("productionTransition1", 0);
+                        }
+                    }
+
+                    if (i < materialName.size()) {
+                        blGrantInfo = false;
+                        for (int j = 0; j < lastOnlineInventory.size(); j++) {
+                            if (materialName.get(i).contains(lastOnlineInventory.get(j).get("materialID").toString())) {
+                                if(lastOnlineInventory.get(j).get("currentInventory") == null)
+                                {
+                                    recordMap.put("lastInventory", 0);
+                                }
+                                else
+                                {
+                                    recordMap.put("lastInventory", lastOnlineInventory.get(j).get("currentInventory"));
+                                }
+                                blGrantInfo = true;
+                                break;
+                            }
+                        }
+                        if (!blGrantInfo) {
+                            recordMap.put("lastInventory", 0);
+                        }
+                        blGrantInfo = false;
+                        for (int j = 0; j < dailyRecieveInfoSummaryRecordTMP.size(); j++) {
+                            if (materialName.get(i).contains(dailyRecieveInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
+                                recordMap.put("receiveMaterialID", dailyRecieveInfoSummaryRecordTMP.get(j).get("materialID"));
+                                recordMap.put("receiveMaterialName", dailyRecieveInfoSummaryRecordTMP.get(j).get("materialName"));
+                                recordMap.put("receiveNumber", dailyRecieveInfoSummaryRecordTMP.get(j).get("receiveNumber"));
+                                recordMap.put("receiveMaterialNumber1", dailyRecieveInfoSummaryRecordTMP.get(j).get("receiveMaterialNumber1"));
+                                recordMap.put("receiveMaterialNumber2", dailyRecieveInfoSummaryRecordTMP.get(j).get("receiveMaterialNumber2"));
+                                recordMap.put("receiveMaterialNumber3", dailyRecieveInfoSummaryRecordTMP.get(j).get("receiveMaterialNumber3"));
+                                blGrantInfo = true;
+                                break;
+                            }
+                        }
+                        if (!blGrantInfo) {
+                            recordMap.put("receiveMaterialID", materialName.get(i).split("___")[1]);
+                            recordMap.put("receiveMaterialName", materialName.get(i).split("___")[0]);
+                            recordMap.put("receiveNumber", 0);
+                            recordMap.put("receiveMaterialNumber1", 0);
+                            recordMap.put("receiveMaterialNumber2", 0);
+                            recordMap.put("receiveMaterialNumber3", 0);
+                        }
+                        currentInventory = Double.valueOf(recordMap.get("lastInventory").toString()).intValue()
+                                + Double.valueOf(recordMap.get("receiveNumber").toString()).intValue();
+                        blGrantInfo = false;
+                        for (int j = 0; j < dailyUsedInfoSummaryRecordTMP.size(); j++) {
+                            if (materialName.get(i).contains(dailyUsedInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
+                                recordMap.put("usedMaterialID", dailyUsedInfoSummaryRecordTMP.get(j).get("materialID"));
+                                recordMap.put("usedMaterialName", dailyUsedInfoSummaryRecordTMP.get(j).get("materialName"));
+                                recordMap.put("usedNumber", dailyUsedInfoSummaryRecordTMP.get(j).get("usedNumber"));
+                                blGrantInfo = true;
+                                break;
+                            }
+                        }
+                        if (!blGrantInfo) {
+                            recordMap.put("usedMaterialID", materialName.get(i).split("___")[1]);
+                            recordMap.put("usedMaterialName", materialName.get(i).split("___")[0]);
+                            recordMap.put("usedNumber", 0);
+                        }
+
+                        currentInventory = currentInventory - Double.valueOf(recordMap.get("usedNumber").toString()).intValue();
+                        recordMap.put("currentInventory", currentInventory);
+                        recordMap.put("inventoryTransition1", currentInventory);
+//                        blGrantInfo = false;
+//                        for (int j = 0; j < materialReturnRecord.size(); j++) {
+//                            if (materialName.get(i).contains(materialReturnRecord.get(j).get("materialID").toString())) {
+//                                recordMap.put("scrapMaterialID", materialReturnRecord.get(j).get("materialID"));
+//                                recordMap.put("scrapMaterialName", materialReturnRecord.get(j).get("materialName"));
+//                                recordMap.put("scrapNumber", materialReturnRecord.get(j).get("scrapNumber"));
+//                                recordMap.put("scrapNumberTransition1", materialReturnRecord.get(j).get("scrapNumberTransition1"));
+//                                recordMap.put("scrapNumberTransition2", materialReturnRecord.get(j).get("scrapNumberTransition2"));
+//                                recordMap.put("scrapNumberTransition3", materialReturnRecord.get(j).get("scrapNumberTransition3"));
+//                                blGrantInfo = true;
+//                                break;
+//                            }
+//                        }
+//                        if (!blGrantInfo) {
+//                            recordMap.put("scrapMaterialID", materialName.get(i).split("___")[1]);
+//                            recordMap.put("scrapMaterialName", materialName.get(i).split("___")[0]);
+//                            recordMap.put("scrapNumber", 0);
+//                            recordMap.put("scrapNumberTransition1", 0);
+//                            recordMap.put("scrapNumberTransition2", 0);
+//                            recordMap.put("scrapNumberTransition3", 0);
+//                        }
+
+                        blGrantInfo = false;
+                        for (int j = 0; j < dailyScrapInfoSummaryRecordTMP.size(); j++) {
+                            if (materialName.get(i).contains(dailyScrapInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
+                                //作为本工序自身造成的报废
+                                recordMap.put("weightNumber", dailyScrapInfoSummaryRecordTMP.get(j).get("scrapNumber"));
+                                blGrantInfo = true;
+                                break;
+                            }
+                        }
+                        if (!blGrantInfo) {
+                            recordMap.put("weightNumber", 0);
+                        }
+                    }
+                    finalDailyProductionSummaryRecordTMP.add(recordMap);
+                }
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setData(JSONObject.toJSONString(finalDailyProductionSummaryRecordTMP));
+                return result;
+            }
+            if (ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(processID)) {
+                List<String> materialName = new ArrayList<>();
+                List<Map<Object, Object>> lastOnlineInventory = dailyProductionDetailRecordMapper.getTMPZPXTOnlineMterialSummaryRecord(plantID, processID, startTime, endTime);
+
+                List<Map<Object, Object>> materialReturnRecord = dailyProductionDetailRecordMapper.getJZTMPDailyScrapInfoSummaryRecord(plantID, processID, startTime, endTime);
+
+                for (int i = 0; ; i++) {
+                    if (i >= lastOnlineInventory.size() && i >= dailyUsedInfoSummaryRecordTMP.size() && i >= dailyScrapInfoSummaryRecordTMP.size()
+                            && i >= materialReturnRecord.size() && i >= dailyRecieveInfoSummaryRecordTMP.size() && i >= dailyGrantInfoSummaryRecordTMP.size()
+                    && i>=dailyProductionSummaryRecordTMP.size() ) {
+                        break;
+                    }
+                    if (dailyProductionSummaryRecordTMP.size() > i && !materialName.contains(dailyProductionSummaryRecordTMP.get(i).get("materialName") + "___" + dailyProductionSummaryRecordTMP.get(i).get("materialID"))) {
+                        materialName.add(dailyProductionSummaryRecordTMP.get(i).get("materialName") + "___" + dailyProductionSummaryRecordTMP.get(i).get("materialID"));
+                    }
+
+                    if (lastOnlineInventory.size() > i && !materialName.contains(lastOnlineInventory.get(i).get("materialName") + "___" + lastOnlineInventory.get(i).get("materialID"))) {
+                        materialName.add(lastOnlineInventory.get(i).get("materialName") + "___" + lastOnlineInventory.get(i).get("materialID"));
+                    }
+                    if (dailyGrantInfoSummaryRecordTMP.size() > i && !materialName.contains(dailyGrantInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyGrantInfoSummaryRecordTMP.get(i).get("materialID"))) {
+                        materialName.add(dailyGrantInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyGrantInfoSummaryRecordTMP.get(i).get("materialID"));
+                    }
+                    if (dailyScrapInfoSummaryRecordTMP.size() > i && !materialName.contains(dailyScrapInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyScrapInfoSummaryRecordTMP.get(i).get("materialID"))) {
+                        materialName.add(dailyScrapInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyScrapInfoSummaryRecordTMP.get(i).get("materialID"));
+                    }
+                    if (dailyRecieveInfoSummaryRecordTMP.size() > i && !materialName.contains(dailyRecieveInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyRecieveInfoSummaryRecordTMP.get(i).get("materialID"))) {
+                        materialName.add(dailyRecieveInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyRecieveInfoSummaryRecordTMP.get(i).get("materialID"));
+                    }
+                    if (materialReturnRecord.size() > i && !materialName.contains(materialReturnRecord.get(i).get("materialName") + "___" + materialReturnRecord.get(i).get("materialID"))) {
+                        materialName.add(materialReturnRecord.get(i).get("materialName") + "___" + materialReturnRecord.get(i).get("materialID"));
+                    }
+                }
+                materialName.sort(Comparator.comparing(String::trim));
+                for (int i = 0; ; i++) {
+                    //System.out.println(i + "=====" + TBMaterialName.get(i) + "===" + materialName.get(i));
+                    if ( i >= materialName.size()) {
+                        break;
+                    }
+                    Map<Object, Object> recordMap = new HashMap<>();
+                    recordMap.put("plantID", plantID);
+                    recordMap.put("processID", processID);
+                    recordMap.put("classType", classType);
+                    recordMap.put("teamType", teamType);
+                    recordMap.put("dayTime", dayTime);
+                    recordMap.put("attendanceNumber", attendanceInfo.get(0));
+                    recordMap.put("machineNumber", attendanceInfo.get(1));
+                    recordMap.put("actualMachineNumber", attendanceInfo.get(2));
+                    recordMap.put("productionMachineRatio", dataFormat.format(attendanceInfo.get(2) * 1.0 / attendanceInfo.get(1) * 100));
+                    blGrantInfo = false;
+                    if (i < materialName.size()) {
+                        for (int j = 0; j < dailyProductionSummaryRecordTMP.size(); j++) {
+                            if (materialName.get(i).contains(dailyProductionSummaryRecordTMP.get(j).get("materialID").toString())) {
+                                recordMap.put("productionMaterialID", dailyProductionSummaryRecordTMP.get(j).get("materialID"));
+                                recordMap.put("productionMaterialName", dailyProductionSummaryRecordTMP.get(j).get("materialName"));
+                                recordMap.put("productionNumber", dailyProductionSummaryRecordTMP.get(j).get("productionNumber"));
+                                recordMap.put("planDailyProduction", dailyProductionSummaryRecordTMP.get(j).get("planDailyProduction"));
+                                recordMap.put("ratioFinish", dailyProductionSummaryRecordTMP.get(j).get("ratioFinish"));
+                                recordMap.put("lastInventory",dailyProductionSummaryRecordTMP.get(j).get("lastInventory"));
+                                blGrantInfo = true;
+                                break;
+                            }
+                        }
+                        if (!blGrantInfo) {
+                            recordMap.put("productionMaterialID",  materialName.get(i).split("___")[1]);
+                            recordMap.put("productionMaterialName",  materialName.get(i).split("___")[0]);
+                            recordMap.put("productionNumber", 0);
+                            recordMap.put("planDailyProduction", 0);
+                            recordMap.put("ratioFinish", 0);
+                            recordMap.put("lastInventory", 0);
+                        }
+                        blGrantInfo = false;
+                        for (int j = 0; j < dailyScrapInfoSummaryRecordTMP.size(); j++) {
+                            if (materialName.get(i).contains(dailyScrapInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
+
+                                recordMap.put("weightNumber", dailyScrapInfoSummaryRecordTMP.get(j).get("scrapNumber"));
+                                blGrantInfo = true;
+                                break;
+                            }
+                        }
+                        if (!blGrantInfo) {
+                            recordMap.put("weightNumber", 0);
+                        }
+                        for (int j = 0; j < dailyGrantInfoSummaryRecordTMP.size(); j++) {
+                            if (materialName.get(i).contains(dailyGrantInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
+
+                                recordMap.put("grantMaterialID", dailyGrantInfoSummaryRecordTMP.get(j).get("materialID"));
+                                recordMap.put("grantMaterialName", dailyGrantInfoSummaryRecordTMP.get(j).get("materialName"));
+                                recordMap.put("grantNumber", dailyGrantInfoSummaryRecordTMP.get(j).get("grantNumber"));
+                                recordMap.put("grantNumberTransition1", dailyGrantInfoSummaryRecordTMP.get(j).get("grantNumberTransition1"));
+                                recordMap.put("grantNumberTransition2", dailyGrantInfoSummaryRecordTMP.get(j).get("grantNumberTransition2"));
+                                recordMap.put("grantNumberTransition3", dailyGrantInfoSummaryRecordTMP.get(j).get("grantNumberTransition3"));
+
+                                blGrantInfo = true;
+                                break;
+                            }
+                        }
+                        if (!blGrantInfo) {
+                            recordMap.put("grantMaterialID", materialName.get(i).split("___")[1]);
+                            recordMap.put("grantMaterialName", materialName.get(i).split("___")[0]);
+                            recordMap.put("grantNumber", 0);
+                            recordMap.put("grantNumberTransition1", 0);
+                            recordMap.put("grantNumberTransition2", 0);
+                            recordMap.put("grantNumberTransition3", 0);
+                        }
+                         currentInventory = Double.valueOf(recordMap.get("lastInventory").toString()).intValue() + Double.valueOf(recordMap.get("productionNumber").toString()).intValue()
+                                - Double.valueOf(recordMap.get("grantNumber").toString()).intValue();
+                        recordMap.put("currentInventory", currentInventory);
+                        recordMap.put("inventoryTransition1", currentInventory);
+                        blGrantInfo = false;
+                        for (int j = 0; j < materialReturnRecord.size(); j++) {
+                            if (materialName.get(i).contains(materialReturnRecord.get(j).get("materialID").toString())) {
+                                recordMap.put("receiveMaterialID", materialReturnRecord.get(j).get("materialID"));
+                                recordMap.put("receiveMaterialName", materialReturnRecord.get(j).get("materialName"));
+                                recordMap.put("receiveNumber", materialReturnRecord.get(j).get("scrapNumber"));
+                                recordMap.put("receiveMaterialNumber1", materialReturnRecord.get(j).get("scrapNumberTransition1"));
+                                recordMap.put("receiveMaterialNumber2", materialReturnRecord.get(j).get("scrapNumberTransition2"));
+                                recordMap.put("receiveMaterialNumber3", materialReturnRecord.get(j).get("scrapNumberTransition3"));
+                                blGrantInfo = true;
+                                break;
+                            }
+                        }
+                        if (!blGrantInfo) {
+                            recordMap.put("receiveMaterialID", materialName.get(i).split("___")[1]);
+                            recordMap.put("receiveMaterialName", materialName.get(i).split("___")[0]);
+                            recordMap.put("receiveNumber", 0);
+                            recordMap.put("receiveMaterialNumber1", 0);
+                            recordMap.put("receiveMaterialNumber2", 0);
+                            recordMap.put("receiveMaterialNumber3", 0);
+                        }
+                        blGrantInfo = false;
+                        for (int j = 0; j < lastOnlineInventory.size(); j++) {
+                            if (materialName.get(i).contains(lastOnlineInventory.get(j).get("materialID").toString())) {
+                                recordMap.put("usedMaterialID", materialName.get(i).split("___")[1]);
+                                recordMap.put("usedMaterialName", materialName.get(i).split("___")[0]);
+                                recordMap.put("usedNumber", lastOnlineInventory.get(j).get("reinputNum"));
+                                recordMap.put("usedNumberTransition1", lastOnlineInventory.get(j).get("newReturn"));
+                                recordMap.put("usedNumberTransition2", lastOnlineInventory.get(j).get("onlineNum"));
+                                recordMap.put("reveiveType", lastOnlineInventory.get(j).get("onlineNum"));  //保存修改后的线边仓数量
+
+                                blGrantInfo = true;
+                                break;
+                            }
+                        }
+                        if (!blGrantInfo) {
+                            recordMap.put("usedMaterialID", materialName.get(i).split("___")[1]);
+                            recordMap.put("usedMaterialName", materialName.get(i).split("___")[0]);
+                            recordMap.put("usedNumber", 0);
+                            recordMap.put("usedNumberTransition1", 0);
+                            recordMap.put("usedNumberTransition2", 0);
+                            recordMap.put("reveiveType", 0);  //保存修改后的线边仓数量
+                        }
+
+//                        blGrantInfo = false;
+//                        for (int j = 0; j < materialReturnRecord.size(); j++) {
+//                            if (materialName.get(i).contains(materialReturnRecord.get(j).get("materialID").toString())) {
+//                                recordMap.put("scrapMaterialID", materialReturnRecord.get(j).get("materialID"));
+//                                recordMap.put("scrapMaterialName", materialReturnRecord.get(j).get("materialName"));
+//                                recordMap.put("scrapNumber", materialReturnRecord.get(j).get("scrapNumber"));
+//                                recordMap.put("scrapNumberTransition1", materialReturnRecord.get(j).get("scrapNumberTransition1"));
+//                                recordMap.put("scrapNumberTransition2", materialReturnRecord.get(j).get("scrapNumberTransition2"));
+//                                recordMap.put("scrapNumberTransition3", materialReturnRecord.get(j).get("scrapNumberTransition3"));
+//                                blGrantInfo = true;
+//                                break;
+//                            }
+//                        }
+//                        if (!blGrantInfo) {
+//                            recordMap.put("scrapMaterialID", materialName.get(i).split("___")[1]);
+//                            recordMap.put("scrapMaterialName", materialName.get(i).split("___")[0]);
+//                            recordMap.put("scrapNumber", 0);
+//                            recordMap.put("scrapNumberTransition1", 0);
+//                            recordMap.put("scrapNumberTransition2", 0);
+//                            recordMap.put("scrapNumberTransition3", 0);
+//                        }
                     }
                     finalDailyProductionSummaryRecordTMP.add(recordMap);
                 }
