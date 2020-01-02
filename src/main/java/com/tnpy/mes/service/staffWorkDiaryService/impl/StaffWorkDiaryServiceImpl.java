@@ -400,8 +400,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
 
             List<Map<Object, Object>> wageDetailList = dailyProductionAndWageDetailMapper.getShelfWageDetail(staffID, dayTime, dayTime);
             if (wageDetailList.size() > 0) {
-                System.out.println(wageDetailList);
-                System.out.println(wageDetailList.size());
+
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 result.setData(JSONObject.toJSONString(wageDetailList));
                 return result;
@@ -761,7 +760,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                 }
                 materialName.sort(Comparator.comparing(String::trim));
                 for (int i = 0; i < materialName.size(); i++) {
-
+                    currentInventory = 0;
                     Map<Object, Object> recordMap = new HashMap<>();
                     recordMap.put("plantID", plantID);
                     recordMap.put("processID", processID);
@@ -795,8 +794,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         recordMap.put("lastInventory", 0);
                     }
                     blGrantInfo = false;
-                    currentInventory = Double.valueOf(recordMap.get("lastInventory").toString()).intValue()
-                            + Double.valueOf(recordMap.get("productionNumber").toString()).intValue();
+
                     for (int j = 0; j < dailyGrantInfoSummaryRecordTMP.size(); j++) {
                         if (materialName.get(i).contains(dailyGrantInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
                             currentInventory = currentInventory - Double.valueOf(dailyGrantInfoSummaryRecordTMP.get(j).get("grantNumber").toString()).intValue();
@@ -819,7 +817,8 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         recordMap.put("grantNumberTransition2", 0);
                         recordMap.put("grantNumberTransition3", 0);
                     }
-                    currentInventory = currentInventory - Double.valueOf(recordMap.get("grantNumber").toString()).intValue();
+                    currentInventory = Double.valueOf(recordMap.get("lastInventory").toString()).intValue() + Double.valueOf(recordMap.get("productionNumber").toString()).intValue()
+                            - Double.valueOf(recordMap.get("grantNumber").toString()).intValue();
                     recordMap.put("currentInventory", currentInventory);
                     recordMap.put("inventoryTransition1", currentInventory);
                     blGrantInfo = false;
@@ -908,7 +907,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                 }
                 materialName.sort(Comparator.comparing(String::trim));
                 for (int i = 0; ; i++) {
-                    //System.out.println(i + "=====" + TBMaterialName.get(i) + "===" + materialName.get(i));
+                    currentInventory = 0;
                     if (i >= TBMaterialName.size() && i >= materialName.size()) {
                         break;
                     }
@@ -963,8 +962,6 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                             recordMap.put("lastInventory", 0);
                         }
 
-
-
                         blGrantInfo = false;
                         for (int j = 0; j < dailyRecieveInfoSummaryRecordTMP.size(); j++) {
                             if (materialName.get(i).contains(dailyRecieveInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
@@ -986,8 +983,6 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                             recordMap.put("receiveMaterialNumber2", 0);
                             recordMap.put("receiveMaterialNumber3", 0);
                         }
-                        currentInventory = Double.valueOf(recordMap.get("lastInventory").toString()).intValue()
-                                + Double.valueOf(recordMap.get("receiveNumber").toString()).intValue();
                         blGrantInfo = false;
                         for (int j = 0; j < dailyUsedInfoSummaryRecordTMP.size(); j++) {
                             if (materialName.get(i).contains(dailyUsedInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
@@ -1004,7 +999,8 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                             recordMap.put("usedNumber", 0);
                         }
 
-                        currentInventory = currentInventory - Double.valueOf(recordMap.get("usedNumber").toString()).intValue();
+                        currentInventory =  Double.valueOf(recordMap.get("lastInventory").toString()).intValue()
+                                + Double.valueOf(recordMap.get("receiveNumber").toString()).intValue() - Double.valueOf(recordMap.get("usedNumber").toString()).intValue();
                         recordMap.put("currentInventory", currentInventory);
                         recordMap.put("inventoryTransition1", currentInventory);
                         blGrantInfo = false;
@@ -1042,6 +1038,11 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                             recordMap.put("weightNumber", 0);
                         }
                     }
+                    if(!recordMap.containsKey("currentInventory"))
+                    {
+                        recordMap.put("currentInventory", 0);
+                        recordMap.put("inventoryTransition1", 0);
+                    }
                     finalDailyProductionSummaryRecordTMP.add(recordMap);
                 }
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -1050,6 +1051,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             }
 
             if (ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID)) {
+
                 List<String> materialName = new ArrayList<>();
                 List<String> TBMaterialName = new ArrayList<>();
                 List<Map<Object, Object>> lastOnlineInventory = dailyProductionDetailRecordMapper.getTMPTBOnlineMterialSummaryRecord(plantID, processID, dayTime, lastClassType);
@@ -1081,9 +1083,33 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         materialName.add(materialReturnRecord.get(i).get("materialName") + "___" + materialReturnRecord.get(i).get("materialID"));
                     }
                 }
+                for(int i =0;i<TBMaterialName.size(); )
+                {
+                    if(TBMaterialName.get(i).contains("null"))
+                    {
+                        TBMaterialName.remove(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+
+                for(int i =0;i<materialName.size(); )
+                {
+                    if(materialName.get(i).contains("null"))
+                    {
+                        materialName.remove(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
                 materialName.sort(Comparator.comparing(String::trim));
+
                 for (int i = 0; ; i++) {
-                    //System.out.println(i + "=====" + TBMaterialName.get(i) + "===" + materialName.get(i));
+                    currentInventory = 0;
                     if (i >= TBMaterialName.size() && i >= materialName.size()) {
                         break;
                     }
@@ -1106,8 +1132,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         recordMap.put("ratioFinish", dailyProductionSummaryRecordTMP.get(i).get("ratioFinish"));
                         blGrantInfo = false;
                         for (int j = 0; j < dailyScrapInfoSummaryRecordTMP.size(); j++) {
-                            if (TBMaterialName.get(i).contains(dailyScrapInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
-
+                            if (dailyScrapInfoSummaryRecordTMP.get(j).get("materialID") != null && TBMaterialName.get(i).contains(dailyScrapInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
                                 recordMap.put("productionTransition1", dailyScrapInfoSummaryRecordTMP.get(j).get("scrapNumber"));
                                 blGrantInfo = true;
                                 break;
@@ -1120,8 +1145,9 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
 
                     if (i < materialName.size()) {
                         blGrantInfo = false;
+
                         for (int j = 0; j < lastOnlineInventory.size(); j++) {
-                            if (materialName.get(i).contains(lastOnlineInventory.get(j).get("materialID").toString())) {
+                            if (lastOnlineInventory.get(j).get("materialID") != null && materialName.get(i).contains(lastOnlineInventory.get(j).get("materialID").toString())) {
                                 if(lastOnlineInventory.get(j).get("currentInventory") == null)
                                 {
                                     recordMap.put("lastInventory", 0);
@@ -1137,6 +1163,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         if (!blGrantInfo) {
                             recordMap.put("lastInventory", 0);
                         }
+
                         blGrantInfo = false;
                         for (int j = 0; j < dailyRecieveInfoSummaryRecordTMP.size(); j++) {
                             if (materialName.get(i).contains(dailyRecieveInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
@@ -1158,8 +1185,8 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                             recordMap.put("receiveMaterialNumber2", 0);
                             recordMap.put("receiveMaterialNumber3", 0);
                         }
-                        currentInventory = Double.valueOf(recordMap.get("lastInventory").toString()).intValue()
-                                + Double.valueOf(recordMap.get("receiveNumber").toString()).intValue();
+
+
                         blGrantInfo = false;
                         for (int j = 0; j < dailyUsedInfoSummaryRecordTMP.size(); j++) {
                             if (materialName.get(i).contains(dailyUsedInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
@@ -1175,8 +1202,8 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                             recordMap.put("usedMaterialName", materialName.get(i).split("___")[0]);
                             recordMap.put("usedNumber", 0);
                         }
-
-                        currentInventory = currentInventory - Double.valueOf(recordMap.get("usedNumber").toString()).intValue();
+                        currentInventory = Double.valueOf(recordMap.get("lastInventory").toString()).intValue()
+                                + Double.valueOf(recordMap.get("receiveNumber").toString()).intValue() - Double.valueOf(recordMap.get("usedNumber").toString()).intValue();
                         recordMap.put("currentInventory", currentInventory);
                         recordMap.put("inventoryTransition1", currentInventory);
 //                        blGrantInfo = false;
@@ -1213,9 +1240,17 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         if (!blGrantInfo) {
                             recordMap.put("weightNumber", 0);
                         }
+
                     }
+                    if(!recordMap.containsKey("currentInventory"))
+                    {
+                        recordMap.put("currentInventory", 0);
+                        recordMap.put("inventoryTransition1", 0);
+                    }
+
                     finalDailyProductionSummaryRecordTMP.add(recordMap);
                 }
+
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 result.setData(JSONObject.toJSONString(finalDailyProductionSummaryRecordTMP));
                 return result;
@@ -1372,27 +1407,15 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                             recordMap.put("reveiveType", 0);  //保存修改后的线边仓数量
                         }
 
-//                        blGrantInfo = false;
-//                        for (int j = 0; j < materialReturnRecord.size(); j++) {
-//                            if (materialName.get(i).contains(materialReturnRecord.get(j).get("materialID").toString())) {
-//                                recordMap.put("scrapMaterialID", materialReturnRecord.get(j).get("materialID"));
-//                                recordMap.put("scrapMaterialName", materialReturnRecord.get(j).get("materialName"));
-//                                recordMap.put("scrapNumber", materialReturnRecord.get(j).get("scrapNumber"));
-//                                recordMap.put("scrapNumberTransition1", materialReturnRecord.get(j).get("scrapNumberTransition1"));
-//                                recordMap.put("scrapNumberTransition2", materialReturnRecord.get(j).get("scrapNumberTransition2"));
-//                                recordMap.put("scrapNumberTransition3", materialReturnRecord.get(j).get("scrapNumberTransition3"));
-//                                blGrantInfo = true;
-//                                break;
-//                            }
-//                        }
-//                        if (!blGrantInfo) {
-//                            recordMap.put("scrapMaterialID", materialName.get(i).split("___")[1]);
-//                            recordMap.put("scrapMaterialName", materialName.get(i).split("___")[0]);
-//                            recordMap.put("scrapNumber", 0);
-//                            recordMap.put("scrapNumberTransition1", 0);
-//                            recordMap.put("scrapNumberTransition2", 0);
-//                            recordMap.put("scrapNumberTransition3", 0);
-//                        }
+                    }
+                    if(!recordMap.containsKey("currentInventory"))
+                    {
+                        recordMap.put("currentInventory", 0);
+                        recordMap.put("inventoryTransition1", 0);
+                    }
+                    if(!recordMap.containsKey("reveiveType"))
+                    {
+                        recordMap.put("reveiveType", 0);
                     }
                     finalDailyProductionSummaryRecordTMP.add(recordMap);
                 }
@@ -1494,11 +1517,11 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         break;
                     }
                 }
-//                if (i < dailyGrantInfoSummaryRecordTMP.size()) {
-//                    recordMap.put("grantMaterialID", dailyGrantInfoSummaryRecordTMP.get(i).get("materialID"));
-//                    recordMap.put("grantMaterialName", dailyGrantInfoSummaryRecordTMP.get(i).get("materialName"));
-//                    recordMap.put("grantNumber", dailyGrantInfoSummaryRecordTMP.get(i).get("grantNumber"));
-//                }
+                if(!recordMap.containsKey("currentInventory"))
+                {
+                    recordMap.put("currentInventory", 0);
+                    recordMap.put("inventoryTransition1", 0);
+                }
                 finalDailyProductionSummaryRecordTMP.add(recordMap);
             }
 
@@ -1515,6 +1538,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
 
         TNPYResponse result = new TNPYResponse();
         try {
+
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String timeNow = dateFormat.format(new Date());
             List<DailyLineProductionDetailRecord> recordList = JSON.parseArray(jsonStr, DailyLineProductionDetailRecord.class);
@@ -1658,6 +1682,50 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                            recordMap.put("usedNumber", dailyTBUsedInfoList.get(i).get("usedNumber"));
                            recordMap.put("weightNumber", dailyTBUsedInfoList.get(i).get("weightNumber"));
                        }
+                        dailyProcessProductionDetailRecord.add(recordMap);
+                    }
+                }else if(ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID))
+                {
+                    dailyProcessProductionDetailRecord = new ArrayList<>();
+                    List<Map<Object, Object>> dailyTBProductionList = dailyProcessProductionDetailRecordMapper.getTBDailyProductionAllDayRecord(plantID, processID, dayTime, classType);
+                    List<Map<Object, Object>> dailyTBUsedInfoList = dailyProcessProductionDetailRecordMapper.getTBDailyUsedInfoAllDayRecord(plantID, processID, dayTime, classType);
+                    for (int i = 0; ; i++) {
+
+                        if (i >= dailyTBProductionList.size() && i >= dailyTBUsedInfoList.size()) {
+                            break;
+                        }
+                        Map<Object, Object> recordMap = new HashMap<>();
+                        recordMap.put("plantID", plantID);
+                        recordMap.put("processID", processID);
+                        recordMap.put("classType", classType);
+                        recordMap.put("dayTime", dayTime);
+                        if(i<dailyTBProductionList.size())
+                        {
+                            recordMap.put("productionMaterialID", dailyTBProductionList.get(i).get("productionMaterialID"));
+                            recordMap.put("productionMaterialName", dailyTBProductionList.get(i).get("productionMaterialName"));
+                            recordMap.put("productionNumber", dailyTBProductionList.get(i).get("productionNumber"));
+                            recordMap.put("productionTransition1", dailyTBProductionList.get(i).get("productionTransition1"));
+                            recordMap.put("planDailyProduction", dailyTBProductionList.get(i).get("planDailyProduction"));
+                            recordMap.put("ratioFinish", dailyTBProductionList.get(i).get("ratioFinish"));
+                        }
+                        if(i<dailyTBUsedInfoList.size())
+                        {
+                            recordMap.put("receiveMaterialID", dailyTBUsedInfoList.get(i).get("receiveMaterialID"));
+                            recordMap.put("receiveMaterialName", dailyTBUsedInfoList.get(i).get("receiveMaterialName"));
+                            recordMap.put("currentInventory", dailyTBUsedInfoList.get(i).get("currentInventory"));
+                            recordMap.put("lastInventory", dailyTBUsedInfoList.get(i).get("lastInventory"));
+                            recordMap.put("inventoryTransition1", dailyTBUsedInfoList.get(i).get("inventoryTransition1"));
+                            recordMap.put("receiveNumber", dailyTBUsedInfoList.get(i).get("receiveNumber"));
+                            recordMap.put("receiveMaterialNumber1", dailyTBUsedInfoList.get(i).get("receiveMaterialNumber1"));
+                            recordMap.put("receiveMaterialNumber2", dailyTBUsedInfoList.get(i).get("receiveMaterialNumber2"));
+                            recordMap.put("receiveMaterialNumber3", dailyTBUsedInfoList.get(i).get("receiveMaterialNumber3"));
+                            recordMap.put("scrapNumber", dailyTBUsedInfoList.get(i).get("scrapNumber"));
+                            recordMap.put("scrapNumberTransition1", dailyTBUsedInfoList.get(i).get("scrapNumberTransition1"));
+                            recordMap.put("scrapNumberTransition2", dailyTBUsedInfoList.get(i).get("scrapNumberTransition2"));
+                            recordMap.put("scrapNumberTransition3", dailyTBUsedInfoList.get(i).get("scrapNumberTransition3"));
+                            recordMap.put("usedNumber", dailyTBUsedInfoList.get(i).get("usedNumber"));
+                            recordMap.put("weightNumber", dailyTBUsedInfoList.get(i).get("weightNumber"));
+                        }
                         dailyProcessProductionDetailRecord.add(recordMap);
                     }
                 }else

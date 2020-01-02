@@ -126,7 +126,7 @@ public interface MaterialSecondaryInventoryRecordMapper {
             "(SELECT  batteryType as materialID,acceptPlantID as plantID, 0 as currentNum,0 as outNumber,0 as scrapNumber, 0 as borrowInNumber,sum(number) as borrowOutNumber,0 as expendNumber  FROM tb_grantmaterialrecord \n" +
             "where grantTime > #{startTime} and grantTime < #{endTime} and acceptPlantID != plantID and processID in ('1004','1005','1003') group by plantID,batteryType) \n" +
             " ) b left join tb_materialchangerelation c on b.materialID = c.inMaterialID and b.plantID = c.plantID\n" +
-            " ) a group by  plantID,materialID ) d ")
+            " ) a group by  plantID,materialID ) d where currentNum +outNumber +scrapNumber + borrowInNumber+borrowOutNumber + expendNumber <> 0 ")
     int insertBBSecondaryInventory(  String startTime,String endTime,String dayString,String lastInventoryTime);
 
     //分板二级库存 ： 库存 = 上次结余 + 固化出库 + 借调   -借出 - 分板投料
@@ -139,14 +139,14 @@ public interface MaterialSecondaryInventoryRecordMapper {
             " (select materialID, plantID, 0 as currentNum,sum(productionNum)  as outNumber, 0 as borrowInNumber,0 as borrowOutNumber ,0 as expendNumber   from tb_solidifyrecord  \n" +
             "where endtime3 > #{startTime}  and endtime3 < #{endTime} group by materialID,plantID)\n" +
             " union all\n" +
-            "(select  materialID, outputPlantID as plantID,0 as currentNum, sum(number) as outputNumber, 0 as borrowInNumber,0 as borrowOutNumber,0 as expendNumber  from tb_materialrecord \n" +
-            "where outputTime >=  #{startTime}  and  outputTime <#{endTime}  and inputProcessID = '1005' group by materialID,outputPlantID )\n" +
+            "(select  materialID, outputPlantID as plantID,0 as currentNum, 0 as outNumber, 0 as borrowInNumber,0 as borrowOutNumber,sum(number)  as expendNumber  from tb_materialrecord \n" +
+            "where outputTime >=  #{startTime}  and  outputTime <#{endTime}  and outputProcessID = '1005' group by materialID,outputPlantID )\n" +
             "union all\n" +
-            "(SELECT  batteryType as materialID,acceptPlantID as plantID, 0 as currentNum,0 as outNumber, 0 as borrowInNumber,sum(number) as borrowOutNumber,0 as expendNumber  FROM tb_grantmaterialrecord \n" +
+            "(SELECT  batteryType as materialID,plantID as plantID, 0 as currentNum,0 as outNumber, 0 as borrowInNumber,sum(number) as borrowOutNumber,0 as expendNumber  FROM tb_grantmaterialrecord \n" +
             "where grantTime > #{startTime}  and grantTime < #{endTime} and acceptPlantID != plantID and processID  = '1003' group by plantID,batteryType) \n" +
             "union all\n" +
             "(SELECT batteryType as materialID,acceptPlantID as plantID, 0 as currentNum, 0 as outNumber, sum(number) as borrowInNumber,0 as borrowOutNumber,0 as expendNumber   FROM tb_grantmaterialrecord \n" +
             "where grantTime > #{startTime}  and grantTime < #{endTime} and acceptPlantID != plantID and processID ='1003' group by acceptPlantID,batteryType )\n" +
-            ") a group by materialID, plantID ) b ")
+            ") a group by materialID, plantID ) b where currentNum + outNumber + expendNumber +borrowInNumber + borrowOutNumber <> 0 ")
     int insertFBSecondaryInventory(  String startTime,String endTime,String dayString,String lastInventoryTime);
 }
