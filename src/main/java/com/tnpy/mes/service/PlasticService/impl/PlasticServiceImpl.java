@@ -3,8 +3,10 @@ package com.tnpy.mes.service.PlasticService.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
+import com.tnpy.mes.mapper.mysql.GrantMaterialRecordMapper;
 import com.tnpy.mes.mapper.mysql.MaterialRecordMapper;
 import com.tnpy.mes.mapper.mysql.PlasticUsedRecordMapper;
+import com.tnpy.mes.model.mysql.GrantMaterialRecord;
 import com.tnpy.mes.model.mysql.MaterialRecord;
 import com.tnpy.mes.model.mysql.PlasticUsedRecord;
 import com.tnpy.mes.service.PlasticService.IPlasticService;
@@ -27,6 +29,8 @@ public class PlasticServiceImpl  implements IPlasticService {
 
     @Autowired
     private MaterialRecordMapper materialRecordMapper;
+    @Autowired
+    private GrantMaterialRecordMapper grantMaterialRecordMapper;
 
     public TNPYResponse getPlasticUsedRecord(String plantID, String lineID, String locationID, String startTime, String endTime )
     {
@@ -85,6 +89,13 @@ public class PlasticServiceImpl  implements IPlasticService {
 
             MaterialRecord materialRecord = materialRecordMapper.selectBySuborderID(orderID);
 
+            GrantMaterialRecord grantMaterialRecord = grantMaterialRecordMapper.selectByPrimaryKey(orderID);
+            if(grantMaterialRecord == null)
+            {
+                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                result.setMessage(orderID + "尚未发料，不能使用！");
+                return result;
+            }
             int remainNumber = Double.valueOf(materialRecord.getInputworklocationid()).intValue();
            // System.out.println("========" + Double.valueOf(materialRecord.getInputworklocationid()).intValue());
             if( orderArray.length >remainNumber)
