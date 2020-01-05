@@ -758,6 +758,18 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         materialName.add(dailyRecieveInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyRecieveInfoSummaryRecordTMP.get(i).get("materialID"));
                     }
                 }
+                for(int i =0;i<materialName.size(); )
+                {
+                    if(materialName.get(i).contains("null"))
+                    {
+                        materialName.remove(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+
                 materialName.sort(Comparator.comparing(String::trim));
                 for (int i = 0; i < materialName.size(); i++) {
                     currentInventory = 0;
@@ -775,12 +787,12 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
 
                     for (int j = 0; j < dailyProductionSummaryRecordTMP.size(); j++) {
                         if (materialName.get(i).contains(dailyProductionSummaryRecordTMP.get(j).get("materialID").toString())) {
-                            recordMap.put("productionMaterialID", dailyProductionSummaryRecordTMP.get(i).get("materialID"));
-                            recordMap.put("productionMaterialName", dailyProductionSummaryRecordTMP.get(i).get("materialName"));
-                            recordMap.put("productionNumber", dailyProductionSummaryRecordTMP.get(i).get("productionNumber"));
-                            recordMap.put("planDailyProduction", dailyProductionSummaryRecordTMP.get(i).get("planDailyProduction"));
-                            recordMap.put("ratioFinish", dailyProductionSummaryRecordTMP.get(i).get("ratioFinish"));
-                            recordMap.put("lastInventory", dailyProductionSummaryRecordTMP.get(i).get("lastInventory"));
+                            recordMap.put("productionMaterialID", dailyProductionSummaryRecordTMP.get(j).get("materialID"));
+                            recordMap.put("productionMaterialName", dailyProductionSummaryRecordTMP.get(j).get("materialName"));
+                            recordMap.put("productionNumber", dailyProductionSummaryRecordTMP.get(j).get("productionNumber"));
+                            recordMap.put("planDailyProduction", dailyProductionSummaryRecordTMP.get(j).get("planDailyProduction"));
+                            recordMap.put("ratioFinish", dailyProductionSummaryRecordTMP.get(j).get("ratioFinish"));
+                            recordMap.put("lastInventory", dailyProductionSummaryRecordTMP.get(j).get("lastInventory"));
                             blGrantInfo = true;
                             break;
                         }
@@ -793,7 +805,8 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         recordMap.put("ratioFinish", 0);
                         recordMap.put("lastInventory", 0);
                     }
-                    blGrantInfo = false;
+
+                     blGrantInfo = false;
 
                     for (int j = 0; j < dailyGrantInfoSummaryRecordTMP.size(); j++) {
                         if (materialName.get(i).contains(dailyGrantInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
@@ -821,7 +834,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                             - Double.valueOf(recordMap.get("grantNumber").toString()).intValue();
                     recordMap.put("currentInventory", currentInventory);
                     recordMap.put("inventoryTransition1", currentInventory);
-                    blGrantInfo = false;
+                   blGrantInfo = false;
                     for (int j = 0; j < dailyScrapInfoSummaryRecordTMP.size(); j++) {
                         if (materialName.get(i).contains(dailyScrapInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
                             recordMap.put("scrapMaterialID", dailyScrapInfoSummaryRecordTMP.get(j).get("materialID"));
@@ -865,7 +878,6 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         recordMap.put("receiveMaterialNumber2", 0);
                         recordMap.put("receiveMaterialNumber3", 0);
                     }
-
                     finalDailyProductionSummaryRecordTMP.add(recordMap);
                 }
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -903,6 +915,17 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                     }
                     if (materialReturnRecord.size() > i && !materialName.contains(materialReturnRecord.get(i).get("materialName") + "___" + materialReturnRecord.get(i).get("materialID"))) {
                         materialName.add(materialReturnRecord.get(i).get("materialName") + "___" + materialReturnRecord.get(i).get("materialID"));
+                    }
+                }
+                for(int i =0;i<materialName.size(); )
+                {
+                    if(materialName.get(i).contains("null"))
+                    {
+                        materialName.remove(i);
+                    }
+                    else
+                    {
+                        i++;
                     }
                 }
                 materialName.sort(Comparator.comparing(String::trim));

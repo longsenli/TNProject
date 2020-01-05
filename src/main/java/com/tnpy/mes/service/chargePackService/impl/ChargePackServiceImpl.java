@@ -52,7 +52,7 @@ public class ChargePackServiceImpl implements IChargePackService {
             String filter = " where status != '-1' ";
             if("onRack".equals(selectType))
             {
-                filter += " and ifnull(pulloffStaffName,1) = 1 ";
+                filter += " and  ifnull( length(pulloffStaffName),1)  = 1  ";
             }
             if("pulloffhistory".equals(selectType))
             {

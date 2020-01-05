@@ -42,7 +42,7 @@ public interface ChargingRackRecordMapper {
             "  sum(productionNumber) as productionNumber,  putonDate,sum(repairNumber) as repairNumber, repairID,'' as  repairName,'' as  repairTime,'' as  reason," +
             " sum(realNumber) as realNumber,  materialType,'' as  pulloffStaffID,'' as  pulloffStaffName,'' as  pulloffDate,'' as  repairCombine," +
             "  '' as  status,'' as  remark from tb_chargingrackrecord ${filter}  group by putonDate,materialName,materialType order by putonDate,materialName  limit 1000 ) " +
-            " union all ( select * from tb_chargingrackrecord ${filter} or pulloffStaffName=''  order by workLocation, putonDate asc  limit 1000) ")
+            " union all ( select * from tb_chargingrackrecord ${filter}  order by workLocation, putonDate asc  limit 1000) ")
     List<ChargingRackRecord> selectByFilterOnRack(@Param("filter") String filter);
     
     @Select(" SELECT id, plantID, processID, lineID, workLocation, staffID, staffName, materialID, materialName, productionNumber, "
