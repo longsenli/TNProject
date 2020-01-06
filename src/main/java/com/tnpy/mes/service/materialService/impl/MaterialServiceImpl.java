@@ -1135,6 +1135,12 @@ public class MaterialServiceImpl implements IMaterialService {
         try {
             UnqualifiedMaterialReturn unqualifiedMaterialReturn = (UnqualifiedMaterialReturn) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), UnqualifiedMaterialReturn.class);
 
+            if(unqualifiedMaterialReturn.getProcessid() == null || unqualifiedMaterialReturn.getProcessid().length() < 2)
+            {
+
+                result.setMessage("添加失败！只有已投料二维码才能够登记红冲！");
+                return result;
+            }
             if (org.thymeleaf.util.StringUtils.isEmpty(unqualifiedMaterialReturn.getId())) {
                 unqualifiedMaterialReturn.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 unqualifiedMaterialReturn.setReturntime(new Date());

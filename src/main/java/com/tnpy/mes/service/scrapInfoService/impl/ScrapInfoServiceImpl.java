@@ -36,6 +36,7 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
 
     @Autowired
     private MaterialCirculationRecordMapper materialCirculationRecordMapper;
+
     public TNPYResponse getScrapInfo(String plantID, String processID, String lineID, String startTime, String endTime) {
         TNPYResponse result = new TNPYResponse();
         try {
@@ -114,33 +115,30 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
                 calendar.add(Calendar.DATE, 1);
                 Date date = calendar.getTime();   //这个时间就是日期往后推一天的结果
                 productionTime += " 19:00";
-                startTime  =  productionTime + " 18:00";
+                startTime = productionTime + " 18:00";
                 endTime = dateFormat.format(date) + " 07:00";
             }
 
-            if(ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(processID))
-            {
+            if (ConfigParamEnum.BasicProcessEnum.JSProcessID.getName().equals(processID)) {
 //                List<String> nextList = objectRelationDictMapper.selectNextObjectID(lineID,"1002");
 //                if(nextList.size() != 1)
 //                {
 //                    result.setMessage("获取后续产线失败！");
 //                    return result;
 //                }
-                List<Map<Object, Object>> usedMaterialInfoList = materialScrapRecordMapper.getJSUsedMaterialInfoWithExpend(lineID, dateFormat.format(tmp),dateFormat.format(tmp) + " 23:59");
+                List<Map<Object, Object>> usedMaterialInfoList = materialScrapRecordMapper.getJSUsedMaterialInfoWithExpend(lineID, dateFormat.format(tmp), dateFormat.format(tmp) + " 23:59");
                 result.setData(JSONObject.toJSONString(usedMaterialInfoList, SerializerFeature.WriteMapNullValue));
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 return result;
             }
-            if(ConfigParamEnum.BasicProcessEnum.FBProcessID.getName().equals(processID) || ConfigParamEnum.BasicProcessEnum.BBProcessID.getName().equals(processID))
-            {
+            if (ConfigParamEnum.BasicProcessEnum.FBProcessID.getName().equals(processID) || ConfigParamEnum.BasicProcessEnum.BBProcessID.getName().equals(processID)) {
                 List<Map<Object, Object>> usedMaterialInfoList = materialScrapRecordMapper.getFBAndBBMaterialInfo(plantID);
                 result.setData(JSONObject.toJSONString(usedMaterialInfoList, SerializerFeature.WriteMapNullValue));
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 return result;
             }
 
-            if(ConfigParamEnum.BasicProcessEnum.CDProcessID.getName().equals(processID) || ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(processID))
-            {
+            if (ConfigParamEnum.BasicProcessEnum.CDProcessID.getName().equals(processID) || ConfigParamEnum.BasicProcessEnum.BZProcessID.getName().equals(processID)) {
                 List<Map<Object, Object>> usedMaterialInfoList = materialScrapRecordMapper.getCDAndBZMaterialInfo(plantID);
                 result.setData(JSONObject.toJSONString(usedMaterialInfoList, SerializerFeature.WriteMapNullValue));
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -157,7 +155,7 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
         }
     }
 
-    public TNPYResponse getMaterialScrapRecord(String plantID, String processID, String lineID,String scrapSelectType,  String startTime, String endTime) {
+    public TNPYResponse getMaterialScrapRecord(String plantID, String processID, String lineID, String scrapSelectType, String startTime, String endTime) {
         TNPYResponse result = new TNPYResponse();
         try {
             String filter = "";
@@ -186,11 +184,17 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
             JSONObject jso = JSONObject.parseObject(strJson);
             Map<String, String> jsonMap = JSONObject.toJavaObject(jso, Map.class);
 
-            List<Map<Object, Object>>  materialWeightList = materialScrapRecordMapper.getMaterialWeightInfo(jsonMap.get("plantID"));
+            if (ConfigParamEnum.BasicProcessEnum.TBProcessID.getName().equals(jsonMap.get("processID"))) {
+                if (jsonMap.get("operateType") != null && "报废".equals(jsonMap.get("operateType"))) {
+                    result.setMessage("涂板工序在此只能添加报废，不良请在物料红冲页面登记，谢谢合作！");
+                    return result;
+                }
+            }
+
+            List<Map<Object, Object>> materialWeightList = materialScrapRecordMapper.getMaterialWeightInfo(jsonMap.get("plantID"));
             Map<String, Double> materialWeightMap = new HashMap<>();
-            for(int i =0;i< materialWeightList.size();i++)
-            {
-                materialWeightMap.put(materialWeightList.get(i).get("materialID").toString(),Double.valueOf(materialWeightList.get(i).get("basicInfo1").toString()));
+            for (int i = 0; i < materialWeightList.size(); i++) {
+                materialWeightMap.put(materialWeightList.get(i).get("materialID").toString(), Double.valueOf(materialWeightList.get(i).get("basicInfo1").toString()));
             }
             MaterialScrapRecord materialScrapRecord = new MaterialScrapRecord();
             materialScrapRecord.setPlantid(jsonMap.get("plantID"));
@@ -205,6 +209,8 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
             materialScrapRecord.setUpdatetime(new Date());
             materialScrapRecord.setUpdatestaff(jsonMap.get("updateStaff"));
             materialScrapRecord.setOperatetype(jsonMap.get("operateType"));
+
+
             for (Map.Entry<String, String> entry : jsonMap.entrySet()) {
                 if (!entry.getKey().contains("###"))
                     continue;
@@ -212,13 +218,10 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
                     continue;
                 materialScrapRecord.setMaterialid(entry.getKey().split("###")[0]);
                 materialScrapRecord.setMaterialname(entry.getKey().split("###")[1]);
-                if(materialWeightMap.containsKey(materialScrapRecord.getMaterialid()))
-                {
+                if (materialWeightMap.containsKey(materialScrapRecord.getMaterialid())) {
                     materialScrapRecord.setWeight(Double.parseDouble(entry.getValue()));
-                    materialScrapRecord.setValue((float)Math.ceil((1000 * Double.valueOf(entry.getValue()) / materialWeightMap.get(materialScrapRecord.getMaterialid()))));
-                }
-                else
-                {
+                    materialScrapRecord.setValue((float) Math.ceil((1000 * Double.valueOf(entry.getValue()) / materialWeightMap.get(materialScrapRecord.getMaterialid()))));
+                } else {
                     materialScrapRecord.setValue(Float.parseFloat(entry.getValue()));
                 }
 
@@ -251,22 +254,20 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
         }
     }
 
-    public TNPYResponse scrapByBatteryQrcode( String id ,String scrapPlant,String scrapProcess,String repairReason,String updateStaffID,String updateStaff)
-    {
+    public TNPYResponse scrapByBatteryQrcode(String id, String scrapPlant, String scrapProcess, String repairReason, String updateStaffID, String updateStaff) {
         TNPYResponse result = new TNPYResponse();
         try {
-            PlasticUsedRecord plasticUsedRecord =plasticUsedRecordMapper.selectByPrimaryKey(id);
-            if(plasticUsedRecord == null)
-            {
+            PlasticUsedRecord plasticUsedRecord = plasticUsedRecordMapper.selectByPrimaryKey(id);
+            if (plasticUsedRecord == null) {
                 result.setMessage("未找到该底壳的信息！" + id);
                 return result;
             }
-            plasticUsedRecordMapper.updateScrapInfo(id,"2",repairReason);
+            plasticUsedRecordMapper.updateScrapInfo(id, "2", repairReason);
             MaterialScrapRecord materialScrapRecord = new MaterialScrapRecord();
             materialScrapRecord.setId(id);
             materialScrapRecord.setOperatetype("电池底壳");
             materialScrapRecord.setUpdatestaff(updateStaff);
-            materialScrapRecord.setUpdatetime( new Date());
+            materialScrapRecord.setUpdatetime(new Date());
             materialScrapRecord.setStatus("1");
             materialScrapRecord.setValue(Float.valueOf(1));
             materialScrapRecord.setMaterialname(plasticUsedRecord.getMaterialname());
@@ -291,13 +292,11 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
                 materialScrapRecord.setProductday(date);
                 materialScrapRecord.setClasstype("夜班");
 
-            } else  if (calendar.get(Calendar.HOUR_OF_DAY) > 18){
+            } else if (calendar.get(Calendar.HOUR_OF_DAY) > 18) {
                 date = dateFormat.parse(dateFormat.format(date));
                 materialScrapRecord.setProductday(date);
                 materialScrapRecord.setClasstype("夜班");
-            }
-            else
-            {
+            } else {
                 date = dateFormat.parse(dateFormat.format(date));
                 materialScrapRecord.setProductday(date);
                 materialScrapRecord.setClasstype("白班");
@@ -308,28 +307,24 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
             result.setData("报修成功！");
             return result;
         } catch (Exception ex) {
-            if(ex.getMessage().contains("uplicate"))
-            {
-                result.setMessage("报修失败！该电池已报修！" );
-            }
-            else
-            {
+            if (ex.getMessage().contains("uplicate")) {
+                result.setMessage("报修失败！该电池已报修！");
+            } else {
                 result.setMessage("报修失败！" + ex.getMessage());
             }
             return result;
         }
     }
 
-    public TNPYResponse getMaterialCirculationRecord( String originalPlantID ,String destinationPlantID,String processID,String circulationType,String startTime,String endTime)
-    {
+    public TNPYResponse getMaterialCirculationRecord(String originalPlantID, String destinationPlantID, String processID, String circulationType, String startTime, String endTime) {
         TNPYResponse result = new TNPYResponse();
         try {
-            String filter = " where status = '1' and sendTime > '" + startTime + "' and sendTime < '" + endTime +"' ";
+            String filter = " where status = '1' and sendTime > '" + startTime + "' and sendTime < '" + endTime + "' ";
             if (!"-1".equals(originalPlantID)) {
                 filter += " and originalPlantID = '" + originalPlantID + "' ";
             }
             if (!"-1".equals(destinationPlantID)) {
-                filter +=  " and destinationPlantID = '" + destinationPlantID + "'";
+                filter += " and destinationPlantID = '" + destinationPlantID + "'";
             }
             if (!"-1".equals(processID)) {
                 filter += " and processID = '" + processID + "' ";
@@ -347,22 +342,18 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
         }
     }
 
-    public TNPYResponse saveMaterialCirculationRecord( String strJson )
-    {
+    public TNPYResponse saveMaterialCirculationRecord(String strJson) {
         TNPYResponse result = new TNPYResponse();
         try {
 
             MaterialCirculationRecord materialCirculationRecord = (MaterialCirculationRecord) JSONObject.toJavaObject(JSONObject.parseObject(strJson), MaterialCirculationRecord.class);
 
-            if(StringUtils.isEmpty(materialCirculationRecord.getId()))
-            {
+            if (StringUtils.isEmpty(materialCirculationRecord.getId())) {
                 materialCirculationRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
                 materialCirculationRecord.setSendtime(new Date());
                 materialCirculationRecord.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
                 materialCirculationRecordMapper.insert(materialCirculationRecord);
-            }
-            else
-            {
+            } else {
                 materialCirculationRecord.setAccepttime(new Date());
                 materialCirculationRecordMapper.updateByPrimaryKeySelective(materialCirculationRecord);
             }
@@ -374,8 +365,8 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
             return result;
         }
     }
-    public TNPYResponse deleteMaterialCirculationRecord( String id )
-    {
+
+    public TNPYResponse deleteMaterialCirculationRecord(String id) {
         TNPYResponse result = new TNPYResponse();
         try {
             materialCirculationRecordMapper.deleteByChangeStatusWithPrimaryKey(id);
@@ -388,12 +379,11 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
         }
     }
 
-    public TNPYResponse confirmMaterialCirculationRecord( String id,String confirmStaff )
-    {
+    public TNPYResponse confirmMaterialCirculationRecord(String id, String confirmStaff) {
         TNPYResponse result = new TNPYResponse();
         try {
 
-            materialCirculationRecordMapper.confirmMaterialCirculationRecord(id,confirmStaff);
+            materialCirculationRecordMapper.confirmMaterialCirculationRecord(id, confirmStaff);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData("确认成功！");
             return result;

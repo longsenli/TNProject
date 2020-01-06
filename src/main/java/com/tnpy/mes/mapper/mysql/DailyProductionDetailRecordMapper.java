@@ -141,6 +141,12 @@ public interface DailyProductionDetailRecordMapper {
 
     @Select(" select plantID,processID,materialID,materialName,sum(materialNumber) as scrapNumber ,sum(if(inputPlantID='1001',materialNumber,0)) as scrapNumberTransition1, \n" +
             "sum(if(inputPlantID='1002',materialNumber,0)) as scrapNumberTransition2, sum(if(inputPlantID='1003',materialNumber,0)) as scrapNumberTransition3,0 as weightNumber\n" +
+            "from tb_unqualifiedmaterialreturn where inputPlantID = #{plantID} and inputProcessID = #{processID} and status = '1' and returnTime > #{startTime} and  returnTime < #{endTime} group by materialID ")
+    List<Map<Object,Object>> getJZTMPDailyTBScrapInfoSummaryRecord(String plantID, String processID,String startTime,String endTime);  // 获取涂板报废信息
+
+
+    @Select(" select plantID,processID,materialID,materialName,sum(materialNumber) as scrapNumber ,sum(if(inputPlantID='1001',materialNumber,0)) as scrapNumberTransition1, \n" +
+            "sum(if(inputPlantID='1002',materialNumber,0)) as scrapNumberTransition2, sum(if(inputPlantID='1003',materialNumber,0)) as scrapNumberTransition3,0 as weightNumber\n" +
             "from tb_unqualifiedmaterialreturn where plantID = #{plantID} and processID = #{processID} and status = '1' and returnTime > #{startTime} and  returnTime < #{endTime} group by materialID ")
     List<Map<Object,Object>> getTBTMPReturnMaterialSummaryRecord(String plantID, String processID,String startTime,String endTime);
 

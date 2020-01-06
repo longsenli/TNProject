@@ -625,7 +625,8 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         recordMap.put("materialID", lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * productionListNumber));
                         recordMap.put("materialName", lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * productionListNumber + 1));
                         recordMap.put("productionNumber", lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * productionListNumber + 2));
-                        recordMap.put("productionTransition1", lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * productionListNumber + 3));
+                        recordMap.put("productionTransition1", lineRowProductionMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * productionListNumber + 3));  // 大片报废数
+                        recordMap.put("productionTransition2", 0);  // 和膏锅数
                     }
                     if (usedListTotalNumber >= (j + 1) * usedListNumber) {
                         recordMap.put("usedMaterialID", lineRowUsedMap.get(dailyProductionDetailRecordTMP.get(i).get("lineID")).get(j * usedListNumber));
@@ -740,6 +741,8 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             DecimalFormat dataFormat = new DecimalFormat(".00");
             int currentInventory = 0;
             if (ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(processID)) {
+                List<Map<Object, Object>> TBScrapInfo = dailyProductionDetailRecordMapper.getTMPDailyScrapInfoSummaryRecord(plantID, ConfigParamEnum.BasicProcessEnum.TBProcessID.getName(), dayTime, classType);
+
                 List<String> materialName = new ArrayList<>();
                 for (int i = 0; ; i++) {
                     if (i >= dailyProductionSummaryRecordTMP.size() && i >= dailyUsedInfoSummaryRecordTMP.size() && i >= dailyScrapInfoSummaryRecordTMP.size() && i >= dailyRecieveInfoSummaryRecordTMP.size() && i >= dailyGrantInfoSummaryRecordTMP.size()) {
@@ -757,6 +760,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                     if (dailyRecieveInfoSummaryRecordTMP.size() > i && !materialName.contains(dailyRecieveInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyRecieveInfoSummaryRecordTMP.get(i).get("materialID"))) {
                         materialName.add(dailyRecieveInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyRecieveInfoSummaryRecordTMP.get(i).get("materialID"));
                     }
+
                 }
                 for(int i =0;i<materialName.size(); )
                 {
@@ -840,7 +844,6 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                             recordMap.put("scrapMaterialID", dailyScrapInfoSummaryRecordTMP.get(j).get("materialID"));
                             recordMap.put("scrapMaterialName", dailyScrapInfoSummaryRecordTMP.get(j).get("materialName"));
                             recordMap.put("scrapNumber", dailyScrapInfoSummaryRecordTMP.get(j).get("scrapNumber"));
-                            recordMap.put("weightNumber", dailyScrapInfoSummaryRecordTMP.get(j).get("grantNumber"));
                             recordMap.put("scrapNumberTransition1", dailyScrapInfoSummaryRecordTMP.get(j).get("scrapNumberTransition1"));
                             recordMap.put("scrapNumberTransition2", dailyScrapInfoSummaryRecordTMP.get(j).get("scrapNumberTransition2"));
                             recordMap.put("scrapNumberTransition3", dailyScrapInfoSummaryRecordTMP.get(j).get("scrapNumberTransition3"));
@@ -848,14 +851,25 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                             break;
                         }
                     }
+
                     if (!blGrantInfo) {
                         recordMap.put("scrapMaterialID", materialName.get(i).split("___")[1]);
                         recordMap.put("scrapMaterialName", materialName.get(i).split("___")[0]);
                         recordMap.put("scrapNumber", 0);
-                        recordMap.put("weightNumber", 0);
                         recordMap.put("scrapNumberTransition1", 0);
                         recordMap.put("scrapNumberTransition2", 0);
                         recordMap.put("scrapNumberTransition3", 0);
+                    }
+                    blGrantInfo = false;
+                    for (int j = 0; j < TBScrapInfo.size(); j++) {
+                        if (materialName.get(i).contains(TBScrapInfo.get(j).get("materialID").toString())) {
+                            recordMap.put("weightNumber", TBScrapInfo.get(j).get("scrapNumber"));
+                            blGrantInfo = true;
+                            break;
+                        }
+                    }
+                    if (!blGrantInfo) {
+                        recordMap.put("weightNumber", 0);
                     }
                     blGrantInfo = false;
                     for (int j = 0; j < dailyRecieveInfoSummaryRecordTMP.size(); j++) {
@@ -878,6 +892,14 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         recordMap.put("receiveMaterialNumber2", 0);
                         recordMap.put("receiveMaterialNumber3", 0);
                     }
+
+
+                    recordMap.put("usedNumber", Double.valueOf(recordMap.get("scrapNumber").toString()).intValue()
+                            + Double.valueOf(recordMap.get("weightNumber").toString()).intValue());   // 合计不良
+                    recordMap.put("usedNumberTransition1", Double.valueOf(recordMap.get("productionNumber").toString()).intValue()
+                            - Double.valueOf(recordMap.get("usedNumber").toString()).intValue());    // 上报产量
+                    recordMap.put("usedNumberTransition2",  Double.valueOf(recordMap.get("grantNumber").toString()).intValue()
+                            - Double.valueOf(recordMap.get("usedNumber").toString()).intValue());  // 上报发料
                     finalDailyProductionSummaryRecordTMP.add(recordMap);
                 }
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
@@ -892,9 +914,19 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
 
                 List<Map<Object, Object>> materialReturnRecord = dailyProductionDetailRecordMapper.getTBTMPReturnMaterialSummaryRecord(plantID, processID, startTime, endTime);
 
+                List<Map<Object, Object>> nextProcessReturn = dailyProductionDetailRecordMapper.getTBTMPReturnMaterialSummaryRecord(plantID,ConfigParamEnum.BasicProcessEnum.FBProcessID.getName(),startTime,endTime);
                 for (int i = 0; i < dailyProductionSummaryRecordTMP.size(); i++) {
-                    TBMaterialName.add(dailyProductionSummaryRecordTMP.get(i).get("materialName") + "___" + dailyProductionSummaryRecordTMP.get(i).get("materialID"));
+                    if (i >= dailyProductionSummaryRecordTMP.size() && i >= nextProcessReturn.size() ) {
+                        break;
+                    }
+                    if (dailyProductionSummaryRecordTMP.size() > i && !TBMaterialName.contains(dailyProductionSummaryRecordTMP.get(i).get("materialName") + "___" + dailyProductionSummaryRecordTMP.get(i).get("materialID"))) {
+                        TBMaterialName.add(dailyProductionSummaryRecordTMP.get(i).get("materialName") + "___" + dailyProductionSummaryRecordTMP.get(i).get("materialID"));
+                    }
+                    if (nextProcessReturn.size() > i && !TBMaterialName.contains(nextProcessReturn.get(i).get("materialName") + "___" + nextProcessReturn.get(i).get("materialID"))) {
+                        TBMaterialName.add(nextProcessReturn.get(i).get("materialName") + "___" + nextProcessReturn.get(i).get("materialID"));
+                    }
                 }
+
                 for (int i = 0; ; i++) {
                     if (i >= lastOnlineInventory.size() && i >= dailyUsedInfoSummaryRecordTMP.size() && i >= dailyScrapInfoSummaryRecordTMP.size()
                             && i >= materialReturnRecord.size() && i >= dailyRecieveInfoSummaryRecordTMP.size() && i >= dailyGrantInfoSummaryRecordTMP.size()) {
@@ -917,6 +949,20 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         materialName.add(materialReturnRecord.get(i).get("materialName") + "___" + materialReturnRecord.get(i).get("materialID"));
                     }
                 }
+
+                for(int i =0;i<TBMaterialName.size(); )
+                {
+                    if(TBMaterialName.get(i).contains("null"))
+                    {
+                        TBMaterialName.remove(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                TBMaterialName.sort(Comparator.comparing(String::trim));
+
                 for(int i =0;i<materialName.size(); )
                 {
                     if(materialName.get(i).contains("null"))
@@ -945,12 +991,28 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                     recordMap.put("actualMachineNumber", attendanceInfo.get(2));
                     recordMap.put("productionMachineRatio", dataFormat.format(attendanceInfo.get(2) * 1.0 / attendanceInfo.get(1) * 100));
 
-                    if (i < dailyProductionSummaryRecordTMP.size()) {
-                        recordMap.put("productionMaterialID", dailyProductionSummaryRecordTMP.get(i).get("materialID"));
-                        recordMap.put("productionMaterialName", dailyProductionSummaryRecordTMP.get(i).get("materialName"));
-                        recordMap.put("productionNumber", dailyProductionSummaryRecordTMP.get(i).get("productionNumber"));
-                        recordMap.put("planDailyProduction", dailyProductionSummaryRecordTMP.get(i).get("planDailyProduction"));
-                        recordMap.put("ratioFinish", dailyProductionSummaryRecordTMP.get(i).get("ratioFinish"));
+                    if (i < TBMaterialName.size()) {
+
+                        blGrantInfo = false;
+                        for (int j = 0; j < dailyProductionSummaryRecordTMP.size(); j++) {
+                            if (TBMaterialName.get(i).contains(dailyProductionSummaryRecordTMP.get(j).get("materialID").toString())) {
+                                recordMap.put("productionMaterialID", dailyProductionSummaryRecordTMP.get(i).get("materialID"));
+                                recordMap.put("productionMaterialName", dailyProductionSummaryRecordTMP.get(i).get("materialName"));
+                                recordMap.put("productionNumber", dailyProductionSummaryRecordTMP.get(i).get("productionNumber"));
+                                recordMap.put("planDailyProduction", dailyProductionSummaryRecordTMP.get(i).get("planDailyProduction"));
+                                recordMap.put("ratioFinish", dailyProductionSummaryRecordTMP.get(i).get("ratioFinish"));
+                                blGrantInfo = true;
+                                break;
+                            }
+                        }
+                        if (!blGrantInfo) {
+                            recordMap.put("productionMaterialID", TBMaterialName.get(i).split("___")[1]);
+                            recordMap.put("productionMaterialName", TBMaterialName.get(i).split("___")[0]);
+                            recordMap.put("productionNumber", 0);
+                            recordMap.put("planDailyProduction", 0);
+                            recordMap.put("ratioFinish", 0);
+                        }
+
                         blGrantInfo = false;
                         for (int j = 0; j < dailyScrapInfoSummaryRecordTMP.size(); j++) {
                             if (TBMaterialName.get(i).contains(dailyScrapInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
@@ -963,8 +1025,23 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         if (!blGrantInfo) {
                             recordMap.put("productionTransition1", 0);
                         }
-                    }
 
+                        blGrantInfo = false;
+                        for (int j = 0; j < nextProcessReturn.size(); j++) {
+                            if (TBMaterialName.get(i).contains(nextProcessReturn.get(j).get("materialID").toString())) {
+                                //作为本工序大片的报废
+                                recordMap.put("productionTransition2", nextProcessReturn.get(j).get("scrapNumber"));   //分板红冲
+                                blGrantInfo = true;
+                                break;
+                            }
+                        }
+                        if (!blGrantInfo) {
+                            recordMap.put("productionTransition2", 0);    // 作为红冲数量
+                        }
+                        recordMap.put("productionTransition3",Double.valueOf(recordMap.get("productionNumber").toString()).intValue() - Double.valueOf(recordMap.get("productionTransition2").toString()).intValue()  );    // 上报产量
+                           //    recordMap.put("grantNumberTransition2",  Double.valueOf(recordMap.get("productionTransition3").toString()).intValue() + Double.valueOf(recordMap.get("grantNumberTransition1").toString()).intValue() );  // 上报投料
+
+                    }
                     if (i < materialName.size()) {
                         blGrantInfo = false;
                         for (int j = 0; j < lastOnlineInventory.size(); j++) {
@@ -1042,7 +1119,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         if (!blGrantInfo) {
                             recordMap.put("scrapMaterialID", materialName.get(i).split("___")[1]);
                             recordMap.put("scrapMaterialName", materialName.get(i).split("___")[0]);
-                            recordMap.put("scrapNumber", 0);
+                            recordMap.put("scrapNumber", 0);           // 红冲板栅
                             recordMap.put("scrapNumberTransition1", 0);
                             recordMap.put("scrapNumberTransition2", 0);
                             recordMap.put("scrapNumberTransition3", 0);
@@ -1052,7 +1129,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         for (int j = 0; j < dailyScrapInfoSummaryRecordTMP.size(); j++) {
                             if (materialName.get(i).contains(dailyScrapInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
                                 //作为本工序自身造成的报废
-                                recordMap.put("weightNumber", dailyScrapInfoSummaryRecordTMP.get(j).get("scrapNumber"));
+                                recordMap.put("weightNumber", dailyScrapInfoSummaryRecordTMP.get(j).get("scrapNumber"));   // 报废板栅
                                 blGrantInfo = true;
                                 break;
                             }
@@ -1060,6 +1137,11 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         if (!blGrantInfo) {
                             recordMap.put("weightNumber", 0);
                         }
+
+                        recordMap.put("reveiveType",  Double.valueOf(recordMap.get("receiveNumber").toString()).intValue() - Double.valueOf(recordMap.get("scrapNumber").toString()).intValue() -
+                                Double.valueOf(recordMap.get("weightNumber").toString()).intValue());  // 上报领用
+                        recordMap.put("grantNumberTransition1",  Double.valueOf(recordMap.get("scrapNumber").toString()).intValue() + Double.valueOf(recordMap.get("weightNumber").toString()).intValue());  // 合计总的不良
+
                     }
                     if(!recordMap.containsKey("currentInventory"))
                     {
