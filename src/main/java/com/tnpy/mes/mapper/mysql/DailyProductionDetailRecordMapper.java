@@ -154,6 +154,22 @@ public interface DailyProductionDetailRecordMapper {
             " FROM tb_materialscraprecord where plantID = #{plantID} and processID= #{processID} and productDay = #{dayTime} and classType =#{classType}   and status = '1' group by plantID,processID,materialID order by materialName  ")
     List<Map<Object,Object>> getTMPDailyScrapInfoSummaryRecord(String plantID, String processID,String dayTime,String classType);
 
+    @Select(" select  #{plantID} as plantID, #{processID} as processID,materialID,materialName, sum(receiveNumber) as receiveNumber,sum(receiveMaterialNumber1) as receiveMaterialNumber1,\n" +
+            "sum(receiveMaterialNumber2) as receiveMaterialNumber2,sum(receiveMaterialNumber3) as receiveMaterialNumber3 from ( \n" +
+            "( select materialID,materialName, sum(number) as receiveNumber,\n" +
+            " sum(if(originalPlantID = '1001',number,0))  as receiveMaterialNumber1, sum(if(originalPlantID = '1002',number,0) )  as receiveMaterialNumber2, sum(if(originalPlantID = '1003',number,0) )  as receiveMaterialNumber3\n" +
+            " from tb_materialcirculationrecord  where destinationPlantID = #{plantID} and  processID = #{processID} and sendTime >#{startTime}  and sendTime <#{endTime} and status != '-1' group by materialID \n" +
+            ") union all ( \n" +
+            " select materialID,materialName, sum(number) * -1 as receiveNumber,\n" +
+            " sum(if(originalPlantID = '1001',number,0))  * -1 as receiveMaterialNumber1, sum(if(originalPlantID = '1002',number,0) )  * -1 as receiveMaterialNumber2, sum(if(originalPlantID = '1003',number,0) )  * -1 as receiveMaterialNumber3\n" +
+            " from tb_materialcirculationrecord  where originalPlantID = #{plantID} and  processID = #{processID} and sendTime > #{startTime}  and sendTime < #{endTime} and status != '-1' group by materialID\n" +
+            " ) union all ( \n" +
+            " select materialID,materialName, sum(productionNum) as receiveNumber,sum(if( plantID = '1001',productionNum,0))  as receiveMaterialNumber1,\n" +
+            " sum(if( plantID = '1002',productionNum,0))  as receiveMaterialNumber2 ,sum(if( plantID = '1003',productionNum,0))  as receiveMaterialNumber3 from tb_solidifyrecord \n" +
+            "where plantID = #{plantID} and status = '9' and endtime3 > #{startTime}  and endtime3 < #{endTime} group by materialID )  ) a group by materialID ")
+    List<Map<Object,Object>> getFBTMPDailyRecieveInfoSummaryRecord(String plantID, String processID,String startTime,String endTime);
+
+
     @Select("select a.*,b.name as materialName from ( SELECT batteryType as materialID,acceptPlantID as plantID,processID,sum(number) as receiveNumber, " +
             " sum(if(plantID='1001',number,0)) as receiveMaterialNumber1,sum(if(plantID='1002' ,number,0)) as receiveMaterialNumber2,sum(if(plantID='1003' ,number,0)) as receiveMaterialNumber3 " +
             " FROM tb_grantmaterialrecord where acceptPlantID = #{plantID} and " +
@@ -173,6 +189,10 @@ public interface DailyProductionDetailRecordMapper {
     @Select( "select ifnull(currentInventory,0) as currentInventory ,receiveMaterialID as materialID,receiveMaterialName as materialName from tb_dailyprocessproductiondetailrecord where plantID = #{plantID}" +
             " and processID = #{processID} and dayTime = #{dayTime} and classType = #{lastClassType} and receiveMaterialID is not null  \n" )
     List<Map<Object,Object>> getTMPTBOnlineMterialSummaryRecord(String plantID, String processID,String dayTime,String lastClassType);
+
+    @Select( "select ifnull(usedNumberTransition2,0) as currentInventory ,receiveMaterialID as materialID,receiveMaterialName as materialName from tb_dailyprocessproductiondetailrecord where plantID = #{plantID}" +
+            " and processID = #{processID} and dayTime = #{dayTime} and classType = #{lastClassType} and receiveMaterialID is not null  \n" )
+    List<Map<Object,Object>> getTMPFBOnlineMterialSummaryRecord(String plantID, String processID,String dayTime,String lastClassType);
 
     @Select( "select m.*,n.name as materialName from ( select materialID,sum(reinputNum) as reinputNum,sum(newReturn) as newReturn,sum(onlineNum) as onlineNum from ( \n" +
             "(SELECT materialID, sum(if(status ='3',materialNum,0) ) as reinputNum, sum(if(status ='3', 0 ,materialNum)) as newReturn ,0 as onlineNum FROM tb_onlinematerialrecord\n" +
