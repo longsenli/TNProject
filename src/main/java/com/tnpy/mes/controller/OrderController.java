@@ -197,5 +197,12 @@ public class OrderController {
     public TNPYResponse getWorkorderTemplate( String plantID,String processID,String lineID ) {
         return  workOrderService.getWorkorderTemplate(plantID,processID,lineID);
     }
+    
+    
+    @RequestMapping(value = "/workOrderPutIntoManage")
+    public TNPYResponse getTMPProductionWageInfo(String plantID,String processID,String lineID,String startTime, String endTime ,String classType)
+    {
+        return  workOrderService.workOrderPutIntoManage(plantID,processID,lineID,startTime, endTime,classType);
+    }
 
 }

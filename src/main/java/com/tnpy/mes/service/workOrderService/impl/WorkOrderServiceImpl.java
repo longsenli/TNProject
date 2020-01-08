@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
+import com.tnpy.common.utils.mass.DateUtilsDef;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.*;
 import com.tnpy.mes.model.customize.CustomOrderSplitRecord;
@@ -1554,4 +1555,69 @@ public class WorkOrderServiceImpl implements IWorkOrderService {
             return result;
         }
     }
+
+	@Override
+	public TNPYResponse workOrderPutIntoManage(String plantID, String processID, String lineID, String startTime, String endTime,
+			String classType) {
+		TNPYResponse result = new TNPYResponse();
+        try {
+        	// 判断日期是否合法
+			if (!DateUtilsDef.isDateCheck(startTime) && !DateUtilsDef.isDateCheck(endTime)) {
+				result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+				result.setMessage("日期不合法");
+				return result;
+			}
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        	StringBuilder sqlfilter  = new StringBuilder();
+        	sqlfilter.append("1 = 1  ") ;
+        	if (!"-1".equals(plantID)) {
+        		sqlfilter .append(" and m.outputPlantID = '" + plantID + "' ") ;
+            }else {
+            	result.setMessage("请选择厂区");
+                return result;
+            }
+        	if (!"-1".equals(processID)) {
+        		sqlfilter .append(" and m.outputProcessID = '" + processID + "' ") ;
+            }else {
+            	result.setMessage("请选择工序");
+                return result;
+            }
+        	if (!"-1".equals(lineID)) {
+        		sqlfilter .append(" and m.outputLineID = '" + lineID + "' ") ;
+            }
+        	
+        	sqlfilter.append(" and DATE_FORMAT( m.outputTime ,'%Y-%m-%d') >= DATE_FORMAT( '"+startTime+"' ,'%Y-%m-%d') ");
+        	sqlfilter.append(" and DATE_FORMAT( m.outputTime ,'%Y-%m-%d') <= DATE_FORMAT( '"+endTime+"' ,'%Y-%m-%d') ");
+        	
+        	//如果是包板
+            if (ConfigParamEnum.BasicProcessEnum.BBProcessID.getName().equals(processID.trim())) {
+            	if ("白班".equals(classType)) {
+            		sqlfilter.append(" and m.expendOrderID REGEXP 'BB*BB' ");
+                } 
+            	if ("夜班".equals(classType))  {
+            		sqlfilter.append(" and m.expendOrderID REGEXP 'BB*YB' ");
+                }
+            	if ("全部".equals(classType))  {
+                }
+            	
+            }else {
+            	if ("白班".equals(classType)) {
+            		sqlfilter.append(" and m.expendOrderID REGEXP 'BB' ");
+                } 
+            	if ("夜班".equals(classType))  {
+            		sqlfilter.append(" and m.expendOrderID REGEXP 'YB' ");
+                }
+            	if ("全部".equals(classType))  {
+                }
+            }
+          
+            List<LinkedHashMap<Object, Object>> workorderTemplateList = workOrderTemplateMapper.workOrderPutIntoManage(sqlfilter.toString());
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSONString(workorderTemplateList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+	}
 }
