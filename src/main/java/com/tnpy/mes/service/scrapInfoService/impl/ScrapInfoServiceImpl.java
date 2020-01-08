@@ -185,7 +185,7 @@ public class ScrapInfoServiceImpl implements IScrapInfoService {
             Map<String, String> jsonMap = JSONObject.toJavaObject(jso, Map.class);
 
             if (ConfigParamEnum.BasicProcessEnum.TBProcessID.getName().equals(jsonMap.get("processID"))) {
-                if (jsonMap.get("operateType") != null && "报废".equals(jsonMap.get("operateType"))) {
+                if (jsonMap.get("operateType") != null && !"报废".equals(jsonMap.get("operateType"))) {
                     result.setMessage("涂板工序在此只能添加报废，不良请在物料红冲页面登记，谢谢合作！");
                     return result;
                 }
