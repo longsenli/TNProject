@@ -58,4 +58,6 @@ public interface IWorkOrderService {
     public TNPYResponse getWorkorderTemplate( String plantID,String processID,String lineID );
 
     public TNPYResponse addWorkorderTemplateBatch( String orderForepart ,String orderMidpiece ,String orderPosterior ,String creator ,String recordJsonString );
+    
+    public TNPYResponse workOrderPutIntoManage(String plantID,String processID,String lineID,String startTime, String endTime, String classType);
 }
