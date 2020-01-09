@@ -200,7 +200,7 @@ public class OrderController {
     
     
     @RequestMapping(value = "/workOrderPutIntoManage")
-    public TNPYResponse getTMPProductionWageInfo(String plantID,String processID,String lineID,String startTime, String endTime ,String classType)
+    public TNPYResponse workOrderPutIntoManage(String plantID,String processID,String lineID,String startTime, String endTime ,String classType)
     {
         return  workOrderService.workOrderPutIntoManage(plantID,processID,lineID,startTime, endTime,classType);
     }
