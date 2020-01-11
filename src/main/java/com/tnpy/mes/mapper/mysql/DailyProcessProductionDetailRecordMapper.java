@@ -30,6 +30,9 @@ public interface DailyProcessProductionDetailRecordMapper {
     @Select("select * from tb_dailyprocessproductiondetailrecord where plantID = #{plantID} and processID = #{processID} and dayTime =#{dayTime} and classType =#{classType} order by productionMaterialName")
     List<Map<Object, Object>> getDailyProcessProductionDetailRecord(String plantID, String processID, String dayTime, String classType);
 
+    @Select("select * from tb_dailyprocessproductiondetailrecord where plantID = #{plantID} and processID = #{processID} and dayTime =#{dayTime} and classType =#{classType} order by reveiveType asc, productionMaterialName")
+    List<Map<Object, Object>> getBBDailyProcessProductionDetailRecord(String plantID, String processID, String dayTime, String classType);
+
 
     @Select("select productionMaterialName,productionMaterialID,sum(productionNumber) as productionNumber,sum(planDailyProduction) as planDailyProduction,\n" +
             " sum(if(classType = '夜班',currentInventory,0)) as currentInventory,round(ifnull(sum(productionNumber) /sum(planDailyProduction),1) *100,2) as ratioFinish,\n" +
@@ -79,13 +82,19 @@ public interface DailyProcessProductionDetailRecordMapper {
             " sum(if(classType = '白班',currentInventory,0)) as currentInventory, sum(if(classType = '夜班',inventoryTransition1,0)) as inventoryTransition1,\n" +
             " round(ifnull(sum(productionNumber) /sum(planDailyProduction),1) *100,2) as ratioFinish ,\n" +
             "   sum(grantNumber) as grantNumber, sum(grantNumberTransition1) as grantNumberTransition1, sum(grantNumberTransition2) as grantNumberTransition2, sum(grantNumberTransition3) as grantNumberTransition3 \n" +
-            " from tb_dailyprocessproductiondetailrecord where plantID = #{plantID} and processID = #{processID} and dayTime = #{dayTime} and productionMaterialName is not null  \n" +
+            " from tb_dailyprocessproductiondetailrecord where plantID = #{plantID} and processID = #{processID} and dayTime = #{dayTime} and reveiveType is null and productionMaterialName is not null  \n" +
             " group by productionMaterialID order by productionMaterialName  ")
     List<Map<Object, Object>> getBBDailyProductionAllDayRecord(String plantID, String processID, String dayTime, String classType);
 
     @Select("select receiveMaterialID,receiveMaterialName,\n" +
            " sum(usedNumber) as usedNumber ,sum(scrapNumber) as scrapNumber,sum(weightNumber) as weightNumber   " +
-            "from tb_dailyprocessproductiondetailrecord where plantID = #{plantID} and processID = #{processID} and dayTime = #{dayTime} and receiveMaterialName is not null " +
+            "from tb_dailyprocessproductiondetailrecord where plantID = #{plantID} and processID = #{processID} and dayTime = #{dayTime} and reveiveType is null and receiveMaterialName is not null " +
             " group by receiveMaterialID order by receiveMaterialName")
     List<Map<Object, Object>> getBBDailyUsedInfoAllDayRecord(String plantID, String processID, String dayTime, String classType);
+
+    @Select("select productionMaterialID,productionMaterialName,receiveMaterialID,receiveMaterialName,\n" +
+            " sum(usedNumber) as usedNumber    " +
+            "from tb_dailyprocessproductiondetailrecord where plantID = #{plantID} and processID = #{processID} and dayTime = #{dayTime} and reveiveType = 'BBYLMX' and receiveMaterialName is not null " +
+            " group by productionMaterialName,receiveMaterialID order by productionMaterialName,receiveMaterialName")
+    List<Map<Object, Object>> getBBDailyUsedToInputAllDayRecord(String plantID, String processID, String dayTime, String classType);
 }

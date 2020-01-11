@@ -134,8 +134,10 @@ public interface DailyProductionDetailRecordMapper {
             " FROM tb_materialrecord where outputPlantID = #{plantID} and outputProcessID=  #{processID} and expendOrderID like ${orderString}  group by outputPlantID,outputProcessID,materialID order by materialNameInfo  ")
     List<Map<Object,Object>> getTMPDailyUsedInfoSummaryRecord(String plantID, String processID,@Param("orderString") String orderString);
 
-    @Select("SELECT outputPlantID as plantID,outputProcessID as processID,materialID,materialNameInfo as materialName,sum(number)   as usedNumber \n" +
-            " FROM tb_materialrecord where outputPlantID = #{plantID} and outputProcessID=  #{processID} and expendOrderID like ${orderString}  group by materialID order by materialNameInfo  ")
+    @Select("select a.materialID,a.materialName,sum(a.usedNumber) as usedNumber,b.materialID as inputMaterialID from ( \n" +
+            "SELECT outputPlantID as plantID,outputProcessID as processID,materialID,materialNameInfo as materialName,sum(number)   as usedNumber ,expendOrderID\n" +
+            " FROM tb_materialrecord where outputPlantID = #{plantID} and outputProcessID= #{processID} and expendOrderID like ${orderString}  group by materialID,expendOrderID \n" +
+            " ) a left join tb_workorder b on a.expendOrderID = b.id group by b.materialID,a.materialID order by b.materialID,a.materialName ")
     List<Map<Object,Object>> getTMPBBDailyUsedInfoSummaryRecord(String plantID, String processID,@Param("orderString") String orderString);
 
     @Select(" select plantID,processID,materialID,materialName,sum(materialNumber) as scrapNumber ,sum(if(inputPlantID='1001',materialNumber,0)) as scrapNumberTransition1, \n" +
