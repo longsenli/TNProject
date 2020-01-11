@@ -1067,6 +1067,7 @@ public class DashboardServiceImpl implements IDashboardService {
 			StringBuilder stb4 = new StringBuilder();
 			StringBuilder stmp31 = new StringBuilder();
 			StringBuilder stmp32 = new StringBuilder();
+			StringBuilder stb5 = new StringBuilder();
 			for (String fdate : rangdate) {
 				if (fdate.equals(rangdate.get(rangdate.size() - 1))) {
 					stb1.append("convert( sum( CASE d.dayTime WHEN '" + fdate + "' THEN d.shelfProduction ELSE 0 END ), char) as  '" + fdate+ "日' ,");
@@ -1092,6 +1093,8 @@ public class DashboardServiceImpl implements IDashboardService {
 					
 					stmp31.append("tmp3.`" + fdate + "日`,");
 					stmp32.append("tmp3.`" + fdate + "日`");
+					
+					stb5.append(" sum(prototal.`" + fdate + "日`), ");
 				} else {
 					stb1.append("convert( sum( CASE d.dayTime WHEN '" + fdate + "' THEN d.shelfProduction ELSE 0 END ), char) as  '" + fdate+ "日', ");
 					stb2.append("convert ( MAX( CASE	"
@@ -1118,8 +1121,20 @@ public class DashboardServiceImpl implements IDashboardService {
 					
 					stmp31.append("tmp3.`" + fdate + "日` , ");
 					stmp32.append("tmp3.`" + fdate + "日` +");
+					
+					stb5.append(" sum(prototal.`" + fdate + "日`), ");
 				}
 			}
+			StringBuilder prototal = new StringBuilder();
+			
+			
+			prototal.append(" ( select prototal.`厂区`,prototal.`工序`,prototal.`姓名`,prototal.`班组`,prototal.`产量确认人(班长)`,'合计' as'型号','2' AS orderflag, " + stb5.toString());
+			prototal.append(" '' , '' , '' , '' , '' from ");
+			prototal.append(" (\r\n" + " SELECT\r\n" + " s.`name` AS '厂区',\r\n" + " p.`name` AS '工序',\r\n" + " d.staffName AS '姓名',\r\n" + "(CASE d.extd2 WHEN 'A' THEN 'A 班' WHEN 'B' THEN 'B 班' ELSE '无' END) as '班组' ,\r\n"+ " d.verifierName AS '产量确认人(班长)',\r\n" + " d.materialName AS '型号', '1' as orderflag, \r\n" + stb1+ " CONVERT( sum(d.shelfProduction) , char) AS '合计', d.univalence AS '工价', " + "round( sum(d.shelfProduction) * d.univalence, 2) AS '各型号工资'," + "tmp2.`总产量`,\r\n" + " tmp2.`合计工资`\r\n" + " FROM\r\n" + " tb_dailyproductionandwagedetail d\r\n" + " LEFT JOIN sys_industrialplant s ON d.plantID = s.id\r\n" + " LEFT JOIN sys_productionprocess p ON d.processID = p.id\r\n" + " LEFT JOIN (\r\n" + " SELECT\r\n" + " *, ROUND( SUM(tmp.sshelfProduction), 2) AS '总产量',\r\n" + " ROUND( SUM(tmp.sushelfProduction), 2) AS '合计工资'\r\n" + " FROM\r\n" + " (\r\n" + " SELECT\r\n" + " td.dayTime,\r\n" + " td.staffID,\r\n" + " td.staffName,\r\n" + " td.extd2, \r\n" + " sum(td.shelfProduction) AS sshelfProduction,\r\n" + " ROUND(\r\n" + " sum(td.shelfProduction) * td.univalence,\r\n" + " 2\r\n" + ") AS sushelfProduction\r\n" + " FROM\r\n" + " tb_dailyproductionandwagedetail td\r\n" + " WHERE\r\n" + " 1 = 1\r\n" ); if (!"-1".equals(plantID)) { prototal.append( " and td.plantID = '" + plantID + "' "); } if (!"-1".equals(processID)) { prototal.append(" and td.processID = '" + processID + "' "); } prototal .append( " AND td.daytime >= DATE_FORMAT('" + startTime + "', '%Y-%m-%d')" + " AND td.daytime <= DATE_FORMAT('" + endTime + "', '%Y-%m-%d') " + " GROUP BY\r\n" + " td.staffID,\r\n" + " td.extd2, \r\n" + " td.materialID\r\n" + " ) tmp\r\n" + " GROUP BY\r\n" + " tmp.staffID,\r\n" + " tmp.extd2 \r\n" + ") tmp2 ON d.staffID = tmp2.staffID and d.dayTime = tmp2.dayTime " + " WHERE\r\n" + " 1 = 1\r\n" ); if (!"-1".equals(plantID)) { prototal .append(" and d.plantID = '" + plantID + "' "); } if (!"-1".equals(processID)) { prototal .append(" and d.processID = '" + processID + "' "); } prototal.append( " AND d.daytime >= DATE_FORMAT('" + startTime + "', '%Y-%m-%d')" + " AND d.daytime <= DATE_FORMAT('" + endTime + "', '%Y-%m-%d') " + " GROUP BY\r\n" + " d.plantID,\r\n" + " d.processID,\r\n" + " d.staffID,\r\n" + " d.staffName,\r\n" + " d.extd2, \r\n" + " d.materialID\r\n" + " )\r\n");
+			prototal.append("  AS  prototal group by prototal.`姓名`,prototal.`班组` )");
+			
+//			System.out.println(prototal.toString());
+			
 			StringBuilder sqlfilter = new StringBuilder();
 					
 			sqlfilter.append("SELECT\r\n" + 
@@ -1146,13 +1161,15 @@ public class DashboardServiceImpl implements IDashboardService {
 					"			LEFT JOIN sys_productionprocess p ON d.processID = p.id\r\n"
 					+ " LEFT JOIN (\r\n" + 
 					"	SELECT\r\n" + 
-					"		*, SUM(tmp.sshelfProduction) AS '总产量',\r\n" + 
-					"		SUM(tmp.sushelfProduction) AS '合计工资'\r\n" + 
+					"		*, ROUND( SUM(tmp.sshelfProduction), 2) AS '总产量',\r\n" + 
+					"		ROUND( SUM(tmp.sushelfProduction), 2)  AS '合计工资'\r\n" + 
 					"	FROM\r\n" + 
 					"		(\r\n" + 
 					"			SELECT\r\n" + 
+					"				td.dayTime,\r\n" + 
 					"				td.staffID,\r\n" + 
 					"				td.staffName,\r\n" + 
+					"				td.extd2, \r\n" +
 					"				sum(td.shelfProduction) AS sshelfProduction,\r\n" + 
 					"				ROUND(\r\n" + 
 					"					sum(td.shelfProduction) * td.univalence,\r\n" + 
@@ -1173,11 +1190,13 @@ public class DashboardServiceImpl implements IDashboardService {
 
 					"			GROUP BY\r\n" + 
 					"				td.staffID,\r\n" + 
+					"				td.extd2, \r\n" +
 					"				td.materialID\r\n" + 
 					"		) tmp\r\n" + 
 					"	GROUP BY\r\n" + 
-					"		tmp.staffID\r\n" + 
-					") tmp2 ON d.staffID = tmp2.staffID" + 
+					"		tmp.staffID,\r\n" + 
+					"		tmp.extd2 \r\n" +
+					") tmp2 ON d.staffID = tmp2.staffID  and d.dayTime = tmp2.dayTime " + 
 					"			WHERE\r\n" + 
 					"				1 = 1\r\n" );
 					if (!"-1".equals(plantID)) {
@@ -1195,8 +1214,11 @@ public class DashboardServiceImpl implements IDashboardService {
 					"				d.processID,\r\n" + 
 					"				d.staffID,\r\n" + 
 					"				d.staffName,\r\n" + 
+					"				d.extd2, \r\n" +
 					"				d.materialID\r\n" + 
 					"		)\r\n" + 
+					"		UNION ALL\r\n" + prototal.toString() +
+					
 					"		UNION ALL\r\n" + 
 					"			(\r\n" + 
 //					"				 select * from "
@@ -1236,8 +1258,8 @@ public class DashboardServiceImpl implements IDashboardService {
 					"			t.plantID,\r\n" + 
 					"			t.processID,\r\n" + 
 					"			t.staffID,\r\n" + 
-					"			t.staffName\r\n  " + 
-					
+					"			t.staffName,\r\n  " + 
+					"			t.extd2\r\n  " + 
 					"			) union all "
 					+ "( SELECT\r\n" + 
 					"					s.`name` AS '厂区',\r\n" + 
@@ -1269,13 +1291,14 @@ public class DashboardServiceImpl implements IDashboardService {
 					"			t.plantID,\r\n" + 
 					"			t.processID,\r\n" + 
 					"			t.staffID,\r\n" + 
-					"			t.staffName\r\n" +
+					"			t.staffName,\r\n" +
+					"			t.extd2 \r\n" +
 					")  ) tmp3)\r\n" + 
 					"	) rsall\r\n" +
 //					"	) rsall where rsall.`姓名`='王自鑫' or rsall.`姓名`='韩立重' or rsall.`姓名`='靳业雷' or rsall.`姓名`='郭振垒'     \r\n" +
 					"ORDER BY\r\n" + 
 //					"rsall.`班别` desc,"
-					 "rsall.`班组` ASC , rsall.`姓名` desc ,rsall.orderflag asc");
+					 "rsall.`班组` ASC , rsall.`姓名` desc ,  rsall.orderflag asc");
 //					"	rsall.`工序`,\r\n" + 
 //					"	rsall.`班别` ,rsall.`产量确认人(班长)` desc, rsall.`姓名` desc ,rsall.orderflag asc");
 			//System.out.println(sqlfilter);
@@ -1525,15 +1548,15 @@ public class DashboardServiceImpl implements IDashboardService {
 				
 //				List<LinkedHashMap<Object, Object>> rlnmapList = dashboardMapper.queryDef(sqlfilter.toString());
 				
-				for(int i=0; i<rlnmapList.size(); i++) {
-					rlnmapList.get(i).get(i);
-					
-					
-					
-					
-					
-				}
-				System.out.println(rlnmapList.get(0).size());
+//				for(int i=0; i<rlnmapList.size(); i++) {
+//					rlnmapList.get(i).get(i);
+//					
+//					
+//					
+//					
+//					
+//				}
+//				System.out.println(rlnmapList.get(0).size());
 				
 				
 				
