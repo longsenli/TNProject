@@ -164,11 +164,8 @@ public class LoginController {
 		Date date = new Date();//取时间
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(date);
-		if (calendar.get(Calendar.HOUR_OF_DAY) < 6) {
-			calendar.add(Calendar.DATE, -1);
-			date = calendar.getTime();   //这个时间就是日期往后推一天的结果
-		}
-
+		calendar.add(Calendar.DATE, -10);
+		date = calendar.getTime();   //这个时间就是日期往后推一天的结果
 		StaffAttendanceDetail staffAttendanceDetail = staffAttendanceDetailMapper.selectCurrentUsableRecord(username,dateFormat.format(date));
 
 		if(staffAttendanceDetail != null)
@@ -177,7 +174,6 @@ public class LoginController {
 			response.setMessage(myUser.getName() + " ### " + myUser.getRoleid() + " ### " + staffAttendanceDetail.getPlantid()
 					+ " ### " +  staffAttendanceDetail.getProcessid() + " ### " + staffAttendanceDetail.getLineid() + "###" + staffAttendanceDetail.getWorklocationid()
 					+ "###" + staffAttendanceDetail.getExtd1()+ "###" + staffAttendanceDetail.getExtd2());
-
 		}
 		else
 		{
@@ -256,10 +252,8 @@ public class LoginController {
 		Date date = new Date();//取时间
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(date);
-		if (calendar.get(Calendar.HOUR_OF_DAY) < 6) {
-			calendar.add(Calendar.DATE, -1);
-			date = calendar.getTime();   //这个时间就是日期往后推一天的结果
-		}
+		calendar.add(Calendar.DATE, -10);
+		date = calendar.getTime();   //这个时间就是日期往后推一天的结果
 
 		StaffAttendanceDetail staffAttendanceDetail = staffAttendanceDetailMapper.selectCurrentUsableRecord(username,dateFormat.format(date));
 
@@ -268,7 +262,7 @@ public class LoginController {
 			response.setData("1");  //表示已经扫过工作位置
 			response.setMessage(myUser.getName() + " ### " + myUser.getRoleid() + " ### " + staffAttendanceDetail.getPlantid()
 					+ " ### " +  staffAttendanceDetail.getProcessid() + " ### " + staffAttendanceDetail.getLineid() + "###" + staffAttendanceDetail.getWorklocationid()
-					+ "###" + staffAttendanceDetail.getExtd1());
+					+ "###" + staffAttendanceDetail.getExtd1()+ "###" + staffAttendanceDetail.getExtd2());
 		}
 		else
 		{

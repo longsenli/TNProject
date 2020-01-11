@@ -42,7 +42,7 @@ public interface StaffAttendanceDetailMapper {
     @Update("update tb_staffattendancedetail set verifyTime = now(),verifierName = #{staffName},verifierID = #{staffID} where verifierName is null and id in (${recordIDList} )")
     int updateConfirmStaffGoAttendanceInfo(String staffID,String staffName,@Param("recordIDList") String recordIDList);
 
-    @Select("select * from tb_staffattendancedetail where staffID = #{staffID} and dayTime >= #{timeString} and goTime is null order by comeTime desc limit 1")
+    @Select("select * from tb_staffattendancedetail where staffID = #{staffID} and dayTime >= #{timeString} order by comeTime desc limit 1")
     StaffAttendanceDetail selectCurrentUsableRecord(String staffID,String timeString);
 
     @Select("select * from tb_staffattendancedetail where staffID = #{staffID} and dayTime >= #{startTime} and dayTime <= #{endTime} and verifierName is not null order by dayTime ")

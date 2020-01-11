@@ -134,6 +134,10 @@ public interface DailyProductionDetailRecordMapper {
             " FROM tb_materialrecord where outputPlantID = #{plantID} and outputProcessID=  #{processID} and expendOrderID like ${orderString}  group by outputPlantID,outputProcessID,materialID order by materialNameInfo  ")
     List<Map<Object,Object>> getTMPDailyUsedInfoSummaryRecord(String plantID, String processID,@Param("orderString") String orderString);
 
+    @Select("SELECT outputPlantID as plantID,outputProcessID as processID,materialID,materialNameInfo as materialName,sum(number)   as usedNumber \n" +
+            " FROM tb_materialrecord where outputPlantID = #{plantID} and outputProcessID=  #{processID} and expendOrderID like ${orderString}  group by materialID order by materialNameInfo  ")
+    List<Map<Object,Object>> getTMPBBDailyUsedInfoSummaryRecord(String plantID, String processID,@Param("orderString") String orderString);
+
     @Select(" select plantID,processID,materialID,materialName,sum(materialNumber) as scrapNumber ,sum(if(inputPlantID='1001',materialNumber,0)) as scrapNumberTransition1, \n" +
             "sum(if(inputPlantID='1002',materialNumber,0)) as scrapNumberTransition2, sum(if(inputPlantID='1003',materialNumber,0)) as scrapNumberTransition3,0 as weightNumber\n" +
             "from tb_unqualifiedmaterialreturn where inputPlantID = #{plantID} and inputProcessID = #{processID} and status = '1' and returnTime > #{startTime} and  returnTime < #{endTime} group by materialID ")

@@ -1414,7 +1414,6 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         i++;
                     }
                 }
-
                 for(int i =0;i<materialName.size(); )
                 {
                     if(materialName.get(i).contains("null"))
