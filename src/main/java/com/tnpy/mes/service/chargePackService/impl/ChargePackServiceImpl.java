@@ -379,10 +379,10 @@ public class ChargePackServiceImpl implements IChargePackService {
                     changeTidyBatteryRecord.setPulloffnum(tidyBatteryRecord.getPulloffnum() -chargingRackRecord.getRealnumber());
                     
                     
-                    chargingRackRecord.setPulloffdate(new Date(0));
-                	chargingRackRecord.setPulloffstaffid("");
-                	chargingRackRecord.setPulloffstaffname("");
-                    chargingRackRecordMapper.updateByPrimaryKeySelective(chargingRackRecord);
+                    chargingRackRecord.setPulloffdate(null);
+                	chargingRackRecord.setPulloffstaffid(null);
+                	chargingRackRecord.setPulloffstaffname(null);
+                    chargingRackRecordMapper.updateByPrimaryKey(chargingRackRecord);
                     tidyBatteryRecordMapper.updateByPrimaryKeySelective(changeTidyBatteryRecord);
                     result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 	result.setMessage("取消下架成功");
