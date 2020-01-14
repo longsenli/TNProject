@@ -75,9 +75,8 @@ public interface MaterialSecondaryInventoryRecordMapper {
             " SELECT materialID,plantID, 0 as currentNum,0 as gainNum, 0 as expendNum,sum(value) as outNum \n" +
             " FROM tb_materialscraprecord where  updateTime >#{startTime}  and updateTime< #{endTime} and processID = #{processID} group by plantID,materialID\n" +
             "   ) union all (\n" +
-            "  select n.materialID,n.plantID, 0 as currentNum,0 as gainNum,m.expendNum , 0 as outNum from (\n" +
-            " select left(JQID, length(JQID) - 3) as orderID ,count(1)  as expendNum  from tb_plasticusedrecord \n" +
-            " where usedOrderID like #{dayString} group by left(JQID, length(JQID) - 3) ) m left join tb_workorder n on m.orderID = n.id group by n.materialID,n.plantID" +
+            "  SELECT materialID,outputPlantID as plantID,0 as currentNum,0 as gainNum, sum(number) as expendNum,0 as outNum  FROM tb_materialrecord \n" +
+            "where expendOrderID like #{dayString}  and outputProcessID = #{processID} group by materialID,outputPlantID " +
             "   ) \n" +
             " ) a  group by plantID,materialID ) b where currentNum + gainNum + expendNum+outNum <> 0 ")
     int insertZHQDSecondaryInventory( String startTime,String endTime,String dayString,String processID,String lastProcessID,String lastInventoryTime);

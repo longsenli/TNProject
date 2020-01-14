@@ -1,6 +1,7 @@
 package com.tnpy.mes.service.PlasticService.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.tnpy.common.Enum.ConfigParamEnum;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
 import com.tnpy.mes.mapper.mysql.GrantMaterialRecordMapper;
@@ -160,6 +161,11 @@ public class PlasticServiceImpl  implements IPlasticService {
 
                 grantResult.add(mapResult);
             }
+            if(!StatusEnum.InOutStatus.Output.getName().equals(materialRecord.getInorout()))
+            {
+                materialRecordMapper.updateJQUsedInfo(materialRecord.getId(),plantID, ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName(),lineID,locationID,orderIDZH,userID,userName);
+            }
+
             materialRecordMapper.updateJQNumber(materialRecord.getId(),(remainNumber - currentUsedNumber) +"");
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date date = new Date();//取时间

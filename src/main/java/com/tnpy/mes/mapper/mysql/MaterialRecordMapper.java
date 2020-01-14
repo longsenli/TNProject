@@ -245,6 +245,10 @@ public interface MaterialRecordMapper {
     @Update("update tb_materialrecord set inputWorkLocationID = #{numberRemain} where id =#{id} ")
     int updateJQNumber(String id,String numberRemain );
 
+    @Update("update tb_materialrecord set expendOrderID = #{outOrderID},inOrOut='2',outputTime=now(),outputer=#{outStaffName}," +
+            " outputPlantID = #{outPlantID} , outputProcessID = #{processID} ,outputLineID = #{outLineID},outputWorkLocationID=#{outLocationID},outputerID=#{outStaffID} where id =#{id} ")
+    int updateJQUsedInfo(String id,String outPlantID,String processID,String outLineID,String outLocationID,String outOrderID,String outStaffID,String outStaffName );
+
     @Select("select count(1) from sys_usedmaterialnumberlimit where plantID = #{plantID} and processID = #{processID}  and status = '1' ")
     int usedMaterialNumberLimitFlag(String plantID,String processID );
 }
