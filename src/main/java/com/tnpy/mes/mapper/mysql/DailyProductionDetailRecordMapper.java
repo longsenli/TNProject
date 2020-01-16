@@ -105,24 +105,22 @@ public interface DailyProductionDetailRecordMapper {
             "    )  a group by plantID,processID,materialID order by materialName ")
     List<Map<Object,Object>> getZHQDTMPDailyProductionSummaryRecord(String plantID, String processID,@Param("orderString") String orderString,String dayString,String lastDay,String lastClassType);
 
-    @Select("select  plantID,processID,materialID,materialName,ifnull(sum(productionNumber),0) as productionNumber,ifnull(sum(planDailyProduction),0) as planDailyProduction ,sum(ratioFinish) as ratioFinish,ifnull(sum(lastInventory),0) as lastInventory\n" +
-            " from ( ( select a.plantID,a.processID,a.materialID,a.materialName,a.productionNumber,b.planDailyProduction,ROUND(a.productionNumber * 100 /ifnull(b.planDailyProduction,1),2) as ratioFinish ,0 as lastInventory from (  \n" +
-            " select plantID,#{processID}as processID,materialID,materialName,sum(productionNumber) as productionNumber from tb_chargingrackrecord \n" +
-            "where plantID =#{plantID} and putonDate = #{dayString} and status  = '1' group by materialName" +
-            " ) a left join ( select materialID,ROUND(planDailyProduction/2 ) as planDailyProduction from tb_planproductionrecord where  plantID =  #{plantID} and processID = #{processID} and planMonth = #{dayString} ) \n" +
-            "    b on a.materialID  = b.materialID order by materialName )\n" +
-            "    union all\n" +
-            "   ( select plantID,processID,productionMaterialID,productionMaterialName,0 as productionNumber,0 as planDailyProduction,0 as ratioFinish,ifnull(currentInventory,0) as lastInventory  from tb_dailyprocessproductiondetailrecord\n" +
-            "    where plantID = #{plantID} and processID =  #{processID}  and dayTime = #{lastDay} and classType = #{lastClassType} and  productionMaterialID is not null )\n" +
+    @Select("select  plantID,processID,materialID,materialName,materialType,ifnull(sum(productionNumber),0) as productionNumber,ifnull(sum(planDailyProduction),0) as planDailyProduction ,sum(ratioFinish) as ratioFinish \n" +
+            " from ( ( select a.plantID,a.processID,a.materialID,a.materialName,a.materialType,a.productionNumber,b.planDailyProduction,ROUND(a.productionNumber * 100 /ifnull(b.planDailyProduction,1),2) as ratioFinish ,0 as lastInventory from (  \n" +
+            " select plantID,#{processID}as processID,materialID,materialName,materialType,sum(productionNumber) as productionNumber from tb_chargingrackrecord \n" +
+            "where plantID =#{plantID} and putonDate = #{dayString} and status  = '1' group by materialName,materialType" +
+            " ) a left join ( select materialID,ROUND(max(planDailyProduction)/2 ) as planDailyProduction,'1' as materialType from tb_planproductionrecord " +
+            " where  plantID =  #{plantID} and processID = #{JSProcessID} and planMonth = #{dayString} group by materialID  ) \n" +
+            "    b on a.materialID  = b.materialID  and a.materialType = b.materialType order by materialName )\n" +
             "    )  a group by plantID,processID,materialID order by materialName ")
-    List<Map<Object,Object>> getCDTMPDailyProductionSummaryRecord(String plantID, String processID,@Param("orderString") String orderString,String dayString,String lastDay,String lastClassType);
+    List<Map<Object,Object>> getCDTMPDailyProductionSummaryRecord(String plantID, String processID,@Param("orderString") String orderString,String dayString,String JSProcessID);
 
 
     @Select("select  plantID,processID,materialID,materialName,ifnull(sum(productionNumber),0) as productionNumber,sum(planDailyProduction) as planDailyProduction ,sum(ratioFinish) as ratioFinish,ifnull(sum(lastInventory),0) as lastInventory\n" +
             " from ( ( select a.plantID,a.processID,a.materialID,a.materialName,a.productionNumber,b.planDailyProduction,ROUND(a.productionNumber * 100 /ifnull(b.planDailyProduction,1),2) as ratioFinish ,0 as lastInventory from (  \n" +
             "  SELECT inputPlantID as plantID,inputProcessID as processID  ,materialID,materialNameInfo as materialName,sum(number)   as productionNumber  \n" +
             "         FROM tb_materialrecord  where inputPlantID = #{plantID} and inputProcessID=  #{processID} and orderID like ${orderString} and status = '1' group by inputPlantID,inputProcessID,materialID \n" +
-            " ) a left join ( select materialID,ROUND(planDailyProduction/2 ) as planDailyProduction from tb_planproductionrecord where  plantID =  #{plantID} and processID = #{processID} and planMonth = #{dayString} ) \n" +
+            " ) a left join ( select materialID,ROUND(max(planDailyProduction)/2 ) as planDailyProduction from tb_planproductionrecord where  plantID =  #{plantID} and processID = #{processID} and planMonth = #{dayString} group by materialID ) \n" +
             "    b on a.materialID  = b.materialID order by materialName )\n" +
             "    union all\n" +
             "   ( select plantID,processID,productionMaterialID,productionMaterialName,0 as productionNumber,0 as planDailyProduction,0 as ratioFinish,ifnull(currentInventory,0) as lastInventory  from tb_dailyprocessproductiondetailrecord\n" +
@@ -188,17 +186,21 @@ public interface DailyProductionDetailRecordMapper {
             " and grantTime > #{startTime} and grantTime < #{endTime} group by batteryType ) a left join sys_material b on a.materialID = b.id  order by materialName ")
     List<Map<Object,Object>> getTMPDailyGrantInfoSummaryRecord(String plantID, String processID,String startTime,String endTime);
 
-    @Select(" select plantID,#{processID} as processID,materialID ,materialName ,sum(realNumber + repairNumber) as grantNumber from tb_chargingrackrecord \n" +
-            "where plantID = #{plantID} and pulloffDate > #{startTime} and pulloffDate < #{endTime} and status  = '1' group by materialName order by  materialName")
+    @Select(" select plantID,#{processID} as processID,materialID ,materialName ,materialType,sum(realNumber + repairNumber) as grantNumber from tb_chargingrackrecord \n" +
+            "where plantID = #{plantID} and pulloffDate > #{startTime} and pulloffDate < #{endTime} and status  = '1' group by materialName,materialType order by  materialName")
     List<Map<Object,Object>> getCDTMPDailyGrantInfoSummaryRecord(String plantID, String processID,String startTime,String endTime);
 
     @Select( "select ifnull(currentInventory,0) as currentInventory ,receiveMaterialID as materialID,receiveMaterialName as materialName from tb_dailyprocessproductiondetailrecord where plantID = #{plantID}" +
             " and processID = #{processID} and dayTime = #{dayTime} and classType = #{lastClassType} and receiveMaterialID is not null  \n" )
     List<Map<Object,Object>> getTMPTBOnlineMterialSummaryRecord(String plantID, String processID,String dayTime,String lastClassType);
 
-    @Select( "select ifnull(usedNumberTransition2,0) as currentInventory ,receiveMaterialID as materialID,receiveMaterialName as materialName from tb_dailyprocessproductiondetailrecord where plantID = #{plantID}" +
+    @Select( "select ifnull(usedNumberTransition2 ,0) as currentInventory ,receiveMaterialID as materialID,receiveMaterialName as materialName from tb_dailyprocessproductiondetailrecord where plantID = #{plantID}" +
             " and processID = #{processID} and dayTime = #{dayTime} and classType = #{lastClassType} and receiveMaterialID is not null  \n" )
     List<Map<Object,Object>> getTMPFBOnlineMterialSummaryRecord(String plantID, String processID,String dayTime,String lastClassType);
+
+    @Select( "select ifnull(inventoryTransition1,0) as currentInventory ,receiveMaterialID as materialID,receiveMaterialName as materialName from tb_dailyprocessproductiondetailrecord where plantID = #{plantID}" +
+            " and processID = #{processID} and dayTime = #{dayTime} and classType = #{lastClassType} and receiveMaterialID is not null  \n" )
+    List<Map<Object,Object>> getTMPJSSecondInventoryRecord(String plantID, String processID,String dayTime,String lastClassType);
 
     @Select( "select m.*,n.name as materialName from ( select materialID,sum(reinputNum) as reinputNum,sum(newReturn) as newReturn,sum(onlineNum) as onlineNum from ( \n" +
             "(SELECT materialID, sum(if(status ='3',materialNum,0) ) as reinputNum, sum(if(status ='3', 0 ,materialNum)) as newReturn ,0 as onlineNum FROM tb_onlinematerialrecord\n" +

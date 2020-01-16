@@ -701,11 +701,20 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             if (ConfigParamEnum.BasicProcessEnum.ZHQDProcessID.getName().equals(processID)) {
                 dailyProductionSummaryRecordTMP = dailyProductionDetailRecordMapper.getZHQDTMPDailyProductionSummaryRecord(plantID, processID, orderString, dayTime, lastDay, lastClassType);
             } else if (ConfigParamEnum.BasicProcessEnum.CDProcessID.getName().equals(processID)) {
-                dailyProductionSummaryRecordTMP = dailyProductionDetailRecordMapper.getCDTMPDailyProductionSummaryRecord(plantID, processID, orderString, dayTime, lastDay, lastClassType);
+                dailyProductionSummaryRecordTMP = dailyProductionDetailRecordMapper.getCDTMPDailyProductionSummaryRecord(plantID, processID, orderString, dayTime,ConfigParamEnum.BasicProcessEnum.JSProcessID.getName());
             } else {
                 dailyProductionSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyProductionSummaryRecord(plantID, processID, orderString, dayTime, lastDay, lastClassType);
             }
-            List<Map<Object, Object>> dailyUsedInfoSummaryRecordTMP  = dailyProductionDetailRecordMapper.getTMPDailyUsedInfoSummaryRecord(plantID, processID, orderString);
+            List<Map<Object, Object>> dailyUsedInfoSummaryRecordTMP;
+            if (ConfigParamEnum.BasicProcessEnum.CDProcessID.getName().equals(processID)) {
+                dailyUsedInfoSummaryRecordTMP  = dailyProductionDetailRecordMapper.getTMPDailyUsedInfoSummaryRecord(plantID, ConfigParamEnum.BasicProcessEnum.JSProcessID.getName(), orderString);
+            }
+            else
+            {
+                dailyUsedInfoSummaryRecordTMP  = dailyProductionDetailRecordMapper.getTMPDailyUsedInfoSummaryRecord(plantID, processID, orderString);
+            }
+
+
 //            if (ConfigParamEnum.BasicProcessEnum.BBProcessID.getName().equals(processID)) {
 //                dailyUsedInfoSummaryRecordTMP  = dailyProductionDetailRecordMapper.getTMPBBDailyUsedInfoSummaryRecord(plantID, processID, orderString);
 //            }
@@ -725,6 +734,8 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                 dailyRecieveInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyRecieveInfoSummaryRecord(plantID, processID, startTime, endTime);
             } else   if (ConfigParamEnum.BasicProcessEnum.FBProcessID.getName().equals(processID)) {
                 dailyRecieveInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getFBTMPDailyRecieveInfoSummaryRecord(plantID, ConfigParamEnum.BasicProcessEnum.TBProcessID.getName(), startTime, endTime);
+            }  else   if (ConfigParamEnum.BasicProcessEnum.CDProcessID.getName().equals(processID)) {
+                dailyRecieveInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyRecieveInfoSummaryRecord(plantID, ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName(), startTime.split(" ")[0], startTime.split(" ")[0] + " 23:59");
             } else {
                 dailyRecieveInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyRecieveInfoSummaryRecord(plantID, lastProcessID.get(0), startTime, endTime);
             }
@@ -732,9 +743,17 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
             List<Map<Object, Object>> dailyGrantInfoSummaryRecordTMP;
             if (ConfigParamEnum.BasicProcessEnum.CDProcessID.getName().equals(processID)) {
                 dailyGrantInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getCDTMPDailyGrantInfoSummaryRecord(plantID, processID, startTime.split(" ")[0], endTime.split(" ")[0] + " 23:59");
-            } else {
+            }else  if (ConfigParamEnum.BasicProcessEnum.ZHProcessID.getName().equals(processID)) {
+                if ("白班".equals(classType))
+                {
+                    dailyGrantInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyGrantInfoSummaryRecord(plantID, processID, startTime.split(" ")[0], startTime.split(" ")[0] + " 23:59");
+                }
+                else
+                {
+                    dailyGrantInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyGrantInfoSummaryRecord(plantID, processID, endTime, startTime);
+                }
+            }else {
                 dailyGrantInfoSummaryRecordTMP = dailyProductionDetailRecordMapper.getTMPDailyGrantInfoSummaryRecord(plantID, processID, startTime, endTime);
-
             }
             List<Integer> attendanceInfo = new ArrayList<>();
             if (ConfigParamEnum.BasicProcessEnum.JZProcessID.getName().equals(processID)) {
@@ -1243,6 +1262,7 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                         blGrantInfo = false;
                         for (int j = 0; j < dailyProductionSummaryRecordTMP.size(); j++) {
                             if (TBMaterialName.get(i).contains(dailyProductionSummaryRecordTMP.get(j).get("materialID").toString())) {
+
                                 recordMap.put("productionMaterialID", dailyProductionSummaryRecordTMP.get(j).get("materialID"));
                                 recordMap.put("productionMaterialName", dailyProductionSummaryRecordTMP.get(j).get("materialName"));
                                 recordMap.put("productionNumber", dailyProductionSummaryRecordTMP.get(j).get("productionNumber"));
@@ -1950,6 +1970,211 @@ public class StaffWorkDiaryServiceImpl implements IStaffWorkDiaryService {
                     }
                     finalDailyProductionSummaryRecordTMP.add(recordMap);
                 }
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setData(JSONObject.toJSONString(finalDailyProductionSummaryRecordTMP));
+                return result;
+            }
+            if (ConfigParamEnum.BasicProcessEnum.CDProcessID.getName().equals(processID)) {
+
+                List<String> materialName = new ArrayList<>();
+                List<String> TBMaterialName = new ArrayList<>();
+                List<Map<Object, Object>> JSUsedMaterialScrap = dailyProductionDetailRecordMapper.getTMPDailyScrapInfoSummaryRecord(plantID, ConfigParamEnum.BasicProcessEnum.JSProcessID.getName(), dayTime, classType);
+                List<Map<Object, Object>> JSMaterialInventory = dailyProductionDetailRecordMapper.getTMPJSSecondInventoryRecord(plantID,processID, lastDay, "白班");
+
+                for (int i = 0;  ; i++) {
+                    if (i >= dailyProductionSummaryRecordTMP.size() && i >= dailyScrapInfoSummaryRecordTMP.size() && i >= dailyGrantInfoSummaryRecordTMP.size()  ) {
+                        break;
+                    }
+                    if (dailyProductionSummaryRecordTMP.size() > i && !TBMaterialName.contains(dailyProductionSummaryRecordTMP.get(i).get("materialType") + "___" + dailyProductionSummaryRecordTMP.get(i).get("materialName")
+                            + "___" + dailyProductionSummaryRecordTMP.get(i).get("materialID"))) {
+                        TBMaterialName.add(dailyProductionSummaryRecordTMP.get(i).get("materialType") + "___" + dailyProductionSummaryRecordTMP.get(i).get("materialName") + "___" + dailyProductionSummaryRecordTMP.get(i).get("materialID"));
+                    }
+
+                    if (dailyGrantInfoSummaryRecordTMP.size() > i && !TBMaterialName.contains(dailyGrantInfoSummaryRecordTMP.get(i).get("materialType") + "___" + dailyGrantInfoSummaryRecordTMP.get(i).get("materialName")
+                            + "___" + dailyGrantInfoSummaryRecordTMP.get(i).get("materialID"))) {
+                        TBMaterialName.add(dailyGrantInfoSummaryRecordTMP.get(i).get("materialType") + "___" + dailyGrantInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyGrantInfoSummaryRecordTMP.get(i).get("materialID"));
+                    }
+
+//                    if (dailyScrapInfoSummaryRecordTMP.size() > i && !TBMaterialName.contains(dailyScrapInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyScrapInfoSummaryRecordTMP.get(i).get("materialID"))) {
+//                        TBMaterialName.add(dailyScrapInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyScrapInfoSummaryRecordTMP.get(i).get("materialID"));
+//                    }
+                }
+
+                for (int i = 0; ; i++) {
+                    if ( i >= dailyUsedInfoSummaryRecordTMP.size()
+                            && i >= dailyRecieveInfoSummaryRecordTMP.size()  && i >= JSUsedMaterialScrap.size() && i >= JSMaterialInventory.size()  ) {
+                        break;
+                    }
+                    if (dailyUsedInfoSummaryRecordTMP.size() > i && !materialName.contains(dailyUsedInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyUsedInfoSummaryRecordTMP.get(i).get("materialID"))) {
+                        materialName.add(dailyUsedInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyUsedInfoSummaryRecordTMP.get(i).get("materialID"));
+                    }
+
+                    if (dailyRecieveInfoSummaryRecordTMP.size() > i && !materialName.contains(dailyRecieveInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyRecieveInfoSummaryRecordTMP.get(i).get("materialID"))) {
+                        materialName.add(dailyRecieveInfoSummaryRecordTMP.get(i).get("materialName") + "___" + dailyRecieveInfoSummaryRecordTMP.get(i).get("materialID"));
+                    }
+
+                    if (JSUsedMaterialScrap.size() > i && !materialName.contains(JSUsedMaterialScrap.get(i).get("materialName") + "___" + JSUsedMaterialScrap.get(i).get("materialID"))) {
+                        materialName.add(JSUsedMaterialScrap.get(i).get("materialName") + "___" + JSUsedMaterialScrap.get(i).get("materialID"));
+                    }
+                    if (JSMaterialInventory.size() > i && !materialName.contains(JSMaterialInventory.get(i).get("materialName") + "___" + JSMaterialInventory.get(i).get("materialID"))) {
+                        materialName.add(JSMaterialInventory.get(i).get("materialName") + "___" + JSMaterialInventory.get(i).get("materialID"));
+                    }
+                }
+                for(int i =0;i<TBMaterialName.size(); )
+                {
+                    if(TBMaterialName.get(i).contains("null"))
+                    {
+                        TBMaterialName.remove(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+
+                TBMaterialName.sort(Comparator.comparing(String::trim));
+                for(int i =0;i<materialName.size(); )
+                {
+                    if(materialName.get(i).contains("null"))
+                    {
+                        materialName.remove(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                materialName.sort(Comparator.comparing(String::trim));
+
+                for (int i = 0; ; i++) {
+
+                    if (i >= TBMaterialName.size() && i >= materialName.size()) {
+                        break;
+                    }
+                    Map<Object, Object> recordMap = new HashMap<>();
+                    recordMap.put("plantID", plantID);
+                    recordMap.put("processID", processID);
+                    recordMap.put("classType", classType);
+                    recordMap.put("teamType", teamType);
+                    recordMap.put("dayTime", dayTime);
+                    recordMap.put("attendanceNumber", attendanceInfo.get(0));
+                    recordMap.put("machineNumber", attendanceInfo.get(1));
+                    recordMap.put("actualMachineNumber", attendanceInfo.get(2));
+                    recordMap.put("productionMachineRatio", dataFormat.format(attendanceInfo.get(2) * 1.0 / attendanceInfo.get(1) * 100));
+
+                    if (i < TBMaterialName.size()) {
+                        blGrantInfo = false;
+                        for (int j = 0; j < dailyProductionSummaryRecordTMP.size(); j++) {
+                            if (TBMaterialName.get(i).contains(dailyProductionSummaryRecordTMP.get(j).get("materialType") + "___" + dailyProductionSummaryRecordTMP.get(j).get("materialName")
+                                    + "___" + dailyProductionSummaryRecordTMP.get(j).get("materialID"))) {
+                                recordMap.put("productionMaterialID", dailyProductionSummaryRecordTMP.get(j).get("materialID"));
+                                recordMap.put("productionMaterialName", dailyProductionSummaryRecordTMP.get(j).get("materialName"));
+                                recordMap.put("productionTransition1", dailyProductionSummaryRecordTMP.get(j).get("materialType"));
+                                recordMap.put("productionNumber", dailyProductionSummaryRecordTMP.get(j).get("productionNumber"));
+                                recordMap.put("planDailyProduction", dailyProductionSummaryRecordTMP.get(j).get("planDailyProduction"));
+                                recordMap.put("ratioFinish", dailyProductionSummaryRecordTMP.get(j).get("ratioFinish"));
+
+                                blGrantInfo = true;
+                                break;
+                            }
+                        }
+                        if (!blGrantInfo) {
+                            recordMap.put("productionMaterialID", TBMaterialName.get(i).split("___")[2]);
+                            recordMap.put("productionMaterialName", TBMaterialName.get(i).split("___")[1]);
+                            recordMap.put("productionTransition1",TBMaterialName.get(i).split("___")[0]);
+                            recordMap.put("productionNumber", 0);
+                            recordMap.put("planDailyProduction", 0);
+                            recordMap.put("ratioFinish", 0);
+
+                        }
+                        blGrantInfo = false;
+                        for (int j = 0; j < dailyGrantInfoSummaryRecordTMP.size(); j++) {
+                            if (TBMaterialName.get(i).contains(dailyGrantInfoSummaryRecordTMP.get(j).get("materialType") + "___" + dailyGrantInfoSummaryRecordTMP.get(j).get("materialName")
+                                    + "___" + dailyGrantInfoSummaryRecordTMP.get(j).get("materialID"))) {
+                                recordMap.put("grantNumber", dailyGrantInfoSummaryRecordTMP.get(j).get("grantNumber"));
+                                blGrantInfo = true;
+                                break;
+                            }
+                        }
+                        if (!blGrantInfo) {
+                            recordMap.put("grantNumber", 0);
+                        }
+                    }
+
+                    if (i < materialName.size()) {
+
+                        blGrantInfo = false;
+                        for (int j = 0; j < dailyRecieveInfoSummaryRecordTMP.size(); j++) {
+                            if (materialName.get(i).contains(dailyRecieveInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
+                                recordMap.put("receiveMaterialID", dailyRecieveInfoSummaryRecordTMP.get(j).get("materialID"));
+                                recordMap.put("receiveMaterialName", dailyRecieveInfoSummaryRecordTMP.get(j).get("materialName"));
+                                recordMap.put("receiveNumber", dailyRecieveInfoSummaryRecordTMP.get(j).get("receiveNumber"));
+                                recordMap.put("receiveMaterialNumber1", dailyRecieveInfoSummaryRecordTMP.get(j).get("receiveMaterialNumber1"));
+                                recordMap.put("receiveMaterialNumber2", dailyRecieveInfoSummaryRecordTMP.get(j).get("receiveMaterialNumber2"));
+                                recordMap.put("receiveMaterialNumber3", dailyRecieveInfoSummaryRecordTMP.get(j).get("receiveMaterialNumber3"));
+                                blGrantInfo = true;
+                                break;
+                            }
+                        }
+                        if (!blGrantInfo) {
+                            recordMap.put("receiveMaterialID", materialName.get(i).split("___")[1]);
+                            recordMap.put("receiveMaterialName", materialName.get(i).split("___")[0]);
+                            recordMap.put("receiveNumber", 0);
+                            recordMap.put("receiveMaterialNumber1", 0);
+                            recordMap.put("receiveMaterialNumber2", 0);
+                            recordMap.put("receiveMaterialNumber3", 0);
+                        }
+                        blGrantInfo = false;
+                        for (int j = 0; j < dailyUsedInfoSummaryRecordTMP.size(); j++) {
+                            if (materialName.get(i).contains(dailyUsedInfoSummaryRecordTMP.get(j).get("materialID").toString())) {
+                                recordMap.put("usedNumber", dailyUsedInfoSummaryRecordTMP.get(j).get("usedNumber"));
+                                blGrantInfo = true;
+                                break;
+                            }
+                        }
+                        if (!blGrantInfo) {
+                            recordMap.put("usedNumber", 0);
+                        }
+                        blGrantInfo = false;
+                        for (int j = 0; j < JSUsedMaterialScrap.size(); j++) {
+                            if (materialName.get(i).contains(JSUsedMaterialScrap.get(j).get("materialID").toString())) {
+                                recordMap.put("scrapNumber", JSUsedMaterialScrap.get(j).get("scrapNumber"));
+
+                                blGrantInfo = true;
+                                break;
+                            }
+                        }
+                        if (!blGrantInfo) {
+                            recordMap.put("scrapNumber", 0);
+                        }
+
+                        blGrantInfo = false;
+                        for (int j = 0; j < JSMaterialInventory.size(); j++) {
+                            if (materialName.get(i).contains(JSMaterialInventory.get(j).get("materialID").toString())) {
+                                recordMap.put("lastInventory", JSMaterialInventory.get(j).get("currentInventory"));
+                                blGrantInfo = true;
+                                break;
+                            }
+                        }
+                        if (!blGrantInfo) {
+                            recordMap.put("lastInventory", 0);
+                        }
+
+                        currentInventory = Double.valueOf(recordMap.get("lastInventory").toString()).intValue()
+                                + Double.valueOf(recordMap.get("receiveNumber").toString()).intValue() - Double.valueOf(recordMap.get("usedNumber").toString()).intValue();
+                        recordMap.put("currentInventory", currentInventory);
+                        recordMap.put("inventoryTransition1", currentInventory);
+
+                    }
+                    if(!recordMap.containsKey("currentInventory"))
+                    {
+                        recordMap.put("currentInventory", 0);
+                        recordMap.put("inventoryTransition1", 0);
+                    }
+                    finalDailyProductionSummaryRecordTMP.add(recordMap);
+                }
+
+
                 result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
                 result.setData(JSONObject.toJSONString(finalDailyProductionSummaryRecordTMP));
                 return result;
