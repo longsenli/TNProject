@@ -31,4 +31,5 @@ public interface IDashboardService {
 			String endTime);
 	public TNPYResponse getmonthproductAccountSummaryPlant(String plantID, String processID, String startTime,
 			String endTime);
+    public TNPYResponse getStaffProductAttendanceSummary(String plantID, String processID, String startTime, String endTime);
 }

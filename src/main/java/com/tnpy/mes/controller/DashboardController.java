@@ -98,4 +98,11 @@ public class DashboardController {
     {
         return dashboardService.getmonthproductAccountSummaryPlant(plantID, processID,startTime,endTime);
     }
+
+    @RequestMapping(value = "/getStaffProductAttendanceSummary")
+    public TNPYResponse getStaffProductAttendanceSummary(String plantID, String processID, String startTime, String endTime)
+    {
+        return dashboardService.getStaffProductAttendanceSummary(plantID, processID,startTime,endTime);
+    }
+
 }

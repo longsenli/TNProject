@@ -1034,8 +1034,252 @@ public class DashboardServiceImpl implements IDashboardService {
 			return result;
 		}
 	}
-	
-	
+
+
+    //已员工为基础查询条件报表汇总
+
+    public TNPYResponse getStaffProductAttendanceSummary(String plantID, String processID, String startTime, String endTime) {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            // 判断日期是否合法
+            if (!DateUtilsDef.isDateCheck(startTime) && !DateUtilsDef.isDateCheck(endTime)) {
+                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                result.setMessage("日期不合法");
+                return result;
+            }
+            if ("-1".equals(plantID)||"-1".equals(processID)) {
+                result.setStatus(StatusEnum.ResponseStatus.Fail.getIndex());
+                result.setMessage("工序不能为全部,请选择一个工序");
+                return result;
+            }
+
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            Calendar calendar = new GregorianCalendar();
+            Date dayTime =dateFormat.parse(startTime);
+            calendar.setTime(dayTime);
+            List<Map<Object,Object>> classTypeLeader = dashboardMapper.getClassTypeDetail(plantID,processID,startTime,endTime);
+            List<Map<Object,Object>> staffInfoDetail = dashboardMapper.getStaffInfoDetail(plantID,processID,startTime,endTime);
+            List<Map<Object,Object>> staffAttendanceDetail = dashboardMapper.getStaffAttendanceDetailRecord(plantID,processID,startTime,endTime);
+            List<Map<Object,Object>> staffProductionDetail = dashboardMapper.staffProductionDetailRecord(plantID,processID,startTime,endTime);
+            List<Map<Object,Object>> staffInfoSummaryResult = new ArrayList<>();
+
+
+            String ALeader = "";
+            String BLeader = "";
+            int ANumber = 0;
+            int BNumber = 0;
+
+
+            for(int i =0;i<classTypeLeader.size();i++)
+            {
+                if("A".equals(classTypeLeader.get(i).get("classType")) && ANumber < Integer.parseInt(classTypeLeader.get(i).get("classNumber").toString()))
+                {
+                    ALeader = classTypeLeader.get(i).get("verifierName").toString();
+                    ANumber = Integer.parseInt(classTypeLeader.get(i).get("classNumber").toString());
+                }
+                if("B".equals(classTypeLeader.get(i).get("classType")) && BNumber < Integer.parseInt(classTypeLeader.get(i).get("classNumber").toString()))
+                {
+                    BLeader = classTypeLeader.get(i).get("verifierName").toString();
+                    BNumber = Integer.parseInt(classTypeLeader.get(i).get("classNumber").toString());
+                }
+            }
+Boolean existBL = false;
+            String dayTimeString = dateFormat.format(dayTime);
+            double totalNumber = 0;
+            List<String> productionMaterialID = new ArrayList<>();
+            List<Double> eachDayProcudionSummary = new ArrayList<>();
+            for(int i =0;i<staffInfoDetail.size();i++)
+            {
+
+                //添加出勤信息
+                if(true)
+                {
+                    Map<Object,Object> recordDetail = new HashMap<>();
+                    recordDetail.put("staffName",staffInfoDetail.get(i).get("staffName"));
+                    recordDetail.put("staffID",staffInfoDetail.get(i).get("staffID"));
+                    recordDetail.put("classType",staffInfoDetail.get(i).get("classType"));
+                    if("A".equals(staffInfoDetail.get(i).get("classType")))
+                    {
+                        recordDetail.put("teamLeader",ALeader);
+                    }
+                    else
+                    {
+                        recordDetail.put("teamLeader",BLeader);
+                    }
+                    recordDetail.put("infoType","考勤");
+                    calendar.setTime(dateFormat.parse(startTime));
+                    dayTime = calendar.getTime();
+                    totalNumber = 0;
+                    for(int j =0;;j++)
+                    {
+                        dayTimeString = dateFormat.format(dayTime);
+
+                        if(endTime.compareTo(dayTimeString) < 0)
+                        {
+                            break;
+                        }
+                        existBL = false;
+                        for( int m =0;m<staffAttendanceDetail.size();m++)
+                        {
+                            if(staffAttendanceDetail.get(m).get("staffID").toString().equals(recordDetail.get("staffID"))
+                                    && dayTimeString.equals(staffAttendanceDetail.get(m).get("dayTime")) )
+                            {
+                                existBL = true;
+                                recordDetail.put(dayTimeString,staffAttendanceDetail.get(m).get("duration"));
+                                totalNumber += Double.valueOf(staffAttendanceDetail.get(m).get("duration").toString());
+                                break;
+                            }
+                        }
+                        if(!existBL)
+                        {
+                            recordDetail.put(dayTimeString,"0");
+                        }
+                        calendar.add(Calendar.DATE, 1);
+                        dayTime = calendar.getTime();
+                    }
+                    recordDetail.put("totalNumber",String.format("%.1f", totalNumber));
+                    staffInfoSummaryResult.add(recordDetail);
+
+                }
+
+                Map<String,Double> productionDaySummaryMap = new HashMap<>();
+                //添加产量信息
+                if(true)
+                {
+                    productionMaterialID.clear();
+                    for(int m =0;m<staffProductionDetail.size();m++ )
+                    {
+                        if(staffProductionDetail.get(m).get("staffID").equals(staffInfoDetail.get(i).get("staffID")) )
+                        {
+                            if( !productionMaterialID.contains(staffProductionDetail.get(m).get("materialID") + "___" + staffProductionDetail.get(m).get("materialName")))
+                            {
+                                productionMaterialID.add(staffProductionDetail.get(m).get("materialID") + "___" + staffProductionDetail.get(m).get("materialName"));
+                            }
+                        }
+                    }
+                    for( int j =0;j<productionMaterialID.size();j++)
+                    {
+                        Map<Object,Object> recordDetailProduction = new HashMap<>();
+                        recordDetailProduction.put("staffName",staffInfoDetail.get(i).get("staffName"));
+                        recordDetailProduction.put("staffID",staffInfoDetail.get(i).get("staffID"));
+                        recordDetailProduction.put("classType",staffInfoDetail.get(i).get("classType"));
+                        if("A".equals(staffInfoDetail.get(i).get("classType")))
+                        {
+                            recordDetailProduction.put("teamLeader",ALeader);
+                        }
+                        else
+                        {
+                            recordDetailProduction.put("teamLeader",BLeader);
+                        }
+                        recordDetailProduction.put("infoType",productionMaterialID.get(j).split("___")[1]);
+                        calendar.setTime(dateFormat.parse(startTime));
+                        totalNumber = 0;
+                        dayTime =dateFormat.parse(startTime);
+                        for(;;)
+                        {
+                            dayTimeString = dateFormat.format(dayTime);
+                            if(endTime.compareTo(dayTimeString) < 0)
+                            {
+                                break;
+                            }
+                            existBL = false;
+                            for(int m =0;m<staffProductionDetail.size();m++ )
+                            {
+                                if(staffProductionDetail.get(m).get("staffID").equals(staffInfoDetail.get(i).get("staffID")) && dayTimeString.equals(staffProductionDetail.get(m).get("dayTime"))
+                                        && productionMaterialID.get(j).contains(staffProductionDetail.get(m).get("materialID").toString()) )
+                                {
+                                    existBL = true;
+                                    recordDetailProduction.put(dayTimeString,staffProductionDetail.get(m).get("shelfProduction"));
+                                    recordDetailProduction.put("univalence",staffProductionDetail.get(m).get("univalence"));
+                                    totalNumber += Double.valueOf(staffProductionDetail.get(m).get("shelfProduction").toString());
+                                    break;
+                                }
+                            }
+                            if(!existBL)
+                            {
+                                recordDetailProduction.put(dayTimeString,0);
+                            }
+                            if(productionDaySummaryMap.containsKey(dayTimeString))
+                            {
+                                productionDaySummaryMap.put(dayTimeString,productionDaySummaryMap.get(dayTimeString) + Double.valueOf(recordDetailProduction.get(dayTimeString).toString()));
+                            }
+                            else
+                            {
+                                productionDaySummaryMap.put(dayTimeString,Double.valueOf(recordDetailProduction.get(dayTimeString).toString()));
+                            }
+                            calendar.add(Calendar.DATE, 1);
+                            dayTime = calendar.getTime();
+                        }
+                        if(!recordDetailProduction.containsKey("univalence"))
+                        {
+                            recordDetailProduction.put("univalence",0);
+                        }
+                        recordDetailProduction.put("totalNumber",String.format("%.0f", totalNumber));
+                        recordDetailProduction.put("totalWage",String.format("%.2f", totalNumber * Double.valueOf( recordDetailProduction.get("univalence").toString())));
+                        if(productionDaySummaryMap.containsKey("totalWage"))
+                        {
+                            productionDaySummaryMap.put("totalWage",productionDaySummaryMap.get("totalWage") +  Double.valueOf(recordDetailProduction.get("totalWage").toString()));
+                        }
+                        else
+                        {
+                            productionDaySummaryMap.put("totalWage",Double.valueOf(recordDetailProduction.get("totalWage").toString()));
+                        }
+                        staffInfoSummaryResult.add(recordDetailProduction);
+                    }
+                }
+
+                totalNumber = 0;
+
+                Map<Object,Object> recordProductionSummary = new HashMap<>();
+                recordProductionSummary.put("staffName",staffInfoDetail.get(i).get("staffName"));
+                recordProductionSummary.put("staffID",staffInfoDetail.get(i).get("staffID"));
+                recordProductionSummary.put("classType",staffInfoDetail.get(i).get("classType"));
+                if("A".equals(staffInfoDetail.get(i).get("classType")))
+                {
+                    recordProductionSummary.put("teamLeader",ALeader);
+                }
+                else
+                {
+                    recordProductionSummary.put("teamLeader",BLeader);
+                }
+                recordProductionSummary.put("infoType","合计");
+                calendar.setTime(dateFormat.parse(startTime));
+                totalNumber = 0;
+                dayTime =dateFormat.parse(startTime);
+                for(;;) {
+                    dayTimeString = dateFormat.format(dayTime);
+                    if (endTime.compareTo(dayTimeString) < 0) {
+                        break;
+                    }
+
+                    if(productionDaySummaryMap.containsKey(dayTimeString))
+                    {
+                        totalNumber += productionDaySummaryMap.get(dayTimeString);
+                        recordProductionSummary.put(dayTimeString,productionDaySummaryMap.get(dayTimeString));
+                    }
+                    else
+                    {
+                        recordProductionSummary.put(dayTimeString,"0");
+                    }
+                    calendar.add(Calendar.DATE, 1);
+                    dayTime = calendar.getTime();
+                }
+                recordProductionSummary.put("totalNumber",String.format("%.0f", totalNumber));
+                recordProductionSummary.put("totalWage",productionDaySummaryMap.get("totalWage"));
+                staffInfoSummaryResult.add(recordProductionSummary);
+            }
+
+            result.setStatus(1);
+            result.setData(JSONObject.toJSON(staffInfoSummaryResult).toString());
+            return result;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
 	
 	
 	//已员工为基础查询条件报表汇总
