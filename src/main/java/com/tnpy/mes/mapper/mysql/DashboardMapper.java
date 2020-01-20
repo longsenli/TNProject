@@ -45,7 +45,7 @@ public interface DashboardMapper {
     @Select(  " select * from ( select  staffName,staffID, case when ANumber < BNumber  then 'B' else 'A' end as classType from ( \n" +
             "select staffName,staffID,sum(if(extd2 ='A',1,0)) as ANumber,sum(if(extd2 ='B',1,0)) as BNumber from tb_staffattendancedetail  \n" +
             "where plantID = #{plantID} and processID = #{processID} and dayTime >= #{startTime} and dayTime <= #{endTime}   " +
-            " and verifyTime is not null group by staffName,staffID   ) a ) b order by  order by classType,CONVERT(staffName using gbk ) " )
+            " and verifyTime is not null group by staffName,staffID   ) a ) b order by  classType,CONVERT(staffName using gbk ) " )
     List<Map<Object, Object>> getStaffInfoDetail( String plantID,String processID,String startTime,String endTime);
 
     @Select(    "select staffName,staffID,classType1,DATE_FORMAT(dayTime,   '%Y-%m-%d') as dayTime,case when classType2 = '全班' then 1 else 0.5 end as duration from tb_staffattendancedetail  \n" +

@@ -1085,14 +1085,13 @@ public class DashboardServiceImpl implements IDashboardService {
                     BNumber = Integer.parseInt(classTypeLeader.get(i).get("classNumber").toString());
                 }
             }
-Boolean existBL = false;
+            Boolean existBL = false;
             String dayTimeString = dateFormat.format(dayTime);
             double totalNumber = 0;
             List<String> productionMaterialID = new ArrayList<>();
-            List<Double> eachDayProcudionSummary = new ArrayList<>();
+
             for(int i =0;i<staffInfoDetail.size();i++)
             {
-
                 //添加出勤信息
                 if(true)
                 {
@@ -1267,7 +1266,7 @@ Boolean existBL = false;
                     dayTime = calendar.getTime();
                 }
                 recordProductionSummary.put("totalNumber",String.format("%.0f", totalNumber));
-                recordProductionSummary.put("totalWage",productionDaySummaryMap.get("totalWage"));
+                recordProductionSummary.put("totalWage",String.format("%.2f",  productionDaySummaryMap.get("totalWage")) );
                 staffInfoSummaryResult.add(recordProductionSummary);
             }
 
