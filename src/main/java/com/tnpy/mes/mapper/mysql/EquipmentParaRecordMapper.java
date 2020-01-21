@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,5 +70,12 @@ public interface EquipmentParaRecordMapper {
             "SELECT sum(productionNum) totalProduction,processID,date_format(date_add(updateTime, interval -1 day), '%Y-%m-%d') as timeStr \n" +
             "FROM tb_materialinventoryrecord where updateTime > #{startTime}   and updateTime < #{endTime} and processID = #{processID} and plantID = #{plantID} group by timeStr ) n on m.timeStr = n.timeStr order by timeStr ")
     List<Map<Object,Object>> getElectricProductionRelation(String plantID, String processID,String startTime,String endTime);
+    
+    
+    @Select("SELECT e.location AS '位置',( CASE t.runningStatus WHEN 1 THEN '运行' WHEN 2 THEN '运行' WHEN 0 THEN '停止' ELSE '未知' END) AS '运行状态', IFNULL(t.realtimeTemperature,'') AS '实时温度', IFNULL(t.settingTemperature,'') AS '设定温度', IFNULL(t.statusTemperature,'') AS '温度状态', IFNULL(t.realtimeHumidity,'') AS '实时湿度', IFNULL(t.settingHumidity,'') AS '设定湿度', IFNULL(t.statusHumidity,'') AS '湿度状态', IFNULL(t.solidificationHour,'') AS '固化时长小时', IFNULL(t.solidificationMinute,'') AS '固化时长分钟', IFNULL(t.solidificationSecond,'') AS '固化时长秒' FROM tb_equipmentinfo e LEFT JOIN(SELECT * FROM ${tableName} s WHERE s.acquisitionTime >= "
+    		+ "DATE_SUB( DATE_FORMAT( #{recentTime}, '%Y-%m-%d %H:%i:%s'), INTERVAL 5 MINUTE ) GROUP BY s.equipmentID ) t ON e.id = t.equipmentID "
+    		+ "WHERE e.plantID = #{plantID} AND e.typeID = #{equipType} AND e. STATUS = '1' ORDER BY e.location")
+    List<LinkedHashMap<Object,Object>> selectSolidificationoperatingparametersacquisition(String plantID, String equipType,String recentTime, @Param("tableName") String tableName);
+
 
 }

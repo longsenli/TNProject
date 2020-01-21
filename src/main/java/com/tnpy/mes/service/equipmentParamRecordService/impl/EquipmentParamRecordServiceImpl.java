@@ -247,4 +247,40 @@ public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordSer
             return result;
         }
     }
+    
+    /**
+     * 新设备采集方法
+     */
+    public TNPYResponse getRecentAllParamPecordNew( String plantID,String equipType,String processID)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date recentTime = new Date();//取时间
+            String timeStr = dateFormat.format(recentTime);
+            List<LinkedHashMap<Object,Object>> parameterInfoList = null;
+            //一部固化室
+            if(ConfigParamEnum.EquipmentTypeEnum.GHSCJ.getTypeID().equals(equipType)&&ConfigParamEnum.EquipmentTypeEnum.GHSCJ1001.getTypeID().equals(plantID.trim()))
+            {
+            	  parameterInfoList = equipmentParaRecordMapper.selectSolidificationoperatingparametersacquisition(plantID,equipType,timeStr, ConfigParamEnum.EquipmentTypeEnum.GHSCJ1001.getTableName());
+            }
+            //二部固化室
+            if(ConfigParamEnum.EquipmentTypeEnum.GHSCJ.getTypeID().equals(equipType)&&ConfigParamEnum.EquipmentTypeEnum.GHSCJ1002.getTypeID().equals(plantID.trim()))
+            {
+            	parameterInfoList = equipmentParaRecordMapper.selectSolidificationoperatingparametersacquisition(plantID,equipType,timeStr, ConfigParamEnum.EquipmentTypeEnum.GHSCJ1002.getTableName());
+            }
+            //三部固化室
+            if(ConfigParamEnum.EquipmentTypeEnum.GHSCJ.getTypeID().equals(equipType)&&ConfigParamEnum.EquipmentTypeEnum.GHSCJ1003.getTypeID().equals(plantID.trim()))
+            {
+            	parameterInfoList = equipmentParaRecordMapper.selectSolidificationoperatingparametersacquisition(plantID,equipType,timeStr, ConfigParamEnum.EquipmentTypeEnum.GHSCJ1003.getTableName());
+            }
+            
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(parameterInfoList).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
 }

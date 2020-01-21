@@ -92,11 +92,17 @@ public class EquipmentParamController {
 
         return  equipmentParamService.getLatestParamRecord(plantID, equipType, paramID);
     }
-
+    
     @RequestMapping(value = "/getrecentallparamrecord")
     public TNPYResponse getRecentAllParamPecord( String plantID,String equipType,@RequestParam(defaultValue = "-1")String processID ) {
 
         return  equipmentParamService.getRecentAllParamPecord(plantID, equipType,processID);
+    }
+    
+    @RequestMapping(value = "/getRecentAllParamPecordNew")
+    public TNPYResponse getRecentAllParamPecordNew( String plantID,String equipType,@RequestParam(defaultValue = "-1")String processID ) {
+
+        return  equipmentParamService.getRecentAllParamPecordNew(plantID, equipType,processID);
     }
 
     @RequestMapping(value = "/getoneequipparamrecord")
