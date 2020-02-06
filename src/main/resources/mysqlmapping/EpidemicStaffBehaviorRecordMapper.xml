@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.EpidemicStaffBehaviorRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.EpidemicStaffBehaviorRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="identityID" jdbcType="VARCHAR" property="identityid" />
+    <result column="department" jdbcType="VARCHAR" property="department" />
+    <result column="daytime" jdbcType="TIMESTAMP" property="daytime" />
+    <result column="stayLocation" jdbcType="VARCHAR" property="staylocation" />
+    <result column="contactSeverity" jdbcType="VARCHAR" property="contactseverity" />
+    <result column="abnormalShelf" jdbcType="VARCHAR" property="abnormalshelf" />
+    <result column="abnormalPartner" jdbcType="VARCHAR" property="abnormalpartner" />
+    <result column="quarantine" jdbcType="VARCHAR" property="quarantine" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="extd1" jdbcType="VARCHAR" property="extd1" />
+    <result column="extd2" jdbcType="VARCHAR" property="extd2" />
+    <result column="extd3" jdbcType="VARCHAR" property="extd3" />
+    <result column="processOrJob" jdbcType="VARCHAR" property="processorjob" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, identityID, department, daytime, stayLocation, contactSeverity, abnormalShelf, 
+    abnormalPartner, quarantine, remark, status, extd1, extd2, extd3, processOrJob, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_epidemicstaffbehaviorrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_epidemicstaffbehaviorrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.EpidemicStaffBehaviorRecord">
+    insert into tb_epidemicstaffbehaviorrecord (id, name, identityID, 
+      department, daytime, stayLocation, 
+      contactSeverity, abnormalShelf, abnormalPartner, 
+      quarantine, remark, status, 
+      extd1, extd2, extd3, 
+      processOrJob, updateTime)
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{identityid,jdbcType=VARCHAR}, 
+      #{department,jdbcType=VARCHAR}, #{daytime,jdbcType=TIMESTAMP}, #{staylocation,jdbcType=VARCHAR}, 
+      #{contactseverity,jdbcType=VARCHAR}, #{abnormalshelf,jdbcType=VARCHAR}, #{abnormalpartner,jdbcType=VARCHAR}, 
+      #{quarantine,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{extd1,jdbcType=VARCHAR}, #{extd2,jdbcType=VARCHAR}, #{extd3,jdbcType=VARCHAR}, 
+      #{processorjob,jdbcType=VARCHAR}, #{updatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.EpidemicStaffBehaviorRecord">
+    insert into tb_epidemicstaffbehaviorrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="identityid != null">
+        identityID,
+      </if>
+      <if test="department != null">
+        department,
+      </if>
+      <if test="daytime != null">
+        daytime,
+      </if>
+      <if test="staylocation != null">
+        stayLocation,
+      </if>
+      <if test="contactseverity != null">
+        contactSeverity,
+      </if>
+      <if test="abnormalshelf != null">
+        abnormalShelf,
+      </if>
+      <if test="abnormalpartner != null">
+        abnormalPartner,
+      </if>
+      <if test="quarantine != null">
+        quarantine,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="extd1 != null">
+        extd1,
+      </if>
+      <if test="extd2 != null">
+        extd2,
+      </if>
+      <if test="extd3 != null">
+        extd3,
+      </if>
+      <if test="processorjob != null">
+        processOrJob,
+      </if>
+      <if test="updatetime != null">
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="identityid != null">
+        #{identityid,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null">
+        #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="daytime != null">
+        #{daytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="staylocation != null">
+        #{staylocation,jdbcType=VARCHAR},
+      </if>
+      <if test="contactseverity != null">
+        #{contactseverity,jdbcType=VARCHAR},
+      </if>
+      <if test="abnormalshelf != null">
+        #{abnormalshelf,jdbcType=VARCHAR},
+      </if>
+      <if test="abnormalpartner != null">
+        #{abnormalpartner,jdbcType=VARCHAR},
+      </if>
+      <if test="quarantine != null">
+        #{quarantine,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="extd1 != null">
+        #{extd1,jdbcType=VARCHAR},
+      </if>
+      <if test="extd2 != null">
+        #{extd2,jdbcType=VARCHAR},
+      </if>
+      <if test="extd3 != null">
+        #{extd3,jdbcType=VARCHAR},
+      </if>
+      <if test="processorjob != null">
+        #{processorjob,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.EpidemicStaffBehaviorRecord">
+    update tb_epidemicstaffbehaviorrecord
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="identityid != null">
+        identityID = #{identityid,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null">
+        department = #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="daytime != null">
+        daytime = #{daytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="staylocation != null">
+        stayLocation = #{staylocation,jdbcType=VARCHAR},
+      </if>
+      <if test="contactseverity != null">
+        contactSeverity = #{contactseverity,jdbcType=VARCHAR},
+      </if>
+      <if test="abnormalshelf != null">
+        abnormalShelf = #{abnormalshelf,jdbcType=VARCHAR},
+      </if>
+      <if test="abnormalpartner != null">
+        abnormalPartner = #{abnormalpartner,jdbcType=VARCHAR},
+      </if>
+      <if test="quarantine != null">
+        quarantine = #{quarantine,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="extd1 != null">
+        extd1 = #{extd1,jdbcType=VARCHAR},
+      </if>
+      <if test="extd2 != null">
+        extd2 = #{extd2,jdbcType=VARCHAR},
+      </if>
+      <if test="extd3 != null">
+        extd3 = #{extd3,jdbcType=VARCHAR},
+      </if>
+      <if test="processorjob != null">
+        processOrJob = #{processorjob,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.EpidemicStaffBehaviorRecord">
+    update tb_epidemicstaffbehaviorrecord
+    set name = #{name,jdbcType=VARCHAR},
+      identityID = #{identityid,jdbcType=VARCHAR},
+      department = #{department,jdbcType=VARCHAR},
+      daytime = #{daytime,jdbcType=TIMESTAMP},
+      stayLocation = #{staylocation,jdbcType=VARCHAR},
+      contactSeverity = #{contactseverity,jdbcType=VARCHAR},
+      abnormalShelf = #{abnormalshelf,jdbcType=VARCHAR},
+      abnormalPartner = #{abnormalpartner,jdbcType=VARCHAR},
+      quarantine = #{quarantine,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      extd1 = #{extd1,jdbcType=VARCHAR},
+      extd2 = #{extd2,jdbcType=VARCHAR},
+      extd3 = #{extd3,jdbcType=VARCHAR},
+      processOrJob = #{processorjob,jdbcType=VARCHAR},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
