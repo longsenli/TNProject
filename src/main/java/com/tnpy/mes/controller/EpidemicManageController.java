@@ -28,4 +28,15 @@ public class EpidemicManageController {
     public TNPYResponse getShelfFilloutEpidemicRecord( String identityID) {
         return  epidemicManageService.getShelfFilloutEpidemicRecord(identityID);
     }
+
+
+    @RequestMapping(value = "/addNewStaffBasicInfo")
+    public TNPYResponse addNewStaffBasicInfo(@RequestBody String jsonStr) {
+        return  epidemicManageService.addNewStaffBasicInfo(jsonStr);
+    }
+
+    @RequestMapping(value = "/getShelfBasicInfoRecord")
+    public TNPYResponse getShelfBasicInfoRecord( String name) {
+        return  epidemicManageService.getShelfBasicInfoRecord(name);
+    }
 }

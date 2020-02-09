@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.NewStaffBasicInfoStatisticsMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.NewStaffBasicInfoStatistics">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="age" jdbcType="VARCHAR" property="age" />
+    <result column="identityNO" jdbcType="VARCHAR" property="identityno" />
+    <result column="telephoneNumber" jdbcType="VARCHAR" property="telephonenumber" />
+    <result column="familyLocation" jdbcType="VARCHAR" property="familylocation" />
+    <result column="educationLevel" jdbcType="VARCHAR" property="educationlevel" />
+    <result column="employmentObjective" jdbcType="VARCHAR" property="employmentobjective" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="extd1" jdbcType="VARCHAR" property="extd1" />
+    <result column="extd2" jdbcType="VARCHAR" property="extd2" />
+    <result column="extd3" jdbcType="VARCHAR" property="extd3" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, sex, age, identityNO, telephoneNumber, familyLocation, educationLevel, 
+    employmentObjective, updateTime, remark, status, extd1, extd2, extd3
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_newstaffbasicinfostatistics
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_newstaffbasicinfostatistics
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.NewStaffBasicInfoStatistics">
+    insert into tb_newstaffbasicinfostatistics (id, name, sex, 
+      age, identityNO, telephoneNumber, 
+      familyLocation, educationLevel, employmentObjective, 
+      updateTime, remark, status, 
+      extd1, extd2, extd3
+      )
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, 
+      #{age,jdbcType=VARCHAR}, #{identityno,jdbcType=VARCHAR}, #{telephonenumber,jdbcType=VARCHAR}, 
+      #{familylocation,jdbcType=VARCHAR}, #{educationlevel,jdbcType=VARCHAR}, #{employmentobjective,jdbcType=VARCHAR}, 
+      #{updatetime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{extd1,jdbcType=VARCHAR}, #{extd2,jdbcType=VARCHAR}, #{extd3,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.NewStaffBasicInfoStatistics">
+    insert into tb_newstaffbasicinfostatistics
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="age != null">
+        age,
+      </if>
+      <if test="identityno != null">
+        identityNO,
+      </if>
+      <if test="telephonenumber != null">
+        telephoneNumber,
+      </if>
+      <if test="familylocation != null">
+        familyLocation,
+      </if>
+      <if test="educationlevel != null">
+        educationLevel,
+      </if>
+      <if test="employmentobjective != null">
+        employmentObjective,
+      </if>
+      <if test="updatetime != null">
+        updateTime,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="extd1 != null">
+        extd1,
+      </if>
+      <if test="extd2 != null">
+        extd2,
+      </if>
+      <if test="extd3 != null">
+        extd3,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        #{age,jdbcType=VARCHAR},
+      </if>
+      <if test="identityno != null">
+        #{identityno,jdbcType=VARCHAR},
+      </if>
+      <if test="telephonenumber != null">
+        #{telephonenumber,jdbcType=VARCHAR},
+      </if>
+      <if test="familylocation != null">
+        #{familylocation,jdbcType=VARCHAR},
+      </if>
+      <if test="educationlevel != null">
+        #{educationlevel,jdbcType=VARCHAR},
+      </if>
+      <if test="employmentobjective != null">
+        #{employmentobjective,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="extd1 != null">
+        #{extd1,jdbcType=VARCHAR},
+      </if>
+      <if test="extd2 != null">
+        #{extd2,jdbcType=VARCHAR},
+      </if>
+      <if test="extd3 != null">
+        #{extd3,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.NewStaffBasicInfoStatistics">
+    update tb_newstaffbasicinfostatistics
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        age = #{age,jdbcType=VARCHAR},
+      </if>
+      <if test="identityno != null">
+        identityNO = #{identityno,jdbcType=VARCHAR},
+      </if>
+      <if test="telephonenumber != null">
+        telephoneNumber = #{telephonenumber,jdbcType=VARCHAR},
+      </if>
+      <if test="familylocation != null">
+        familyLocation = #{familylocation,jdbcType=VARCHAR},
+      </if>
+      <if test="educationlevel != null">
+        educationLevel = #{educationlevel,jdbcType=VARCHAR},
+      </if>
+      <if test="employmentobjective != null">
+        employmentObjective = #{employmentobjective,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="extd1 != null">
+        extd1 = #{extd1,jdbcType=VARCHAR},
+      </if>
+      <if test="extd2 != null">
+        extd2 = #{extd2,jdbcType=VARCHAR},
+      </if>
+      <if test="extd3 != null">
+        extd3 = #{extd3,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.NewStaffBasicInfoStatistics">
+    update tb_newstaffbasicinfostatistics
+    set name = #{name,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      age = #{age,jdbcType=VARCHAR},
+      identityNO = #{identityno,jdbcType=VARCHAR},
+      telephoneNumber = #{telephonenumber,jdbcType=VARCHAR},
+      familyLocation = #{familylocation,jdbcType=VARCHAR},
+      educationLevel = #{educationlevel,jdbcType=VARCHAR},
+      employmentObjective = #{employmentobjective,jdbcType=VARCHAR},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      extd1 = #{extd1,jdbcType=VARCHAR},
+      extd2 = #{extd2,jdbcType=VARCHAR},
+      extd3 = #{extd3,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

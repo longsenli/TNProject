@@ -23,8 +23,14 @@ public interface EpidemicStaffBehaviorRecordMapper {
 
     int updateByPrimaryKey(EpidemicStaffBehaviorRecord record);
 
-    @Select(" select date_format(daytime,'%Y-%m-%d') as daytime, stayLocation,contactSeverity,abnormalShelf,abnormalPartner,quarantine,remark" +
+    @Select(" select count(1) from  tb_epidemicstaffbehaviorrecord where identityID = #{identityID} and daytime = #{dayTime} ")
+    int selectRecordCount(String identityID,String dayTime);
+
+    @Select(" select date_format(daytime,'%Y-%m-%d') as daytime, stayLocation,contactSeverity,abnormalShelf,abnormalPartner,quarantine,remark,name,extd1 as telephone" +
             " from tb_epidemicstaffbehaviorrecord where identityID = #{identityID}  order by daytime limit 1000 ")
     List<Map<Object, Object>> getShelfFilloutEpidemicRecord(String identityID);
 
+//    @Select(" select date_format(daytime,'%Y-%m-%d') as daytime, stayLocation,contactSeverity,abnormalShelf,abnormalPartner,quarantine,remark,name,extd1 as telephone \n" +
+//            "from tb_epidemicstaffbehaviorrecord order by CONVERT(name using gbk), daytime ")
+//    List<Map<Object, Object>> getShelfFilloutEpidemicRecord(String identityID);
 }
