@@ -23,6 +23,11 @@ public interface NewStaffBasicInfoStatisticsMapper {
 
     int updateByPrimaryKey(NewStaffBasicInfoStatistics record);
 
-    @Select(" select * from tb_newStaffBasicInfoStatistics where name = #{name} and status = '1'")
+    @Select(" select date_format(updateTime,'%Y-%m-%d') as updateTime,name,sex,age, telephoneNumber, familyLocation, educationLevel, " +
+            "            employmentObjective,  remark from tb_newStaffBasicInfoStatistics where name = #{name} and status = '1'")
     List<Map<Object, Object>> getNewStaffBasicInfo(String name);
+
+    @Select(" select date_format(updateTime,'%Y-%m-%d') as updateTime,name,sex,age, telephoneNumber, familyLocation, educationLevel," +
+            " employmentObjective,  remark from tb_newStaffBasicInfoStatistics where  status = '1' order by  CONVERT(name using gbk)")
+    List<Map<Object, Object>> getAllNewStaffBasicInfo();
 }

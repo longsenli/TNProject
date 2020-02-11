@@ -129,7 +129,13 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
         TNPYResponse result = new TNPYResponse();
         try {
 
-
+if("全部".equals(name.trim()))
+{
+    List<Map<Object, Object>> newStaffBasicInfo = newStaffBasicInfoStatisticsMapper.getAllNewStaffBasicInfo();
+    result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+    result.setData(JSONObject.toJSON(newStaffBasicInfo).toString());
+    return result;
+}
             List<Map<Object, Object>> newStaffBasicInfo = newStaffBasicInfoStatisticsMapper.getNewStaffBasicInfo(name);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(newStaffBasicInfo).toString());
