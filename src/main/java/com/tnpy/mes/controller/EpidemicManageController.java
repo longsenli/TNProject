@@ -39,4 +39,30 @@ public class EpidemicManageController {
     public TNPYResponse getShelfBasicInfoRecord( String name) {
         return  epidemicManageService.getShelfBasicInfoRecord(name);
     }
+
+    @RequestMapping(value = "/getStaffEpidemicBasicInfo")
+    public TNPYResponse getStaffEpidemicBasicInfo( String identityNo) {
+        return  epidemicManageService.getStaffEpidemicBasicInfo(identityNo);
+    }
+
+    @RequestMapping(value = "/getStaffEpidemicBasicInfoByDepartment")
+    public TNPYResponse getStaffEpidemicBasicInfoByDepartment( String department) {
+        return  epidemicManageService.getStaffEpidemicBasicInfoByDepartment(department);
+    }
+
+    @RequestMapping(value = "/getStaffEpidemicBasicDepartmentInfo")
+    public TNPYResponse getStaffEpidemicBasicDepartmentInfo( ) {
+        return  epidemicManageService.getStaffEpidemicBasicDepartmentInfo();
+    }
+
+    @RequestMapping(value = "/addStaffTMPTRecord")
+    public TNPYResponse addStaffTMPTRecord(@RequestBody String jsonStr) {
+        return  epidemicManageService.addStaffTMPTRecord(jsonStr);
+    }
+
+    @RequestMapping(value = "/getStaffTMPTRecord")
+    public TNPYResponse getStaffTMPTRecord( String name,String department,String startTime,String endTime,String tmptType) {
+        return  epidemicManageService.getStaffTMPTRecord(name, department, startTime, endTime, tmptType);
+    }
+
 }

@@ -3,8 +3,10 @@ package com.tnpy.mes.service.epidemicManageService.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
+import com.tnpy.mes.mapper.mysql.EpidemicControlTMPTRecordMapper;
 import com.tnpy.mes.mapper.mysql.EpidemicStaffBehaviorRecordMapper;
 import com.tnpy.mes.mapper.mysql.NewStaffBasicInfoStatisticsMapper;
+import com.tnpy.mes.model.mysql.EpidemicControlTMPTRecord;
 import com.tnpy.mes.model.mysql.EpidemicStaffBehaviorRecord;
 import com.tnpy.mes.model.mysql.NewStaffBasicInfoStatistics;
 import com.tnpy.mes.service.epidemicManageService.IEpidemicManageService;
@@ -30,17 +32,17 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
     @Autowired
     private NewStaffBasicInfoStatisticsMapper newStaffBasicInfoStatisticsMapper;
 
-    public TNPYResponse addShelfBehaviorRecord( String jsonStr)
-    {
+    @Autowired
+    private EpidemicControlTMPTRecordMapper epidemicControlTMPTRecordMapper;
+
+    public TNPYResponse addShelfBehaviorRecord(String jsonStr) {
         TNPYResponse result = new TNPYResponse();
-        try
-        {
+        try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Map stringToMap =JSONObject.parseObject(jsonStr);
-            if(epidemicStaffBehaviorRecordMapper.selectRecordCount(String.valueOf(stringToMap.get("identityID")),String.valueOf(stringToMap.get("daytime"))) > 0)
-            {
-                result.setMessage("该身份证号，当日已经登记！" + stringToMap.get("identityID")+ "   "  + stringToMap.get("daytime"));
-                return  result;
+            Map stringToMap = JSONObject.parseObject(jsonStr);
+            if (epidemicStaffBehaviorRecordMapper.selectRecordCount(String.valueOf(stringToMap.get("identityID")), String.valueOf(stringToMap.get("daytime"))) > 0) {
+                result.setMessage("该身份证号，当日已经登记！" + stringToMap.get("identityID") + "   " + stringToMap.get("daytime"));
+                return result;
             }
 
             EpidemicStaffBehaviorRecord epidemicStaffBehaviorRecord = new EpidemicStaffBehaviorRecord();
@@ -62,17 +64,14 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
             epidemicStaffBehaviorRecordMapper.insert(epidemicStaffBehaviorRecord);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
 
-            return  result;
-        }
-        catch (Exception ex)
-        {
+            return result;
+        } catch (Exception ex) {
             result.setMessage("添加失败！" + ex.getMessage());
-            return  result;
+            return result;
         }
     }
 
-    public TNPYResponse getShelfFilloutEpidemicRecord( String identityID)
-    {
+    public TNPYResponse getShelfFilloutEpidemicRecord(String identityID) {
         TNPYResponse result = new TNPYResponse();
         try {
 
@@ -87,14 +86,12 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
         }
     }
 
-    public TNPYResponse addNewStaffBasicInfo( String jsonStr)
-    {
+    public TNPYResponse addNewStaffBasicInfo(String jsonStr) {
 
         TNPYResponse result = new TNPYResponse();
-        try
-        {
+        try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Map stringToMap =JSONObject.parseObject(jsonStr);
+            Map stringToMap = JSONObject.parseObject(jsonStr);
 
             NewStaffBasicInfoStatistics newStaffBasicInfoStatistics = new NewStaffBasicInfoStatistics();
             newStaffBasicInfoStatistics.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
@@ -102,7 +99,7 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
             newStaffBasicInfoStatistics.setSex(String.valueOf(stringToMap.get("sex")));
             newStaffBasicInfoStatistics.setAge(String.valueOf(stringToMap.get("age")));
             newStaffBasicInfoStatistics.setTelephonenumber(String.valueOf(stringToMap.get("telephone")));
-           // newStaffBasicInfoStatistics.setIdentityno(String.valueOf(stringToMap.get("identityID")));
+            // newStaffBasicInfoStatistics.setIdentityno(String.valueOf(stringToMap.get("identityID")));
 
             newStaffBasicInfoStatistics.setFamilylocation(String.valueOf(stringToMap.get("familyLocation")));
             newStaffBasicInfoStatistics.setEducationlevel(String.valueOf(stringToMap.get("educationLevel")));
@@ -114,29 +111,116 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
             newStaffBasicInfoStatisticsMapper.insertSelective(newStaffBasicInfoStatistics);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
 
-            return  result;
-        }
-        catch (Exception ex)
-        {
+            return result;
+        } catch (Exception ex) {
             result.setMessage("添加失败！" + ex.getMessage());
-            return  result;
+            return result;
         }
 
     }
-    public TNPYResponse getShelfBasicInfoRecord( String name)
-    {
+
+    public TNPYResponse getShelfBasicInfoRecord(String name) {
 
         TNPYResponse result = new TNPYResponse();
         try {
 
-if("全部".equals(name.trim()))
-{
-    List<Map<Object, Object>> newStaffBasicInfo = newStaffBasicInfoStatisticsMapper.getAllNewStaffBasicInfo();
-    result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
-    result.setData(JSONObject.toJSON(newStaffBasicInfo).toString());
-    return result;
-}
+            if ("全部".equals(name.trim())) {
+                List<Map<Object, Object>> newStaffBasicInfo = newStaffBasicInfoStatisticsMapper.getAllNewStaffBasicInfo();
+                result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+                result.setData(JSONObject.toJSON(newStaffBasicInfo).toString());
+                return result;
+            }
             List<Map<Object, Object>> newStaffBasicInfo = newStaffBasicInfoStatisticsMapper.getNewStaffBasicInfo(name);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(newStaffBasicInfo).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse addStaffTMPTRecord(String jsonStr) {
+        TNPYResponse result = new TNPYResponse();
+        try {
+
+            EpidemicControlTMPTRecord epidemicControlTMPTRecord =(EpidemicControlTMPTRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), EpidemicControlTMPTRecord.class);
+            epidemicControlTMPTRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+            epidemicControlTMPTRecord.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
+            epidemicControlTMPTRecord.setUpdatetime(new Date());
+
+            epidemicControlTMPTRecordMapper.insertSelective(epidemicControlTMPTRecord);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("添加失败！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse getStaffEpidemicBasicDepartmentInfo( )
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            List<Map<Object, Object>> newStaffBasicInfo = epidemicControlTMPTRecordMapper.getStaffEpidemicBasicDepartmentInfo();
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(newStaffBasicInfo).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+    public TNPYResponse getStaffTMPTRecord(String name, String department, String startTime, String endTime, String tmptType) {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            String filter = " where status = '1' ";
+            if(!"-1".equals(name))
+            {
+                filter += " and name = '" + name + "' ";
+            }
+            if(!"-1".equals(department))
+            {
+                filter += " and department = '" + department + "' ";
+            }
+            if(!"-1".equals(startTime))
+            {
+                filter += " and updateTime > '" + startTime + "'    and updateTime < '" + endTime + "' ";
+            }
+            if(!"-1".equals(tmptType))
+            {
+                filter += " and temperature = '" + tmptType + "' ";
+            }
+            List<Map<Object, Object>> newStaffBasicInfo = epidemicControlTMPTRecordMapper.getStaffEpidemicTMPTRecord(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(newStaffBasicInfo).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse getStaffEpidemicBasicInfo( String identityNo)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            List<Map<Object, Object>> newStaffBasicInfo = epidemicControlTMPTRecordMapper.getStaffEpidemicBasicInfo(identityNo);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(newStaffBasicInfo).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse getStaffEpidemicBasicInfoByDepartment( String department)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            List<Map<Object, Object>> newStaffBasicInfo = epidemicControlTMPTRecordMapper.getStaffEpidemicBasicInfoByDepartment(department);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(newStaffBasicInfo).toString());
             return result;

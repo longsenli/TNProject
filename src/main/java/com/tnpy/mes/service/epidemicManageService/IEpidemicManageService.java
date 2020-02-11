@@ -9,10 +9,18 @@ import com.tnpy.common.utils.web.TNPYResponse;
  */
 
 public interface IEpidemicManageService {
-    public TNPYResponse addShelfBehaviorRecord( String jsonStr);
-    public TNPYResponse getShelfFilloutEpidemicRecord( String identityID);
+    public TNPYResponse addShelfBehaviorRecord(String jsonStr);
+
+    public TNPYResponse getShelfFilloutEpidemicRecord(String identityID);
 
 
-    public TNPYResponse addNewStaffBasicInfo( String jsonStr);
-    public TNPYResponse getShelfBasicInfoRecord( String name);
+    public TNPYResponse addNewStaffBasicInfo(String jsonStr);
+
+    public TNPYResponse getShelfBasicInfoRecord(String name);
+
+    public TNPYResponse getStaffEpidemicBasicInfo( String identityNo);
+    public TNPYResponse getStaffEpidemicBasicInfoByDepartment( String department);
+    public TNPYResponse getStaffEpidemicBasicDepartmentInfo( );
+    public TNPYResponse addStaffTMPTRecord(String jsonStr);
+    public TNPYResponse getStaffTMPTRecord(String name, String department, String startTime, String endTime, String tmptType);
 }
