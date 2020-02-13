@@ -229,4 +229,24 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
             return result;
         }
     }
+
+    public TNPYResponse getStaffLatestEpidemicTMPTRecord( String name)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            String filter = " where status = '1' ";
+            if(!"-1".equals(name))
+            {
+                filter += " and name = '" + name + "' ";
+            }
+
+            List<Map<Object, Object>> newStaffBasicInfo = epidemicControlTMPTRecordMapper.getStaffLatestEpidemicTMPTRecord(filter);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(newStaffBasicInfo).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
 }

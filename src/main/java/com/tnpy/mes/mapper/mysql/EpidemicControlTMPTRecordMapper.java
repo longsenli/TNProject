@@ -36,7 +36,12 @@ public interface EpidemicControlTMPTRecordMapper {
             " from tb_epidemiccontrolstaffinfo where department = #{department}  order by CONVERT(name using gbk)   ")
     List<Map<Object, Object>> getStaffEpidemicBasicInfoByDepartment(String department);
 
-    @Select(" select name,sex,department,identityNO,telephoneNumber,familyLocation,temperature,date_format(updateTime,'%Y-%m-%d %H:%m:%s') as updateTime,remark  " +
+    @Select(" select name,sex,department,concat(left(identityNO,6),' ',right(identityNO,12)) as identityNO,extd1,telephoneNumber,familyLocation,temperature,date_format(updateTime,'%Y-%m-%d %H:%i:%s') as updateTime,remark  " +
             " from tb_epidemiccontroltmptrecord ${filter} order by department, CONVERT(name using gbk),updateTime desc ")
     List<Map<Object, Object>> getStaffEpidemicTMPTRecord(@Param("filter") String filter);
+
+
+    @Select(" select name,sex,department,temperature,date_format(updateTime,'%Y-%m-%d %H:%i:%s') as updateTime,concat(left(identityNO,6),' ',right(identityNO,12)) as identityNO,extd1,telephoneNumber,familyLocation,remark  " +
+            " from tb_epidemiccontroltmptrecord ${filter} order by department, CONVERT(name using gbk),updateTime desc limit 2 ")
+    List<Map<Object, Object>> getStaffLatestEpidemicTMPTRecord(@Param("filter") String filter);
 }
