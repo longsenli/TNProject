@@ -5,6 +5,7 @@ import com.tnpy.mes.service.epidemicManageService.IEpidemicManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -67,8 +68,8 @@ public class EpidemicManageController {
     }
 
     @RequestMapping(value = "/getStaffEpidemicBasicDepartmentInfo")
-    public TNPYResponse getStaffEpidemicBasicDepartmentInfo( ) {
-        return  epidemicManageService.getStaffEpidemicBasicDepartmentInfo();
+    public TNPYResponse getStaffEpidemicBasicDepartmentInfo(@RequestParam(defaultValue = "-1") String compony ) {
+        return  epidemicManageService.getStaffEpidemicBasicDepartmentInfo(compony);
     }
 
     @RequestMapping(value = "/addStaffTMPTRecord")

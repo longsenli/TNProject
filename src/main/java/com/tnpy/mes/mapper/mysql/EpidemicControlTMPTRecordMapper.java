@@ -24,9 +24,10 @@ public interface EpidemicControlTMPTRecordMapper {
     int updateByPrimaryKey(EpidemicControlTMPTRecord record);
 
 
-    @Select(" select  distinct department as department" +
-            " from tb_epidemiccontrolstaffinfo order by CONVERT(department using gbk) ")
-    List<Map<Object, Object>> getStaffEpidemicBasicDepartmentInfo( );
+    @Select("( select  distinct department as id ,'' as name,'1' as type " +
+            " from tb_epidemiccontrolstaffinfo ${filter}  order by CONVERT(department using gbk)  limit 1000 ) union all" +
+            " (   select  role_id as id,role_name as name ,'2' as type  from  tb_role  where role_id like '7%' ${filter2} order by CONVERT(role_name using gbk) limit 200) ")
+    List<Map<Object, Object>> getStaffEpidemicBasicDepartmentInfo(@Param( "filter") String filter,@Param( "filter2") String filter2 );
 
     @Select(" select * " +
             " from tb_epidemiccontrolstaffinfo where identityNO = #{identityID}   ")

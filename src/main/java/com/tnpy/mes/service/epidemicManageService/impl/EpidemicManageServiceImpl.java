@@ -176,11 +176,18 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
         }
     }
 
-    public TNPYResponse getStaffEpidemicBasicDepartmentInfo( )
+    public TNPYResponse getStaffEpidemicBasicDepartmentInfo( String compony )
     {
         TNPYResponse result = new TNPYResponse();
         try {
-            List<Map<Object, Object>> newStaffBasicInfo = epidemicControlTMPTRecordMapper.getStaffEpidemicBasicDepartmentInfo();
+            String filter = "";
+            String filter2 = "";
+            if(!"-1".equals(compony))
+            {
+                filter = " where compony = '" + compony.trim() +"' ";
+                filter2 = " and role_key = '" + compony.trim() +"' ";
+            }
+            List<Map<Object, Object>> newStaffBasicInfo = epidemicControlTMPTRecordMapper.getStaffEpidemicBasicDepartmentInfo(filter,filter2);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(newStaffBasicInfo).toString());
             return result;
@@ -195,7 +202,22 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
             String filter = " where status = '1' ";
             if(!"-1".equals(name))
             {
-                filter += " and name = '" + name + "' ";
+                if(name.contains("___"))
+                {
+                   if(!"-1".equals( name.split("___")[0].trim()))
+                   {
+                       filter += " and compony = '" +  name.split("___")[0].trim() + "' ";
+                   }
+                    if(!"-1".equals( name.split("___")[1].trim()))
+                    {
+                        filter += " and extd2 = '" +  name.split("___")[1].trim() + "' ";
+                    }
+                }
+                else
+                {
+                    filter += " and name = '" + name + "' ";
+                }
+
             }
             if(!"-1".equals(department))
             {
@@ -213,7 +235,7 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
             List<Map<Object, Object>> newStaffBasicInfo = epidemicControlTMPTRecordMapper.getStaffEpidemicTMPTRecord(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(newStaffBasicInfo).toString());
-        
+
             return result;
         } catch (Exception ex) {
             result.setMessage("查询出错！" + ex.getMessage());
