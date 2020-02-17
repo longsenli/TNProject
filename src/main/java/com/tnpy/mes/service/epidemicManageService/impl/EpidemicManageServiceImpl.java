@@ -209,9 +209,11 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
             {
                 filter += " and temperature = '" + tmptType + "' ";
             }
+
             List<Map<Object, Object>> newStaffBasicInfo = epidemicControlTMPTRecordMapper.getStaffEpidemicTMPTRecord(filter);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(newStaffBasicInfo).toString());
+        
             return result;
         } catch (Exception ex) {
             result.setMessage("查询出错！" + ex.getMessage());
@@ -269,6 +271,20 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
         TNPYResponse result = new TNPYResponse();
         try {
             List<Map<Object, Object>> newStaffBasicInfo = epidemicControlTMPTRecordMapper.getStaffEpidemicBasicInfoByDepartment(department);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(newStaffBasicInfo).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse getStaffEpidemicBasicInfoByName( String name)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            List<Map<Object, Object>> newStaffBasicInfo = epidemicControlStaffInfoMapper.getStaffEpidemicBasicInfoByName("%" + name + "%");
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(newStaffBasicInfo).toString());
             return result;

@@ -45,6 +45,10 @@ public class EpidemicManageController {
         return  epidemicManageService.getStaffEpidemicBasicInfo(identityNo);
     }
 
+    @RequestMapping(value = "/getStaffEpidemicBasicInfoByName")
+    public TNPYResponse getStaffEpidemicBasicInfoByName( String name) {
+        return  epidemicManageService.getStaffEpidemicBasicInfoByName(name);
+    }
 
     @RequestMapping(value = "/addStaffEpidemicBasicInfo")
     public TNPYResponse addStaffEpidemicBasicInfo(@RequestBody String jsonStr) {
