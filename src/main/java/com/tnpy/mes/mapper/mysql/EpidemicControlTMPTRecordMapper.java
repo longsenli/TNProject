@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
-
 @Mapper
 @Component
 public interface EpidemicControlTMPTRecordMapper {
@@ -23,6 +22,7 @@ public interface EpidemicControlTMPTRecordMapper {
     int updateByPrimaryKeySelective(EpidemicControlTMPTRecord record);
 
     int updateByPrimaryKey(EpidemicControlTMPTRecord record);
+
 
     @Select(" select  distinct department as department" +
             " from tb_epidemiccontrolstaffinfo order by CONVERT(department using gbk) ")

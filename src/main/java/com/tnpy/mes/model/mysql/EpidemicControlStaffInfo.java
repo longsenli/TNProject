@@ -29,6 +29,14 @@ public class EpidemicControlStaffInfo {
 
     private String extd3;
 
+    private String updator;
+
+    private String compony;
+
+    private String extd4;
+
+    private String extd5;
+
     public String getIdentityno() {
         return identityno;
     }
@@ -131,5 +139,37 @@ public class EpidemicControlStaffInfo {
 
     public void setExtd3(String extd3) {
         this.extd3 = extd3 == null ? null : extd3.trim();
+    }
+
+    public String getUpdator() {
+        return updator;
+    }
+
+    public void setUpdator(String updator) {
+        this.updator = updator == null ? null : updator.trim();
+    }
+
+    public String getCompony() {
+        return compony;
+    }
+
+    public void setCompony(String compony) {
+        this.compony = compony == null ? null : compony.trim();
+    }
+
+    public String getExtd4() {
+        return extd4;
+    }
+
+    public void setExtd4(String extd4) {
+        this.extd4 = extd4 == null ? null : extd4.trim();
+    }
+
+    public String getExtd5() {
+        return extd5;
+    }
+
+    public void setExtd5(String extd5) {
+        this.extd5 = extd5 == null ? null : extd5.trim();
     }
 }

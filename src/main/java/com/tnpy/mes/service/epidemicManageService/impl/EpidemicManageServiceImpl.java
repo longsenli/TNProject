@@ -3,15 +3,18 @@ package com.tnpy.mes.service.epidemicManageService.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.tnpy.common.Enum.StatusEnum;
 import com.tnpy.common.utils.web.TNPYResponse;
+import com.tnpy.mes.mapper.mysql.EpidemicControlStaffInfoMapper;
 import com.tnpy.mes.mapper.mysql.EpidemicControlTMPTRecordMapper;
 import com.tnpy.mes.mapper.mysql.EpidemicStaffBehaviorRecordMapper;
 import com.tnpy.mes.mapper.mysql.NewStaffBasicInfoStatisticsMapper;
+import com.tnpy.mes.model.mysql.EpidemicControlStaffInfo;
 import com.tnpy.mes.model.mysql.EpidemicControlTMPTRecord;
 import com.tnpy.mes.model.mysql.EpidemicStaffBehaviorRecord;
 import com.tnpy.mes.model.mysql.NewStaffBasicInfoStatistics;
 import com.tnpy.mes.service.epidemicManageService.IEpidemicManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,6 +37,9 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
 
     @Autowired
     private EpidemicControlTMPTRecordMapper epidemicControlTMPTRecordMapper;
+
+    @Autowired
+    private EpidemicControlStaffInfoMapper epidemicControlStaffInfoMapper;
 
     public TNPYResponse addShelfBehaviorRecord(String jsonStr) {
         TNPYResponse result = new TNPYResponse();
@@ -145,6 +151,17 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
         try {
 
             EpidemicControlTMPTRecord epidemicControlTMPTRecord =(EpidemicControlTMPTRecord) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), EpidemicControlTMPTRecord.class);
+
+            if(StringUtils.isEmpty(epidemicControlTMPTRecord.getExtd2()) )
+            {
+                result.setMessage("该账号不具有温度登记权限，请确认后使用！");
+                return result;
+            }
+            else if( !epidemicControlTMPTRecord.getExtd2().startsWith("7"))
+            {
+                result.setMessage("该账号不具有温度登记权限，请确认后使用！");
+                return result;
+            }
             epidemicControlTMPTRecord.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
             epidemicControlTMPTRecord.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
             epidemicControlTMPTRecord.setUpdatetime(new Date());
@@ -212,6 +229,37 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
             return result;
         } catch (Exception ex) {
             result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
+
+    public TNPYResponse addStaffEpidemicBasicInfo( String jsonStr)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+
+            EpidemicControlStaffInfo epidemicControlStaffInfo =(EpidemicControlStaffInfo) JSONObject.toJavaObject(JSONObject.parseObject(jsonStr), EpidemicControlStaffInfo.class);
+
+            epidemicControlStaffInfo.setStatus(StatusEnum.StatusFlag.using.getIndex() + "");
+            epidemicControlStaffInfo.setUpdatetime(new Date());
+
+            epidemicControlStaffInfoMapper.insertSelective(epidemicControlStaffInfo);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("添加失败！" + ex.getMessage());
+            return result;
+        }
+    }
+    public TNPYResponse deleteStaffEpidemicBasicInfo( String identityNo)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            epidemicControlStaffInfoMapper.deleteByPrimaryKey(identityNo);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("添加失败！" + ex.getMessage());
             return result;
         }
     }

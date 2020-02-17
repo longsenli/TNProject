@@ -19,6 +19,9 @@ public interface IEpidemicManageService {
     public TNPYResponse getShelfBasicInfoRecord(String name);
 
     public TNPYResponse getStaffEpidemicBasicInfo( String identityNo);
+    public TNPYResponse addStaffEpidemicBasicInfo( String jsonStr);
+    public TNPYResponse deleteStaffEpidemicBasicInfo( String identityNo);
+
     public TNPYResponse getStaffEpidemicBasicInfoByDepartment( String department);
     public TNPYResponse getStaffEpidemicBasicDepartmentInfo( );
     public TNPYResponse addStaffTMPTRecord(String jsonStr);
