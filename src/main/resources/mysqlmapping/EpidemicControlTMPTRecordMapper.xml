@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnpy.mes.mapper.mysql.EpidemicControlTMPTRecordMapper">
+  <resultMap id="BaseResultMap" type="com.tnpy.mes.model.mysql.EpidemicControlTMPTRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="department" jdbcType="VARCHAR" property="department" />
+    <result column="identityNO" jdbcType="VARCHAR" property="identityno" />
+    <result column="telephoneNumber" jdbcType="VARCHAR" property="telephonenumber" />
+    <result column="familyLocation" jdbcType="VARCHAR" property="familylocation" />
+    <result column="temperature" jdbcType="VARCHAR" property="temperature" />
+    <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="extd1" jdbcType="VARCHAR" property="extd1" />
+    <result column="extd2" jdbcType="VARCHAR" property="extd2" />
+    <result column="extd3" jdbcType="VARCHAR" property="extd3" />
+    <result column="updator" jdbcType="VARCHAR" property="updator" />
+    <result column="compony" jdbcType="VARCHAR" property="compony" />
+    <result column="extd4" jdbcType="VARCHAR" property="extd4" />
+    <result column="extd5" jdbcType="VARCHAR" property="extd5" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, sex, department, identityNO, telephoneNumber, familyLocation, temperature, 
+    updateTime, remark, status, extd1, extd2, extd3, updator, compony, extd4, extd5
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_epidemiccontroltmptrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_epidemiccontroltmptrecord
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.tnpy.mes.model.mysql.EpidemicControlTMPTRecord">
+    insert into tb_epidemiccontroltmptrecord (id, name, sex, 
+      department, identityNO, telephoneNumber, 
+      familyLocation, temperature, updateTime, 
+      remark, status, extd1, 
+      extd2, extd3, updator, 
+      compony, extd4, extd5
+      )
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, 
+      #{department,jdbcType=VARCHAR}, #{identityno,jdbcType=VARCHAR}, #{telephonenumber,jdbcType=VARCHAR}, 
+      #{familylocation,jdbcType=VARCHAR}, #{temperature,jdbcType=VARCHAR}, #{updatetime,jdbcType=TIMESTAMP}, 
+      #{remark,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{extd1,jdbcType=VARCHAR}, 
+      #{extd2,jdbcType=VARCHAR}, #{extd3,jdbcType=VARCHAR}, #{updator,jdbcType=VARCHAR}, 
+      #{compony,jdbcType=VARCHAR}, #{extd4,jdbcType=VARCHAR}, #{extd5,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tnpy.mes.model.mysql.EpidemicControlTMPTRecord">
+    insert into tb_epidemiccontroltmptrecord
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="department != null">
+        department,
+      </if>
+      <if test="identityno != null">
+        identityNO,
+      </if>
+      <if test="telephonenumber != null">
+        telephoneNumber,
+      </if>
+      <if test="familylocation != null">
+        familyLocation,
+      </if>
+      <if test="temperature != null">
+        temperature,
+      </if>
+      <if test="updatetime != null">
+        updateTime,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="extd1 != null">
+        extd1,
+      </if>
+      <if test="extd2 != null">
+        extd2,
+      </if>
+      <if test="extd3 != null">
+        extd3,
+      </if>
+      <if test="updator != null">
+        updator,
+      </if>
+      <if test="compony != null">
+        compony,
+      </if>
+      <if test="extd4 != null">
+        extd4,
+      </if>
+      <if test="extd5 != null">
+        extd5,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null">
+        #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="identityno != null">
+        #{identityno,jdbcType=VARCHAR},
+      </if>
+      <if test="telephonenumber != null">
+        #{telephonenumber,jdbcType=VARCHAR},
+      </if>
+      <if test="familylocation != null">
+        #{familylocation,jdbcType=VARCHAR},
+      </if>
+      <if test="temperature != null">
+        #{temperature,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="extd1 != null">
+        #{extd1,jdbcType=VARCHAR},
+      </if>
+      <if test="extd2 != null">
+        #{extd2,jdbcType=VARCHAR},
+      </if>
+      <if test="extd3 != null">
+        #{extd3,jdbcType=VARCHAR},
+      </if>
+      <if test="updator != null">
+        #{updator,jdbcType=VARCHAR},
+      </if>
+      <if test="compony != null">
+        #{compony,jdbcType=VARCHAR},
+      </if>
+      <if test="extd4 != null">
+        #{extd4,jdbcType=VARCHAR},
+      </if>
+      <if test="extd5 != null">
+        #{extd5,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tnpy.mes.model.mysql.EpidemicControlTMPTRecord">
+    update tb_epidemiccontroltmptrecord
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null">
+        department = #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="identityno != null">
+        identityNO = #{identityno,jdbcType=VARCHAR},
+      </if>
+      <if test="telephonenumber != null">
+        telephoneNumber = #{telephonenumber,jdbcType=VARCHAR},
+      </if>
+      <if test="familylocation != null">
+        familyLocation = #{familylocation,jdbcType=VARCHAR},
+      </if>
+      <if test="temperature != null">
+        temperature = #{temperature,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="extd1 != null">
+        extd1 = #{extd1,jdbcType=VARCHAR},
+      </if>
+      <if test="extd2 != null">
+        extd2 = #{extd2,jdbcType=VARCHAR},
+      </if>
+      <if test="extd3 != null">
+        extd3 = #{extd3,jdbcType=VARCHAR},
+      </if>
+      <if test="updator != null">
+        updator = #{updator,jdbcType=VARCHAR},
+      </if>
+      <if test="compony != null">
+        compony = #{compony,jdbcType=VARCHAR},
+      </if>
+      <if test="extd4 != null">
+        extd4 = #{extd4,jdbcType=VARCHAR},
+      </if>
+      <if test="extd5 != null">
+        extd5 = #{extd5,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tnpy.mes.model.mysql.EpidemicControlTMPTRecord">
+    update tb_epidemiccontroltmptrecord
+    set name = #{name,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      department = #{department,jdbcType=VARCHAR},
+      identityNO = #{identityno,jdbcType=VARCHAR},
+      telephoneNumber = #{telephonenumber,jdbcType=VARCHAR},
+      familyLocation = #{familylocation,jdbcType=VARCHAR},
+      temperature = #{temperature,jdbcType=VARCHAR},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      extd1 = #{extd1,jdbcType=VARCHAR},
+      extd2 = #{extd2,jdbcType=VARCHAR},
+      extd3 = #{extd3,jdbcType=VARCHAR},
+      updator = #{updator,jdbcType=VARCHAR},
+      compony = #{compony,jdbcType=VARCHAR},
+      extd4 = #{extd4,jdbcType=VARCHAR},
+      extd5 = #{extd5,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
