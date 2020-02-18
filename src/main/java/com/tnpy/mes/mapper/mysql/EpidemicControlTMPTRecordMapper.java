@@ -34,8 +34,8 @@ public interface EpidemicControlTMPTRecordMapper {
     List<Map<Object, Object>> getStaffEpidemicBasicInfo(String identityID);
 
     @Select(" select * " +
-            " from tb_epidemiccontrolstaffinfo where department = #{department}  order by CONVERT(name using gbk)   ")
-    List<Map<Object, Object>> getStaffEpidemicBasicInfoByDepartment(String department);
+            " from tb_epidemiccontrolstaffinfo where department = #{department} and compony = #{compony}  order by CONVERT(name using gbk)   ")
+    List<Map<Object, Object>> getStaffEpidemicBasicInfoByDepartment(String department,String compony);
 
     @Select(" select name,sex,department,concat(left(identityNO,6),' ',right(identityNO,12)) as identityNO,extd1,telephoneNumber,familyLocation,temperature,date_format(updateTime,'%Y-%m-%d %H:%i:%s') as updateTime,remark  " +
             " from tb_epidemiccontroltmptrecord ${filter} order by department, CONVERT(name using gbk),updateTime desc ")

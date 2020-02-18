@@ -63,8 +63,8 @@ public class EpidemicManageController {
 
 
     @RequestMapping(value = "/getStaffEpidemicBasicInfoByDepartment")
-    public TNPYResponse getStaffEpidemicBasicInfoByDepartment( String department) {
-        return  epidemicManageService.getStaffEpidemicBasicInfoByDepartment(department);
+    public TNPYResponse getStaffEpidemicBasicInfoByDepartment( String department,@RequestParam(defaultValue = "-1") String compony) {
+        return  epidemicManageService.getStaffEpidemicBasicInfoByDepartment(department,compony);
     }
 
     @RequestMapping(value = "/getStaffEpidemicBasicDepartmentInfo")

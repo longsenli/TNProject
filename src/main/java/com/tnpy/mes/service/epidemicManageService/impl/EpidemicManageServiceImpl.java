@@ -288,11 +288,11 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
         }
     }
 
-    public TNPYResponse getStaffEpidemicBasicInfoByDepartment( String department)
+    public TNPYResponse getStaffEpidemicBasicInfoByDepartment( String department,String compony)
     {
         TNPYResponse result = new TNPYResponse();
         try {
-            List<Map<Object, Object>> newStaffBasicInfo = epidemicControlTMPTRecordMapper.getStaffEpidemicBasicInfoByDepartment(department);
+            List<Map<Object, Object>> newStaffBasicInfo = epidemicControlTMPTRecordMapper.getStaffEpidemicBasicInfoByDepartment(department,compony);
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(newStaffBasicInfo).toString());
             return result;

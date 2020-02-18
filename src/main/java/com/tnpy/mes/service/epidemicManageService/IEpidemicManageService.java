@@ -23,7 +23,7 @@ public interface IEpidemicManageService {
     public TNPYResponse addStaffEpidemicBasicInfo( String jsonStr);
     public TNPYResponse deleteStaffEpidemicBasicInfo( String identityNo);
 
-    public TNPYResponse getStaffEpidemicBasicInfoByDepartment( String department);
+    public TNPYResponse getStaffEpidemicBasicInfoByDepartment( String department,String compony);
     public TNPYResponse getStaffEpidemicBasicDepartmentInfo(  String compony);
     public TNPYResponse addStaffTMPTRecord(String jsonStr);
     public TNPYResponse getStaffTMPTRecord(String name, String department, String startTime, String endTime, String tmptType);
