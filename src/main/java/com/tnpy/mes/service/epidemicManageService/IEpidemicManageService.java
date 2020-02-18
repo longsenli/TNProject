@@ -27,6 +27,6 @@ public interface IEpidemicManageService {
     public TNPYResponse getStaffEpidemicBasicDepartmentInfo(  String compony);
     public TNPYResponse addStaffTMPTRecord(String jsonStr);
     public TNPYResponse getStaffTMPTRecord(String name, String department, String startTime, String endTime, String tmptType);
-
+    public TNPYResponse deleteStaffTMPTRecord( String id);
     public TNPYResponse getStaffLatestEpidemicTMPTRecord( String name);
 }

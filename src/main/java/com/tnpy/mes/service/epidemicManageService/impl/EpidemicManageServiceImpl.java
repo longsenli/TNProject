@@ -221,7 +221,15 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
             }
             if(!"-1".equals(department))
             {
-                filter += " and department = '" + department + "' ";
+                if(department.contains("___"))
+                {
+                    filter += " and compony = '" + department.split("___")[0] + "' ";
+                }
+                else
+                {
+                    filter += " and department = '" + department + "' ";
+                }
+
             }
             if(!"-1".equals(startTime))
             {
@@ -243,6 +251,18 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
         }
     }
 
+    public TNPYResponse deleteStaffTMPTRecord( String id)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            epidemicControlTMPTRecordMapper.deleteByChangeStatus(id);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("添加失败！" + ex.getMessage());
+            return result;
+        }
+    }
     public TNPYResponse getStaffEpidemicBasicInfo( String identityNo)
     {
         TNPYResponse result = new TNPYResponse();

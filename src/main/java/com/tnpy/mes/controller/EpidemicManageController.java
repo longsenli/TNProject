@@ -77,6 +77,11 @@ public class EpidemicManageController {
         return  epidemicManageService.addStaffTMPTRecord(jsonStr);
     }
 
+    @RequestMapping(value = "/deleteStaffTMPTRecord")
+    public TNPYResponse deleteStaffTMPTRecord( String id) {
+        return  epidemicManageService.deleteStaffTMPTRecord(id);
+    }
+
     @RequestMapping(value = "/getStaffTMPTRecord")
     public TNPYResponse getStaffTMPTRecord( String name,String department,String startTime,String endTime,String tmptType) {
         return  epidemicManageService.getStaffTMPTRecord(name, department, startTime, endTime, tmptType);

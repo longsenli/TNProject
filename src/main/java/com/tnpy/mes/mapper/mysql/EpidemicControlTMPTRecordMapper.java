@@ -4,6 +4,7 @@ import com.tnpy.mes.model.mysql.EpidemicControlTMPTRecord;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -37,12 +38,16 @@ public interface EpidemicControlTMPTRecordMapper {
             " from tb_epidemiccontrolstaffinfo where department = #{department} and compony = #{compony}  order by CONVERT(name using gbk)   ")
     List<Map<Object, Object>> getStaffEpidemicBasicInfoByDepartment(String department,String compony);
 
-    @Select(" select name,sex,department,concat(left(identityNO,6),' ',right(identityNO,12)) as identityNO,extd1,telephoneNumber,familyLocation,temperature,date_format(updateTime,'%Y-%m-%d %H:%i:%s') as updateTime,remark  " +
+    @Select(" select id,name,sex,department,concat(left(identityNO,6),' ',right(identityNO,12)) as identityNO,extd1,telephoneNumber,familyLocation,temperature,updator, date_format(updateTime,'%Y-%m-%d %H:%i:%s') as updateTime,remark  " +
             " from tb_epidemiccontroltmptrecord ${filter} order by department, CONVERT(name using gbk),updateTime desc ")
     List<Map<Object, Object>> getStaffEpidemicTMPTRecord(@Param("filter") String filter);
 
 
-    @Select(" select name,sex,department,temperature,date_format(updateTime,'%Y-%m-%d %H:%i:%s') as updateTime,concat(left(identityNO,6),' ',right(identityNO,12)) as identityNO,extd1,telephoneNumber,familyLocation,remark  " +
+    @Select(" select name,sex,department,temperature,date_format(updateTime,'%Y-%m-%d %H:%i:%s') as updateTime,concat(left(identityNO,6),' ',right(identityNO,12)) as identityNO,updator,extd1,telephoneNumber,familyLocation,remark  " +
             " from tb_epidemiccontroltmptrecord ${filter} order by department, CONVERT(name using gbk),updateTime desc limit 2 ")
     List<Map<Object, Object>> getStaffLatestEpidemicTMPTRecord(@Param("filter") String filter);
+
+    @Update(" update tb_epidemiccontroltmptrecord set status = '-1' where id = #{id}")
+    int deleteByChangeStatus(String id);
+
 }
