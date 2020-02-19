@@ -87,6 +87,10 @@ public class EpidemicManageController {
         return  epidemicManageService.getStaffTMPTRecord(name, department, startTime, endTime, tmptType);
     }
 
+    @RequestMapping(value = "/getTMPTRecordSummary")
+    public TNPYResponse getTMPTRecordSummary( String compony,String startTime,String endTime) {
+        return  epidemicManageService.getTMPTRecordSummary(compony, startTime, endTime);
+    }
 
     @RequestMapping(value = "/getStaffLatestEpidemicTMPTRecord")
     public TNPYResponse getStaffLatestEpidemicTMPTRecord( String name) {

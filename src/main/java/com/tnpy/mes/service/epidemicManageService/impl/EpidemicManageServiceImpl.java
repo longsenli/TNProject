@@ -355,4 +355,24 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
             return result;
         }
     }
+
+    public TNPYResponse getTMPTRecordSummary( String compony,String startTime,String endTime)
+    {
+        TNPYResponse result = new TNPYResponse();
+        try {
+            //filter1 时间和公司过滤，filter2 时间过滤 filter3 公司过滤
+            String filter1 =  " where   updateTime > '"+ startTime +"' and updateTime < '" + endTime + "' and compony = '" + compony + "' ";
+            String filter2 =  " where   minTime > '"+ startTime +"' and minTime < '" + endTime + "' ";
+            String filter3 =  " where     compony = '" + compony + "' ";
+
+
+            List<Map<Object, Object>> newStaffBasicInfo = epidemicControlTMPTRecordMapper.getStaffEpidemicTMPTRecordSummary(filter1,filter2,filter3);
+            result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
+            result.setData(JSONObject.toJSON(newStaffBasicInfo).toString());
+            return result;
+        } catch (Exception ex) {
+            result.setMessage("查询出错！" + ex.getMessage());
+            return result;
+        }
+    }
 }

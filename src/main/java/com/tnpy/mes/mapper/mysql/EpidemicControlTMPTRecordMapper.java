@@ -50,4 +50,32 @@ public interface EpidemicControlTMPTRecordMapper {
     @Update(" update tb_epidemiccontroltmptrecord set status = '-1' where id = #{id}")
     int deleteByChangeStatus(String id);
 
+    @Select(" (\n" +
+            "select count(1) as number ,'天能集团(河南)能源科技有限公司' as name,'检测总人数' as type from (\n" +
+            "select identityNO  from  tb_epidemiccontroltmptrecord \n" +
+            " ${filter1} group by identityNO\n" +
+            ")  a\n" +
+            ")union all (\n" +
+            "select count(1) as number, '天能集团(河南)能源科技有限公司' as name,'新增人数' as type from (\n" +
+            "select identityNO,min(updateTime) as minTime from  tb_epidemiccontroltmptrecord \n" +
+            " ${filter3} group by identityNO\n" +
+            ") b  ${filter2} \n" +
+            " ) union all (\n" +
+            "select count(1) as number ,updator,'各监测点检测人数' as type from (\n" +
+            "select identityNO,updator from  tb_epidemiccontroltmptrecord \n" +
+            "  ${filter1} group by identityNO,updator\n" +
+            ")  c group by updator  order by CONVERT(updator using gbk) limit 1000\n" +
+            ") union all (\n" +
+            "select  count(1) as number,updator,'各监测点检测人次' as type from  tb_epidemiccontroltmptrecord \n" +
+            " ${filter1} group by updator\n" +
+            "order by CONVERT(updator using gbk) limit 1000 )" +" union all (\n" +
+            "select count(1) as number ,department,'各部门检测人数' as type from (\n" +
+            "select identityNO,department from  tb_epidemiccontroltmptrecord \n" +
+            "  ${filter1} group by identityNO,department\n" +
+            ")  c group by department order by CONVERT(department using gbk) limit 1000\n" +
+            ") " )
+    //filter1 时间和公司过滤，filter2 时间过滤 filter3 公司过滤
+    List<Map<Object, Object>> getStaffEpidemicTMPTRecordSummary(@Param("filter1") String filter1,@Param("filter2") String filter2,@Param("filter3") String filter3);
+
+
 }
