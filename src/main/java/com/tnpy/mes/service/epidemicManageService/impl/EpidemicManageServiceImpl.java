@@ -217,7 +217,6 @@ public class EpidemicManageServiceImpl implements IEpidemicManageService {
                 {
                     filter += " and name = '" + name + "' ";
                 }
-
             }
             if(!"-1".equals(department))
             {

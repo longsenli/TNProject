@@ -53,7 +53,7 @@ public interface DashboardMapper {
             " and verifyTime is not null  order by CONVERT(staffName using gbk ) ,dayTime " )
     List<Map<Object, Object>> getStaffAttendanceDetailRecord( String plantID,String processID,String startTime,String endTime);
 
-    @Select(   "select materialID,materialName,shelfProduction,univalence,staffID,DATE_FORMAT(dayTime,   '%Y-%m-%d') as dayTime,verifierName  from tb_dailyproductionandwagedetail \n" +
-            "where dayTime >= #{startTime} and dayTime <= #{endTime} and  plantID = #{plantID} and processID = #{processID}   order by CONVERT(staffName using gbk),dayTime,materialName\n")
+    @Select(   "select materialID,materialName,sum(shelfProduction) as shelfProduction,univalence,staffID,DATE_FORMAT(dayTime,   '%Y-%m-%d') as dayTime,verifierName  from tb_dailyproductionandwagedetail \n" +
+            "where dayTime >= #{startTime} and dayTime <= #{endTime} and  plantID = #{plantID} and processID = #{processID} group by  materialID,dayTime,staffID  order by CONVERT(staffName using gbk),dayTime,materialName\n")
     List<Map<Object, Object>> staffProductionDetailRecord( String plantID,String processID,String startTime,String endTime);
 }
