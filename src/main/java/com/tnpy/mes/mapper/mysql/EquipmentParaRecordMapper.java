@@ -72,10 +72,30 @@ public interface EquipmentParaRecordMapper {
     List<Map<Object,Object>> getElectricProductionRelation(String plantID, String processID,String startTime,String endTime);
     
     
-    @Select("SELECT e.location AS '位置',( CASE t.runningStatus WHEN 1 THEN '运行' WHEN 2 THEN '运行' WHEN 0 THEN '停止' ELSE '离线' END) AS '运行状态', IFNULL(t.realtimeTemperature,'') AS '实时温度', IFNULL(t.settingTemperature,'') AS '设定温度', IFNULL(t.statusTemperature,'') AS '温度状态', IFNULL(t.realtimeHumidity,'') AS '实时湿度', IFNULL(t.settingHumidity,'') AS '设定湿度', IFNULL(t.statusHumidity,'') AS '湿度状态', IFNULL(t.solidificationHour,'') AS '固化时长小时', IFNULL(t.solidificationMinute,'') AS '固化时长分钟', IFNULL(t.solidificationSecond,'') AS '固化时长秒' FROM tb_equipmentinfo e LEFT JOIN(SELECT * FROM ${tableName} s WHERE s.acquisitionTime >= "
+    @Select(" SELECT e.location AS '位置',( CASE t.runningStatus WHEN 1 THEN '运行' WHEN 2 THEN '运行' WHEN 0 THEN '停止' ELSE '离线' END) AS '运行状态', IFNULL(t.realtimeTemperature,'') " +
+            " AS '实时温度', IFNULL(t.settingTemperature,'') AS '设定温度', IFNULL(t.statusTemperature,'') AS '温度状态', IFNULL(t.realtimeHumidity,'') AS '实时湿度', IFNULL(t.settingHumidity,'') AS '设定湿度', " +
+            " IFNULL(t.statusHumidity,'') AS '湿度状态', IFNULL(t.solidificationHour,'') AS '固化时长小时', IFNULL(t.solidificationMinute,'') AS '固化时长分钟', IFNULL(t.solidificationSecond,'') AS '固化时长秒' " +
+            " FROM tb_equipmentinfo e LEFT JOIN(SELECT * FROM ${tableName} s WHERE s.acquisitionTime >= "
     		+ "DATE_SUB( DATE_FORMAT( #{recentTime}, '%Y-%m-%d %H:%i:%s'), INTERVAL 5 MINUTE ) GROUP BY s.equipmentID ) t ON e.id = t.equipmentID "
     		+ "WHERE e.plantID = #{plantID} AND e.typeID = #{equipType} AND e. STATUS = '1' ORDER BY e.location")
     List<LinkedHashMap<Object,Object>> selectSolidificationoperatingparametersacquisition(String plantID, String equipType,String recentTime, @Param("tableName") String tableName);
+
+
+    @Select(" SELECT e.location AS '位置',( CASE  WHEN IFNULL(t.WaterWeight,0) > 0  THEN '运行'  ELSE '离线' END) AS '运行状态', IFNULL(t.vitriolWeight,'') " +
+            "   AS '酸重量', IFNULL(t.WaterWeight,'') AS '水重量', IFNULL(t.leadPowderWeight,'') AS '铅粉重量', IFNULL(t.waterInTemperature,'') AS '进水口温度', IFNULL(t.waterOutTemperature,'') AS '出水口温度', \n" +
+            "      IFNULL(t.atmosphericPressure,'') AS '压强', IFNULL(t.leadPasteOutTemperature,'') AS '铅膏出口温度' \n" +
+            "       FROM tb_equipmentinfo e LEFT JOIN(SELECT * FROM  ${tableName} s WHERE s.acquisitionTime >= \n" +
+            "  DATE_SUB( DATE_FORMAT(  #{recentTime}, '%Y-%m-%d %H:%i:%s'), INTERVAL 5 MINUTE ) GROUP BY s.equipmentID ) t ON e.id = t.equipmentID \n" +
+            "  WHERE e.plantID = #{plantID} AND e.typeID = #{equipType} AND e. STATUS = '1' ORDER BY e.location")
+    List<LinkedHashMap<Object,Object>> selectBlenderOperatingRunningStatus(String plantID, String equipType,String recentTime, @Param("tableName") String tableName);
+
+    @Select("  SELECT e.location AS '位置',( CASE  WHEN IFNULL(t.one,0) > 0  THEN '运行'  ELSE '离线' END) AS '运行状态', (IFNULL(t.${hourTime},0) -IFNULL(t.zero,0)) as  '今日用电', \n" +
+            "IFNULL(t.zero,'-') AS '0点电表读数' ,IFNULL(t.${hourTime},'-') AS '当前电表读数' \n" +
+            "       FROM tb_equipmentinfo e LEFT JOIN(SELECT * FROM ${tableName} s WHERE s.dayTime = #{recentTime} \n" +
+            " GROUP BY s.equipmentID ) t ON e.id = t.equipmentID \n" +
+            "  WHERE e.plantID = #{plantID} AND e.typeID = #{equipType}  AND e. STATUS = '1' ORDER BY e.location ")
+    List<LinkedHashMap<Object,Object>> selectElectricityMeterRunningStatus(String plantID, String equipType,String recentTime, @Param("tableName") String tableName,@Param("hourTime")String hourTime);
+
 
 
 }

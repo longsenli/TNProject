@@ -251,7 +251,7 @@ public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordSer
     /**
      * 新设备采集方法
      */
-    public TNPYResponse getRecentAllParamPecordNew( String plantID,String equipType,String processID)
+    public TNPYResponse getRecentAllParamRecordNew( String plantID,String equipType,String processID)
     {
         TNPYResponse result = new TNPYResponse();
         try {
@@ -259,22 +259,53 @@ public class EquipmentParamRecordServiceImpl implements IEquipmentParamRecordSer
             Date recentTime = new Date();//取时间
             String timeStr = dateFormat.format(recentTime);
             List<LinkedHashMap<Object,Object>> parameterInfoList = null;
-            //一部固化室
-            if(ConfigParamEnum.EquipmentTypeEnum.GHSCJ.getTypeID().equals(equipType)&&ConfigParamEnum.EquipmentTypeEnum.GHSCJ1001.getTypeID().equals(plantID.trim()))
+//            //一部固化室
+//            if(ConfigParamEnum.EquipmentTypeEnum.GHSCJ.getTypeID().equals(equipType)&&ConfigParamEnum.EquipmentTypeEnum.GHSCJ1001.getTypeID().equals(plantID.trim()))
+//            {
+//            	  parameterInfoList = equipmentParaRecordMapper.selectSolidificationoperatingparametersacquisition(plantID,equipType,timeStr, ConfigParamEnum.EquipmentTypeEnum.GHSCJ1001.getTableName());
+//            }
+//            //二部固化室
+//            if(ConfigParamEnum.EquipmentTypeEnum.GHSCJ.getTypeID().equals(equipType)&&ConfigParamEnum.EquipmentTypeEnum.GHSCJ1002.getTypeID().equals(plantID.trim()))
+//            {
+//            	parameterInfoList = equipmentParaRecordMapper.selectSolidificationoperatingparametersacquisition(plantID,equipType,timeStr, ConfigParamEnum.EquipmentTypeEnum.GHSCJ1002.getTableName());
+//            }
+//            //三部固化室
+//            if(ConfigParamEnum.EquipmentTypeEnum.GHSCJ.getTypeID().equals(equipType)&&ConfigParamEnum.EquipmentTypeEnum.GHSCJ1003.getTypeID().equals(plantID.trim()))
+//            {
+//            	parameterInfoList = equipmentParaRecordMapper.selectSolidificationoperatingparametersacquisition(plantID,equipType,timeStr, ConfigParamEnum.EquipmentTypeEnum.GHSCJ1003.getTableName());
+//            }
+
+            if(ConfigParamEnum.EquipmentCollectDBMap.containsKey(equipType.trim() + "___" + plantID.trim()))
             {
-            	  parameterInfoList = equipmentParaRecordMapper.selectSolidificationoperatingparametersacquisition(plantID,equipType,timeStr, ConfigParamEnum.EquipmentTypeEnum.GHSCJ1001.getTableName());
+                if(ConfigParamEnum.EquipmentTypeEnum.GHSCJ.getTypeID().equals(equipType.trim()))
+                {
+                    parameterInfoList = equipmentParaRecordMapper.selectSolidificationoperatingparametersacquisition(plantID,equipType,timeStr, ConfigParamEnum.EquipmentCollectDBMap.get(equipType.trim() + "___" + plantID.trim()) + "");
+                }
+
+                if(ConfigParamEnum.EquipmentTypeEnum.HGSBCJ.getTypeID().equals(equipType.trim()))
+                {
+                    parameterInfoList = equipmentParaRecordMapper.selectBlenderOperatingRunningStatus(plantID,equipType,timeStr, ConfigParamEnum.EquipmentCollectDBMap.get(equipType.trim() + "___" + plantID.trim()) + "");
+                }
+
+                if(ConfigParamEnum.EquipmentTypeEnum.ZNDB.getTypeID().equals(equipType.trim()))
+                {
+                    SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+                    Date recentTime2 = new Date();//取时间
+                    String timeStr2 = dateFormat2.format(recentTime2);
+                    Calendar calendar = new GregorianCalendar();
+                    calendar.setTime(recentTime2);
+                    String[] hourToTimeStr = new  String[]{"zero","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen",
+                            "fifteen","sixteen","seventeen","eighteen","nineteen","twenty","twentyOne","twentyTwo","twentyThree"};
+
+                    parameterInfoList = equipmentParaRecordMapper.selectElectricityMeterRunningStatus(plantID,equipType,timeStr2,
+                            ConfigParamEnum.EquipmentCollectDBMap.get(equipType.trim() + "___" + plantID.trim()) + "",hourToTimeStr[calendar.get(Calendar.HOUR_OF_DAY )]);
+                }
             }
-            //二部固化室
-            if(ConfigParamEnum.EquipmentTypeEnum.GHSCJ.getTypeID().equals(equipType)&&ConfigParamEnum.EquipmentTypeEnum.GHSCJ1002.getTypeID().equals(plantID.trim()))
+            else
             {
-            	parameterInfoList = equipmentParaRecordMapper.selectSolidificationoperatingparametersacquisition(plantID,equipType,timeStr, ConfigParamEnum.EquipmentTypeEnum.GHSCJ1002.getTableName());
+                result.setMessage("未找到相关设备信息，请确认后联系信息化办公室！"  );
+                return result;
             }
-            //三部固化室
-            if(ConfigParamEnum.EquipmentTypeEnum.GHSCJ.getTypeID().equals(equipType)&&ConfigParamEnum.EquipmentTypeEnum.GHSCJ1003.getTypeID().equals(plantID.trim()))
-            {
-            	parameterInfoList = equipmentParaRecordMapper.selectSolidificationoperatingparametersacquisition(plantID,equipType,timeStr, ConfigParamEnum.EquipmentTypeEnum.GHSCJ1003.getTableName());
-            }
-            
             result.setStatus(StatusEnum.ResponseStatus.Success.getIndex());
             result.setData(JSONObject.toJSON(parameterInfoList).toString());
             return result;

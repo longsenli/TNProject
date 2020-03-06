@@ -66,12 +66,46 @@ public class ConfigParamEnum {
         put("1B-GH-2009", 72);
     }};
 
+
+    //各部称重系统对应表名
     public  static Map  PlateWeighDBMap = new HashMap<String,String>() {{
         put("1001","tb_plateweighrecord_1b");
        // put("1002","tb_plateweighrecord_2b");
         put("1003","tb_plateweighrecord_3b");
 
     }};
+
+    public  static Map  EquipmentCollectDBMap = new HashMap<String,String>() {{
+
+        //固化
+        put("10016___1001","tb_solidificationoperatingparametersacquisition_1001");
+        put("10016___1002","tb_solidificationoperatingparametersacquisition_1002");
+        put("10016___1003","tb_solidificationoperatingparametersacquisition_1003");
+
+        //和膏
+        put("10017___1001","tb_blenderoperatingparametersacquisition_1001");
+        put("10017___1002","tb_blenderoperatingparametersacquisition_1002");
+        put("10017___1003","tb_blenderoperatingparametersacquisition_1003");
+
+        //球磨
+        put("10018___1001","tb_blenderoperatingparametersacquisition_1001");
+        put("10018___1002","tb_blenderoperatingparametersacquisition_1002");
+        put("10018___1003","tb_blenderoperatingparametersacquisition_1003");
+
+        //电表
+        put("10012___1001","tb_electricitymeterparametersacquisition_1001");
+        put("10012___1002","tb_electricitymeterparametersacquisition_1002");
+        put("10012___1003","tb_electricitymeterparametersacquisition_1003");
+    }};
+
+    //各部电表系统对应表名
+    public  static Map  ElectricityMeterDBMap = new HashMap<String,String>() {{
+        put("1001","tb_electricitymeterparametersacquisition_1001");
+        put("1002","tb_electricitymeterparametersacquisition_1002");
+        put("1003","tb_electricitymeterparametersacquisition_1003");
+    }};
+
+
     public static  enum BasicProcessEnum {
         TBProcessID("1003", 1), GHProcessID("1004", 2),CDProcessID("1009",3),JSProcessID("1008",4),
         ZHProcessID("1007",5), JZProcessID("1011", 6), BZProcessID("1012", 7), FBProcessID("1005", 8),
@@ -144,10 +178,8 @@ public class ConfigParamEnum {
 
     public static  enum EquipmentTypeEnum {
         // 化成水槽、树脂干燥窑、智能电表、固化室采集、和膏设备采集、球磨设备采集
-        HCSC("3", "tb_equipmentparamrecord"), SZGZY("4", "tb_equipmentparamrecord"), ZNDB("10012", "tb_equipmentparamrecord_10012"),
-        GHSCJ("10016", "tb_equipmentparamrecord_10016"),HGSBCJ("10017", "tb_equipmentparamrecord_10017"),QMSBCJ("10018", "tb_equipmentparamrecord_10018"),
-        GHSCJ1001("1001", "tb_solidificationoperatingparametersacquisition_1001"),GHSCJ1002("1002", "tb_solidificationoperatingparametersacquisition_1002"),
-        GHSCJ1003("1003", "tb_solidificationoperatingparametersacquisition_1003");
+        HCSC("3", "化成水槽"), SZGZY("4", "树脂干燥窑"), ZNDB("10012", "智能电表"),
+        GHSCJ("10016", "固化室"),HGSBCJ("10017", "和膏"),QMSBCJ("10018", "球磨");
         // 成员变量
         private String typeID;
         private String tableName;

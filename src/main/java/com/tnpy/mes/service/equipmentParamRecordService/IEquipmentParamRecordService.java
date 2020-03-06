@@ -20,6 +20,6 @@ public interface IEquipmentParamRecordService {
     public TNPYResponse getRecentAllParamPecord( String plantID,String equipType,String processID);
 
     public TNPYResponse getElectricProductionRelation(String plantID,String processID, String startTime,String endTime);
-	public TNPYResponse getRecentAllParamPecordNew(String plantID, String equipType,
+	public TNPYResponse getRecentAllParamRecordNew(String plantID, String equipType,
 			String processID);
 }

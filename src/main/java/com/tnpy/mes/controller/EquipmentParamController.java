@@ -99,10 +99,10 @@ public class EquipmentParamController {
         return  equipmentParamService.getRecentAllParamPecord(plantID, equipType,processID);
     }
     
-    @RequestMapping(value = "/getRecentAllParamPecordNew")
-    public TNPYResponse getRecentAllParamPecordNew( String plantID,String equipType,@RequestParam(defaultValue = "-1")String processID ) {
+    @RequestMapping(value = "/getRecentAllParamRecordNew")
+    public TNPYResponse getRecentAllParamRecordNew( String plantID,String equipType,@RequestParam(defaultValue = "-1")String processID ) {
 
-        return  equipmentParamService.getRecentAllParamPecordNew(plantID, equipType,processID);
+        return  equipmentParamService.getRecentAllParamRecordNew(plantID, equipType,processID);
     }
 
     @RequestMapping(value = "/getoneequipparamrecord")
